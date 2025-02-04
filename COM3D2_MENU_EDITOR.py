@@ -3,7 +3,7 @@
 # Author: 90135
 # License: The Unlicense
 # Creation date: 2024-11-28
-# Version: 2025-02-03_01
+# Version: 2025-02-04_01
 
 import io
 import struct
@@ -21,16 +21,28 @@ class Menu:
     attrs: Dict[str, List[list]]
 
 
-# 读取字符串的辅助函数
-def read_str(f: io.BytesIO) -> str:
-    length = struct.unpack('<B', f.read(1))[0]
-    return f.read(length).decode('utf-8')
+# https://github.com/RimoChan/cm3d2-parser/blob/slave/cm3d2_parser/utils.py
+def read_str(file) -> str:
+    l = 0
+    for i in range(9):
+        n, = struct.unpack('<B', file.read(1))
+        l += n % 128 * 128 ** i
+        if n < 128:
+            return file.read(l).decode('utf-8')
 
-
-# 写入字符串的辅助函数
+# https://github.com/RimoChan/cm3d2-parser/blob/slave/cm3d2_parser/utils.py
 def dump_str(s: str) -> bytes:
-    encoded = s.encode('utf-8')
-    return struct.pack('<B', len(encoded)) + encoded
+    b = s.encode('utf-8')
+    r = b''
+    l = len(b)
+    while True:
+        if l < 128:
+            r += struct.pack('<B', l)
+            break
+        else:
+            r += struct.pack('<B', l % 128 + 128)
+            l //= 128
+    return r + b
 
 
 # 从字节数据加载菜单对象
