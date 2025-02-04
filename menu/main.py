@@ -7,6 +7,7 @@
 import ctypes
 import io
 import struct
+import sys
 import tkinter
 from tkinter import *
 from tkinter.ttk import *
@@ -28,15 +29,28 @@ class Menu:
     description: str
     attrs: Dict[str, List[List[str]]]
 
+# https://github.com/RimoChan/cm3d2-parser/blob/slave/cm3d2_parser/utils.py
+def read_str(file) -> str:
+    l = 0
+    for i in range(9):
+        n, = struct.unpack('<B', file.read(1))
+        l += n % 128 * 128 ** i
+        if n < 128:
+            return file.read(l).decode('utf-8')
 
-def read_str(f: io.BytesIO) -> str:
-    length = struct.unpack('<B', f.read(1))[0]
-    return f.read(length).decode('utf-8')
-
-
+# https://github.com/RimoChan/cm3d2-parser/blob/slave/cm3d2_parser/utils.py
 def dump_str(s: str) -> bytes:
-    encoded = s.encode('utf-8')
-    return struct.pack('<B', len(encoded)) + encoded
+    b = s.encode('utf-8')
+    r = b''
+    l = len(b)
+    while True:
+        if l < 128:
+            r += struct.pack('<B', l)
+            break
+        else:
+            r += struct.pack('<B', l % 128 + 128)
+            l //= 128
+    return r + b
 
 
 def load_menu(b: bytes) -> Menu:
@@ -196,7 +210,7 @@ class MenuEditorGUI:
         frm_buttons = tkinter.Frame(self.master)
         frm_buttons.pack(fill=tkinter.X, pady=5)
 
-        btn_open = tkinter.Button(frm_buttons, text="打开.menu 文件", command=self.open_menu_file)
+        btn_open = tkinter.Button(frm_buttons, text="打开.menu 文件", command=self.open_menu_file_dialog)
         btn_open.pack(side=tkinter.LEFT, padx=10)
 
         btn_save = tkinter.Button(frm_buttons, text="保存当前修改(ctrl+s)", command=self.save_menu_file)
@@ -275,13 +289,17 @@ class MenuEditorGUI:
         except tkinter.TclError:
             pass
 
-    def open_menu_file(self):
+    def open_menu_file_dialog(self):
         file_path = fd.askopenfilename(
             title="选择 .menu 文件",
             filetypes=[("CM3D2 menu files", "*.menu"), ("All files", "*.*")]
         )
         if not file_path:
             return
+        self.open_menu_file_with_path(file_path)
+
+
+    def open_menu_file_with_path(self, file_path: str):
         try:
             with open(file_path, 'rb') as f:
                 data = f.read()
@@ -293,7 +311,6 @@ class MenuEditorGUI:
         self.current_file_path = file_path
         self.current_menu = menu_obj
         self.show_menu_in_gui()
-        # mb.showinfo("提示", f"成功打开 {os.path.basename(file_path)}")
 
     def show_menu_in_gui(self):
         if not self.current_menu:
@@ -377,6 +394,11 @@ def main():
     width = root.winfo_screenwidth()
     height = root.winfo_screenheight()
     root.geometry("%dx%d+%d+%d" % (int(width / 2), int(height / 1.5), int(width / 4), int(height / 4)))
+
+    # If the script is run with a file path (e.g., from file association), open the file automatically
+    if len(sys.argv) > 1:
+        file_path = sys.argv[1]
+        app.open_menu_file_with_path(file_path)
 
     root.mainloop()
 
