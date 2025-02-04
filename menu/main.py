@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Author: 10935336
+# Author: 90135
 # License: The Unlicense
 # Creation date: 2024-12-31
-# Version: 2024-12-31_01
+# Version: 2025-02-04_01
 import ctypes
 import io
 import struct
