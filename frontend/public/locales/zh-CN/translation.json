@@ -1,0 +1,53 @@
+{
+  "HomePage": {
+    "choose_file": "选择文件",
+    "pls_select_menu_file_to_edit": "请选择一个 .menu 文件进行编辑"
+  },
+  "EditorNavBar": {
+    "HomePage": "首页",
+    "MenuEditor": "Menu 编辑器",
+    "MateEditor": "Mate 编辑器",
+    "PMateEditor": "PMate 编辑器",
+    "open_file": "打开文件",
+    "save_file": "保存文件",
+    "save_as_file": "另存为"
+  },
+  "MenuEditor": {
+    "format1": "格式 1",
+    "format2": "格式 2",
+    "format3": "格式 3",
+    "file_header": {
+      "file_head_usually_no_modify_required": "文件头（通常无需修改）",
+      "Signature": "Signature（文件签名）",
+      "BodySize": "BodySize（命令体长度）",
+      "Version": "Version（文件版本）",
+      "enable_edit_do_not_edit": "不要修改",
+      "SrcFileName": "SrcFilePath（源文件路径）",
+      "ItemName": "ItemName（物品名）",
+      "Category": "Category（类别）",
+      "SetInfoText": "SetInfoText（物品描述）"
+    }
+  },
+  "MenuEditorPage": {},
+  "Errors": {
+    "file_selection_error_colon": "文件选择出错: ",
+    "read_menu_file_failed_colon":"读取 .menu 文件失败：",
+    "pls_input_menu_file_path_to_open": "请输入要打开的 .menu 文件路径",
+    "pls_input_file_path_first": "请先输入文件路径",
+    "pls_load_file_first": "请先加载文件",
+    "save_file_failed_colon": "保存文件失败: ",
+    "save_as_file_failed_colon": "文件另存为失败: ",
+    "json_root_node_not_array": "JSON 根节点不是数组",
+    "json_parse_failed": "JSON 解析失败",
+    "no_file_to_save": "没有文件可供保存"
+  },
+  "Infos": {
+    "com3d2_menu_file": "COM3D2 .menu 文件",
+    "com3d2_mate_file": "COM3D2 .mate 文件",
+    "com3d2_pmat_file": "COM3D2 .pmat 文件",
+    "pls_open_file_first": "请先打开文件",
+    "editing_colon": "正在编辑: ",
+    "success_save_file": "文件保存成功",
+    "success_save_as_file": "文件另存为成功"
+  }
+}

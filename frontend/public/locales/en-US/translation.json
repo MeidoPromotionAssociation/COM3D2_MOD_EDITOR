@@ -1,0 +1,53 @@
+{
+  "HomePage": {
+    "choose_file": "Choose File",
+    "pls_select_menu_file_to_edit": "Please select a .menu file to edit"
+  },
+  "EditorNavBar": {
+    "HomePage": "Home",
+    "MenuEditor": "Menu Editor",
+    "MateEditor": "Mate Editor",
+    "PMateEditor": "PMate Editor",
+    "open_file": "Open File",
+    "save_file": "Save File",
+    "save_as_file": "Save As"
+  },
+  "MenuEditor": {
+    "format1": "Format 1",
+    "format2": "Format 2",
+    "format3": "Format 3",
+    "file_header": {
+      "file_head_usually_no_modify_required": "File Header (Usually No Modification Required)",
+      "Signature": "Signature (File Signature)",
+      "BodySize": "BodySize (Command Body Length)",
+      "Version": "Version (File Version)",
+      "enable_edit_do_not_edit": "Do Not Modify",
+      "SrcFileName": "SrcFilePath (Source File Path)",
+      "ItemName": "ItemName (Item Name)",
+      "Category": "Category (Category)",
+      "SetInfoText": "SetInfoText (Item Description)"
+    }
+  },
+  "MenuEditorPage": {},
+  "Errors": {
+    "file_selection_error_colon": "File Selection Error: ",
+    "read_menu_file_failed_colon": "Failed to Read .menu File: ",
+    "pls_input_menu_file_path_to_open": "Please enter the .menu file path to open",
+    "pls_input_file_path_first": "Please enter the file path first",
+    "pls_load_file_first": "Please load the file first",
+    "save_file_failed_colon": "Failed to Save File: ",
+    "save_as_file_failed_colon": "Failed to Save File As: ",
+    "json_root_node_not_array": "JSON root node is not an array",
+    "json_parse_failed": "JSON parsing failed",
+    "no_file_to_save": "No file to save"
+  },
+  "Infos": {
+    "com3d2_menu_file": "COM3D2 .menu File",
+    "com3d2_mate_file": "COM3D2 .mate File",
+    "com3d2_pmat_file": "COM3D2 .pmat File",
+    "pls_open_file_first": "Please open a file first",
+    "editing_colon": "Editing: ",
+    "success_save_file": "File saved successfully",
+    "success_save_as_file": "File saved as successfully"
+  }
+}

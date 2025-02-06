@@ -1,0 +1,13 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "COM3D2 MOD EDITOR V2",
+  "outputfilename": "COM3D2_MOD_EDITOR_V2",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm run build",
+  "frontend:dev:watcher": "pnpm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "90135",
+    "email": "101243352+90135@users.noreply.github.com"
+  }
+}

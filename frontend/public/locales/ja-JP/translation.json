@@ -1,0 +1,53 @@
+{
+  "HomePage": {
+    "choose_file": "ファイルを選択",
+    "pls_select_menu_file_to_edit": "編集する .menu ファイルを選択してください"
+  },
+  "EditorNavBar": {
+    "HomePage": "ホーム",
+    "MenuEditor": "Menu エディター",
+    "MateEditor": "Mate エディター",
+    "PMateEditor": "PMate エディター",
+    "open_file": "ファイルを開く",
+    "save_file": "ファイルを保存",
+    "save_as_file": "名前を付けて保存"
+  },
+  "MenuEditor": {
+    "format1": "フォーマット 1",
+    "format2": "フォーマット 2",
+    "format3": "フォーマット 3",
+    "file_header": {
+      "file_head_usually_no_modify_required": "ファイルヘッダー（通常変更不要）",
+      "Signature": "Signature（ファイル署名）",
+      "BodySize": "BodySize（コマンド本体の長さ）",
+      "Version": "Version（ファイルバージョン）",
+      "enable_edit_do_not_edit": "変更しないでください",
+      "SrcFileName": "SrcFilePath（ソースファイルのパス）",
+      "ItemName": "ItemName（アイテム名）",
+      "Category": "Category（カテゴリー）",
+      "SetInfoText": "SetInfoText（アイテムの説明）"
+    }
+  },
+  "MenuEditorPage": {},
+  "Errors": {
+    "file_selection_error_colon": "ファイル選択エラー: ",
+    "read_menu_file_failed_colon": ".menu ファイルの読み取りに失敗しました: ",
+    "pls_input_menu_file_path_to_open": "開く .menu ファイルのパスを入力してください",
+    "pls_input_file_path_first": "まずファイルのパスを入力してください",
+    "pls_load_file_first": "まずファイルを読み込んでください",
+    "save_file_failed_colon": "ファイルの保存に失敗しました: ",
+    "save_as_file_failed_colon": "名前を付けて保存に失敗しました: ",
+    "json_root_node_not_array": "JSON のルートノードが配列ではありません",
+    "json_parse_failed": "JSON の解析に失敗しました",
+    "no_file_to_save": "保存するファイルがありません"
+  },
+  "Infos": {
+    "com3d2_menu_file": "COM3D2 .menu ファイル",
+    "com3d2_mate_file": "COM3D2 .mate ファイル",
+    "com3d2_pmat_file": "COM3D2 .pmat ファイル",
+    "pls_open_file_first": "まずファイルを開いてください",
+    "editing_colon": "編集中: ",
+    "success_save_file": "ファイルが正常に保存されました",
+    "success_save_as_file": "ファイルが正常に名前を付けて保存されました"
+  }
+}

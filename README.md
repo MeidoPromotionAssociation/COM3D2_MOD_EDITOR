@@ -1,6 +1,14 @@
-# COM3D2_MOD_EDITOR
-COM3D2 MOD 编辑器
+# COM3D2 MOD EDITOR V2
 
-Still in Alpha
+COM3D2 MOD editor built with Golang + Wails + React + Typescript, Modern technology here we come!!
 
-parse is form https://github.com/RimoChan/cm3d2-parser
+Still in a very early version
+
+
+# Credit
+  - [CM3D2.Serialization](https://github.com/luvoid/CM3D2.Serialization) (I got some file structure information from here)
+  - [Golang](https://golang.org/)
+  - [Wails](https://wails.io/)
+  - [React](https://reactjs.org/)
+  - [Typescript](https://www.typescriptlang.org/)
+  - [ANTD](https://ant.design/)
