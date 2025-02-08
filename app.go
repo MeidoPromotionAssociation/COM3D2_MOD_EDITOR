@@ -21,6 +21,8 @@ func NewApp() *App {
 // so we can call the runtime methods
 // `Startup` 事件：在应用启动时检查是否有文件路径传入
 func (a *App) Startup(ctx context.Context) {
+	a.ctx = ctx // 保存上下文，重要
+
 	if len(os.Args) > 1 {
 		filePath := os.Args[1] // 获取双击打开的文件路径
 

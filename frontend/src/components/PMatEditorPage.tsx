@@ -5,8 +5,7 @@ import {Layout} from "antd";
 import NavBar from "./NavBar";
 import { SelectFile } from "../../wailsjs/go/main/App";
 import {useTranslation} from "react-i18next";
-import MateEditor from "./MateEditor";
-import {PMatEditorRef} from "./PMatEditor";
+import PMatEditor, {PMatEditorRef} from "./PMatEditor";
 
 const { Content } = Layout;
 
@@ -50,7 +49,7 @@ const PMatEditorPage: React.FC = () => {
                 onSaveAsFile={handleSaveAsFile}
             />
             <Content style={{ padding: 0, overflow: "auto" }}>
-                <MateEditor filePath={filePath} ref={pmatEditorRef} />
+                <PMatEditor filePath={filePath} ref={pmatEditorRef} />
             </Content>
         </Layout>
     );

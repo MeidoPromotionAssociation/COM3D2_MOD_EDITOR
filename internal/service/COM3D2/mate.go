@@ -18,7 +18,7 @@ func (m *MateService) ReadMateFile(path string) (*COM3D2.Mate, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReader(f)
+	br := bufio.NewReaderSize(f, 1024*1024*10)
 	mateData, err := COM3D2.ReadMate(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .mate file failed: %w", err)

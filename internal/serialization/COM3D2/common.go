@@ -5,4 +5,5 @@ const (
 	MateSignature = "CM3D2_MATERIAL"
 	PMatSignature = "CM3D2_PMATERIAL"
 	endByte       = 0x00
+	MateEndString = "end"
 )

@@ -2,14 +2,15 @@ import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react
 import {ReadMenuFile, SaveMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../wailsjs/go/models";
-import {Checkbox, CheckboxProps, Collapse, Flex, Input, message, Radio, Space} from "antd";
+import {Checkbox, CheckboxProps, Collapse, Flex, Input, message, Radio, Space, Tooltip} from "antd";
 import {CheckboxGroupProps} from "antd/es/checkbox";
 import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {t} from "i18next";
+import {SaveFile} from "../../wailsjs/go/main/App";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
-import {SaveFile} from "../../wailsjs/go/main/App";
 
 type FormatType = "format1" | "format2" | "format3";
 
@@ -115,8 +116,12 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
             if (displayFormat === "format1") {
                 setCommandsText(commandsToTextFormat1(result.Commands));
-            } else {
+            } else if (displayFormat === "format2")  {
                 setCommandsText(commandsToTextFormat2(result.Commands));
+            } else if (displayFormat === "format3") {
+                setCommandsText(commandsToTextFormat3(result.Commands));
+            } else {
+                setCommandsText("unknown format");
             }
         } catch (err) {
             console.error(err);
@@ -137,7 +142,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             return;
         }
         try {
-            let parsedCommands: Command[] = [];
+            let parsedCommands: Command[];
             switch (displayFormat) {
                 case "format1":
                     parsedCommands = parseTextAsFormat1(commandsText);
@@ -182,7 +187,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             return;
         }
         try {
-            let parsedCommands: Command[] = [];
+            let parsedCommands: Command[];
             switch (displayFormat) {
                 case "format1":
                     parsedCommands = parseTextAsFormat1(commandsText);
@@ -226,8 +231,8 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
  * 根据给定 commands 和格式类型，更新编辑器文本
  */
 const updateCommandsText = (commands: Command[], fmt: FormatType) => {
-    let text = "";
-    let language = "plaintext";
+    let text;
+    let language;
     switch (fmt) {
         case "format1":
             text = commandsToTextFormat1(commands);
@@ -325,13 +330,33 @@ return (
 
                                     <Space direction="vertical" style={{width: '100%'}}>
                                         <Input addonBefore={t('MenuEditor.file_header.SrcFileName')} value={srcFileName}
-                                               onChange={(e) => setSrcFileName(e.target.value)}/>
+                                               onChange={(e) => setSrcFileName(e.target.value)}
+                                               suffix={
+                                                   <Tooltip title={t('MenuEditor.file_header.SrcFileName_tip')}>
+                                                       <QuestionCircleOutlined/>
+                                                   </Tooltip>
+                                            }/>
                                         <Input addonBefore={t('MenuEditor.file_header.ItemName')} value={itemName}
-                                               onChange={(e) => setItemName(e.target.value)}/>
+                                               onChange={(e) => setItemName(e.target.value)}
+                                               suffix={
+                                                   <Tooltip title={t('MenuEditor.file_header.ItemName_tip')}>
+                                                       <QuestionCircleOutlined/>
+                                                   </Tooltip>
+                                               }/>
                                         <Input addonBefore={t('MenuEditor.file_header.Category')} value={category}
-                                               onChange={(e) => setCategory(e.target.value)}/>
+                                               onChange={(e) => setCategory(e.target.value)}
+                                               suffix={
+                                            <Tooltip title={t('MenuEditor.file_header.Category_tip')}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        }/>
                                         <Input addonBefore={t('MenuEditor.file_header.SetInfoText')} value={infoText}
-                                               onChange={(e) => setInfoText(e.target.value)}/>
+                                               onChange={(e) => setInfoText(e.target.value)}
+                                               suffix={
+                                            <Tooltip title={t('MenuEditor.file_header.SetInfoText_tip')}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        }/>
                                     </Space>
                                 </Space>
                             </>
@@ -603,13 +628,12 @@ function parseTextAsFormat3(text: string): Command[] {
             throw new Error(t('Errors.json_root_node_not_array'));
         }
         // 简单映射为 Command[]
-        const commands: Command[] = parsed.map((item: any) => {
+        return parsed.map((item: any) => {
             return {
                 ArgCount: item.ArgCount ?? (item.Args ? item.Args.length : 0),
                 Args: item.Args ?? [],
             } as Command;
         });
-        return commands;
     } catch (err: any) {
         console.error("parseTextAsFormat3 error:", err);
         throw new Error(t('Errors.json_parse_failed') + err.message);

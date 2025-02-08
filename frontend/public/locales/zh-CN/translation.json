@@ -23,12 +23,32 @@
       "Version": "Version（文件版本）",
       "enable_edit_do_not_edit": "不要修改",
       "SrcFileName": "SrcFilePath（源文件路径）",
+      "SrcFileName_tip": "源文件路径；大部分情况没有用，游戏本体大部分情况下只会在错误日志中使用此值（2.41.1），但如果你的游戏不是日语版，那么游戏会尝试使用此值匹配翻译",
       "ItemName": "ItemName（物品名）",
+      "ItemName_tip": "物品名；没有用，游戏本体只是读取并丢弃（2.41.1），实际会使用命令段中的值",
       "Category": "Category（类别）",
-      "SetInfoText": "SetInfoText（物品描述）"
+      "Category_tip": "物品类别；没有用，游戏本体只是读取并丢弃（2.41.1），实际会使用命令段中的值",
+      "SetInfoText": "SetInfoText（物品描述）",
+      "SetInfoText_tip": "物品描述；大部分情况没有用，游戏本体大部分情况下只是读取并丢弃（2.41.1），但在特定情况下且这个值为 acctatoo 或 hokuro 时游戏会删除这两个槽的配件"
     }
   },
   "MenuEditorPage": {},
+  "MateEditor": {
+    "file_header": {
+      "file_head": "文件头",
+      "Signature": "Signature（文件签名）",
+      "Version": "Version（文件版本）",
+      "enable_edit_do_not_edit": "不要修改",
+      "Name": "Name（文件名）",
+      "Name_tip": "给你自己看的名称；游戏本体只是读取并丢弃（2.41.1）",
+      "Material_Name": "Material Name（材质名）",
+      "Material_Name_tip": "材质名称；游戏会将其赋值给 material.name，游戏还会尝试查找同名的 .pmat 文件并使用",
+      "Material_ShaderName": "Material Shader Name（着色器名）",
+      "Material_ShaderName_tip": "着色器名称；游戏会尝试查找同名着色器并使用",
+      "Material_ShaderFilename": "Material Shader Filename（着色器文件名）",
+      "Material_ShaderFilename_tip": "着色器文件名；游戏会尝试在特定路径下查找该着色器文件"
+    }
+  },
   "Errors": {
     "file_selection_error_colon": "文件选择出错: ",
     "read_menu_file_failed_colon":"读取 .menu 文件失败：",

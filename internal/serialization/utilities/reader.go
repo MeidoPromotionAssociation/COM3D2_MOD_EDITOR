@@ -75,44 +75,27 @@ func PeekByte(r io.Reader) (byte, error) {
 
 // PeekString 读取下一个字符串（LEB128 + UTF-8），但不消耗它。
 // 因此下次再从同一个 reader 中读取时，会得到相同的数据。
-func PeekString(r io.Reader) (string, error) {
-	// 必须是一个支持 Peek 的 bufio.Reader 或类似接口。
-	br, ok := r.(interface {
-		Peek(int) ([]byte, error)
-	})
-	if !ok {
-		return "", errors.New("PeekString: the reader is not peekable (not *bufio.Reader)")
-	}
-
-	// 一次 peek 大块数据（例如 64 KB），假设可涵盖后续解析
-	// 如果字符串非常大，这里可能不够，你可以视情况改大一些。
-	const peekSize = 64 * 1024
-	buf, err := br.Peek(peekSize)
+func PeekString(rs io.ReadSeeker) (string, error) {
+	// 记录当前指针
+	startPos, err := rs.Seek(0, io.SeekCurrent)
 	if err != nil {
-		// 如果仅仅因为底层数据不够 64K, 但足以解析字符串，也可能会返回错误
-		// 这里可以判断 err == bufio.ErrBufferFull 再继续处理，但示例就不展开了
-		return "", fmt.Errorf("PeekString: peek error: %w", err)
+		return "", err
 	}
 
-	// 解码出 LEB128（字符串长度）
-	length, usedBytes, err := decodeLEB128FromBytes(buf)
+	// 尝试读取字符串
+	str, err := ReadString(rs)
 	if err != nil {
-		return "", fmt.Errorf("PeekString: decode LEB128 failed: %w", err)
-	}
-	if length < 0 {
-		return "", fmt.Errorf("PeekString: invalid string length: %d", length)
-	}
-
-	// 检查剩余空间是否足够拿到完整字符串
-	if usedBytes+length > len(buf) {
-		return "", fmt.Errorf("PeekString: not enough peeked data for the entire string (need %d, got %d)",
-			usedBytes+length, len(buf))
+		// 如果出错了也回退
+		_, _ = rs.Seek(startPos, io.SeekStart)
+		return "", err
 	}
 
-	// 从 buf 中切出字符串对应的部分
-	str := string(buf[usedBytes : usedBytes+length])
+	// 读完后回退到之前的位置
+	_, err = rs.Seek(startPos, io.SeekStart)
+	if err != nil {
+		return "", err
+	}
 
-	// 此时我们并没有 discard 这段数据，下次真正读时还能继续读到它
 	return str, nil
 }
 

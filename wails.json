@@ -6,6 +6,7 @@
   "frontend:build": "pnpm run build",
   "frontend:dev:watcher": "pnpm run dev",
   "frontend:dev:serverUrl": "auto",
+  "debounceMS": 1000000000,
   "author": {
     "name": "90135",
     "email": "101243352+90135@users.noreply.github.com"

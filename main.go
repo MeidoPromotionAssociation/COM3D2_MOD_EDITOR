@@ -15,8 +15,8 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	MateService := &COM3D2.MateService{}
 	MenuService := &COM3D2.MenuService{}
+	MateService := &COM3D2.MateService{}
 	PMatService := &COM3D2.PMatService{}
 
 	// Create application with options

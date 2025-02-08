@@ -8,20 +8,20 @@ import (
 
 // Menu 对应 .menu 文件的结构
 type Menu struct {
-	Signature   string // 固定应为 "CM3D2_MENU"
-	Version     int32
-	SrcFileName string
-	ItemName    string
-	Category    string
-	InfoText    string
-	BodySize    int32
-	Commands    []Command
+	Signature   string    `json:"Signature"`
+	Version     int32     `json:"Version"`
+	SrcFileName string    `json:"SrcFileName"`
+	ItemName    string    `json:"ItemName"`
+	Category    string    `json:"Category"`
+	InfoText    string    `json:"InfoText"`
+	BodySize    int32     `json:"BodySize"`
+	Commands    []Command `json:"Commands"`
 }
 
 // Command 对应 .menu 中的命令
 type Command struct {
-	ArgCount byte
-	Args     []string
+	ArgCount byte     `json:"ArgCount"`
+	Args     []string `json:"Args"`
 }
 
 // ReadMenu 从 r 中读取一个 .menu 文件结构

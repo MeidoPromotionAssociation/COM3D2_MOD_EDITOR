@@ -2,6 +2,7 @@ package COM3D2
 
 import (
 	"COM3D2_MOD_EDITOR_V2/internal/serialization/utilities"
+	"bytes"
 	"fmt"
 	"io"
 )
@@ -9,10 +10,10 @@ import (
 // Mate 对应 .mate 文件的整体结构
 // C# 对应：public class Mate
 type Mate struct {
-	Signature string
-	Version   int32
-	Name      string
-	Material  *Material
+	Signature string    `json:"Signature"`
+	Version   int32     `json:"Version"`
+	Name      string    `json:"Name"`
+	Material  *Material `json:"Material"`
 }
 
 // ReadMate 从 r 中读取一个 .mate 文件，返回 Mate 结构
@@ -59,70 +60,89 @@ func (m *Mate) Dump(w io.Writer) error {
 	if err := utilities.WriteString(w, m.Signature); err != nil {
 		return fmt.Errorf("write .mate signature failed: %w", err)
 	}
+
 	// 2. version
 	if err := utilities.WriteInt32(w, m.Version); err != nil {
 		return fmt.Errorf("write .mate version failed: %w", err)
 	}
+
 	// 3. name
 	if err := utilities.WriteString(w, m.Name); err != nil {
 		return fmt.Errorf("write .mate name failed: %w", err)
 	}
+
 	// 4. material
 	if m.Material != nil {
 		if err := m.Material.Dump(w); err != nil {
 			return fmt.Errorf("write .mate material failed: %w", err)
 		}
 	}
+
 	return nil
 }
 
 // Material 及其属性解析
 type Material struct {
-	Name           string
-	ShaderName     string
-	ShaderFilename string
-	Properties     []Property
+	Name           string     `json:"Name"`
+	ShaderName     string     `json:"ShaderName"`
+	ShaderFilename string     `json:"ShaderFilename"`
+	Properties     []Property `json:"Properties"`
 }
 
 // readMaterial 用于解析 Material 结构。
 func readMaterial(r io.Reader) (*Material, error) {
+	// 确保我们有一个 io.ReadSeeker
+	rs, ok := r.(io.ReadSeeker)
+	if !ok {
+		// 如果不是可寻址流，就把它全部读到内存
+		allBytes, err := io.ReadAll(r)
+		if err != nil {
+			return nil, fmt.Errorf("readAll for readMaterial failed: %w", err)
+		}
+		rs = bytes.NewReader(allBytes)
+	}
+
 	m := &Material{}
 
 	// 1. name
-	nameStr, err := utilities.ReadString(r)
+	nameStr, err := utilities.ReadString(rs)
 	if err != nil {
 		return nil, fmt.Errorf("read material.name failed: %w", err)
 	}
 	m.Name = nameStr
 
 	// 2. shaderName
-	shaderName, err := utilities.ReadString(r)
+	shaderName, err := utilities.ReadString(rs)
 	if err != nil {
 		return nil, fmt.Errorf("read material.shaderName failed: %w", err)
 	}
 	m.ShaderName = shaderName
 
 	// 3. shaderFilename
-	shaderFile, err := utilities.ReadString(r)
+	shaderFile, err := utilities.ReadString(rs)
 	if err != nil {
 		return nil, fmt.Errorf("read material.shaderFilename failed: %w", err)
 	}
 	m.ShaderFilename = shaderFile
 
-	// 4. properties (循环读取，直到遇到 "end" 字段)
+	// 4. properties (循环读取，直到遇到 MateEndString 字段)
 	props := make([]Property, 0)
 	for {
-		peek, err := utilities.PeekString(r)
+		peek, err := utilities.PeekString(rs)
 		if err != nil {
 			return nil, fmt.Errorf("peek property type failed: %w", err)
 		}
-		if peek == "end" {
-			// 消费掉 "end"
-			_, _ = utilities.ReadString(r)
+
+		//TODO remove debug
+		fmt.Println("peek property type: ", peek)
+
+		if peek == MateEndString {
+			// 消费掉 MateEndString
+			_, _ = utilities.ReadString(rs)
 			break
 		}
 		// 根据不同的类型创建不同的 property
-		prop, err := readProperty(r)
+		prop, err := readProperty(rs)
 		if err != nil {
 			return nil, err
 		}
@@ -130,6 +150,11 @@ func readMaterial(r io.Reader) (*Material, error) {
 	}
 
 	m.Properties = props
+
+	//TODO remove debug
+	fmt.Printf("%+v\n", *m)
+	printMaterialDetails(m)
+
 	return m, nil
 }
 
@@ -155,9 +180,9 @@ func (mat *Material) Dump(w io.Writer) error {
 		}
 	}
 
-	// 最后写出一个 "end" 标识，表示 property 列表结束
-	if err := utilities.WriteString(w, "end"); err != nil {
-		return fmt.Errorf("write properties end failed: %w", err)
+	// 最后写出一个 MateEndString 标识，表示 property 列表结束
+	if err := utilities.WriteString(w, MateEndString); err != nil {
+		return fmt.Errorf("write properties %s failed: %w", MateEndString, err)
 	}
 
 	return nil
@@ -213,7 +238,7 @@ func dumpProperty(w io.Writer, prop Property) error {
 		if err := utilities.WriteString(w, p.PropName); err != nil {
 			return fmt.Errorf("write TexProperty name failed: %w", err)
 		}
-		// 写出子标签 (subTag): "tex2d"/"cube"/"texRT"
+		// 写出子标签 (subTag): "tex2d"/"cube"/"texRT"/"null"
 		if err := utilities.WriteString(w, p.SubTag); err != nil {
 			return fmt.Errorf("write TexProperty subTag failed: %w", err)
 		}
@@ -252,6 +277,10 @@ func dumpProperty(w io.Writer, prop Property) error {
 			}
 			if err := utilities.WriteString(w, p.TexRT.DiscardedStr2); err != nil {
 				return fmt.Errorf("write texRT.discardedStr2 failed: %w", err)
+			}
+		case "null":
+			if err := utilities.WriteString(w, "null"); err != nil {
+				return fmt.Errorf("write null failed: %w", err)
 			}
 		default:
 			return fmt.Errorf("unknown TexProperty subTag: %q", p.SubTag)
@@ -315,31 +344,35 @@ func dumpProperty(w io.Writer, prop Property) error {
 // 1) TexProperty
 
 type TexProperty struct {
-	PropName string
-	SubTag   string
-	Tex2D    *Tex2DSubProperty
-	TexRT    *TexRTSubProperty
+	PropName string            `json:"PropName"`
+	SubTag   string            `json:"SubTag"`
+	Tex2D    *Tex2DSubProperty `json:"Tex2D"`
+	TexRT    *TexRTSubProperty `json:"TexRT"`
 }
 
 // 符合 interface
 func (t *TexProperty) TypeName() string { return "tex" }
 
 type Tex2DSubProperty struct {
-	Name   string
-	Path   string
-	Offset [2]float32 // (x, y)
-	Scale  [2]float32 // (x, y)
+	Name   string     `json:"Name"`
+	Path   string     `json:"Path"`
+	Offset [2]float32 `json:"Offset"` // (x, y)
+	Scale  [2]float32 `json:"Scale"`  // (x, y)
 }
 type TexRTSubProperty struct {
-	DiscardedStr1 string
-	DiscardedStr2 string
+	DiscardedStr1 string `json:"DiscardedStr1"`
+	DiscardedStr2 string `json:"DiscardedStr2"`
 }
 
 func readTexProperty(r io.Reader, propName string) (Property, error) {
 	p := &TexProperty{PropName: propName}
 
-	// 读取 subTag (string) => "tex2d" or "cube" or "texRT"
+	// 读取 subTag (string) => "tex2d" or "cube" or "texRT" or "null"
 	subTag, err := utilities.ReadString(r)
+
+	//TODO remove debug
+	fmt.Println("subtag: ", subTag)
+
 	if err != nil {
 		return nil, fmt.Errorf("read TexProperty subtag failed: %w", err)
 	}
@@ -406,6 +439,11 @@ func readTexProperty(r io.Reader, propName string) (Property, error) {
 		texRT.DiscardedStr2 = s2
 		p.TexRT = &texRT
 
+	case "null":
+		// 当作空 tex2d
+		var tex2d Tex2DSubProperty
+		p.Tex2D = &tex2d
+
 	default:
 		return nil, fmt.Errorf("unknown TexProperty subTag: %q", subTag)
 	}
@@ -417,8 +455,8 @@ func readTexProperty(r io.Reader, propName string) (Property, error) {
 // 2) ColProperty => "col"
 
 type ColProperty struct {
-	PropName string
-	Color    [4]float32 // RGBA
+	PropName string     `json:"PropName"`
+	Color    [4]float32 `json:"Color"` // RGBA
 }
 
 func (c *ColProperty) TypeName() string { return "col" }
@@ -442,8 +480,8 @@ func readColProperty(r io.Reader, propName string) (Property, error) {
 // 3) VecProperty => "vec"
 
 type VecProperty struct {
-	PropName string
-	Vector   [4]float32
+	PropName string     `json:"PropName"`
+	Vector   [4]float32 `json:"Vector"`
 }
 
 func (v *VecProperty) TypeName() string { return "vec" }
@@ -467,8 +505,8 @@ func readVecProperty(r io.Reader, propName string) (Property, error) {
 // 4) FProperty => "f"
 
 type FProperty struct {
-	PropName string
-	Number   float32
+	PropName string  `json:"PropName"`
+	Number   float32 `json:"Number"`
 }
 
 func (f *FProperty) TypeName() string { return "f" }
@@ -482,4 +520,40 @@ func readFProperty(r io.Reader, propName string) (Property, error) {
 	}
 	p.Number = val
 	return p, nil
+}
+
+func printMaterialDetails(m *Material) {
+	fmt.Printf("Material Name: %s\n", m.Name)
+	fmt.Printf("Shader Name: %s\n", m.ShaderName)
+	fmt.Printf("Shader Filename: %s\n", m.ShaderFilename)
+
+	fmt.Println("Properties:")
+	for _, prop := range m.Properties {
+		fmt.Printf("  - Type: %s\n", prop.TypeName())
+		// 根据不同的属性类型，打印具体的属性值
+		switch p := prop.(type) {
+		case *TexProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    SubTag: %s\n", p.SubTag)
+			if p.Tex2D != nil {
+				fmt.Printf("    Tex2D Name: %s\n", p.Tex2D.Name)
+				fmt.Printf("    Tex2D Path: %s\n", p.Tex2D.Path)
+				fmt.Printf("    Tex2D Offset: %v\n", p.Tex2D.Offset)
+				fmt.Printf("    Tex2D Scale: %v\n", p.Tex2D.Scale)
+			}
+			if p.TexRT != nil {
+				fmt.Printf("    TexRT DiscardedStr1: %s\n", p.TexRT.DiscardedStr1)
+				fmt.Printf("    TexRT DiscardedStr2: %s\n", p.TexRT.DiscardedStr2)
+			}
+		case *ColProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    Color: %v\n", p.Color)
+		case *VecProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    Vector: %v\n", p.Vector)
+		case *FProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    Number: %v\n", p.Number)
+		}
+	}
 }

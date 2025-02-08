@@ -17,7 +17,7 @@ const MateEditorPage: React.FC = () => {
     const state = location.state as { filePath: string } | undefined;
     const filePath = state?.filePath;
 
-    // 用 ref 获取 MenuEditor 实例
+    // 用 ref 获取 MateEditor 实例
     const mateEditorRef = useRef<MateEditorRef>(null);
 
     // 导航栏按钮回调
@@ -34,11 +34,11 @@ const MateEditorPage: React.FC = () => {
     };
 
     const handleSaveFile = () => {
-        mateEditorRef.current?.handleSaveMenuFile();
+        mateEditorRef.current?.handleSaveMateFile();
     };
 
     const handleSaveAsFile = () => {
-        mateEditorRef.current?.handleSaveAsMenuFile();
+        mateEditorRef.current?.handleSaveAsMateFile();
     };
 
     return (
