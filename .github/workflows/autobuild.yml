@@ -36,11 +36,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install Frontend Dependencies
         run: |
           cd frontend
-          npm install
+          pnpm install --frozen-lockfile
 
       - name: Build Wails App
         run: wails build -platform linux/amd64 -clean
