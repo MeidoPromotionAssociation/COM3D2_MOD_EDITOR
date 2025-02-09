@@ -71,4 +71,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wails-app
-          path: build/bin/
+          path: /home/runner/work/COM3D2_MOD_EDITOR/COM3D2_MOD_EDITOR/build/bin/COM3D2_MOD_EDITOR_V2.exe
