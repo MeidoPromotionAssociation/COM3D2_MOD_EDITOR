@@ -28,6 +28,22 @@
       "SetInfoText": "SetInfoText (Item Description)"
     }
   },
+  "MateEditor": {
+    "file_header": {
+      "file_head": "文件头",
+      "Signature": "文件签名",
+      "Version": "文件版本",
+      "enable_edit_do_not_edit": "不要修改",
+      "Name": "备注名",
+      "Name_tip": "Name 给你自己看的名称；游戏本体只是读取并丢弃（2.41.1）",
+      "Material_Name": "Material_Name",
+      "Material_Name_tip": "Material Name 材质名称；游戏会将其赋值给 material.name，游戏还会尝试查找同名的 .pmat 文件并使用",
+      "Material_ShaderName": "Material_Shader Name",
+      "Material_ShaderName_tip": "Material Shader Name 着色器名称；游戏会尝试查找同名着色器并使用",
+      "Material_ShaderFilename": "Material_ShaderFilename",
+      "Material_ShaderFilename_tip": "Material Shader Filename 着色器文件名；游戏会尝试在特定路径下查找该着色器文件"
+    }
+  },
   "MenuEditorPage": {},
   "Errors": {
     "file_selection_error_colon": "File Selection Error: ",

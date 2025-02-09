@@ -3,6 +3,7 @@ package COM3D2
 import (
 	"COM3D2_MOD_EDITOR_V2/internal/serialization/utilities"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 )
@@ -279,9 +280,7 @@ func dumpProperty(w io.Writer, prop Property) error {
 				return fmt.Errorf("write texRT.discardedStr2 failed: %w", err)
 			}
 		case "null":
-			if err := utilities.WriteString(w, "null"); err != nil {
-				return fmt.Errorf("write null failed: %w", err)
-			}
+			// 什么都不写，子标签已经写了一个 null，这里不用写了
 		default:
 			return fmt.Errorf("unknown TexProperty subTag: %q", p.SubTag)
 		}
@@ -556,4 +555,62 @@ func printMaterialDetails(m *Material) {
 			fmt.Printf("    Number: %v\n", p.Number)
 		}
 	}
+}
+
+// 为 Material 实现自定义 UnmarshalJSON
+func (m *Material) UnmarshalJSON(data []byte) error {
+	// 定义一个辅助类型，Properties 用 []json.RawMessage 暂存原始数据
+	type Alias Material
+	aux := &struct {
+		Properties []json.RawMessage `json:"Properties"`
+		*Alias
+	}{
+		Alias: (*Alias)(m),
+	}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+
+	// 逐个解析 Properties，根据 typeName 字段决定反序列化为哪个具体类型
+	var props []Property
+	for _, raw := range aux.Properties {
+		// 定义一个临时结构体用于提取 typeName 字段
+		var typeHolder struct {
+			TypeName string `json:"typeName"`
+		}
+		if err := json.Unmarshal(raw, &typeHolder); err != nil {
+			return err
+		}
+		switch typeHolder.TypeName {
+		case "tex":
+			var tp TexProperty
+			if err := json.Unmarshal(raw, &tp); err != nil {
+				return err
+			}
+			// 注意：这里建议使用指针
+			props = append(props, &tp)
+		case "col":
+			var cp ColProperty
+			if err := json.Unmarshal(raw, &cp); err != nil {
+				return err
+			}
+			props = append(props, &cp)
+		case "vec":
+			var vp VecProperty
+			if err := json.Unmarshal(raw, &vp); err != nil {
+				return err
+			}
+			props = append(props, &vp)
+		case "f":
+			var fp FProperty
+			if err := json.Unmarshal(raw, &fp); err != nil {
+				return err
+			}
+			props = append(props, &fp)
+		default:
+			return fmt.Errorf("unknown property type: %s", typeHolder.TypeName)
+		}
+	}
+	m.Properties = props
+	return nil
 }

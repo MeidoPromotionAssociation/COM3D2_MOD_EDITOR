@@ -1,12 +1,30 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
-import {Checkbox, Collapse, ConfigProvider, Form, Input, InputNumber, message, Select, Space, Tooltip} from 'antd';
+import {
+    Button,
+    Checkbox,
+    Col,
+    Collapse,
+    ConfigProvider,
+    Form,
+    FormListFieldData,
+    Input,
+    InputNumber,
+    message,
+    Radio,
+    Row,
+    Space,
+    Tooltip
+} from 'antd';
+import type {FormListOperation} from 'antd/es/form';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {ReadMateFile, SaveMateFile} from '../../wailsjs/go/COM3D2/MateService';
 import {COM3D2} from '../../wailsjs/go/models';
 import {SaveFile} from '../../wailsjs/go/main/App';
 import {ColProperty, FProperty, TexProperty, VecProperty} from "../utils/manualModel";
 import {useTranslation} from "react-i18next";
-import {QuestionCircleOutlined} from "@ant-design/icons";
+import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import MatePropertyItemType1 from "./MatePropertyItemType1";
+import MatePropertyItemType2 from "./MatePropertyItemType2";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 
@@ -20,8 +38,171 @@ export interface MateEditorRef {
     handleSaveAsMateFile: () => Promise<void>;
 }
 
+
+// ------------------- 样式1：简单的上下排列 -------------------
+const Style1Properties: React.FC<{
+    fields: FormListFieldData[];
+    add: FormListOperation['add'];
+    remove: FormListOperation['remove'];
+    form: any;
+}> = ({fields, add, remove, form}) => {
+    return (
+        <>
+            {fields.map(({key, name, ...restField}) => (
+                <div key={key} style={{position: 'relative', marginBottom: 16}}>
+                    <MatePropertyItemType1 name={name} restField={restField} form={form}/>
+                    <Button
+                        onClick={() => remove(name)}
+                        style={{position: 'absolute', bottom: 0, right: 0}}
+                        icon={<DeleteOutlined/>}
+                    />
+                </div>
+            ))}
+            <Form.Item>
+                <Button type="primary" onClick={() => add()} block icon={<PlusOutlined/>}>
+                    添加 Properties 条目
+                </Button>
+            </Form.Item>
+        </>
+    );
+};
+
+
+// ======================= 样式2：按 propType 分栏 + 左列表/右编辑区  =======================
+const Style2Properties: React.FC<{
+    fields: FormListFieldData[];
+    add: FormListOperation['add'];
+    remove: FormListOperation['remove'];
+    form: any;
+}> = ({fields, add, remove, form}) => {
+    // 当前选中的属性下标（在 fields 数组里的 name）
+    const [selectedField, setSelectedField] = useState<number | null>(null);
+
+    // 新增：用来筛选 propType
+    const [filterPropType, setFilterPropType] = useState<string>('all');
+
+    // 先按筛选规则过滤 fields
+    const filteredFields = fields.filter((f: FormListFieldData) => {
+        const pType = form.getFieldValue(['properties', f.name, 'propType']);
+        if (filterPropType === 'all') return true;
+        return pType === filterPropType;
+    });
+
+    // 再按 propType 分组
+    const grouped: Record<string, { field: FormListFieldData; index: number; propName: string }[]> = {};
+    filteredFields.forEach((f: FormListFieldData) => {
+        const pType = form.getFieldValue(['properties', f.name, 'propType']);
+        const pName = form.getFieldValue(['properties', f.name, 'propName']) || '(未命名)';
+        if (!grouped[pType]) {
+            grouped[pType] = [];
+        }
+        grouped[pType].push({
+            field: f,
+            index: f.name,
+            propName: pName,
+        });
+    });
+
+    const groupKeys = Object.keys(grouped);
+
+    // 找到当前选中的 field
+    const selectedFieldData = fields.find((f) => f.name === selectedField);
+
+    return (
+        <Row gutter={16}>
+            {/* 左侧列表：按分组 -> 组内列出可点击 */}
+            <Col span={8}
+                 style={{
+                     borderRight: '1px solid #ddd',
+                     height: 'calc(100vh - 230px)',
+                     overflowY: 'auto',
+                     display: 'flex',
+                     flexDirection: 'column',
+                 }}>
+                {/* PropType 选择器 靠左 */}
+                <div style={{textAlign: 'left', marginBottom: 8}}>
+                    <Radio.Group
+                        value={filterPropType}
+                        onChange={(e) => setFilterPropType(e.target.value)}
+                        optionType="button"
+                    >
+                        <Radio.Button value="all">All</Radio.Button>
+                        <Radio.Button value="tex">tex</Radio.Button>
+                        <Radio.Button value="col">col</Radio.Button>
+                        <Radio.Button value="vec">vec</Radio.Button>
+                        <Radio.Button value="f">f</Radio.Button>
+                        <Radio.Button value="unknown">unknown</Radio.Button>
+                    </Radio.Group>
+                </div>
+
+
+                {groupKeys.map((PropType) => (
+                    <div key={PropType} style={{textAlign: 'left', marginBottom: 16}}>
+                        <h4>{PropType}</h4>
+                        {grouped[PropType].map(({field, index, propName}) => (
+                            <div
+                                key={field.key}
+                                onClick={() => setSelectedField(index)}
+                                style={{
+                                    padding: '4px 8px',
+                                    cursor: 'pointer',
+                                    borderRadius: 4,
+                                    backgroundColor: selectedField === index ? '#e6f7ff' : undefined,
+                                    marginBottom: 4,
+                                }}
+                            >
+                                {propName}
+                            </div>
+                        ))}
+                    </div>
+                ))}
+                <Button
+                    type="dashed"
+                    onClick={() => {
+                        add();
+                        setSelectedField(null);
+                    }}
+                    icon={<PlusOutlined/>}
+                    block
+                >
+                    添加 Property
+                </Button>
+            </Col>
+
+            {/* 右侧编辑区：仅渲染选中的那一个 */}
+            <Col span={16}>
+                {selectedField !== null && selectedFieldData && (
+                    <div style={{
+                        height: 'calc(100vh - 270px)',
+                        overflowY: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}>
+                        <MatePropertyItemType2
+                            key={'property-item-' + selectedFieldData.key} // 确保每个属性都有独立的 key
+                            name={selectedFieldData.name}
+                            restField={selectedFieldData}
+                            form={form}
+                        />
+                        <Button
+                            onClick={() => {
+                                remove(selectedFieldData.name);
+                                setSelectedField(null);
+                            }}
+                            danger
+                            style={{position: 'absolute', bottom: 0, right: 0}}
+                            icon={<DeleteOutlined/>}
+                        />
+                    </div>
+                )}
+            </Col>
+        </Row>
+    );
+};
+
+
 /**
- * MateEditor
+ * MateEditor 组件
  *
  * - 读取 .mate 文件 -> 填充 form
  * - 在前端编辑 -> 组装回 Mate 对象
@@ -39,6 +220,9 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
     // 用于 antd 的表单来管理字段
     const [form] = Form.useForm();
+
+    // 用来切换样式模式：1 or 2
+    const [viewMode, setViewMode] = useState<1 | 2>(1);
 
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
@@ -219,7 +403,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
     /**
      * 将 form 上的数据组装回 Mate 对象
-     * 此时也可以创建一个全新的 Mate，或者用原对象做一定复用
      */
     const transformFormToMate = (values: any, oldMate: Mate): Mate => {
         const newMate = COM3D2.Mate.createFrom(oldMate);
@@ -248,7 +431,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         // 根据 subTag 判断
                         if (item.subTag === 'tex2d' || item.subTag === 'cube') {
                             newProps.push({
-                                typeName: () => 'tex',
+                                typeName: 'tex',
                                 PropName: item.propName,
                                 SubTag: item.subTag,
                                 Tex2D: {
@@ -260,19 +443,27 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             });
                         } else if (item.subTag === 'texRT') {
                             newProps.push({
-                                typeName: () => 'tex',
-                                PropName: item.propName,
-                                SubTag: 'texRT',
-                                TexRT: {
-                                    DiscardedStr1: item.discardedStr1,
-                                    DiscardedStr2: item.discardedStr2,
+                                    typeName: 'tex',
+                                    PropName: item.propName,
+                                    SubTag: 'texRT',
+                                    TexRT: {
+                                        DiscardedStr1: item.discardedStr1,
+                                        DiscardedStr2: item.discardedStr2,
+                                    }
                                 }
+                            );
+                        } else if (item.subTag === 'null') {
+                            // 生成一个空的 tex 属性
+                            newProps.push({
+                                typeName: 'tex',
+                                PropName: item.propName,
+                                SubTag: 'null',
                             });
                         }
                         break;
                     case 'col':
                         newProps.push({
-                            typeName: () => 'col',
+                            typeName: 'col',
                             PropName: item.propName,
                             Color: [
                                 parseFloat(item.colorR) || 0,
@@ -284,7 +475,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'vec':
                         newProps.push({
-                            typeName: () => 'vec',
+                            typeName: 'vec',
                             PropName: item.propName,
                             Vector: [
                                 parseFloat(item.vec0) || 0,
@@ -296,13 +487,13 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'f':
                         newProps.push({
-                            typeName: () => 'f',
+                            typeName: 'f',
                             PropName: item.propName,
                             Number: parseFloat(item.number) || 0,
                         });
                         break;
                     default:
-                        // unknown
+                        // unknown, do nothing
                         break;
                 }
             });
@@ -326,308 +517,121 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     form={form}
                     layout="horizontal"
                     style={{marginTop: 10}}
-                    size='small'
-                    labelAlign='left'
+                    size="small"
+                    labelAlign="left"
+                    // Form 级别统一设置 labelCol（可根据需要调整）
+                    labelCol={{style: {width: '15vw'}}}
                 >
-                    <Collapse defaultActiveKey={['basic', 'material', 'properties']}>
+                    <Collapse defaultActiveKey={['basic', 'properties']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.file_head')}>
                             <Space>
                                 <Form.Item name="signature">
-                                    <Input disabled={!isHeaderEditable}
-                                           addonBefore={t('MateEditor.file_header.Signature')}/>
+                                    <Input
+                                        disabled={!isHeaderEditable}
+                                        addonBefore={t('MateEditor.file_header.Signature')}
+                                        defaultValue="CM3D2_MATERIAL"
+                                    />
                                 </Form.Item>
                                 <Form.Item name="version">
-                                    <InputNumber disabled={!isHeaderEditable}
-                                                 addonBefore={t('MateEditor.file_header.Version')}/>
+                                    <InputNumber
+                                        disabled={!isHeaderEditable}
+                                        addonBefore={t('MateEditor.file_header.Version')}
+                                        defaultValue="2001"
+                                    />
                                 </Form.Item>
                                 <Form.Item>
-                                    <Checkbox checked={isHeaderEditable}
-                                              onChange={(e) => setIsHeaderEditable(e.target.checked)}>
+                                    <Checkbox
+                                        checked={isHeaderEditable}
+                                        onChange={(e) => setIsHeaderEditable(e.target.checked)}
+                                    >
                                         {t('MateEditor.file_header.enable_edit_do_not_edit')}
                                     </Checkbox>
                                 </Form.Item>
                             </Space>
 
                             <Form.Item name="name">
-                                <Input addonBefore={t('MateEditor.file_header.Name')} suffix={
-                                    <Tooltip title={t('MateEditor.file_header.Name_tip')}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }/>
+                                <Input
+                                    addonBefore={
+                                        <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
+                      {t('MateEditor.file_header.Name')}
+                    </span>
+                                    }
+                                    suffix={
+                                        <Tooltip title={t('MateEditor.file_header.Name_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    }
+                                />
                             </Form.Item>
                             <Form.Item name="materialName">
-                                <Input addonBefore={t('MateEditor.file_header.Material_Name')} suffix={
-                                    <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }/>
+                                <Input
+                                    addonBefore={
+                                        <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
+                      {t('MateEditor.file_header.Material_Name')}
+                    </span>
+                                    }
+                                    suffix={
+                                        <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    }
+                                />
                             </Form.Item>
                             <Form.Item name="shaderName">
-                                <Input addonBefore={t('MateEditor.file_header.Material_ShaderName')} suffix={
-                                    <Tooltip title={t('MateEditor.file_header.Material_ShaderName_tip')}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }/>
+                                <Input
+                                    addonBefore={
+                                        <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
+                      {t('MateEditor.file_header.Material_ShaderName')}
+                    </span>
+                                    }
+                                    suffix={
+                                        <Tooltip title={t('MateEditor.file_header.Material_ShaderName_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    }
+                                />
                             </Form.Item>
                             <Form.Item name="shaderFilename">
-                                <Input addonBefore={t('MateEditor.file_header.Material_ShaderFilename')} suffix={
-                                    <Tooltip title={t('MateEditor.file_header.Material_ShaderFilename_tip')}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }/>
+                                <Input
+                                    addonBefore={
+                                        <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
+                      {t('MateEditor.file_header.Material_ShaderFilename')}
+                    </span>
+                                    }
+                                    suffix={
+                                        <Tooltip title={t('MateEditor.file_header.Material_ShaderFilename_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    }
+                                />
                             </Form.Item>
                         </Collapse.Panel>
 
-
                         <Collapse.Panel key="properties" header="Properties">
+                            {/* 用 Radio 切换样式 */}
+                            <div style={{marginBottom: 8}}>
+                                <Radio.Group
+                                    block
+                                    value={viewMode}
+                                    onChange={(e) => setViewMode(e.target.value)}
+                                    options={[
+                                        {label: '样式1', value: 1},
+                                        {label: '样式2', value: 2},
+                                    ]}
+                                    optionType="button"
+                                    buttonStyle="solid"
+                                />
+                            </div>
+
+                            {/* 这里统一用一个 Form.List，根据 viewMode 分别渲染 */}
                             <Form.List name="properties">
-                                {(fields) => (
-                                    <>
-                                        {fields.map(({key, name, ...restField}) => (
-                                            <div
-                                                key={key}
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between', // 水平均匀分布
-                                                    marginBottom: 16,
-                                                    padding: 10,
-                                                    border: '1px dashed #ccc',
-                                                    borderRadius: 4,
-                                                    height: "auto",
-                                                    overflow: 'auto',
-                                                }}
-                                            >
-                                                <Form.Item
-                                                    {...restField}
-                                                    label="Property Type"
-                                                    name={[name, 'propType']}
-                                                >
-                                                    <Select
-                                                        options={[
-                                                            {label: 'tex', value: 'tex'},
-                                                            {label: 'col', value: 'col'},
-                                                            {label: 'vec', value: 'vec'},
-                                                            {label: 'f', value: 'f'},
-                                                            {label: '未知', value: 'unknown'},
-                                                        ]}
-                                                    />
-                                                </Form.Item>
-
-                                                <Form.Item
-                                                    {...restField}
-                                                    label="PropName"
-                                                    name={[name, 'propName']}
-                                                >
-                                                    <Input/>
-                                                </Form.Item>
-
-                                                {/* 根据不同 propType 显示不同字段 */}
-                                                {/* tex property */}
-                                                <Form.Item shouldUpdate>
-                                                    {() => {
-                                                        const propType = form.getFieldValue(['properties', name, 'propType']);
-                                                        if (propType === 'tex') {
-                                                            return (
-                                                                <>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="subTag"
-                                                                        name={[name, 'subTag']}
-                                                                    >
-                                                                        <Select
-                                                                            options={[
-                                                                                {label: 'tex2d', value: 'tex2d'},
-                                                                                {label: 'cube', value: 'cube'},
-                                                                                {label: 'texRT', value: 'texRT'},
-                                                                                {label: 'null', value: 'null'},
-                                                                            ]}
-                                                                        />
-                                                                    </Form.Item>
-                                                                    {(() => {
-                                                                        const subTag = form.getFieldValue(['properties', name, 'subTag']);
-                                                                        if (subTag === 'tex2d' || subTag === 'cube') {
-                                                                            return (
-                                                                                <>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="tex2dName"
-                                                                                        name={[name, 'tex2dName']}
-                                                                                    >
-                                                                                        <Input/>
-                                                                                    </Form.Item>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="tex2dPath"
-                                                                                        name={[name, 'tex2dPath']}
-                                                                                    >
-                                                                                        <Input/>
-                                                                                    </Form.Item>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="offsetX"
-                                                                                        name={[name, 'offsetX']}
-                                                                                    >
-                                                                                        <InputNumber/>
-                                                                                    </Form.Item>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="offsetY"
-                                                                                        name={[name, 'offsetY']}
-                                                                                    >
-                                                                                        <InputNumber/>
-                                                                                    </Form.Item>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="scaleX"
-                                                                                        name={[name, 'scaleX']}
-                                                                                    >
-                                                                                        <InputNumber/>
-                                                                                    </Form.Item>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="scaleY"
-                                                                                        name={[name, 'scaleY']}
-                                                                                    >
-                                                                                        <InputNumber/>
-                                                                                    </Form.Item>
-                                                                                </>
-                                                                            );
-                                                                        } else if (subTag === 'texRT') {
-                                                                            return (
-                                                                                <>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="discardedStr1"
-                                                                                        name={[name, 'discardedStr1']}
-                                                                                    >
-                                                                                        <Input/>
-                                                                                    </Form.Item>
-                                                                                    <Form.Item
-                                                                                        {...restField}
-                                                                                        label="discardedStr2"
-                                                                                        name={[name, 'discardedStr2']}
-                                                                                    >
-                                                                                        <Input/>
-                                                                                    </Form.Item>
-                                                                                </>
-                                                                            );
-                                                                        } else {
-                                                                            return null;
-                                                                        }
-                                                                    })()}
-                                                                </>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    }}
-                                                </Form.Item>
-
-                                                {/* col property */}
-                                                <Form.Item shouldUpdate>
-                                                    {() => {
-                                                        const propType = form.getFieldValue(['properties', name, 'propType']);
-                                                        if (propType === 'col') {
-                                                            return (
-                                                                <Space align="baseline">
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="R"
-                                                                        name={[name, 'colorR']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="G"
-                                                                        name={[name, 'colorG']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="B"
-                                                                        name={[name, 'colorB']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="A"
-                                                                        name={[name, 'colorA']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                </Space>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    }}
-                                                </Form.Item>
-
-                                                {/* vec property */}
-                                                <Form.Item shouldUpdate>
-                                                    {() => {
-                                                        const propType = form.getFieldValue(['properties', name, 'propType']);
-                                                        if (propType === 'vec') {
-                                                            return (
-                                                                <Space align="baseline">
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="vec0"
-                                                                        name={[name, 'vec0']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="vec1"
-                                                                        name={[name, 'vec1']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="vec2"
-                                                                        name={[name, 'vec2']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                    <Form.Item
-                                                                        {...restField}
-                                                                        label="vec3"
-                                                                        name={[name, 'vec3']}
-                                                                    >
-                                                                        <InputNumber/>
-                                                                    </Form.Item>
-                                                                </Space>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    }}
-                                                </Form.Item>
-
-                                                {/* f property */}
-                                                <Form.Item shouldUpdate>
-                                                    {() => {
-                                                        const propType = form.getFieldValue(['properties', name, 'propType']);
-                                                        if (propType === 'f') {
-                                                            return (
-                                                                <Form.Item
-                                                                    {...restField}
-                                                                    label="Number"
-                                                                    name={[name, 'number']}
-                                                                >
-                                                                    <InputNumber/>
-                                                                </Form.Item>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    }}
-                                                </Form.Item>
-                                            </div>
-                                        ))}
-                                    </>
-                                )}
+                                {(fields, {add, remove}) =>
+                                    viewMode === 1 ? (
+                                        <Style1Properties fields={fields} add={add} remove={remove} form={form}/>
+                                    ) : (
+                                        <Style2Properties fields={fields} add={add} remove={remove} form={form}/>
+                                    )
+                                }
                             </Form.List>
                         </Collapse.Panel>
                     </Collapse>
