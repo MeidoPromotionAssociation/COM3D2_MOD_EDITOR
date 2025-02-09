@@ -32,14 +32,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Install Node.js and pnpm
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: '22'
 
-      - name: Enable pnpm with Corepack
-        run: corepack enable && corepack prepare pnpm@latest --activate
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Check pnpm version
         run: pnpm --version
