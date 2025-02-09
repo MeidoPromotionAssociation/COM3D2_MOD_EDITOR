@@ -1,4 +1,4 @@
-name: Wails build
+name: Wails Build
 
 on: [push, pull_request]
 
@@ -13,15 +13,22 @@ jobs:
           {name: wailsTest, platform: darwin/universal, os: macos-latest}
         ]
     runs-on: ${{ matrix.build.os }}
+    
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+
+      - name: Build Wails App
+        uses: dAppServer/wails-build-action@main
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
           build-obfuscate: true
-      - uses: actions/upload-artifact@v4.6.0
-        with: COM3D2_MOD_EDITOR_V2.zip
-        path: bin/COM3D2_MOD_EDITOR_V2.exe
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: COM3D2_MOD_EDITOR_V2
+          path: bin/COM3D2_MOD_EDITOR_V2.exe
