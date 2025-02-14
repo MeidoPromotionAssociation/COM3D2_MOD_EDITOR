@@ -125,7 +125,7 @@ func (m *Menu) Dump(w io.Writer) error {
 	m.UpdateBodySize()
 
 	// 1. Signature
-	if err := utilities.WriteString(w, "CM3D2_MENU"); err != nil {
+	if err := utilities.WriteString(w, m.Signature); err != nil {
 		return fmt.Errorf("write signature failed: %w", err)
 	}
 

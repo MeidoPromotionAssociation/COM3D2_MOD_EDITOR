@@ -1,10 +1,11 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {
     Button,
     Checkbox,
     Col,
     Collapse,
     ConfigProvider,
+    Divider,
     Form,
     FormListFieldData,
     Input,
@@ -25,6 +26,7 @@ import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import MatePropertyItemType1 from "./MatePropertyItemType1";
 import MatePropertyItemType2 from "./MatePropertyItemType2";
+import {t} from "i18next";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 
@@ -46,21 +48,42 @@ const Style1Properties: React.FC<{
     remove: FormListOperation['remove'];
     form: any;
 }> = ({fields, add, remove, form}) => {
+    const {t} = useTranslation();
+
+    // 1. 先按 propType 进行分组
+    const groupedFields = fields.reduce((acc, field) => {
+        const propType = form.getFieldValue(['properties', field.name, 'propType']) || "unknown"; // 获取 propType
+        if (!acc[propType]) acc[propType] = [];
+        acc[propType].push(field);
+        return acc;
+    }, {} as Record<string, FormListFieldData[]>);
+
     return (
         <>
-            {fields.map(({key, name, ...restField}) => (
-                <div key={key} style={{position: 'relative', marginBottom: 16}}>
-                    <MatePropertyItemType1 name={name} restField={restField} form={form}/>
-                    <Button
-                        onClick={() => remove(name)}
-                        style={{position: 'absolute', bottom: 0, right: 0}}
-                        icon={<DeleteOutlined/>}
-                    />
+            {/* 2. 遍历分组后的数据进行渲染 */}
+            {Object.entries(groupedFields).map(([propType, groupFields]) => (
+                <div key={propType}>
+                    {/* 3. 在每个 propType 组的开头加一个分割线 */}
+                    <Divider>{t(`MateEditor.${propType}`)}</Divider>
+
+                    {/* 4. 渲染该 propType 组内的所有属性 */}
+                    {groupFields.map(({key, name, ...restField}) => (
+                        <div key={key} style={{position: "relative", marginBottom: 16}}>
+                            <MatePropertyItemType1 name={name} restField={restField} form={form}/>
+                            <Button
+                                onClick={() => remove(name)}
+                                style={{position: "absolute", bottom: 0, right: 0}}
+                                icon={<DeleteOutlined/>}
+                            />
+                        </div>
+                    ))}
                 </div>
             ))}
+
+            {/* 5. 添加新属性按钮 */}
             <Form.Item>
                 <Button type="primary" onClick={() => add()} block icon={<PlusOutlined/>}>
-                    添加 Properties 条目
+                    {t("MateEditor.add_new_property")}
                 </Button>
             </Form.Item>
         </>
@@ -75,6 +98,9 @@ const Style2Properties: React.FC<{
     remove: FormListOperation['remove'];
     form: any;
 }> = ({fields, add, remove, form}) => {
+    // 引用左侧列表容器
+    const leftSidebarRef = useRef<HTMLDivElement>(null);
+
     // 当前选中的属性下标（在 fields 数组里的 name）
     const [selectedField, setSelectedField] = useState<number | null>(null);
 
@@ -92,7 +118,7 @@ const Style2Properties: React.FC<{
     const grouped: Record<string, { field: FormListFieldData; index: number; propName: string }[]> = {};
     filteredFields.forEach((f: FormListFieldData) => {
         const pType = form.getFieldValue(['properties', f.name, 'propType']);
-        const pName = form.getFieldValue(['properties', f.name, 'propName']) || '(未命名)';
+        const pName = form.getFieldValue(['properties', f.name, 'propName']) || t('MateEditor.no_name');
         if (!grouped[pType]) {
             grouped[pType] = [];
         }
@@ -105,6 +131,51 @@ const Style2Properties: React.FC<{
 
     const groupKeys = Object.keys(grouped);
 
+    useEffect(() => {
+        leftSidebarRef.current?.focus();  // 组件挂载后自动聚焦左侧列表
+    }, []);
+
+
+    // 键盘事件处理函数，用于根据方向键更新选中项
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        // 扁平化所有选项的索引数组
+        const flatIndices = groupKeys.reduce((acc: number[], propType) => {
+            const indices = grouped[propType].map(item => item.index);
+            return acc.concat(indices);
+        }, []);
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (flatIndices.length === 0) return;
+            if (selectedField === null) {
+                setSelectedField(flatIndices[0]);
+            } else {
+                const currentIndex = flatIndices.findIndex(val => val === selectedField);
+                const nextIndex = currentIndex < flatIndices.length - 1 ? flatIndices[currentIndex + 1] : flatIndices[currentIndex];
+                setSelectedField(nextIndex);
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (flatIndices.length === 0) return;
+            if (selectedField === null) {
+                setSelectedField(flatIndices[flatIndices.length - 1]);
+            } else {
+                const currentIndex = flatIndices.findIndex(val => val === selectedField);
+                const prevIndex = currentIndex > 0 ? flatIndices[currentIndex - 1] : flatIndices[currentIndex];
+                setSelectedField(prevIndex);
+            }
+        }
+    };
+
+    // 自动滚动选中项进入视图
+    useEffect(() => {
+        if (selectedField !== null) {
+            const el = document.getElementById(`sidebar-item-${selectedField}`);
+            el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, [selectedField]);
+
+
     // 找到当前选中的 field
     const selectedFieldData = fields.find((f) => f.name === selectedField);
 
@@ -112,6 +183,9 @@ const Style2Properties: React.FC<{
         <Row gutter={16}>
             {/* 左侧列表：按分组 -> 组内列出可点击 */}
             <Col span={8}
+                 ref={leftSidebarRef}        /* 引用左侧列表容器 */
+                 tabIndex={0}                /* 使 div 可聚焦 */
+                 onKeyDown={handleKeyDown}   /* 键盘事件监听 */
                  style={{
                      borderRight: '1px solid #ddd',
                      height: 'calc(100vh - 230px)',
@@ -126,21 +200,22 @@ const Style2Properties: React.FC<{
                         onChange={(e) => setFilterPropType(e.target.value)}
                         optionType="button"
                     >
-                        <Radio.Button value="all">All</Radio.Button>
-                        <Radio.Button value="tex">tex</Radio.Button>
-                        <Radio.Button value="col">col</Radio.Button>
-                        <Radio.Button value="vec">vec</Radio.Button>
-                        <Radio.Button value="f">f</Radio.Button>
-                        <Radio.Button value="unknown">unknown</Radio.Button>
+                        <Radio.Button value="all">{t('MateEditor.all')}</Radio.Button>
+                        <Radio.Button value="tex">{t('MateEditor.tex')}</Radio.Button>
+                        <Radio.Button value="col">{t('MateEditor.col')}</Radio.Button>
+                        <Radio.Button value="vec">{t('MateEditor.vec')}</Radio.Button>
+                        <Radio.Button value="f">{t('MateEditor.f')}</Radio.Button>
+                        <Radio.Button value="unknown">{t('MateEditor.unknown')}</Radio.Button>
                     </Radio.Group>
                 </div>
 
-
+                {/* 左边栏，按 PropType 分组 */}
                 {groupKeys.map((PropType) => (
                     <div key={PropType} style={{textAlign: 'left', marginBottom: 16}}>
-                        <h4>{PropType}</h4>
+                        <Divider plain><b>{t(`MateEditor.${PropType}`)}</b></Divider>
                         {grouped[PropType].map(({field, index, propName}) => (
                             <div
+                                id={`sidebar-item-${index}`}
                                 key={field.key}
                                 onClick={() => setSelectedField(index)}
                                 style={{
@@ -157,7 +232,7 @@ const Style2Properties: React.FC<{
                     </div>
                 ))}
                 <Button
-                    type="dashed"
+                    type="primary"
                     onClick={() => {
                         add();
                         setSelectedField(null);
@@ -165,7 +240,7 @@ const Style2Properties: React.FC<{
                     icon={<PlusOutlined/>}
                     block
                 >
-                    添加 Property
+                    {t('MateEditor.add_new_property')}
                 </Button>
             </Col>
 
@@ -227,11 +302,14 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
         if (filePath) {
-            WindowSetTitle("编辑 .mate 文件：" + filePath);
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t('Infos.editing_colon') + filePath);
             handleReadMateFile();
         } else {
-            // 如果没有文件，则清空
-            setMateData(null);
+            // 如果没有文件，则初始化为新文件
+            const mate = new Mate();
+            mate.Signature = "CM3D2_MATERIAL";
+            mate.Version = 2001;
+            setMateData(mate);
             form.resetFields();
         }
     }, [filePath]);
@@ -241,7 +319,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      */
     const handleReadMateFile = async () => {
         if (!filePath) {
-            message.error("请先提供 .mate 文件路径");
+            message.error(t('Infos.pls_open_file_first'));
             return;
         }
         try {
@@ -252,7 +330,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             form.setFieldsValue(transformMateToForm(data));
         } catch (error: any) {
             console.error(error);
-            message.error("读取 .mate 文件失败: " + error);
+            message.error(t('Errors.read_mate_file_failed_colon') + error);
         }
     };
 
@@ -260,8 +338,12 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      * 保存 .mate 文件（覆盖写回原路径）
      */
     const handleSaveMateFile = async () => {
-        if (!filePath || !mateData) {
-            message.error("无效文件路径或 Mate 数据");
+        if (!filePath) {
+            message.error(t('Errors.pls_input_file_path_first'));
+            return;
+        }
+        if (!mateData) {
+            message.error(t('Errors.pls_load_file_first'));
             return;
         }
         try {
@@ -272,10 +354,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
             // 调用后端保存
             await SaveMateFile(filePath, newMate);
-            message.success("保存成功");
+            message.success(t('Infos.success_save_file'));
         } catch (error: any) {
             console.error(error);
-            message.error("保存失败: " + error);
+            message.error(t('Errors.save_file_failed_colon') + error);
         }
     };
 
@@ -284,7 +366,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      */
     const handleSaveAsMateFile = async () => {
         if (!mateData) {
-            message.error("Mate 数据为空，无法另存为");
+            message.error(t('Errors.save_as_file_failed_colon') + t('Errors.pls_load_file_first'));
             return;
         }
         try {
@@ -293,19 +375,39 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             const newMate = transformFormToMate(values, mateData);
 
             // 询问保存路径
-            const newPath = await SaveFile("*.mate", "选择另存为 .mate 文件");
+            const newPath = await SaveFile("*.mate", t('Infos.com3d2_mate_file'));
             if (!newPath) {
                 // 用户取消
                 return;
             }
 
+
+
             await SaveMateFile(newPath, newMate);
-            message.success("另存为成功: " + newPath);
+            message.success(t('Infos.success_save_as_file_colon') + newPath);
         } catch (error: any) {
             console.error(error);
-            message.error("另存为失败: " + error.message);
+            message.error(t('Errors.save_as_file_failed_colon') + error.message);
         }
     };
+
+
+    /**
+     * 监听 Ctrl+S 快捷键，触发保存
+     */
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
+            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+                e.preventDefault();
+                handleSaveMateFile();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [handleSaveMateFile]);
+
+
 
     // 暴露方法给父组件
     useImperativeHandle(ref, () => ({
@@ -519,24 +621,22 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     style={{marginTop: 10}}
                     size="small"
                     labelAlign="left"
-                    // Form 级别统一设置 labelCol（可根据需要调整）
+                    // Form 级别统一设置 labelCol
                     labelCol={{style: {width: '15vw'}}}
                 >
                     <Collapse defaultActiveKey={['basic', 'properties']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.file_head')}>
                             <Space>
-                                <Form.Item name="signature">
+                                <Form.Item name="signature" initialValue="CM3D2_MATERIAL">
                                     <Input
                                         disabled={!isHeaderEditable}
                                         addonBefore={t('MateEditor.file_header.Signature')}
-                                        defaultValue="CM3D2_MATERIAL"
                                     />
                                 </Form.Item>
-                                <Form.Item name="version">
+                                <Form.Item name="version"  initialValue="2001">
                                     <InputNumber
                                         disabled={!isHeaderEditable}
                                         addonBefore={t('MateEditor.file_header.Version')}
-                                        defaultValue="2001"
                                     />
                                 </Form.Item>
                                 <Form.Item>
@@ -607,7 +707,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                         </Collapse.Panel>
 
-                        <Collapse.Panel key="properties" header="Properties">
+                        <Collapse.Panel key="properties" header={t('MateEditor.property')}>
                             {/* 用 Radio 切换样式 */}
                             <div style={{marginBottom: 8}}>
                                 <Radio.Group
@@ -615,8 +715,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     value={viewMode}
                                     onChange={(e) => setViewMode(e.target.value)}
                                     options={[
-                                        {label: '样式1', value: 1},
-                                        {label: '样式2', value: 2},
+                                        {label: t('MateEditor.style1'), value: 1},
+                                        {label: t('MateEditor.style2'), value: 2},
                                     ]}
                                     optionType="button"
                                     buttonStyle="solid"

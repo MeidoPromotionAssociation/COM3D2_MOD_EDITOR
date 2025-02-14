@@ -71,7 +71,7 @@ func ReadPMat(r io.Reader) (*PMat, error) {
 // Dump 将 p 写出到 w 中，格式与 .PMat 兼容。
 func (p *PMat) Dump(w io.Writer) error {
 	// 1. signature
-	if err := utilities.WriteString(w, "CM3D2_PMATERIAL"); err != nil {
+	if err := utilities.WriteString(w, p.Signature); err != nil {
 		return fmt.Errorf("write .PMat signature failed: %w", err)
 	}
 	// 2. version

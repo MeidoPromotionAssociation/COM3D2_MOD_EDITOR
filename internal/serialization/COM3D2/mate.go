@@ -55,7 +55,7 @@ func ReadMate(r io.Reader) (*Mate, error) {
 	return m, nil
 }
 
-// Dump 将 Mate 写出到 w 中，格式与 .mate 兼容。
+// Dump 将 Mate 写出到 w 中
 func (m *Mate) Dump(w io.Writer) error {
 	// 1. signature
 	if err := utilities.WriteString(w, m.Signature); err != nil {
@@ -349,7 +349,6 @@ type TexProperty struct {
 	TexRT    *TexRTSubProperty `json:"TexRT"`
 }
 
-// 符合 interface
 func (t *TexProperty) TypeName() string { return "tex" }
 
 type Tex2DSubProperty struct {
@@ -521,6 +520,8 @@ func readFProperty(r io.Reader, propName string) (Property, error) {
 	return p, nil
 }
 
+// printMaterialDetails 打印 Material 的详细信息
+// Debug 使用
 func printMaterialDetails(m *Material) {
 	fmt.Printf("Material Name: %s\n", m.Name)
 	fmt.Printf("Shader Name: %s\n", m.ShaderName)
@@ -557,7 +558,8 @@ func printMaterialDetails(m *Material) {
 	}
 }
 
-// 为 Material 实现自定义 UnmarshalJSON
+// UnmarshalJSON 为 Material 实现自定义 UnmarshalJSON
+// 因为 Material 的 Properties 字段是一个接口切片，需要根据 typeName 字段来决定反序列化为哪个具体类型
 func (m *Material) UnmarshalJSON(data []byte) error {
 	// 定义一个辅助类型，Properties 用 []json.RawMessage 暂存原始数据
 	type Alias Material
@@ -587,7 +589,6 @@ func (m *Material) UnmarshalJSON(data []byte) error {
 			if err := json.Unmarshal(raw, &tp); err != nil {
 				return err
 			}
-			// 注意：这里建议使用指针
 			props = append(props, &tp)
 		case "col":
 			var cp ColProperty

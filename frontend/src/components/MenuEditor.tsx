@@ -62,6 +62,10 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         useEffect(() => {
             if (!filePath) {
                 setMenuData(new (Menu));
+                // default values
+                setSignature("CM3D2_MENU");
+                setVersion(1000);
+                setBodySize(0);
                 return;
             }
 
@@ -179,7 +183,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
 
         /**
-         * 另存为文件（示例中采用 prompt 获取新路径）
+         * 另存为文件
          */
         const handleSaveAsMenuFile = async () => {
             if (!menuData) {
@@ -214,12 +218,13 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 });
 
                 const path = await SaveFile("*.menu", t('Infos.com3d2_menu_file'));
-                if (path) {
-                    message.success(t('Infos.success_save_as_file'));
+                if (!path) {
+                    // 用户取消了保存
+                    return;
                 }
 
                 await SaveMenuFile(path, newMenuData);
-                message.success(t('Infos.success_save_as_file'));
+                message.success(t('Infos.success_save_as_file_colon') + path);
             } catch (err) {
                 console.error(err);
                 message.error(t('Errors.save_as_file_failed_colon') + err);
