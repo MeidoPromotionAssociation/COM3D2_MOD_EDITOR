@@ -17,6 +17,7 @@
     "format1": "형식 1",
     "format2": "형식 2",
     "format3": "형식 3",
+    "format4": "형식 4",
     "file_header": {
       "file_head_usually_no_modify_required": "파일 헤더 (일반적으로 수정 불필요)",
       "Signature": "파일 서명 (Signature)",

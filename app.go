@@ -58,7 +58,8 @@ func (a *App) SelectFile(filetype string, fileDisplayName string) string {
 		},
 	})
 	if err != nil {
-		return fmt.Sprintf("err %s!", err)
+		// 前端无法通过返回 error 来判断是否保存成功，所以这里直接 panic，这样前端就知道失败了
+		panic(err)
 	}
 	return selection
 }
@@ -75,7 +76,7 @@ func (a *App) SaveFile(filetype string, fileDisplayName string) string {
 		},
 	})
 	if err != nil {
-		return fmt.Sprintf("err %s!", err)
+		panic(err)
 	}
 	return selection
 }

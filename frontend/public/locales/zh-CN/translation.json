@@ -17,6 +17,7 @@
     "format1": "格式 1",
     "format2": "格式 2",
     "format3": "格式 3",
+    "format4": "格式 4",
     "file_header": {
       "file_head_usually_no_modify_required": "文件头（通常无需修改）",
       "Signature": "文件签名（Signature）",

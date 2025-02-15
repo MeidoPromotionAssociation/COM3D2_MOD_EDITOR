@@ -17,6 +17,7 @@
     "format1": "フォーマット 1",
     "format2": "フォーマット 2",
     "format3": "フォーマット 3",
+    "format4": "フォーマット 4",
     "file_header": {
       "file_head_usually_no_modify_required": "ファイルヘッダー（通常は変更不要）",
       "Signature": "ファイル署名（Signature）",

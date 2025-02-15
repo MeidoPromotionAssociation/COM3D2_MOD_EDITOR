@@ -12,7 +12,7 @@ import {QuestionCircleOutlined} from "@ant-design/icons";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
 
-type FormatType = "format1" | "format2" | "format3";
+type FormatType = "format1" | "format2" | "format3" | "format4";
 
 export interface MenuEditorProps {
     filePath?: string;
@@ -56,6 +56,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             {label: t('MenuEditor.format1'), value: 'format1'},
             {label: t('MenuEditor.format2'), value: 'format2'},
             {label: t('MenuEditor.format3'), value: 'format3'},
+            {label: t('MenuEditor.format4'), value: 'format4'},
         ];
 
         // 当 filePath 变化或初始化时读取菜单数据
@@ -157,6 +158,9 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                     case "format3":
                         parsedCommands = parseTextAsFormat3(commandsText);
                         break;
+                    case "format4":
+                        parsedCommands = parseTextAsFormat4(commandsText);
+                        break;
                     default:
                         parsedCommands = [];
                 }
@@ -201,6 +205,9 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                         break;
                     case "format3":
                         parsedCommands = parseTextAsFormat3(commandsText);
+                        break;
+                    case "format4":
+                        parsedCommands = parseTextAsFormat4(commandsText);
                         break;
                     default:
                         parsedCommands = [];
@@ -250,6 +257,10 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 case "format3":
                     text = commandsToTextFormat3(commands);
                     language = "json"
+                    break;
+                case "format4":
+                    text = commandsToTextFormat4(commands);
+                    language = "menuFormat4";
                     break;
                 default:
                     text = "";
@@ -409,7 +420,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
                             <div
                                 style={{
-                                    height: 'calc(100vh - 200px)',
+                                    height: 'calc(100vh - 205px)',
                                     border: "1px solid #ccc",
                                     borderRadius: '8px',   // 添加圆角
                                     overflow: 'hidden'     // 隐藏超出圆角范围的部分
@@ -447,6 +458,23 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                                     [/\b[^,]+\b/, "parameter"],
                                                     // 逗号分隔符
                                                     [/[,]/, "delimiter"],
+                                                    // 空白
+                                                    [/\s+/, "white"],
+                                                ],
+                                            },
+                                        });
+
+                                        // 自定义语言 menuFormat4（TSV）
+                                        monacoInstance.languages.register({id: "menuFormat4"});
+                                        monacoInstance.languages.setMonarchTokensProvider("menuFormat4", {
+                                            tokenizer: {
+                                                root: [
+                                                    // 匹配“命令名称”：行开头到第一个制表符（不包含制表符）
+                                                    [/^[^\t]+(?=\t)/, "command"],
+                                                    // 用制表符区分参数
+                                                    [/\t/, "delimiter"],
+                                                    // 非空其他内容视为参数
+                                                    [/[^\t]+/, "parameter"],
                                                     // 空白
                                                     [/\s+/, "white"],
                                                 ],
@@ -549,6 +577,27 @@ function commandsToTextFormat2(commands: Command[]): string {
  */
 function commandsToTextFormat3(commands: Command[]): string {
     return JSON.stringify(commands, null, 2);
+}
+
+
+/**
+ * format4: TSV
+ *  - 每条命令一行
+ *  - 同一条命令所有参数用制表符分隔
+ *
+ * 示例:
+ *  CommandName   param1   param2
+ *  AnotherCmd    x        y
+ */
+function commandsToTextFormat4(commands: Command[]): string {
+    const lines: string[] = [];
+    commands.forEach((cmd) => {
+        if (cmd.Args && cmd.Args.length > 0) {
+            // 把该 command 的所有 Args 用 \t 拼成一个字符串
+            lines.push(cmd.Args.join("\t"));
+        }
+    });
+    return lines.join("\n");
 }
 
 /**
@@ -665,4 +714,46 @@ function parseTextAsFormat3(text: string): Command[] {
         console.error("parseTextAsFormat3 error:", err);
         throw new Error(t('Errors.json_parse_failed') + err.message);
     }
+}
+
+
+/**
+ * parseTextAsFormat4
+ *  - TSV 格式
+ *  - 每行表示一条命令
+ *  - 通过制表符分割成多个参数，Args[0] 视为命令名称，后面是参数
+ */
+function parseTextAsFormat4(text: string): Command[] {
+    const lines = text.split(/\r?\n/);
+    const commands: Command[] = [];
+
+    for (const line of lines) {
+        // 去掉行首尾空格后，如果行是空的就跳过
+        const trimmed = line.trim();
+        if (!trimmed) {
+            continue;
+        }
+
+        // 找到当前行第一个制表符的位置
+        const tabIndex = trimmed.indexOf("\t");
+        if (tabIndex < 0) {
+            // 行内没有任何制表符 => 整行当作命令名称
+            commands.push({
+                ArgCount: 1,
+                Args: [trimmed],
+            });
+        } else {
+            // 第一个制表符之前是命令名称
+            const commandName = trimmed.substring(0, tabIndex);
+            // 第一个制表符之后的剩余部分，再次用 \t 分割为参数
+            const rest = trimmed.substring(tabIndex + 1);
+            const params = rest.split("\t");
+
+            commands.push({
+                ArgCount: 1 + params.length,
+                Args: [commandName, ...params],
+            });
+        }
+    }
+    return commands;
 }
