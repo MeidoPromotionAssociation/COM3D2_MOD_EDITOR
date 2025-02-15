@@ -171,7 +171,7 @@ const Style2Properties: React.FC<{
     useEffect(() => {
         if (selectedField !== null) {
             const el = document.getElementById(`sidebar-item-${selectedField}`);
-            el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            el?.scrollIntoView({behavior: 'smooth', block: 'nearest'});
         }
     }, [selectedField]);
 
@@ -382,7 +382,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             }
 
 
-
             await SaveMateFile(newPath, newMate);
             message.success(t('Infos.success_save_as_file_colon') + newPath);
         } catch (error: any) {
@@ -406,7 +405,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [handleSaveMateFile]);
-
 
 
     // 暴露方法给父组件
@@ -633,7 +631,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                         addonBefore={t('MateEditor.file_header.Signature')}
                                     />
                                 </Form.Item>
-                                <Form.Item name="version"  initialValue="2001">
+                                <Form.Item name="version" initialValue="2001">
                                     <InputNumber
                                         disabled={!isHeaderEditable}
                                         addonBefore={t('MateEditor.file_header.Version')}

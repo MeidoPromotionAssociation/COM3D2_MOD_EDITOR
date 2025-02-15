@@ -1,18 +1,12 @@
-import React, {
-    forwardRef,
-    useEffect,
-    useImperativeHandle,
-    useState,
-    KeyboardEvent
-} from "react";
-import { message, Collapse, Checkbox, Space, Input, Tooltip } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
-import { ReadPMatFile, SavePMatFile } from "../../wailsjs/go/COM3D2/PMatService";
-import { SaveFile } from "../../wailsjs/go/main/App";
-import { WindowSetTitle } from "../../wailsjs/runtime";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import {Checkbox, Collapse, Input, message, Space, Tooltip} from "antd";
+import {QuestionCircleOutlined} from "@ant-design/icons";
+import {ReadPMatFile, SavePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
+import {SaveFile} from "../../wailsjs/go/main/App";
+import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
-import PMat = COM3D2.PMat;
 import {useTranslation} from "react-i18next";
+import PMat = COM3D2.PMat;
 
 
 export interface PMatEditorProps {
@@ -25,8 +19,8 @@ export interface PMatEditorRef {
     handleSaveAsMenuFile: () => Promise<void>;
 }
 
-const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref) => {
-    const { t } = useTranslation();
+const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) => {
+    const {t} = useTranslation();
 
     // 用于存储当前编辑的 PMat 数据
     const [pmatData, setPMatData] = useState<PMat | null>(null);
@@ -53,7 +47,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                 Version: 1000,
                 Hash: 0,
                 MaterialName: "",
-                RenderQueue: 2000,
+                RenderQueue: 0,
                 Shader: "",
             });
             setSignature("CM3D2_PMATERIAL");
@@ -208,9 +202,9 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
     };
 
     return (
-        <div style={{ padding: 20 }}>
+        <div style={{padding: 20}}>
             {pmatData && (
-                <div style={{ height: "100%" }}>
+                <div style={{height: "100%"}}>
                     {/* 基于 MenuEditor 的风格，做一个折叠面板放只读区 */}
                     <Collapse
                         items={[
@@ -218,14 +212,14 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                                 key: "1",
                                 label: t("PMatEditor.file_header.file_head"),
                                 children: (
-                                    <Space direction="vertical" style={{ width: "100%" }}>
-                                        <Space style={{ width: "100%" }}>
+                                    <Space direction="vertical" style={{width: "100%"}}>
+                                        <Space style={{width: "100%"}}>
                                             <Input
                                                 addonBefore={t("PMatEditor.file_header.Signature")}
                                                 value={signature}
                                                 disabled={isInputDisabled}
                                                 onChange={(e) => setSignature(e.target.value)}
-                                                style={{ width: 220 }}
+                                                style={{width: 220}}
                                             />
                                             <Input
                                                 addonBefore={t("PMatEditor.file_header.Version")}
@@ -233,7 +227,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                                                 disabled={isInputDisabled}
                                                 type="number"
                                                 onChange={(e) => setVersion(parseInt(e.target.value, 10))}
-                                                style={{ width: 220 }}
+                                                style={{width: 220}}
                                             />
                                             <Input
                                                 addonBefore={t("PMatEditor.file_header.Hash")}
@@ -241,7 +235,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                                                 disabled={isInputDisabled}
                                                 type="number"
                                                 onChange={(e) => setHash(parseInt(e.target.value, 10))}
-                                                style={{ width: 220 }}
+                                                style={{width: 220}}
                                             />
 
                                             <Checkbox
@@ -258,8 +252,8 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                     />
 
                     {/* 其他可编辑字段 */}
-                    <div style={{ marginTop: 10 }}>
-                        <Space direction="vertical" style={{ width: "100%" }}>
+                    <div style={{marginTop: 10}}>
+                        <Space direction="vertical" style={{width: "100%"}}>
                             <Input
                                 addonBefore={
                                     <span
@@ -276,7 +270,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                                 onChange={(e) => setMaterialName(e.target.value)}
                                 suffix={
                                     <Tooltip title={t("PMatEditor.materialName_tip")}>
-                                        <QuestionCircleOutlined />
+                                        <QuestionCircleOutlined/>
                                     </Tooltip>
                                 }
                             />
@@ -298,7 +292,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                                 onChange={(e) => setRenderQueue(parseFloat(e.target.value))}
                                 suffix={
                                     <Tooltip title={t("PMatEditor.renderQueue_tip")}>
-                                        <QuestionCircleOutlined />
+                                        <QuestionCircleOutlined/>
                                     </Tooltip>
                                 }
                             />
@@ -318,7 +312,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({ filePath }, ref
                                 onChange={(e) => setShader(e.target.value)}
                                 suffix={
                                     <Tooltip title={t("PMatEditor.shaderName_tip")}>
-                                        <QuestionCircleOutlined />
+                                        <QuestionCircleOutlined/>
                                     </Tooltip>
                                 }
                             />

@@ -1,13 +1,10 @@
 package main
 
 import (
-	"COM3D2_MOD_EDITOR_V2/internal/serialization/COM3D2"
-	com3d2serivice "COM3D2_MOD_EDITOR_V2/internal/service/COM3D2"
 	"context"
 	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -32,10 +29,10 @@ func (a *App) Startup(ctx context.Context) {
 	fmt.Println("Args:", os.Args)
 
 	args := os.Args[1:] // 排除第一个参数（程序路径）
-	// 过滤开发模式参数（如"--devtools"）
+	// 过滤其他参数
 	var filePath string
 	for _, arg := range args {
-		if !strings.HasPrefix(arg, "--") && arg != "" {
+		if !strings.HasPrefix(arg, "--") && !strings.HasPrefix(arg, "-") && arg != "" {
 			filePath = arg
 			break
 		}
@@ -43,7 +40,6 @@ func (a *App) Startup(ctx context.Context) {
 
 	runtime.EventsOnce(ctx, "app-ready", func(_ ...interface{}) {
 		if filePath != "" {
-			runtime.LogInfo(ctx, "[Go] 发送文件路径事件: "+filePath)
 			runtime.EventsOnce(ctx, "file-opened", func(_ ...interface{}) {})
 			runtime.EventsEmit(ctx, "file-opened", filePath)
 		}
@@ -82,46 +78,4 @@ func (a *App) SaveFile(filetype string, fileDisplayName string) string {
 		return fmt.Sprintf("err %s!", err)
 	}
 	return selection
-}
-
-// OpenModFile 解析 MOD 文件
-func (a *App) OpenModFile(path string) (interface{}, error) {
-	ext := strings.ToLower(filepath.Ext(path))
-	switch ext {
-	case ".menu":
-		return com3d2serivice.NewMenuService().ReadFile(path)
-	case ".mate":
-		return com3d2serivice.NewMateService().ReadFile(path)
-	case ".pmat":
-		return com3d2serivice.NewPMatService().ReadFile(path)
-	default:
-		return nil, fmt.Errorf("unsupported extension: %s", ext)
-	}
-}
-
-// SaveModFile 保存 MOD 文件
-func (a *App) SaveModFile(path string, data interface{}) error {
-	ext := strings.ToLower(filepath.Ext(path))
-	switch ext {
-	case ".menu":
-		menuData, ok := data.(COM3D2.Menu)
-		if !ok {
-			return fmt.Errorf("invalid data type for .menu file")
-		}
-		return com3d2serivice.NewMenuService().SaveFile(path, &menuData)
-	case ".mate":
-		mateData, ok := data.(COM3D2.Mate)
-		if !ok {
-			return fmt.Errorf("invalid data type for.mate file")
-		}
-		return com3d2serivice.NewMateService().SaveFile(path, &mateData)
-	case ".pmat":
-		pmatData, ok := data.(COM3D2.PMat)
-		if !ok {
-			return fmt.Errorf("invalid data type for.pmat file")
-		}
-		return com3d2serivice.NewPMatService().SaveFile(path, &pmatData)
-	default:
-		return fmt.Errorf("unsupported extension: %s", ext)
-	}
 }

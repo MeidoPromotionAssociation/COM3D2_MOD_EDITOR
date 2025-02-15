@@ -18,6 +18,7 @@ func main() {
 	MenuService := &COM3D2.MenuService{}
 	MateService := &COM3D2.MateService{}
 	PMatService := &COM3D2.PMatService{}
+	CommonService := &COM3D2.CommonService{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -40,6 +41,7 @@ func main() {
 			MenuService,
 			MateService,
 			PMatService,
+			CommonService,
 		},
 	})
 

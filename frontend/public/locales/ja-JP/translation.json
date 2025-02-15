@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "choose_file": "ファイルを選択",
-    "pls_select_menu_file_to_edit": "ファイルを選択して編集してください",
+    "pls_select_a_file_to_edit": "ファイルを選択して編集してください",
     "choose_language": "言語を選択"
   },
   "EditorNavBar": {
@@ -109,7 +109,6 @@
     "shaderName": "シェーダー名",
     "shaderName_tip": "シェーダー名；使用されません。ゲーム本体はこのフィールドを読み込みすらしません（2.41.1）"
   },
-
   "Errors": {
     "file_selection_error_colon": "ファイル選択エラー: ",
     "read_menu_file_failed_colon": ".menu ファイルの読み込みに失敗しました: ",

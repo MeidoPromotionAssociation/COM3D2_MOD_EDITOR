@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "choose_file": "Select File",
-    "pls_select_menu_file_to_edit": "Please select a file to edit",
+    "pls_select_a_file_to_edit": "Please select a file to edit",
     "choose_language": "Select Language"
   },
   "EditorNavBar": {

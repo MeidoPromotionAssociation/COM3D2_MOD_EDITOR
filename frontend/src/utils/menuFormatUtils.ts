@@ -1,6 +1,7 @@
 // menuFormatUtils.ts
 export interface AttrsDict {
     [key: string]: string[][];
+
     // key -> list of list-of-string
 }
 

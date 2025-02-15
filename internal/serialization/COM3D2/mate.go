@@ -134,9 +134,6 @@ func readMaterial(r io.Reader) (*Material, error) {
 			return nil, fmt.Errorf("peek property type failed: %w", err)
 		}
 
-		//TODO remove debug
-		fmt.Println("peek property type: ", peek)
-
 		if peek == MateEndString {
 			// 消费掉 MateEndString
 			_, _ = utilities.ReadString(rs)
@@ -151,10 +148,6 @@ func readMaterial(r io.Reader) (*Material, error) {
 	}
 
 	m.Properties = props
-
-	//TODO remove debug
-	fmt.Printf("%+v\n", *m)
-	printMaterialDetails(m)
 
 	return m, nil
 }
@@ -367,9 +360,6 @@ func readTexProperty(r io.Reader, propName string) (Property, error) {
 
 	// 读取 subTag (string) => "tex2d" or "cube" or "texRT" or "null"
 	subTag, err := utilities.ReadString(r)
-
-	//TODO remove debug
-	fmt.Println("subtag: ", subTag)
 
 	if err != nil {
 		return nil, fmt.Errorf("read TexProperty subtag failed: %w", err)

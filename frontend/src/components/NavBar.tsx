@@ -14,11 +14,11 @@ interface EditorNavBarProps {
 }
 
 const NavBar: React.FC<EditorNavBarProps> = ({
-                                                       onOpenFile,
-                                                       onSaveFile,
-                                                       onSaveAsFile,
-                                                   }) => {
-    const { t } = useTranslation();
+                                                 onOpenFile,
+                                                 onSaveFile,
+                                                 onSaveAsFile,
+                                             }) => {
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -38,7 +38,7 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                     selectedKeys={[selectedKey]}
                     onClick={handleMenuClick}
                     items={[
-                        {key: "", icon: <HomeOutlined />,},
+                        {key: "", icon: <HomeOutlined/>,},
                         {key: "menu-editor", label: t('EditorNavBar.MenuEditor')},
                         {key: "mate-editor", label: t('EditorNavBar.MateEditor')},
                         {key: "pmat-editor", label: t('EditorNavBar.PMateEditor')},
@@ -46,7 +46,8 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                 />
             </div>
             <div>
-                <Button type="primary" onClick={onOpenFile} style={{marginRight: 8}}>{t('EditorNavBar.open_file')}</Button>
+                <Button type="primary" onClick={onOpenFile}
+                        style={{marginRight: 8}}>{t('EditorNavBar.open_file')}</Button>
                 <Button onClick={onSaveFile} style={{marginRight: 8}}>{t('EditorNavBar.save_file')}</Button>
                 <Button onClick={onSaveAsFile}>{t('EditorNavBar.save_as_file')}</Button>
             </div>

@@ -19,24 +19,24 @@ const App: React.FC = () => {
     useEffect(() => {
         // 监听 Wails 事件 "file-opened" (即用户可以通过双击某种类型的文件，然后让应用打开该文件)
         EventsOnce('file-opened', (filePath: string) => {
-            console.log('[前端] 捕获到文件路径:', filePath)
             const extension = getFileExtension(filePath)
             switch (extension) {
                 case "menu":
-                    navigate("/menu-editor", { state: { filePath } })
+                    navigate("/menu-editor", {state: {filePath}})
                     break
                 case "mate":
-                    navigate("/mate-editor", { state: { filePath } })
+                    navigate("/mate-editor", {state: {filePath}})
                     break
                 case "pmat":
-                    navigate("/pmat-editor", { state: { filePath } })
+                    navigate("/pmat-editor", {state: {filePath}})
                     break
                 default:
                     alert(t('Errors.file_type_not_supported'))
             }
         })
 
-        return () => {}
+        return () => {
+        }
     }, [navigate, t])
 
 
@@ -44,12 +44,12 @@ const App: React.FC = () => {
     EventsEmit('app-ready')
 
     return (
-            <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/menu-editor" element={<MenuEditorPage/>}/>
-                <Route path="/mate-editor" element={<MateEditorPage/>}/>
-                <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
-            </Routes>
+        <Routes>
+            <Route path="/" element={<HomePage/>}/>
+            <Route path="/menu-editor" element={<MenuEditorPage/>}/>
+            <Route path="/mate-editor" element={<MateEditorPage/>}/>
+            <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
+        </Routes>
     );
 };
 
