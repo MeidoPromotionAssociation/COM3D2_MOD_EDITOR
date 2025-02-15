@@ -23,7 +23,7 @@ const PMatEditorPage: React.FC = () => {
     // 导航栏按钮回调
     const handleOpenFile = async () => {
         try {
-            const result = await SelectFile("*.pmat", t('Infos.com3d2_mate_file'));
+            const result = await SelectFile("*.pmat", t('Infos.com3d2_pmat_file'));
             if (result) {
                 navigate("/pmat-editor", { state: { filePath: result } });
             }

@@ -42,6 +42,7 @@ const HomePage: React.FC = () => {
             {label: '简体中文 (Simplified Chinese)', key: "zh-CN"},
             {label: 'English (American English)', key: "en-US"},
             {label: '日本語 (Japanese)', key: "ja-JP"},
+            {label: '韓國語 (Korean)', key: "ko-KR"},
         ],
         onClick: handleLanguageChange,
     };

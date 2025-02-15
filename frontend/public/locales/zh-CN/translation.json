@@ -94,10 +94,26 @@
     "number": "数值",
     "color_picker": "选色器"
   },
+  "PMatEditor": {
+    "file_header": {
+      "file_head": "文件头",
+      "Signature": "文件签名",
+      "Version": "文件版本",
+      "Hash": "哈希",
+      "enable_edit_do_not_edit": "不要修改"
+    },
+    "materialName": "材质名",
+    "materialName_tip": "材质名；需要与 .mate 文件中的材质名完全相同，游戏需要计算哈希以便缓存（2.41.1）",
+    "renderQueue": "渲染顺序",
+    "renderQueue_tip": "渲染顺序 RQ；游戏本体会将此值设置为对应的渲染顺序（2.41.1），值越大越后渲染，一般情况下 GPU 层层渲染，后渲染的会叠加在前面渲染的上，默认范围 0 - 5000",
+    "shaderName": "着色器名",
+    "shaderName_tip": "着色器名；没有用，游戏本体甚至不读取这一字段（2.41.1）"
+  },
   "Errors": {
     "file_selection_error_colon": "文件选择出错: ",
     "read_menu_file_failed_colon": "读取 .menu 文件失败：",
     "read_mate_file_failed_colon": "读取.mate 文件失败：",
+    "read_pmate_file_failed_colon": "读取.pmat 文件失败：",
     "pls_input_menu_file_path_to_open": "请输入要打开的 .menu 文件路径",
     "pls_input_file_path_first": "请先输入文件路径",
     "pls_load_file_first": "请先加载文件",

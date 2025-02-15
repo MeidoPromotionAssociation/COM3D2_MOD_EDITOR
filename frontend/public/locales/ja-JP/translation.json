@@ -94,6 +94,22 @@
     "number": "数値",
     "color_picker": "カラーピッカー"
   },
+  "PMatEditor": {
+    "file_header": {
+      "file_head": "ファイルヘッダー",
+      "Signature": "ファイル署名",
+      "Version": "ファイルバージョン",
+      "Hash": "ハッシュ",
+      "enable_edit_do_not_edit": "変更しないでください"
+    },
+    "materialName": "マテリアル名",
+    "materialName_tip": "マテリアル名；.mate ファイル内のマテリアル名と完全に一致する必要があります。ゲームはハッシュを計算してキャッシュします（2.41.1）",
+    "renderQueue": "レンダーキュー",
+    "renderQueue_tip": "レンダーキュー（RQ）；ゲーム本体はこの値を対応するレンダー順に設定します（2.41.1）。値が大きいほど後にレンダリングされます。通常、GPU はレイヤーごとにレンダリングを行い、後のレンダリングが前のレンダリングの上に重なります。デフォルトの範囲：0 - 5000。",
+    "shaderName": "シェーダー名",
+    "shaderName_tip": "シェーダー名；使用されません。ゲーム本体はこのフィールドを読み込みすらしません（2.41.1）"
+  },
+
   "Errors": {
     "file_selection_error_colon": "ファイル選択エラー: ",
     "read_menu_file_failed_colon": ".menu ファイルの読み込みに失敗しました: ",

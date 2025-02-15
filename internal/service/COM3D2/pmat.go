@@ -16,13 +16,15 @@ func (s *PMatService) ReadPMatFile(path string) (*COM3D2.PMat, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot open .pmat file: %w", err)
 	}
+	defer f.Close()
+
 	br := bufio.NewReader(f)
-	menuData, err := COM3D2.ReadPMat(br)
+	PMatData, err := COM3D2.ReadPMat(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .pmat file failed: %w", err)
 	}
 
-	return menuData, nil
+	return PMatData, nil
 }
 
 // SavePMatFile 接收 PMat 数据并写入 .pmat 文件

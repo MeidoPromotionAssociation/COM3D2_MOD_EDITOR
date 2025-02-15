@@ -8,7 +8,7 @@ import (
 
 // PMat 对应 .PMat 文件结构
 type PMat struct {
-	Signature    string // 应为 "CM3D2_PMATERIAL"
+	Signature    string
 	Version      int32
 	Hash         int32
 	MaterialName string
@@ -74,14 +74,19 @@ func (p *PMat) Dump(w io.Writer) error {
 	if err := utilities.WriteString(w, p.Signature); err != nil {
 		return fmt.Errorf("write .PMat signature failed: %w", err)
 	}
+
 	// 2. version
 	if err := utilities.WriteInt32(w, p.Version); err != nil {
 		return fmt.Errorf("write .PMat version failed: %w", err)
 	}
+
 	// 3. hash
-	if err := utilities.WriteInt32(w, p.Hash); err != nil {
+	//  Unfortunately, we can't match C#'s HashCode implementation
+	materialNameHash := GetStringHashInt32(p.MaterialName)
+	if err := utilities.WriteInt32(w, materialNameHash); err != nil {
 		return fmt.Errorf("write .PMat hash failed: %w", err)
 	}
+
 	// 4. materialName
 	if err := utilities.WriteString(w, p.MaterialName); err != nil {
 		return fmt.Errorf("write .PMat materialName failed: %w", err)
