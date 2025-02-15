@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "choose_file": "选择文件",
-    "pls_select_menu_file_to_edit": "请选择一个 .menu 文件进行编辑",
+    "pls_select_a_file_to_edit": "请选择一个文件进行编辑",
     "choose_language": "选择语言"
   },
   "EditorNavBar": {
@@ -122,12 +122,14 @@
     "json_root_node_not_array": "JSON 根节点不是数组",
     "json_parse_failed": "JSON 解析失败",
     "no_file_to_save": "没有文件可供保存",
-    "invalid_path_or_mate_data": "无效文件路径或 Mate 数据"
+    "invalid_path_or_mate_data": "无效文件路径或 Mate 数据",
+    "file_type_not_supported": "暂时不支持此文件类型"
   },
   "Infos": {
     "com3d2_menu_file": "COM3D2 .menu 文件",
     "com3d2_mate_file": "COM3D2 .mate 文件",
     "com3d2_pmat_file": "COM3D2 .pmat 文件",
+    "com3d2_mod_files": "COM3D2 MOD 文件",
     "pls_open_file_first": "请先打开文件",
     "editing_colon": "正在编辑: ",
     "success_save_file": "文件保存成功",

@@ -6,6 +6,7 @@ import {SelectFile} from "../../wailsjs/go/main/App";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
 import {DownOutlined, TranslationOutlined} from "@ant-design/icons";
+import {getFileExtension} from "../utils/utils";
 
 const {Content} = Layout;
 
@@ -14,20 +15,33 @@ const HomePage: React.FC = () => {
     const navigate = useNavigate();
 
     /**
-     * 触发 Wails 的文件选择对话框，并跳转到 MenuEditor 页面
+     * 触发 Wails 的文件选择对话框，并跳转到对应页面
      */
     const handleSelectFile = async () => {
         try {
-            const result = await SelectFile("*.menu", t('Infos.com3d2_menu_file'));
-            // 用户选择了文件后，跳转到 MenuEditor 页面
-            if (result) {
-                navigate("/menu-editor", {state: {filePath: result}});
+            const filePath = await SelectFile("*.menu;*.mate;*.pmat", t('Infos.com3d2_mod_files'));
+            if (filePath) {
+                const extension = getFileExtension(filePath);
+                switch (extension) {
+                    case "menu":
+                        navigate("/menu-editor", {state: {filePath}});
+                        break;
+                    case "mate":
+                        navigate("/mate-editor", {state: {filePath}});
+                        break;
+                    case "pmat":
+                        navigate("/pmat-editor", {state: {filePath}});
+                        break;
+                    default:
+                        alert(t('Errors.file_type_not_supported'));
+                }
             }
         } catch (err) {
             console.error(err);
             alert(t('Errors.file_selection_error_colon') + err);
         }
     };
+
 
     const onSaveFile = async () => {
         message.warning(t('Errors.no_file_to_save'));
@@ -63,7 +77,7 @@ const HomePage: React.FC = () => {
             >
                 <Button type="primary" onClick={handleSelectFile}>{t('HomePage.choose_file')}</Button>
                 <p style={{marginTop: 20, color: "#666"}}>
-                    {t('HomePage.pls_select_menu_file_to_edit')}
+                    {t('HomePage.pls_select_a_file_to_edit')}
                 </p>
 
                 <Dropdown menu={languageMenu} placement="bottomRight">

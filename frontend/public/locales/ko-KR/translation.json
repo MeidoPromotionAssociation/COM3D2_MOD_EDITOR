@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "choose_file": "파일 선택",
-    "pls_select_menu_file_to_edit": "편집할 .menu 파일을 선택하세요",
+    "pls_select_menu_file_to_edit": "편집할 파일을 선택하세요",
     "choose_language": "언어 선택"
   },
   "EditorNavBar": {
@@ -117,12 +117,14 @@
     "pls_load_file_first": "먼저 파일을 로드하세요",
     "save_file_failed_colon": "파일 저장 실패: ",
     "json_parse_failed": "JSON 파싱 실패",
-    "no_file_to_save": "저장할 파일이 없습니다"
+    "no_file_to_save": "저장할 파일이 없습니다",
+    "file_type_not_supported": "지원하지 않는 파일 형식입니다"
   },
   "Infos": {
     "com3d2_menu_file": "COM3D2 .menu 파일",
     "com3d2_mate_file": "COM3D2 .mate 파일",
     "com3d2_pmat_file": "COM3D2 .pmat 파일",
+    "com3d2_mod_files": "COM3D2 MOD 파일",
     "pls_open_file_first": "먼저 파일을 여세요",
     "editing_colon": "편집 중: ",
     "success_save_file": "파일 저장 성공",

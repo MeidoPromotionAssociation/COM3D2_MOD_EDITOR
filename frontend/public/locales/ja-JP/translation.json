@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "choose_file": "ファイルを選択",
-    "pls_select_menu_file_to_edit": ".menu ファイルを選択して編集してください",
+    "pls_select_menu_file_to_edit": "ファイルを選択して編集してください",
     "choose_language": "言語を選択"
   },
   "EditorNavBar": {
@@ -122,12 +122,14 @@
     "json_root_node_not_array": "JSON のルートノードが配列ではありません",
     "json_parse_failed": "JSON の解析に失敗しました",
     "no_file_to_save": "保存するファイルがありません",
-    "invalid_path_or_mate_data": "無効なファイルパスまたは Mate データです"
+    "invalid_path_or_mate_data": "無効なファイルパスまたは Mate データです",
+    "file_type_not_supported": "サポートされていないファイルタイプです"
   },
   "Infos": {
     "com3d2_menu_file": "COM3D2 .menu ファイル",
     "com3d2_mate_file": "COM3D2 .mate ファイル",
     "com3d2_pmat_file": "COM3D2 .pmat ファイル",
+    "com3d2_mod_files": "COM3D2 MOD ファイル",
     "pls_open_file_first": "先にファイルを開いてください",
     "editing_colon": "編集中: ",
     "success_save_file": "ファイルの保存に成功しました",

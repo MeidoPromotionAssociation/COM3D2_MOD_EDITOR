@@ -1,8 +1,8 @@
 module COM3D2_MOD_EDITOR_V2
 
-go 1.23
+go 1.24
 
-require github.com/wailsapp/wails/v2 v2.9.2
+require github.com/wailsapp/wails/v2 v2.10.0
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
@@ -32,5 +32,3 @@ require (
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 )
-
-// replace github.com/wailsapp/wails/v2 v2.9.2 => C:\Users\a1093\go\pkg\mod

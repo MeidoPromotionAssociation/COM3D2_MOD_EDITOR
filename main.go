@@ -37,8 +37,8 @@ func main() {
 		OnStartup:        app.Startup,
 		Bind: []interface{}{
 			app,
-			MateService,
 			MenuService,
+			MateService,
 			PMatService,
 		},
 	})

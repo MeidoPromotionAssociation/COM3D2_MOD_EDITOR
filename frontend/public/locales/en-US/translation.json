@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "choose_file": "Select File",
-    "pls_select_menu_file_to_edit": "Please select a .menu file to edit",
+    "pls_select_menu_file_to_edit": "Please select a file to edit",
     "choose_language": "Select Language"
   },
   "EditorNavBar": {
@@ -121,12 +121,14 @@
     "json_root_node_not_array": "JSON root node is not an array",
     "json_parse_failed": "JSON parsing failed",
     "no_file_to_save": "No file to save",
-    "invalid_path_or_mate_data": "Invalid file path or Mate data"
+    "invalid_path_or_mate_data": "Invalid file path or Mate data",
+    "file_type_not_supported": "File type not supported"
   },
   "Infos": {
     "com3d2_menu_file": "COM3D2 .menu File",
     "com3d2_mate_file": "COM3D2 .mate File",
     "com3d2_pmat_file": "COM3D2 .pmat File",
+    "com3d2_mod_files": "COM3D2 MOD Files",
     "pls_open_file_first": "Please open a file first",
     "editing_colon": "Editing: ",
     "success_save_file": "File saved successfully",
