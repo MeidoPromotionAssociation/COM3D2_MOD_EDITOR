@@ -65,7 +65,7 @@ jobs:
           pnpm install --frozen-lockfile
 
       - name: Build Wails App
-        run: wails build -platform windows/amd64 -devtools -clean -o COM3D2_MOD_EDITOR_V2.exe
+        run: wails build -platform windows/amd64 -skipbindings -devtools -clean -o COM3D2_MOD_EDITOR_V2.exe
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
