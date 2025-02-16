@@ -32,7 +32,11 @@
       "Category_tip": "物品类别；没有用，但不要为空，游戏本体只是读取并丢弃（2.41.1），实际会使用命令段中的值",
       "SetInfoText": "物品描述（SetInfoText）",
       "SetInfoText_tip": "物品描述；大部分情况没有用，但不要为空，游戏本体大部分情况下只是读取并丢弃（2.41.1），但在特定情况下且这个值为 acctatoo 或 hokuro 时游戏会删除这两个槽的配件"
-    }
+    },
+    "menu_editor_help": "Menu 编辑器帮助",
+    "shortcut": "快捷键",
+    "ctrl_c": "`Ctrl + 空格` 显示补全选项",
+    "example": "示例"
   },
   "MenuEditorPage": {},
   "MateEditor": {

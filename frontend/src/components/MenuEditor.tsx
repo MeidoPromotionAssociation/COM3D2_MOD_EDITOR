@@ -1,17 +1,18 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {ReadMenuFile, SaveMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
-import {Editor, Monaco} from "@monaco-editor/react";
+import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../wailsjs/go/models";
-import {Checkbox, CheckboxProps, Collapse, Flex, Input, message, Radio, Space, Tooltip} from "antd";
+import {Button, Checkbox, CheckboxProps, Collapse, Flex, Input, message, Modal, Radio, Space, Tooltip} from "antd";
 import {CheckboxGroupProps} from "antd/es/checkbox";
 import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {t} from "i18next";
 import {SaveFile} from "../../wailsjs/go/main/App";
-import {QuestionCircleOutlined} from "@ant-design/icons";
+import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {useDarkMode} from "../hooks/themeSwitch";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
-import {useDarkMode} from "../hooks/themeSwitch";
+import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 
 type FormatType = "format1" | "format2" | "format3" | "format4";
 
@@ -65,6 +66,21 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             {label: t('MenuEditor.format3'), value: 'format3'},
             {label: t('MenuEditor.format4'), value: 'format4'},
         ];
+
+        // 显示帮助模态
+        const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
+
+        const handleShowHelp = () => {
+            setIsHelpModalVisible(true);
+        }
+
+        const handleHelpOk = () => {
+            setIsHelpModalVisible(false);
+        };
+
+        const handleHelpCancel = () => {
+            setIsHelpModalVisible(false);
+        };
 
         // 当 filePath 变化或初始化时读取菜单数据
         useEffect(() => {
@@ -431,76 +447,24 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                     overflow: 'hidden'     // 隐藏超出圆角范围的部分
                                 }}
                             >
+                                <Button
+                                    onClick={handleShowHelp}
+                                    size="small"
+                                    type="text"
+                                    style={{position: "absolute", bottom: 0, right: 0}}
+                                    icon={<QuestionCircleOutlined/>}
+                                />
+                                <Modal title={t('MenuEditor.menu_editor_help')} open={isHelpModalVisible}
+                                       onOk={handleHelpOk} onCancel={handleHelpCancel}>
+                                    <h4>{t('MenuEditor.shortcut')}</h4>
+                                    <p>{t('MenuEditor.ctrl_c')}</p>
+                                    <h4>{t('MenuEditor.example')}</h4>
+                                    {/*TODO*/}
+                                </Modal>
                                 <Editor
                                     height="100vh"
                                     width="100%"
-                                    beforeMount={(monacoInstance) => {
-                                        // 注册自定义语言 menuFormat1
-                                        monacoInstance.languages.register({id: "menuFormat1"});
-                                        monacoInstance.languages.setMonarchTokensProvider("menuFormat1", {
-                                            tokenizer: {
-                                                root: [
-                                                    // 如果以一个或多个制表符开头，则视为参数
-                                                    [/^\t+.+$/, "parameter"],
-                                                    // 非空且不以制表符开始，则视为命令
-                                                    [/^[^\t].+$/, "command"],
-                                                    // 空行
-                                                    [/^\s*$/, "white"],
-                                                ],
-                                            },
-                                        });
-
-                                        // 注册自定义语言 menuFormat2
-                                        monacoInstance.languages.register({id: "menuFormat2"});
-                                        monacoInstance.languages.setMonarchTokensProvider("menuFormat2", {
-                                            tokenizer: {
-                                                root: [
-                                                    // 匹配命令名称：行开头直到遇到冒号（不包含冒号）
-                                                    [/^[^:]+(?=:)/, "command"],
-                                                    // 冒号作为分隔符
-                                                    [/:/, "delimiter"],
-                                                    // 匹配参数：以逗号或空格分隔
-                                                    [/\b[^,]+\b/, "parameter"],
-                                                    // 逗号分隔符
-                                                    [/[,]/, "delimiter"],
-                                                    // 空白
-                                                    [/\s+/, "white"],
-                                                ],
-                                            },
-                                        });
-
-                                        // 自定义语言 menuFormat4（TSV）
-                                        monacoInstance.languages.register({id: "menuFormat4"});
-                                        monacoInstance.languages.setMonarchTokensProvider("menuFormat4", {
-                                            tokenizer: {
-                                                root: [
-                                                    // 匹配“命令名称”：行开头到第一个制表符（不包含制表符）
-                                                    [/^[^\t]+(?=\t)/, "command"],
-                                                    // 用制表符区分参数
-                                                    [/\t/, "delimiter"],
-                                                    // 非空其他内容视为参数
-                                                    [/[^\t]+/, "parameter"],
-                                                    // 空白
-                                                    [/\s+/, "white"],
-                                                ],
-                                            },
-                                        });
-
-                                        // 定义编辑器主题 "menuTheme"
-                                        monacoInstance.editor.defineTheme("menuTheme", {
-                                            base: isDarkMode ? "vs-dark" : "vs",
-                                            inherit: true,
-                                            colors: {
-                                                "editor.foreground": isDarkMode ? "#D4D4D4" : "#000000",  // 文字颜色
-                                                "editor.background": isDarkMode ? "#1E1E1E" : "#FFFFFF",  // 背景颜色
-                                            },
-                                            rules: [
-                                                { token: "command", foreground: isDarkMode ? "#CE9178" : "#A31515", fontStyle: "bold" },
-                                                { token: "parameter", foreground: isDarkMode ? "#9CDCFE" : "#0451A5" },
-                                                { token: "delimiter", foreground: isDarkMode ? "#F8F8F8" : "#7B3814" },
-                                            ],
-                                        });
-                                    }}
+                                    beforeMount={(monacoInstance) => setupMonacoEditor(monacoInstance, isDarkMode)}
                                     language={language}
                                     theme="menuTheme"
                                     value={commandsText}
@@ -523,7 +487,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 export default MenuEditor;
 
 /* -----------------------------
- *   utils: 两种 commands 文本格式的转换
+ *   utils: commands 文本格式的转换
  * ----------------------------- */
 
 /**
