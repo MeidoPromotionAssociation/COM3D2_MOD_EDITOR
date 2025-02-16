@@ -22,7 +22,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "COM3D2_MOD_EDITOR_V2",
+		Title:  "COM3D2 MOD EDITOR V2 by 90135",
 		Width:  1024,
 		Height: 768,
 		DragAndDrop: &options.DragAndDrop{

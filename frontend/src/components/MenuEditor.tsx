@@ -1,6 +1,6 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {ReadMenuFile, SaveMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
-import {Editor} from "@monaco-editor/react";
+import {Editor, Monaco} from "@monaco-editor/react";
 import {COM3D2} from "../../wailsjs/go/models";
 import {Checkbox, CheckboxProps, Collapse, Flex, Input, message, Radio, Space, Tooltip} from "antd";
 import {CheckboxGroupProps} from "antd/es/checkbox";
@@ -11,6 +11,7 @@ import {SaveFile} from "../../wailsjs/go/main/App";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
+import {useDarkMode} from "../hooks/themeSwitch";
 
 type FormatType = "format1" | "format2" | "format3" | "format4";
 
@@ -49,6 +50,12 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         // 只读字段是否可编辑
         const [isInputDisabled, setIsInputDisabled] = useState(true);
 
+
+        // 监听 Dark Mode
+        const isDarkMode = useDarkMode();
+        // Monaco Editor 主题
+        const [editorTheme, setEditorTheme] = useState("vs-light");
+        // Monaco Editor 编程语言
         const [language, setLanguage] = useState("plaintext");
 
         // 显示格式选项
@@ -297,7 +304,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         }, [handleSaveMenuFile]);
 
 
-// 将文件操作方法暴露给父组件
+        // 将文件操作方法暴露给父组件
         useImperativeHandle(ref, () => ({
             handleReadMenuFile,
             handleSaveMenuFile,
@@ -305,11 +312,10 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         }));
 
 
-// 只读字段是否可编辑可选框响应
+        // 只读字段是否可编辑可选框响应
         const handleCheckboxChange: CheckboxProps['onChange'] = (e) => {
             setIsInputDisabled(!e.target.checked);
         };
-
 
         return (
             <div style={{padding: 20}}>
@@ -421,7 +427,6 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                             <div
                                 style={{
                                     height: 'calc(100vh - 205px)',
-                                    border: "1px solid #ccc",
                                     borderRadius: '8px',   // 添加圆角
                                     overflow: 'hidden'     // 隐藏超出圆角范围的部分
                                 }}
@@ -483,16 +488,16 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
                                         // 定义编辑器主题 "menuTheme"
                                         monacoInstance.editor.defineTheme("menuTheme", {
-                                            base: "vs",
+                                            base: isDarkMode ? "vs-dark" : "vs",
                                             inherit: true,
                                             colors: {
-                                                "editor.foreground": "#000000",
-                                                "editor.background": "#FFFFFF",
+                                                "editor.foreground": isDarkMode ? "#D4D4D4" : "#000000",  // 文字颜色
+                                                "editor.background": isDarkMode ? "#1E1E1E" : "#FFFFFF",  // 背景颜色
                                             },
                                             rules: [
-                                                {token: "command", foreground: "#A31515", fontStyle: "bold"},
-                                                {token: "parameter", foreground: "#0451A5"},
-                                                {token: "delimiter", foreground: "#7B3814"},
+                                                { token: "command", foreground: isDarkMode ? "#CE9178" : "#A31515", fontStyle: "bold" },
+                                                { token: "parameter", foreground: isDarkMode ? "#9CDCFE" : "#0451A5" },
+                                                { token: "delimiter", foreground: isDarkMode ? "#F8F8F8" : "#7B3814" },
                                             ],
                                         });
                                     }}
