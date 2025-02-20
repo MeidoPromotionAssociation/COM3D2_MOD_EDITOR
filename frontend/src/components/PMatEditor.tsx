@@ -41,6 +41,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     // 当 filePath 变化时自动读取
     useEffect(() => {
         if (!filePath) {
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有文件，则初始化为新文件
             const pmat = new (PMat);
             pmat.Signature = "CM3D2_PMATERIAL";

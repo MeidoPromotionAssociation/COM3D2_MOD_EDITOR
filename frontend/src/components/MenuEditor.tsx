@@ -10,9 +10,9 @@ import {t} from "i18next";
 import {SaveFile} from "../../wailsjs/go/main/App";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useDarkMode} from "../hooks/themeSwitch";
+import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
-import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 
 type FormatType = "treeIndent" | "colonSplit" | "JSON" | "TSV";
 
@@ -46,7 +46,10 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         const [commandsText, setCommandsText] = useState<string>("");
 
         // 切换显示格式
-        const [displayFormat, setDisplayFormat] = useState<FormatType>("treeIndent");
+        const [displayFormat, setDisplayFormat] = useState<FormatType>(
+            // 从 localStorage 读取上次保存的格式，默认使用 treeIndent
+            () => (localStorage.getItem('lastDisplayFormat') as FormatType) || "treeIndent"
+        );
 
         // 只读字段是否可编辑
         const [isInputDisabled, setIsInputDisabled] = useState(true);
@@ -85,6 +88,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         // 当 filePath 变化或初始化时读取菜单数据
         useEffect(() => {
             if (!filePath) {
+                WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
                 setMenuData(new (Menu));
                 // default values
                 setSignature("CM3D2_MENU");
@@ -95,7 +99,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
             // 设置窗口标题
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") +  fileName + "  (" + filePath + ")");
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
 
             async function loadMenu() {
                 try {
@@ -436,7 +440,11 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                         defaultValue="treeIndent"
                                         optionType="button"
                                         buttonStyle="solid"
-                                        onChange={(e) => setDisplayFormat(e.target.value)}
+                                        value={displayFormat}
+                                        onChange={(e) => {
+                                            setDisplayFormat(e.target.value);
+                                            localStorage.setItem('lastDisplayFormat', e.target.value);
+                                        }}
                                     />
                                 </Flex>
                             </div>

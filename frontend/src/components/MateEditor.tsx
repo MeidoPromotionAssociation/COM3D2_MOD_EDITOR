@@ -297,7 +297,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     const [form] = Form.useForm();
 
     // 用来切换样式模式：1 or 2
-    const [viewMode, setViewMode] = useState<1 | 2>(1);
+    const [viewMode, setViewMode] = useState<1 | 2>(() => {
+        const saved = localStorage.getItem('mateEditorViewMode');
+        return saved ? Number(saved) as 1 | 2 : 1;
+    });
 
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
@@ -308,6 +311,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
             handleReadMateFile();
         } else {
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有文件，则初始化为新文件
             const mate = new Mate();
             mate.Signature = "CM3D2_MATERIAL";
@@ -714,7 +718,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 <Radio.Group
                                     block
                                     value={viewMode}
-                                    onChange={(e) => setViewMode(e.target.value)}
+                                    onChange={(e) => {
+                                        setViewMode(e.target.value);
+                                        localStorage.setItem('mateEditorViewMode', e.target.value.toString());
+                                    }}
                                     options={[
                                         {label: t('MateEditor.style1'), value: 1},
                                         {label: t('MateEditor.style2'), value: 2},
