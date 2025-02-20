@@ -36,7 +36,7 @@ func (s *PMatService) SavePMatFile(path string, PMatData *COM3D2.PMat) error {
 	defer f.Close()
 
 	bw := bufio.NewWriter(f)
-	if err := PMatData.Dump(bw); err != nil {
+	if err := PMatData.Dump(bw, true); err != nil {
 		return fmt.Errorf("failed to write to .pmat file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
