@@ -41,25 +41,16 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     // 当 filePath 变化时自动读取
     useEffect(() => {
         if (!filePath) {
-            // 如果没有传入 filePath，设置一些默认值
-            setPMatData({
-                Signature: "CM3D2_PMATERIAL",
-                Version: 1000,
-                Hash: 0,
-                MaterialName: "",
-                RenderQueue: 0,
-                Shader: "",
-            });
-            setSignature("CM3D2_PMATERIAL");
-            setVersion(1000);
-            setHash(0);
-            setMaterialName("");
-            setRenderQueue(2000);
-            setShader("");
+            // 如果没有文件，则初始化为新文件
+            const pmat = new (PMat);
+            pmat.Signature = "CM3D2_PMATERIAL";
+            pmat.Version = 1000;
+            setPMatData(pmat);
             return;
         }
 
-        WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + filePath);
+        const fileName = filePath.split(/[\\/]/).pop();
+        WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") +  fileName + "  (" + filePath + ")");
 
         async function loadPMat() {
             try {
@@ -236,6 +227,11 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
                                                 type="number"
                                                 onChange={(e) => setHash(parseInt(e.target.value, 10))}
                                                 style={{width: 220}}
+                                                suffix={
+                                                    <Tooltip title={t("PMatEditor.file_header.Hash_tip")}>
+                                                        <QuestionCircleOutlined/>
+                                                    </Tooltip>
+                                                }
                                             />
 
                                             <Checkbox

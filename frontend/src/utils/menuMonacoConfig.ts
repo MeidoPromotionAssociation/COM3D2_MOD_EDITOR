@@ -5,9 +5,9 @@ import {menuCommandDocs} from "./menuCommandDocs";
 
 // 语言定义
 const defineLanguages = (monacoInstance: any) => {
-// 注册自定义语言 menuFormat1
-    monacoInstance.languages.register({id: "menuFormat1"});
-    monacoInstance.languages.setMonarchTokensProvider("menuFormat1", {
+// 注册自定义语言 menuTreeIndent
+    monacoInstance.languages.register({id: "menuTreeIndent"});
+    monacoInstance.languages.setMonarchTokensProvider("menuTreeIndent", {
         tokenizer: {
             root: [
                 [/^\t+.+$/, "parameter"],
@@ -17,9 +17,9 @@ const defineLanguages = (monacoInstance: any) => {
         },
     });
 
-// 注册自定义语言 menuFormat2
-    monacoInstance.languages.register({id: "menuFormat2"});
-    monacoInstance.languages.setMonarchTokensProvider("menuFormat2", {
+// 注册自定义语言 menuColonSplit
+    monacoInstance.languages.register({id: "menuColonSplit"});
+    monacoInstance.languages.setMonarchTokensProvider("menuColonSplit", {
         tokenizer: {
             root: [
                 [/^[^:]+(?=:)/, "command"],
@@ -31,12 +31,12 @@ const defineLanguages = (monacoInstance: any) => {
         },
     });
 
-    // 自定义语言 menuFormat3（JSON）
+    // 自定义语言 menuJSON（JSON）
     // 无需额外定义，Monaco 自带 JSON 语法高亮
 
-    // 自定义语言 menuFormat4（TSV）
-    monacoInstance.languages.register({id: "menuFormat4"});
-    monacoInstance.languages.setMonarchTokensProvider("menuFormat4", {
+    // 自定义语言 menuTSV（TSV）
+    monacoInstance.languages.register({id: "menuTSV"});
+    monacoInstance.languages.setMonarchTokensProvider("menuTSV", {
         tokenizer: {
             root: [
                 [/^[^\t]+(?=\t)/, "command"],
@@ -50,7 +50,7 @@ const defineLanguages = (monacoInstance: any) => {
 
 //注册 Hover 提示
 const defineHoverProviders = (monacoInstance: any) => {
-    ["menuFormat1", "menuFormat2", "menuFormat3", "menuFormat4"].forEach((language) => {
+    ["menuTreeIndent", "menuColonSplit", "json", "menuTSV"].forEach((language) => {
         monacoInstance.languages.registerHoverProvider(language, {
             provideHover: function (model: { getWordAtPosition: (arg0: any) => any; }, position: { lineNumber: any; }) {
                 const word = model.getWordAtPosition(position);
@@ -123,8 +123,8 @@ const Autocomplete = (monacoInstance: any) => {
         //TODO
     };
 
-    // 2) 给各个自定义语言注册自动补全，但是懒得做了只做 "menuFormat1"
-    ["menuFormat1"].forEach((languageId) => {
+    // 2) 给各个自定义语言注册自动补全，但是懒得做了只做 "menuTreeIndent"
+    ["menuTreeIndent"].forEach((languageId) => {
         monacoInstance.languages.registerCompletionItemProvider(languageId, {
             // 触发字符，换行 / 制表符 / 空格 / 冒号
             triggerCharacters: [" ", "\t", ":"],

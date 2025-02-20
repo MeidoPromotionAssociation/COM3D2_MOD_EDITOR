@@ -14,10 +14,10 @@
     "save_as_file": "另存为"
   },
   "MenuEditor": {
-    "format1": "格式 1",
-    "format2": "格式 2",
-    "format3": "格式 3",
-    "format4": "格式 4",
+    "treeIndent": "树形缩进",
+    "colonSplit": "冒号分割",
+    "JSON": "JSON",
+    "TSV": "TSV",
     "file_header": {
       "file_head_usually_no_modify_required": "文件头（通常无需修改）",
       "Signature": "文件签名（Signature）",
@@ -35,8 +35,11 @@
     },
     "menu_editor_help": "Menu 编辑器帮助",
     "shortcut": "快捷键",
-    "ctrl_c": "`Ctrl + 空格` 显示补全选项",
-    "example": "示例"
+    "ctrl_space": "树形缩进格式下按 `Ctrl + 空格` 显示补全选项",
+    "other_shortcuts": "其他快捷键请参考 Monaco Editor 的默认快捷键",
+    "note": "注意事项",
+    "format_tree_tsv_use_tab": "树形缩进格式和 TSV 格式使用 `Tab` 键缩进，不是空格哦",
+    "only_tree_indent_have_autocomplete": "只有树形缩进格式下才有自动补全和提示"
   },
   "MenuEditorPage": {},
   "MateEditor": {
@@ -105,14 +108,15 @@
       "Signature": "文件签名",
       "Version": "文件版本",
       "Hash": "哈希",
+      "Hash_tip": "哈希；游戏需要计算哈希以便缓存（2.41.1）。无论填写何值，保存时都会被实际计算值覆盖。不幸的是，不同编辑器的哈希计算方式不同，所以即使值一样，不同编辑器保存的文件也会不一样，从而导致不能完全利用缓存，可能会多占用几 KB 的内存",
       "enable_edit_do_not_edit": "不要修改"
     },
     "materialName": "材质名",
-    "materialName_tip": "材质名；需要与 .mate 文件中的材质名完全相同，游戏需要计算哈希以便缓存（2.41.1）",
+    "materialName_tip": "材质名；需要与 .mate 文件中的材质名完全相同（2.41.1），编辑器会使用它参与哈希计算",
     "renderQueue": "渲染顺序",
     "renderQueue_tip": "渲染顺序 RQ；游戏本体会将此值设置为对应的渲染顺序（2.41.1），值越大越后渲染，一般情况下 GPU 层层渲染，后渲染的会叠加在前面渲染的上，默认范围 0 - 5000",
     "shaderName": "着色器名",
-    "shaderName_tip": "着色器名；没有用，游戏本体甚至不读取这一字段（2.41.1）"
+    "shaderName_tip": "着色器名；对于游戏来说没有用，游戏本体甚至不读取这一字段（2.41.1），但是编辑器会使用它参与哈希计算，避免不同着色器但同名材质的材质已经被缓存，从而导致渲染顺序错误，所以你最好填写正确的着色器名"
   },
   "Errors": {
     "file_selection_error_colon": "文件选择出错: ",

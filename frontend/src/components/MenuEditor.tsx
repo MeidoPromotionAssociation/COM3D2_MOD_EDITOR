@@ -8,13 +8,13 @@ import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {t} from "i18next";
 import {SaveFile} from "../../wailsjs/go/main/App";
-import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useDarkMode} from "../hooks/themeSwitch";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
 import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 
-type FormatType = "format1" | "format2" | "format3" | "format4";
+type FormatType = "treeIndent" | "colonSplit" | "JSON" | "TSV";
 
 export interface MenuEditorProps {
     filePath?: string;
@@ -46,7 +46,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         const [commandsText, setCommandsText] = useState<string>("");
 
         // 切换显示格式
-        const [displayFormat, setDisplayFormat] = useState<FormatType>("format1");
+        const [displayFormat, setDisplayFormat] = useState<FormatType>("treeIndent");
 
         // 只读字段是否可编辑
         const [isInputDisabled, setIsInputDisabled] = useState(true);
@@ -61,10 +61,10 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
         // 显示格式选项
         const formatOptions: CheckboxGroupProps<string>['options'] = [
-            {label: t('MenuEditor.format1'), value: 'format1'},
-            {label: t('MenuEditor.format2'), value: 'format2'},
-            {label: t('MenuEditor.format3'), value: 'format3'},
-            {label: t('MenuEditor.format4'), value: 'format4'},
+            {label: t('MenuEditor.treeIndent'), value: 'treeIndent'},
+            {label: t('MenuEditor.TSV'), value: 'TSV'},
+            {label: t('MenuEditor.colonSplit'), value: 'colonSplit'},
+            {label: t('MenuEditor.JSON'), value: 'JSON'},
         ];
 
         // 显示帮助模态
@@ -94,7 +94,8 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             }
 
             // 设置窗口标题
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t('Infos.editing_colon') + filePath);
+            const fileName = filePath.split(/[\\/]/).pop();
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") +  fileName + "  (" + filePath + ")");
 
             async function loadMenu() {
                 try {
@@ -142,12 +143,12 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 setCategory(result.Category);
                 setInfoText(result.InfoText);
 
-                if (displayFormat === "format1") {
-                    setCommandsText(commandsToTextFormat1(result.Commands));
-                } else if (displayFormat === "format2") {
-                    setCommandsText(commandsToTextFormat2(result.Commands));
-                } else if (displayFormat === "format3") {
-                    setCommandsText(commandsToTextFormat3(result.Commands));
+                if (displayFormat === "treeIndent") {
+                    setCommandsText(commandsToTextTreeIndent(result.Commands));
+                } else if (displayFormat === "colonSplit") {
+                    setCommandsText(commandsToTextColonSplit(result.Commands));
+                } else if (displayFormat === "JSON") {
+                    setCommandsText(commandsToTextJSON(result.Commands));
                 } else {
                     setCommandsText("unknown format");
                 }
@@ -172,17 +173,17 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             try {
                 let parsedCommands: Command[];
                 switch (displayFormat) {
-                    case "format1":
-                        parsedCommands = parseTextAsFormat1(commandsText);
+                    case "treeIndent":
+                        parsedCommands = parseTextAsTreeIndent(commandsText);
                         break;
-                    case "format2":
-                        parsedCommands = parseTextAsFormat2(commandsText);
+                    case "colonSplit":
+                        parsedCommands = parseTextAsColonSplit(commandsText);
                         break;
-                    case "format3":
-                        parsedCommands = parseTextAsFormat3(commandsText);
+                    case "JSON":
+                        parsedCommands = parseTextAsJSON(commandsText);
                         break;
-                    case "format4":
-                        parsedCommands = parseTextAsFormat4(commandsText);
+                    case "TSV":
+                        parsedCommands = parseTextAsTSV(commandsText);
                         break;
                     default:
                         parsedCommands = [];
@@ -220,17 +221,17 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             try {
                 let parsedCommands: Command[];
                 switch (displayFormat) {
-                    case "format1":
-                        parsedCommands = parseTextAsFormat1(commandsText);
+                    case "treeIndent":
+                        parsedCommands = parseTextAsTreeIndent(commandsText);
                         break;
-                    case "format2":
-                        parsedCommands = parseTextAsFormat2(commandsText);
+                    case "colonSplit":
+                        parsedCommands = parseTextAsColonSplit(commandsText);
                         break;
-                    case "format3":
-                        parsedCommands = parseTextAsFormat3(commandsText);
+                    case "JSON":
+                        parsedCommands = parseTextAsJSON(commandsText);
                         break;
-                    case "format4":
-                        parsedCommands = parseTextAsFormat4(commandsText);
+                    case "TSV":
+                        parsedCommands = parseTextAsTSV(commandsText);
                         break;
                     default:
                         parsedCommands = [];
@@ -269,21 +270,21 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
             let text;
             let language;
             switch (fmt) {
-                case "format1":
-                    text = commandsToTextFormat1(commands);
-                    language = "menuFormat1"
+                case "treeIndent":
+                    text = commandsToTextTreeIndent(commands);
+                    language = "menuTreeIndent"
                     break;
-                case "format2":
-                    text = commandsToTextFormat2(commands);
-                    language = "menuFormat2"
+                case "colonSplit":
+                    text = commandsToTextColonSplit(commands);
+                    language = "menuColonSplit"
                     break;
-                case "format3":
-                    text = commandsToTextFormat3(commands);
+                case "JSON":
+                    text = commandsToTextJSON(commands);
                     language = "json"
                     break;
-                case "format4":
-                    text = commandsToTextFormat4(commands);
-                    language = "menuFormat4";
+                case "TSV":
+                    text = commandsToTextTSV(commands);
+                    language = "menuTSV";
                     break;
                 default:
                     text = "";
@@ -432,7 +433,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                     <Radio.Group
                                         block
                                         options={formatOptions}
-                                        defaultValue="format1"
+                                        defaultValue="treeIndent"
                                         optionType="button"
                                         buttonStyle="solid"
                                         onChange={(e) => setDisplayFormat(e.target.value)}
@@ -457,13 +458,14 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                 <Modal title={t('MenuEditor.menu_editor_help')} open={isHelpModalVisible}
                                        onOk={handleHelpOk} onCancel={handleHelpCancel}>
                                     <h4>{t('MenuEditor.shortcut')}</h4>
-                                    <p>{t('MenuEditor.ctrl_c')}</p>
-                                    <h4>{t('MenuEditor.example')}</h4>
+                                    <p>{t('MenuEditor.ctrl_space')}</p>
+                                    <p>{t('MenuEditor.other_shortcuts')}</p>
+                                    <h4>{t('MenuEditor.note')}</h4>
+                                    <p>{t('MenuEditor.format_tree_tsv_use_tab')}</p>
+                                    <p>{t('MenuEditor.only_tree_indent_have_autocomplete')}</p>
                                     {/*TODO*/}
                                 </Modal>
                                 <Editor
-                                    height="100vh"
-                                    width="100%"
                                     beforeMount={(monacoInstance) => setupMonacoEditor(monacoInstance, isDarkMode)}
                                     language={language}
                                     theme="menuTheme"
@@ -491,7 +493,7 @@ export default MenuEditor;
  * ----------------------------- */
 
 /**
- * format1:
+ * treeIndent 树形缩进:
  *  - 每一条命令用命令名占一行 (即 Arg[0] )，后续参数(Arg[1..])行前有制表符
  *  - 命令之间用空行分割
  *
@@ -504,7 +506,7 @@ export default MenuEditor;
  *      x
  *      y
  */
-function commandsToTextFormat1(commands: Command[]): string {
+function commandsToTextTreeIndent(commands: Command[]): string {
     const lines: string[] = [];
     commands.forEach((cmd) => {
         if (cmd.Args && cmd.Args.length > 0) {
@@ -522,13 +524,13 @@ function commandsToTextFormat1(commands: Command[]): string {
 }
 
 /**
- * format2:
+ * colonSplit:
  *  - 每条命令一行: CommandName: param1, param2, ...
  * 示例:
  *  CommandName: param1, param2
  *  AnotherCmd: x, y, z
  */
-function commandsToTextFormat2(commands: Command[]): string {
+function commandsToTextColonSplit(commands: Command[]): string {
     const lines: string[] = [];
     commands.forEach((cmd) => {
         if (cmd.Args && cmd.Args.length > 0) {
@@ -541,16 +543,16 @@ function commandsToTextFormat2(commands: Command[]): string {
 }
 
 /**
- * format3: JSON
+ * JSON
  *  - 整个 commands 数组转为 JSON，缩进 2 格
  */
-function commandsToTextFormat3(commands: Command[]): string {
+function commandsToTextJSON(commands: Command[]): string {
     return JSON.stringify(commands, null, 2);
 }
 
 
 /**
- * format4: TSV
+ * TSV
  *  - 每条命令一行
  *  - 同一条命令所有参数用制表符分隔
  *
@@ -558,7 +560,7 @@ function commandsToTextFormat3(commands: Command[]): string {
  *  CommandName   param1   param2
  *  AnotherCmd    x        y
  */
-function commandsToTextFormat4(commands: Command[]): string {
+function commandsToTextTSV(commands: Command[]): string {
     const lines: string[] = [];
     commands.forEach((cmd) => {
         if (cmd.Args && cmd.Args.length > 0) {
@@ -570,12 +572,13 @@ function commandsToTextFormat4(commands: Command[]): string {
 }
 
 /**
- * parseTextAsFormat1
+ * parseTextAsTreeIndent
+ *  - 树形缩进
  *  - 遇到不以 '\t' 开头的行 => 认为是新的命令 Arg[0]
  *  - 以 '\t' 开头的行 => 认为是当前命令的后续参数
  *  - 空行表示命令结束
  */
-function parseTextAsFormat1(text: string): Command[] {
+function parseTextAsTreeIndent(text: string): Command[] {
     const lines = text.split(/\r?\n/);
     const commands: Command[] = [];
 
@@ -616,11 +619,12 @@ function parseTextAsFormat1(text: string): Command[] {
 }
 
 /**
- * parseTextAsFormat2
+ * parseTextAsColonSplit
+ *  - 冒号分割
  *  - 每行形如: CommandName: param1, param2, ...
  *  - 冒号分隔 commandName 与后续，用逗号再分隔后续
  */
-function parseTextAsFormat2(text: string): Command[] {
+function parseTextAsColonSplit(text: string): Command[] {
     const lines = text.split(/\r?\n/);
     const commands: Command[] = [];
 
@@ -657,11 +661,12 @@ function parseTextAsFormat2(text: string): Command[] {
 }
 
 /**
- * parseTextAsFormat3
+ * parseTextAsJSON
+ *  - JSON
  *  - 期望整个编辑器内容是一个 JSON 数组
  *  - 形如: [ { "ArgCount": 2, "Args": ["Foo", "Bar"] }, ... ]
  */
-function parseTextAsFormat3(text: string): Command[] {
+function parseTextAsJSON(text: string): Command[] {
     const trimmed = text.trim();
     if (!trimmed) {
         // 空内容 => 空数组
@@ -680,19 +685,19 @@ function parseTextAsFormat3(text: string): Command[] {
             } as Command;
         });
     } catch (err: any) {
-        console.error("parseTextAsFormat3 error:", err);
+        console.error("parseTextAsJSON error:", err);
         throw new Error(t('Errors.json_parse_failed') + err.message);
     }
 }
 
 
 /**
- * parseTextAsFormat4
- *  - TSV 格式
+ * parseTextAsTSV
+ *  - TSV
  *  - 每行表示一条命令
  *  - 通过制表符分割成多个参数，Args[0] 视为命令名称，后面是参数
  */
-function parseTextAsFormat4(text: string): Command[] {
+function parseTextAsTSV(text: string): Command[] {
     const lines = text.split(/\r?\n/);
     const commands: Command[] = [];
 

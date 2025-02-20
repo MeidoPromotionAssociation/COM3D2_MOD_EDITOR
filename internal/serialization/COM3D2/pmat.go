@@ -69,7 +69,7 @@ func ReadPMat(r io.Reader) (*PMat, error) {
 }
 
 // Dump 将 p 写出到 w 中，格式与 .PMat 兼容。
-func (p *PMat) Dump(w io.Writer) error {
+func (p *PMat) Dump(w io.Writer, calculateHash bool) error {
 	// 1. signature
 	if err := utilities.WriteString(w, p.Signature); err != nil {
 		return fmt.Errorf("write .PMat signature failed: %w", err)
@@ -82,9 +82,18 @@ func (p *PMat) Dump(w io.Writer) error {
 
 	// 3. hash
 	//  Unfortunately, we can't match C#'s HashCode implementation
-	materialNameHash := GetStringHashInt32(p.MaterialName)
-	if err := utilities.WriteInt32(w, materialNameHash); err != nil {
-		return fmt.Errorf("write .PMat hash failed: %w", err)
+	//  Therefore, files edited by this editor cannot share cache with files edited by other editors
+	//  Because the game uses this Hash value to determine the cache key
+	//  Even if their values are the same, the calculated hashes are different
+	if calculateHash {
+		materialNameHash := utilities.GetStringHashInt32(p.MaterialName + p.Shader)
+		if err := utilities.WriteInt32(w, materialNameHash); err != nil {
+			return fmt.Errorf("write .PMat hash failed: %w", err)
+		}
+	} else {
+		if err := utilities.WriteInt32(w, p.Hash); err != nil {
+			return fmt.Errorf("write .PMat hash failed: %w", err)
+		}
 	}
 
 	// 4. materialName

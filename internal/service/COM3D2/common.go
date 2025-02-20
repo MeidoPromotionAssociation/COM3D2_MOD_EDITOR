@@ -84,7 +84,7 @@ func NewPMatService() *FileService[COM3D2.PMat] {
 			return COM3D2.ReadPMat(br)
 		},
 		Dump: func(pmat *COM3D2.PMat, bw *bufio.Writer) error {
-			return pmat.Dump(bw)
+			return pmat.Dump(bw, true)
 		},
 	}
 }

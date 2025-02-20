@@ -302,7 +302,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
         if (filePath) {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t('Infos.editing_colon') + filePath);
+
+            const fileName = filePath.split(/[\\/]/).pop();
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") +  fileName + "  (" + filePath + ")");
+
             handleReadMateFile();
         } else {
             // 如果没有文件，则初始化为新文件
