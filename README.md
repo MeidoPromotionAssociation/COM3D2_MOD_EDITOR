@@ -6,6 +6,14 @@
 
 COM3D2 MOD editor, built with Golang + Wails + React + TypeScript, Modern technology here we come!!
 
+<br>
+
+This is a MOD creation tool for [カスタムオーダーメイド3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2)
+
+But it can also be used for [カスタムメイド3D 2](https://www.kisskiss.tv/kiss/) (CUSTOM MAID 3D2 / CM3D2)
+
+<br>
+
 For now, it allows you to edit files in these formats
 
 - .menu
@@ -42,6 +50,14 @@ Maybe also check out my MOD Making Tutorial (in Chinese): [https://github.com/90
 ## COM3D2 MOD EDITOR V2
 
 COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现代技术我们来了！！
+
+<br>
+
+这是 [CUSTOM ORDER MAID 3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2) 的 MOD 制作工具
+
+但它也可以用于 [Custom Maid 3D 2](https://www.kisskiss.tv/kiss/) (CUSTOM MAID 3D2 / CM3D2)
+
+<br>
 
 目前，它允许您编辑以下格式的文件
 
@@ -81,6 +97,14 @@ AI Translation
 
 COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用して開発されました。最新技術で新たな時代へ！！
 
+<br>
+
+【カスタムオーダーメイド3D2】(https://com3d2.jp/)(CUSTOM ORDER MAID 3D2 / COM3D2)用のMOD作成ツールです。
+
+ただし、[カスタムメイド3D 2](https://www.kisskiss.tv/kiss/)(CUSTOM MAID 3D2 / CM3D2)でも使用できます。
+
+<br>
+
 現在、以下の形式のファイルを編集することができます。
 
 - .menu
@@ -117,6 +141,39 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 <br>
 <br>
 
+
+# KISS 規約
+
+*MODs are not supported by KISS.
+
+*KISS cannot be held responsible for any problems that may arise when using MODs.
+
+*If any problem occurs, please do not contact KISS.
+
+```
+・原作がMOD作成者にある場合、又は、原作が「カスタムメイド3D2」のみに存在する内部データの場合、又は、原作が「カスタムメイド3D2」と「カスタムオーダーメイド3D2」の両方に存在する内部データの場合。
+※MODはKISSサポート対象外です。
+※MODを利用するに当たり、問題が発生してもKISSは一切の責任を負いかねます。
+※「カスタムメイド3D2」か「カスタムオーダーメイド3D2」か「CR EditSystem」を購入されている方のみが利用できます。
+※「カスタムメイド3D2」か「カスタムオーダーメイド3D2」か「CR EditSystem」上で表示する目的以外の利用は禁止します。
+※これらの事項は http://kisskiss.tv/kiss/diary.php?no=558 を優先します。
+
+・原作が「カスタムオーダーメイド3D2(GP01含む)」の内部データのみにある場合。
+※MODはKISSサポート対象外です。
+※MODを利用するに当たり、問題が発生してもKISSは一切の責任を負いかねます。
+※「カスタムオーダーメイド3D2」か「CR EditSystem」をを購入されている方のみが利用できます。
+※「カスタムオーダーメイド3D2」か「CR EditSystem」上で表示する目的以外の利用は禁止します。
+※「カスタムメイド3D2」上では利用しないで下さい。
+※これらの事項は http://kisskiss.tv/kiss/diary.php?no=558 を優先します。
+
+・原作が「CR EditSystem」の内部データのみにある場合。
+※MODはKISSサポート対象外です。
+※MODを利用するに当たり、問題が発生してもKISSは一切の責任を負いかねます。
+※「CR EditSystem」を購入されている方のみが利用できます。
+※「CR EditSystem」上で表示する目的以外の利用は禁止します。
+※「カスタムメイド3D2」「カスタムオーダーメイド3D2」上では利用しないで下さい。
+※これらの事項は http://kisskiss.tv/kiss/diary.php?no=558 を優先します。
+```
 
 # Credit
 
