@@ -1,24 +1,54 @@
 // MENU 编辑器语法帮助映射
+import {MPN, PARTS_COLOR} from "./ConstCOM3D2";
+import i18n from "./i18n"; // 需要引入 i18n 实例，否则直接使用 t 时，翻译还未加载
+
 export const menuCommandDocs: Record<string, string> = {
-    "メニューフォルダ": "此命令用于指定菜单文件夹的路径，如果参数 1 为 man 那么就会标记为男菜单，服装类保持为 DRESS 即可（2.41.1）",
-    "category": "指定菜单项目所属的类别，并将其解析为 MPN 枚举，必须是 MPN 枚举中的一个值",
-    "属性追加": "似乎没有作用，代码里找不到此值（2.41.1）",
-    "catno": "似乎没有作用，代码里找不到此值，但安全起见参数请填 0，游戏本体只判断不是此值，但什么也没做（2.41.1）",
-    "priority": "指定菜单项目的优先级，数值越大排序约靠后，浮点数，请不要低于0，因为 0 是删除菜单",
-    "name": "指定菜单项目的名称",
-    "setumei": "指定菜单项目的说明，要换行请使用 `《改行》`",
-    "icons": "指定菜单项目的图标，参数填写完整文件名，如 foo.tex，别名 icon",
-    "icon": "指定菜单项目的图标，参数填写完整文件名，如 foo.tex，别名 icons",
-    "iconl": "似乎没有作用，游戏本体只判断不是此值，但什么也没做（2.41.1）",
-    "onclickmenu": "似乎没有作用，代码里找不到此值，似乎只是视觉分界线（2.41.1）",
-    "setstr": "似乎没有作用，游戏本体只检查不是此值，但什么也没做（2.41.1）",
-    "color_set": "指定某个类别的颜色，参数 1 为 MPN 枚举，参数 2 为颜色",
-    "tex": "指定要变更的材质,参数 1 为 MPN 枚举，参数 2 为材质编号，参数 3 为材质文件名（foo.mate），参数 4 为未知，参数 5 为无限色类别。别名 テクスチャ変更",
-    "マテリアル変更": "指定要变更的材质,参数 1 为 MPN 枚举，参数 2 为材质编号，参数 3 为材质文件名（foo.mate），参数 4 为未知，参数 5 为无限色类别。别名 tex",
-    "アイテムパラメータ": "用来为某个插槽的物品设置额外的参数（变量名、数值），如物品的特定属性值、配置等。，参数 1 为 MPN 枚举，参数 2 为变量名，参数 3 为数值",
-    "additem": "为指定类别添加一个模型，参数必须为2、4或5个，参数 1 为 MPN 枚举，参数 2 为模型文件（foo.model），参数 3 为 attach，参数 4 为附着点 MPN 枚举，参数 5 为附着点名",
-    "delitem": "移除指定类别的模型，参数 1 为 MPN 枚举",
-    "saveitem": "不清楚具体作用",
-    "collabo": "无参数，标记此物品为联动物品",
+    "メニューフォルダ": i18n.t('MenuEditor.commands.メニューフォルダ'),
+    "category": i18n.t('MenuEditor.commands.category'),
+    "属性追加": i18n.t('MenuEditor.commands.属性追加'),
+    "catno": i18n.t('MenuEditor.commands.catno'),
+    "priority": i18n.t('MenuEditor.commands.priority'),
+    "name": i18n.t('MenuEditor.commands.name'),
+    "setumei": i18n.t('MenuEditor.commands.setumei'),
+    "icons": i18n.t('MenuEditor.commands.icons'),
+    "icon": i18n.t('MenuEditor.commands.icon'),
+    "iconl": i18n.t('MenuEditor.commands.iconl'),
+    "onclickmenu": i18n.t('MenuEditor.commands.onclickmenu'),
+    "消去node設定開始": i18n.t('MenuEditor.commands.消去node設定開始'),
+    "消去node設定終了": i18n.t('MenuEditor.commands.消去node設定終了'),
+    "node消去": i18n.t('MenuEditor.commands.node消去'),
+    "setstr": i18n.t('MenuEditor.commands.setstr'),
+    "color_set": i18n.t('MenuEditor.commands.color_set'),
+    "tex": i18n.t('MenuEditor.commands.tex'),
+    "マテリアル変更": i18n.t('MenuEditor.commands.マテリアル変更'),
+    "アイテムパラメータ": i18n.t('MenuEditor.commands.アイテムパラメータ'),
+    "additem": i18n.t('MenuEditor.commands.additem'),
+    "delitem": i18n.t('MenuEditor.commands.delitem'),
+    "saveitem": i18n.t('MenuEditor.commands.saveitem'),
+    "collabo": i18n.t('MenuEditor.commands.collabo'),
 };
-//TODO
+
+export const enumMap: Record<string, string[]> = {
+    "category": Object.keys(MPN).filter(k => isNaN(Number(k))),
+    "color_set": Object.keys(PARTS_COLOR).filter(k => isNaN(Number(k))),
+    "メニューフォルダ": ["BODY", "DRESS", "HEAD", "MAN", "system"],
+};
+
+
+export const commandSnippetMap: Record<string, string[]> = {
+    "name": [i18n.t('MenuEditor.snippet.name')],
+    "setumei": [i18n.t('MenuEditor.snippet.setumei')],
+    "priority": ["90135"],
+    "catno": ["0"],
+    "category": [i18n.t('MenuEditor.snippet.MPN')],
+    "additem": [i18n.t('MenuEditor.snippet.model_filename'), i18n.t('MenuEditor.snippet.MPN')],
+    "icon": [i18n.t('MenuEditor.snippet.icon_filename')],
+    "icons": [i18n.t('MenuEditor.snippet.icon_filename')],
+    "maskitem": [i18n.t('MenuEditor.snippet.MPN')],
+    "マテリアル変更":[i18n.t('MenuEditor.snippet.MPN'), i18n.t('MenuEditor.snippet.mate_number'), i18n.t('MenuEditor.snippet.mate_filename')],
+    "tex": [i18n.t('MenuEditor.snippet.MPN'), i18n.t('MenuEditor.snippet.mate_number'), i18n.t('MenuEditor.snippet.mate_filename')],
+    "node消去": [i18n.t('MenuEditor.snippet.bone_name_keyword')],
+    "カテゴリ名":[i18n.t('MenuEditor.snippet.MPN'),i18n.t('MenuEditor.snippet.mate_number'),i18n.t('MenuEditor.snippet.mate_name'),i18n.t('MenuEditor.snippet.layer_number'),i18n.t('MenuEditor.snippet.tex_filename'),],
+};
+
+

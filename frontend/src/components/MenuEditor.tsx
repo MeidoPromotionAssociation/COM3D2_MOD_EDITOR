@@ -94,6 +94,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 setSignature("CM3D2_MENU");
                 setVersion(1000);
                 setBodySize(0);
+                updateCommandsText([], displayFormat);
                 return;
             }
 

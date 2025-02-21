@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.0",
-    "@monaco-editor/react": "^4.6.0",
+    "@monaco-editor/react": "^4.7.0",
     "@types/lodash": "^4.17.15",
     "antd": "^5.23.3",
     "i18next": "^23.16.8",

@@ -1,7 +1,6 @@
-import {menuCommandDocs} from "./menuCommandDocs";
-
-
-//any 不代表它真的是 any，只是引入类型会导致最终二进制文件变大 3MB
+// monacoInstance 为 any 不代表它真的是 any，只是引入类型会导致最终二进制文件变大 3MB
+import {commandSnippetMap, enumMap, menuCommandDocs} from "./menuCommandDocs";
+import {t} from "i18next";
 
 // 语言定义
 const defineLanguages = (monacoInstance: any) => {
@@ -89,41 +88,51 @@ const defineTheme = (monacoInstance: any, isDarkMode: boolean) => {
 };
 
 
+function customShortcut(monacoInstance: any) {
+    // 注册删除行命令
+    monacoInstance.editor.registerCommand('deleteLine', (/* accessor */) => {
+        const editors = monacoInstance.editor.getEditors();
+        if (!editors || editors.length === 0) {
+            return;
+        }
+
+        const editor = editors.find((ed: any) => ed.hasWidgetFocus());
+        if (!editor) {
+            return;
+        }
+
+        const model = editor.getModel();
+        const position = editor.getPosition();
+        if (model && position) {
+            const lineNumber = position.lineNumber;
+            model.applyEdits([
+                {
+                    range: new monacoInstance.Range(
+                        lineNumber,
+                        1,
+                        lineNumber,
+                        model.getLineMaxColumn(lineNumber)
+                    ),
+                    text: null,
+                    forceMoveMarkers: true,
+                },
+            ]);
+        }
+    });
+
+    // ctrl+ w 注册为删除当前行
+    monacoInstance.editor.addKeybindingRules([
+        {
+            keybinding: monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyW,
+            command: 'deleteLine',
+        },
+    ]);
+}
+
+
 // 自动补全
 const Autocomplete = (monacoInstance: any) => {
-    // 1) 定义命令 -> 可选枚举列表的映射
-    const enumMap: Record<string, string[]> = {
-        "category": [
-            "null_mpn", "MuneL", "MuneS", "MuneTare", "RegFat", "ArmL", "Hara", "RegMeet",
-            "KubiScl", "UdeScl", "EyeScl", "EyeSclX", "EyeSclY", "EyePosX", "EyePosY",
-            "EyeClose", "EyeBallPosX", "EyeBallPosY", "EyeBallSclX", "EyeBallSclY",
-            "EarNone", "EarElf", "EarRot", "EarScl", "NosePos", "NoseScl", "FaceShape",
-            "FaceShapeSlim", "MayuShapeIn", "MayuShapeOut", "MayuX", "MayuY", "MayuRot",
-            "HeadX", "HeadY", "DouPer", "sintyou", "koshi", "kata", "west", "MuneUpDown",
-            "MuneYori", "MuneYawaraka", "MayuThick", "MayuLong", "Yorime", "MabutaUpIn",
-            "MabutaUpIn2", "MabutaUpMiddle", "MabutaUpOut", "MabutaUpOut2", "MabutaLowIn",
-            "MabutaLowUpMiddle", "MabutaLowUpOut", "body", "moza", "head", "hairf",
-            "hairr", "hairt", "hairs", "hairaho", "haircolor", "skin", "acctatoo",
-            "accnail", "underhair", "hokuro", "mayu", "lip", "eye", "eye_hi", "eye_hi_r",
-            "chikubi", "chikubicolor", "eyewhite", "nose", "facegloss", "matsuge_up",
-            "matsuge_low", "futae", "wear", "skirt", "mizugi", "bra", "panz", "stkg",
-            "shoes", "headset", "glove", "acchead", "accha", "acchana", "acckamisub",
-            "acckami", "accmimi", "accnip", "acckubi", "acckubiwa", "accheso", "accude",
-            "accashi", "accsenaka", "accshippo", "accanl", "accvag", "megane", "accxxx",
-            "handitem", "acchat", "onepiece", "set_maidwear", "set_mywear",
-            "set_underwear", "set_body", "set_head_slider", "folder_eye", "folder_mayu",
-            "folder_underhair", "folder_skin", "folder_eyewhite", "folder_matsuge_up",
-            "folder_matsuge_low", "folder_futae", "kousoku_upper", "kousoku_lower",
-            "seieki_naka", "seieki_hara", "seieki_face", "seieki_mune", "seieki_hip",
-            "seieki_ude", "seieki_ashi"
-        ],
-        "color_set": [
-            "HAIR", "ACCESSORY", "DRESS",
-        ],
-        //TODO
-    };
-
-    // 2) 给各个自定义语言注册自动补全，但是懒得做了只做 "menuTreeIndent"
+    // 给各个自定义语言注册自动补全，但是懒得做了只做 "menuTreeIndent"
     ["menuTreeIndent"].forEach((languageId) => {
         monacoInstance.languages.registerCompletionItemProvider(languageId, {
             // 触发字符，换行 / 制表符 / 空格 / 冒号
@@ -135,7 +144,6 @@ const Autocomplete = (monacoInstance: any) => {
 
                 // (A) 如果是在“命令名位置”，就提示所有已知命令 (menuCommandDocs 中的 key)
                 if (shouldSuggestCommandName(lineContent)) {
-                    console.log("命令位置", lineContent)
                     Object.keys(menuCommandDocs).forEach((cmdKey) => {
                         suggestions.push({
                             label: cmdKey,
@@ -146,16 +154,15 @@ const Autocomplete = (monacoInstance: any) => {
 
                         // snippet 直接插入多行示例
                         suggestions.push({
-                            label: `${cmdKey} (snippet)`,
+                            label: `${cmdKey}` + "  (" + t('MenuEditor.snippet.pre_filled') +")",
                             kind: monacoInstance.languages.CompletionItemKind.Snippet,
                             insertText: createSnippetForCommand(cmdKey),
                             insertTextRules:
                             monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: `Snippet: 多行插入，可带参占位符。`,
+                            documentation: t('MenuEditor.snippet.pre_filled_tip') ,
                         });
                     });
                 } else {
-                    console.log("参数位置", lineContent)
                     // (B) 如果是在“命令参数位置”，根据命令名查找枚举并提示
                     const currentCmd = findCurrentCommandName(model, lineNumber);
                     if (currentCmd && enumMap[currentCmd]) {
@@ -165,7 +172,7 @@ const Autocomplete = (monacoInstance: any) => {
                                 label: val,
                                 kind: monacoInstance.languages.CompletionItemKind.Enum,
                                 insertText: val,
-                                documentation: `『${currentCmd}』可用枚举值`,
+                                documentation: t(`MenuEditor.commands.${currentCmd}`),
                             });
                         });
                     }
@@ -180,37 +187,31 @@ const Autocomplete = (monacoInstance: any) => {
 
 // 判断当前行是否应该提示“命令名”
 function shouldSuggestCommandName(line: string): boolean {
-    console.log("shouldSuggestCommandName", line)
-    // 如果是空行，就认为要提示命令名
-    if (!line) {
-        console.log("空行")
-        return true;
-    }
-
-    return false;
+    // 检查当前行是否没有缩进（即可能是命令行）
+    return !line.startsWith('\t');
 }
+
 
 // 获取本行之前的命令名
 function findCurrentCommandName(model: any, lineNumber: number): string | null {
-    // 往上找到上一行“没有缩进的行”当作命令名
-    for (let i = lineNumber; i > 0; i--) {
-        const content = model.getLineContent(i).trim();
-        if (content && !content.startsWith("\t") && !content.includes(":")) {
-            return content.split(/\s+/)[0]; // 可能就是命令名
+    // 包含当前行向上查找
+    for (let i = lineNumber; i >= 1; i--) {
+        const rawContent = model.getLineContent(i); // 使用原始内容判断缩进
+
+        // 精确匹配命令行特征：无缩进且包含有效命令
+        if (rawContent.length > 0 && !rawContent.startsWith('\t')) {
+            // 使用正则提取命令名（支持带空格的命令）
+            const commandMatch = rawContent.match(/^([^\t:]+?)(\s|:|$)/);
+            if (commandMatch) {
+                return commandMatch[1].trim(); // 去除尾部可能存在的空格
+            }
         }
     }
     return null;
 }
 
-// 用于生成 snippet 的示例，这里简单做一个多行占位
+// 用于生成 snippet
 function createSnippetForCommand(cmdName: string): string {
-    const commandSnippetMap: Record<string, string[]> = {
-        "category": ["MPN 枚举", "其他描述"],
-        "color_set": ["MPN 枚举", "颜色值"],
-        "additem": ["MPN 枚举", "模型文件", "attach", "附着点", "附着点名称"]
-        //TODO
-    };
-
     // 根据命令名从 commandSnippetMap 取对应的参数列表
     const paramList = commandSnippetMap[cmdName];
     // 如果没定义任何参数，则只插入命令名
@@ -229,8 +230,15 @@ function createSnippetForCommand(cmdName: string): string {
 
 // 初始化 Monaco 编辑器，接受 beforeMount 调用
 export const setupMonacoEditor = (monacoInstance: any, isDarkMode: boolean) => {
+    // 只初始化一次
+    if (monacoInstance.__alreadyCustomInited) {
+        return;
+    }
     defineLanguages(monacoInstance);
     defineHoverProviders(monacoInstance);
     defineTheme(monacoInstance, isDarkMode);
+    customShortcut(monacoInstance);
     Autocomplete(monacoInstance);
+
+    monacoInstance.__alreadyCustomInited = true;
 };
