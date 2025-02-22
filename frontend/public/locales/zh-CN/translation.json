@@ -2,7 +2,12 @@
   "HomePage": {
     "choose_file": "选择文件",
     "pls_select_a_file_to_edit": "请选择一个文件进行编辑",
-    "choose_language": "选择语言"
+    "choose_language": "选择语言",
+    "new_version_available": "\uD83D\uDD14 有新版本可用",
+    "current_version": "当前版本：{{currentVersion}}",
+    "latest_version": "最新版本：{{latestVersion}}",
+    "pls_get_update_form_github": "请前往 GitHub 下载更新~",
+    "go_github": "前往 GitHub"
   },
   "EditorNavBar": {
     "HomePage": "首页",
@@ -50,12 +55,11 @@
       "node消去": "用于隐藏某个骨骼及其对应顶点组，参数 1 为骨骼名关键词，任何带此关键词的骨骼都会被隐藏，但 category 必须为 m_strDefSlotName 中的值",
       "setstr": "似乎没有作用，游戏本体只检查不是此值，但什么也没做（2.41.1）",
       "color_set": "指定某个类别的颜色，参数 1 为 MPN 枚举，参数 2 为颜色",
-      "tex": "指定要变更的材质,参数 1 为 MPN 枚举，参数 2 为材质编号，参数 3 为材质文件名（foo.mate），参数 4 为未知，参数 5 为无限色类别。别名 テクスチャ変更",
-      "マテリアル変更": "指定要变更的材质,参数 1 为 MPN 枚举，参数 2 为材质编号，参数 3 为材质文件名（foo.mate），参数 4 为未知，参数 5 为无限色类别。别名 tex",
+      "tex": "指定要变更的材质，参数 1 为 MPN 枚举，参数 2 为材质编号，参数 3 为材质文件名（foo.mate），参数 4 为未知，参数 5 为无限色类别。别名 テクスチャ変更",
+      "マテリアル変更": "指定要变更的材质，参数 1 为 MPN 枚举，参数 2 为材质编号，参数 3 为材质文件名（foo.mate），参数 4 为未知，参数 5 为无限色类别。别名 tex",
       "アイテムパラメータ": "用来为某个插槽的物品设置额外的参数（变量名、数值），如物品的特定属性值、配置等。，参数 1 为 MPN 枚举，参数 2 为变量名，参数 3 为数值",
       "additem": "为指定类别添加一个模型，参数必须为2、4或5个，参数 1 为 MPN 枚举，参数 2 为模型文件（foo.model），参数 3 为 attach，参数 4 为附着点 MPN 枚举，参数 5 为附着点名",
       "delitem": "移除指定类别的模型，参数 1 为 MPN 枚举",
-      "saveitem": "不清楚具体作用",
       "collabo": "无参数，标记此物品为联动物品"
     },
     "snippet": {
@@ -160,7 +164,19 @@
     "shaderName": "着色器名",
     "shaderName_tip": "着色器名；对于游戏来说没有用，游戏本体甚至不读取这一字段（2.41.1），但是编辑器会使用它参与哈希计算，避免不同着色器但同名材质的材质已经被缓存，从而导致渲染顺序错误，所以你最好填写正确的着色器名"
   },
+  "Infos": {
+    "com3d2_menu_file": "COM3D2 .menu 文件",
+    "com3d2_mate_file": "COM3D2 .mate 文件",
+    "com3d2_pmat_file": "COM3D2 .pmat 文件",
+    "com3d2_mod_files": "COM3D2 MOD 文件",
+    "pls_open_file_first": "请先打开文件",
+    "editing_colon": "正在编辑: ",
+    "success_save_file": "文件保存成功",
+    "success_save_as_file": "文件另存为成功",
+    "success_save_as_file_colon": "文件另存为成功: "
+  },
   "Errors": {
+    "fail_to_check_update": "检查更新失败",
     "file_selection_error_colon": "文件选择出错: ",
     "read_menu_file_failed_colon": "读取 .menu 文件失败：",
     "read_mate_file_failed_colon": "读取.mate 文件失败：",
@@ -175,16 +191,5 @@
     "no_file_to_save": "没有文件可供保存",
     "invalid_path_or_mate_data": "无效文件路径或 Mate 数据",
     "file_type_not_supported": "暂时不支持此文件类型"
-  },
-  "Infos": {
-    "com3d2_menu_file": "COM3D2 .menu 文件",
-    "com3d2_mate_file": "COM3D2 .mate 文件",
-    "com3d2_pmat_file": "COM3D2 .pmat 文件",
-    "com3d2_mod_files": "COM3D2 MOD 文件",
-    "pls_open_file_first": "请先打开文件",
-    "editing_colon": "正在编辑: ",
-    "success_save_file": "文件保存成功",
-    "success_save_as_file": "文件另存为成功",
-    "success_save_as_file_colon": "文件另存为成功: "
   }
 }

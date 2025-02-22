@@ -138,3 +138,24 @@ export namespace COM3D2 {
 
 }
 
+export namespace main {
+	
+	export class VersionCheckResult {
+	    CurrentVersion: string;
+	    LatestVersion: string;
+	    IsNewer: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new VersionCheckResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.CurrentVersion = source["CurrentVersion"];
+	        this.LatestVersion = source["LatestVersion"];
+	        this.IsNewer = source["IsNewer"];
+	    }
+	}
+
+}
+

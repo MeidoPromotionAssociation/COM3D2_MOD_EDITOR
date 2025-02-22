@@ -48,7 +48,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         // 切换显示格式
         const [displayFormat, setDisplayFormat] = useState<FormatType>(
             // 从 localStorage 读取上次保存的格式，默认使用 treeIndent
-            () => (localStorage.getItem('lastDisplayFormat') as FormatType) || "treeIndent"
+            () => (localStorage.getItem('lastMenuDisplayFormat') as FormatType) || "treeIndent"
         );
 
         // 只读字段是否可编辑
@@ -444,7 +444,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                         value={displayFormat}
                                         onChange={(e) => {
                                             setDisplayFormat(e.target.value);
-                                            localStorage.setItem('lastDisplayFormat', e.target.value);
+                                            localStorage.setItem('lastMenuDisplayFormat', e.target.value);
                                         }}
                                     />
                                 </Flex>

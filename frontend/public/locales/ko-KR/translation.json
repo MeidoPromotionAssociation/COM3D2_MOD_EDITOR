@@ -2,7 +2,12 @@
   "HomePage": {
     "choose_file": "파일 선택",
     "pls_select_a_file_to_edit": "편집할 파일을 선택하세요",
-    "choose_language": "언어 선택"
+    "choose_language": "언어 선택",
+    "new_version_available": "\uD83D\uDD14 새 버전이 있습니다",
+    "current_version": "현재 버전: {{currentVersion}}",
+    "latest_version": "최신 버전: {{latestVersion}}",
+    "pls_get_update_form_github": "GitHub에서 업데이트를 다운로드해 주세요~",
+    "go_github": "GitHub 이동"
   },
   "EditorNavBar": {
     "HomePage": "홈",
@@ -55,7 +60,6 @@
       "アイテムパラメータ": "특정 슬롯에 있는 아이템에 추가 파라미터(변수명, 값 등)를 설정합니다. 예를 들어 아이템의 특수 속성값이나 설정 등을 지정합니다. 파라미터 1은 MPN 열거형, 2는 변수명, 3은 값입니다.",
       "additem": "지정된 카테고리에 모델을 추가합니다. 파라미터는 2개, 4개, 혹은 5개여야 합니다. 파라미터 1은 MPN 열거형, 2는 모델 파일(foo.model), 3은 attach, 4는 부착점 MPN 열거형, 5는 부착점 이름입니다.",
       "delitem": "지정된 카테고리에서 모델을 제거합니다. 파라미터 1은 MPN 열거형입니다.",
-      "saveitem": "구체적인 동작은 불명입니다.",
       "collabo": "파라미터 없이, 이 아이템을 콜라보 아이템으로 표시합니다."
     },
     "snippet": {
@@ -160,6 +164,17 @@
     "shaderName": "셰이더 이름",
     "shaderName_tip": "게임 본체는 이 필드를 읽지 않지만(2.41.1), 에디터는 해시 계산 시 사용해 동일한 소재 이름을 공유하는 다른 셰이더와 충돌하지 않도록 합니다. 정확한 셰이더 이름을 입력하는 것이 좋습니다."
   },
+  "Infos": {
+    "com3d2_menu_file": "COM3D2 .menu 파일",
+    "com3d2_mate_file": "COM3D2 .mate 파일",
+    "com3d2_pmat_file": "COM3D2 .pmat 파일",
+    "com3d2_mod_files": "COM3D2 MOD 파일",
+    "pls_open_file_first": "먼저 파일을 여세요",
+    "editing_colon": "편집 중: ",
+    "success_save_file": "파일이 성공적으로 저장되었습니다",
+    "success_save_as_file": "파일을 다른 이름으로 성공적으로 저장했습니다",
+    "success_save_as_file_colon": "파일을 다른 이름으로 저장했습니다: "
+  },
   "Errors": {
     "file_selection_error_colon": "파일 선택 오류: ",
     "read_menu_file_failed_colon": ".menu 파일을 불러오지 못했습니다: ",
@@ -175,16 +190,5 @@
     "no_file_to_save": "저장할 파일이 없습니다",
     "invalid_path_or_mate_data": "유효하지 않은 파일 경로 또는 Mate 데이터입니다",
     "file_type_not_supported": "이 파일 형식은 현재 지원되지 않습니다"
-  },
-  "Infos": {
-    "com3d2_menu_file": "COM3D2 .menu 파일",
-    "com3d2_mate_file": "COM3D2 .mate 파일",
-    "com3d2_pmat_file": "COM3D2 .pmat 파일",
-    "com3d2_mod_files": "COM3D2 MOD 파일",
-    "pls_open_file_first": "먼저 파일을 여세요",
-    "editing_colon": "편집 중: ",
-    "success_save_file": "파일이 성공적으로 저장되었습니다",
-    "success_save_as_file": "파일을 다른 이름으로 성공적으로 저장했습니다",
-    "success_save_as_file_colon": "파일을 다른 이름으로 저장했습니다: "
   }
 }

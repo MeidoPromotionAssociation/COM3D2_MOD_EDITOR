@@ -1,5 +1,5 @@
 // monacoInstance 为 any 不代表它真的是 any，只是引入类型会导致最终二进制文件变大 3MB
-import {commandSnippetMap, enumMap, menuCommandDocs} from "./menuCommandDocs";
+import {enumMap, getCommandSnippetMap, getMenuCommandDocs} from "./menuCommandDocs";
 import {t} from "i18next";
 
 // 语言定义
@@ -53,6 +53,7 @@ const defineHoverProviders = (monacoInstance: any) => {
         monacoInstance.languages.registerHoverProvider(language, {
             provideHover: function (model: { getWordAtPosition: (arg0: any) => any; }, position: { lineNumber: any; }) {
                 const word = model.getWordAtPosition(position);
+                const menuCommandDocs = getMenuCommandDocs();
                 if (word && menuCommandDocs[word.word]) {
                     return {
                         range: new monacoInstance.Range(
@@ -141,6 +142,7 @@ const Autocomplete = (monacoInstance: any) => {
                 const lineNumber = position.lineNumber;
                 const lineContent = model.getLineContent(lineNumber);
                 const suggestions: any[] = [];
+                const menuCommandDocs = getMenuCommandDocs();
 
                 // (A) 如果是在“命令名位置”，就提示所有已知命令 (menuCommandDocs 中的 key)
                 if (shouldSuggestCommandName(lineContent)) {
@@ -212,6 +214,8 @@ function findCurrentCommandName(model: any, lineNumber: number): string | null {
 
 // 用于生成 snippet
 function createSnippetForCommand(cmdName: string): string {
+    const commandSnippetMap = getCommandSnippetMap();
+
     // 根据命令名从 commandSnippetMap 取对应的参数列表
     const paramList = commandSnippetMap[cmdName];
     // 如果没定义任何参数，则只插入命令名

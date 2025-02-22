@@ -10,6 +10,7 @@ import {getFileExtension} from "./utils/utils";
 import {useTranslation} from "react-i18next";
 import {ConfigProvider, message, theme} from "antd";
 import {useDarkMode} from "./hooks/themeSwitch";
+import {GetAppVersion} from "../wailsjs/go/main/App";
 
 
 const App: React.FC = () => {
@@ -62,8 +63,10 @@ const App: React.FC = () => {
         },false)
     }, []);
 
-    // 通知后端前端已就绪
-    EventsEmit('app-ready')
+    useEffect(() => {
+        // 通知后端前端已就绪
+        EventsEmit('app-ready')
+    }, []); // 空依赖数组确保只执行一次
 
 
     return (
