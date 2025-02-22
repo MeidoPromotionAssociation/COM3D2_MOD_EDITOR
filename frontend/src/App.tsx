@@ -11,6 +11,7 @@ import {useTranslation} from "react-i18next";
 import {ConfigProvider, message, theme} from "antd";
 import {useDarkMode} from "./hooks/themeSwitch";
 import {GetAppVersion} from "../wailsjs/go/main/App";
+import ColEditorPage from "./components/ColEditorPage";
 
 
 const App: React.FC = () => {
@@ -79,6 +80,7 @@ const App: React.FC = () => {
                 <Route path="/menu-editor" element={<MenuEditorPage/>}/>
                 <Route path="/mate-editor" element={<MateEditorPage/>}/>
                 <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
+                <Route path="/col-editor" element={<ColEditorPage/>}/>
             </Routes>
         </ConfigProvider>
     );

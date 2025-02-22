@@ -88,3 +88,15 @@ func NewPMatService() *FileService[COM3D2.PMat] {
 		},
 	}
 }
+
+// NewColService 创建 .col 文件的通用处理器
+func NewColService() *FileService[COM3D2.Col] {
+	return &FileService[COM3D2.Col]{
+		Read: func(br *bufio.Reader) (*COM3D2.Col, error) {
+			return COM3D2.ReadCol(br)
+		},
+		Dump: func(col *COM3D2.Col, bw *bufio.Writer) error {
+			return col.Dump(bw)
+		},
+	}
+}

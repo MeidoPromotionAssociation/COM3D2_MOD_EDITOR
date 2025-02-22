@@ -19,6 +19,8 @@ func (a *CommonService) OpenModFile(path string) (interface{}, error) {
 		return NewMateService().ReadFile(path)
 	case ".pmat":
 		return NewPMatService().ReadFile(path)
+	case ".col":
+		return NewColService().ReadFile(path)
 	default:
 		return nil, fmt.Errorf("unsupported extension: %s", ext)
 	}
@@ -46,6 +48,12 @@ func (a *CommonService) SaveModFile(path string, data interface{}) error {
 			return fmt.Errorf("invalid data type for.pmat file")
 		}
 		return NewPMatService().SaveFile(path, &pmatData)
+	case ".col":
+		colData, ok := data.(COM3D2.Col)
+		if !ok {
+			return fmt.Errorf("invalid data type for.col file")
+		}
+		return NewColService().SaveFile(path, &colData)
 	default:
 		return fmt.Errorf("unsupported extension: %s", ext)
 	}

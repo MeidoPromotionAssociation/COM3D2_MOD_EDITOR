@@ -42,6 +42,7 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                         {key: "menu-editor", label: t('EditorNavBar.MenuEditor')},
                         {key: "mate-editor", label: t('EditorNavBar.MateEditor')},
                         {key: "pmat-editor", label: t('EditorNavBar.PMateEditor')},
+                        {key: "col-editor", label: t('EditorNavBar.ColEditor')},
                     ]}
                 />
             </div>

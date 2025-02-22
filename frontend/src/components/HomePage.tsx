@@ -80,7 +80,7 @@ const HomePage: React.FC = () => {
      */
     const handleSelectFile = async () => {
         try {
-            const filePath = await SelectFile("*.menu;*.mate;*.pmat", t('Infos.com3d2_mod_files'));
+            const filePath = await SelectFile("*.menu;*.mate;*.pmat;.col", t('Infos.com3d2_mod_files'));
             if (filePath) {
                 const extension = getFileExtension(filePath);
                 switch (extension) {
@@ -92,6 +92,9 @@ const HomePage: React.FC = () => {
                         break;
                     case "pmat":
                         navigate("/pmat-editor", {state: {filePath}});
+                        break;
+                    case "col":
+                        navigate("/col-editor", {state: {filePath}});
                         break;
                     default:
                         alert(t('Errors.file_type_not_supported'));
