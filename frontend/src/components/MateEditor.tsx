@@ -18,15 +18,15 @@ import {
 } from 'antd';
 import type {FormListOperation} from 'antd/es/form';
 import {WindowSetTitle} from '../../wailsjs/runtime';
-import {ReadMateFile, SaveMateFile} from '../../wailsjs/go/COM3D2/MateService';
 import {COM3D2} from '../../wailsjs/go/models';
 import {SaveFile} from '../../wailsjs/go/main/App';
-import {ColProperty, FProperty, TexProperty, VecProperty} from "../utils/manualModel";
+import {ColProperty, FProperty, TexProperty, VecProperty} from "../utils/manualMateModel";
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import MatePropertyItemType1 from "./MatePropertyItemType1";
 import MatePropertyItemType2 from "./MatePropertyItemType2";
 import {t} from "i18next";
+import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 
@@ -307,7 +307,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         if (filePath) {
 
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") +  fileName + "  (" + filePath + ")");
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
 
             handleReadMateFile();
         } else {
@@ -360,7 +360,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             const newMate = transformFormToMate(values, mateData);
 
             // 调用后端保存
-            await SaveMateFile(filePath, newMate);
+            await WriteMateFile(filePath, newMate);
             message.success(t('Infos.success_save_file'));
         } catch (error: any) {
             console.error(error);
@@ -389,7 +389,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             }
 
 
-            await SaveMateFile(newPath, newMate);
+            await WriteMateFile(newPath, newMate);
             message.success(t('Infos.success_save_as_file_colon') + newPath);
         } catch (error: any) {
             console.error(error);

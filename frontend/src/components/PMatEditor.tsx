@@ -1,11 +1,11 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {Checkbox, Collapse, Input, message, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
-import {ReadPMatFile, SavePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
 import {SaveFile} from "../../wailsjs/go/main/App";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {useTranslation} from "react-i18next";
+import {ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
 import PMat = COM3D2.PMat;
 
 
@@ -51,7 +51,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
         }
 
         const fileName = filePath.split(/[\\/]/).pop();
-        WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") +  fileName + "  (" + filePath + ")");
+        WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
 
         async function loadPMat() {
             try {
@@ -123,7 +123,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
                 RenderQueue: renderQueue,
                 Shader: shader,
             };
-            await SavePMatFile(filePath, newPMatData);
+            await WritePMatFile(filePath, newPMatData);
             message.success(t("Infos.success_save_file"));
         } catch (err: any) {
             console.error(err);
@@ -156,7 +156,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
                 return;
             }
 
-            await SavePMatFile(path, newPMatData);
+            await WritePMatFile(path, newPMatData);
             message.success(t("Infos.success_save_as_file_colon") + path);
         } catch (err: any) {
             console.error(err);

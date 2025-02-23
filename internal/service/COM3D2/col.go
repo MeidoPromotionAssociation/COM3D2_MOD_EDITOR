@@ -7,11 +7,11 @@ import (
 	"os"
 )
 
-// MateService 专门处理 .mate 文件的读写
-type MateService struct{}
+// ColService 专门处理 .col 文件的读写
+type ColService struct{}
 
-// ReadMateFile 读取 .mate 文件并返回对应结构体
-func (m *MateService) ReadMateFile(path string) (*COM3D2.Mate, error) {
+// ReadColFile 读取 .col 文件并返回对应结构体
+func (m *MateService) ReadColFile(path string) (*COM3D2.Col, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open .mate file: %w", err)
@@ -19,16 +19,16 @@ func (m *MateService) ReadMateFile(path string) (*COM3D2.Mate, error) {
 	defer f.Close()
 
 	br := bufio.NewReaderSize(f, 1024*1024*10)
-	mateData, err := COM3D2.ReadMate(br)
+	colData, err := COM3D2.ReadCol(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .mate file failed: %w", err)
 	}
 
-	return mateData, nil
+	return colData, nil
 }
 
-// SaveMateFile 接收 Mate 数据并写入 .mate 文件
-func (m *MateService) WriteMateFile(path string, mateData *COM3D2.Mate) error {
+// SaveColFile 接收 Col 数据并写入 .col 文件
+func (m *MateService) WriteColFile(path string, colData *COM3D2.Col) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("unable to create .menu file: %w", err)
@@ -36,7 +36,7 @@ func (m *MateService) WriteMateFile(path string, mateData *COM3D2.Mate) error {
 	defer f.Close()
 
 	bw := bufio.NewWriter(f)
-	if err := mateData.Dump(bw); err != nil {
+	if err := colData.Dump(bw); err != nil {
 		return fmt.Errorf("failed to write to .menu file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {

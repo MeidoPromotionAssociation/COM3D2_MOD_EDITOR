@@ -34,11 +34,11 @@ const ColEditorPage: React.FC = () => {
     };
 
     const handleSaveFile = () => {
-        colEditorRef.current?.handleSaveMenuFile();
+        colEditorRef.current?.handleSaveColFile();
     };
 
     const handleSaveAsFile = () => {
-        colEditorRef.current?.handleSaveAsMenuFile();
+        colEditorRef.current?.handleSaveAsColFile();
     };
 
     return (

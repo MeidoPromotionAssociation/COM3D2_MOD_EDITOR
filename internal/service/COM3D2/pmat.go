@@ -28,7 +28,7 @@ func (s *PMatService) ReadPMatFile(path string) (*COM3D2.PMat, error) {
 }
 
 // SavePMatFile 接收 PMat 数据并写入 .pmat 文件
-func (s *PMatService) SavePMatFile(path string, PMatData *COM3D2.PMat) error {
+func (s *PMatService) WritePMatFile(path string, PMatData *COM3D2.PMat) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("unable to create .pmat file: %w", err)

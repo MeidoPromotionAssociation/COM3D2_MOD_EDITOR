@@ -1,5 +1,4 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
-import {ReadMenuFile, SaveMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../wailsjs/go/models";
 import {Button, Checkbox, CheckboxProps, Collapse, Flex, Input, message, Modal, Radio, Space, Tooltip} from "antd";
@@ -11,6 +10,7 @@ import {SaveFile} from "../../wailsjs/go/main/App";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {setupMonacoEditor} from "../utils/menuMonacoConfig";
+import {ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
 
@@ -206,7 +206,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 });
 
 
-                await SaveMenuFile(filePath, newMenuData);
+                await WriteMenuFile(filePath, newMenuData);
                 message.success(t('Infos.success_save_file'));
             } catch (err) {
                 console.error(err);
@@ -259,7 +259,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                     return;
                 }
 
-                await SaveMenuFile(path, newMenuData);
+                await WriteMenuFile(path, newMenuData);
                 message.success(t('Infos.success_save_as_file_colon') + path);
             } catch (err) {
                 console.error(err);

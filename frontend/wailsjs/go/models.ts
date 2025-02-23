@@ -1,5 +1,35 @@
 export namespace COM3D2 {
 	
+	export class Col {
+	    Signature: string;
+	    Version: number;
+	    Colliders: any[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Col(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
+	        this.Colliders = source["Colliders"];
+	    }
+	}
+	export class ColProperty {
+	    PropName: string;
+	    Color: number[];
+	
+	    static createFrom(source: any = {}) {
+	        return new ColProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.Color = source["Color"];
+	    }
+	}
 	export class Command {
 	    ArgCount: number;
 	    Args: string[];
@@ -12,6 +42,149 @@ export namespace COM3D2 {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ArgCount = source["ArgCount"];
 	        this.Args = source["Args"];
+	    }
+	}
+	export class DynamicBoneColliderBase {
+	    ParentName: string;
+	    SelfName: string;
+	    LocalPosition: number[];
+	    LocalRotation: number[];
+	    LocalScale: number[];
+	    Direction: number;
+	    Center: number[];
+	    Bound: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new DynamicBoneColliderBase(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ParentName = source["ParentName"];
+	        this.SelfName = source["SelfName"];
+	        this.LocalPosition = source["LocalPosition"];
+	        this.LocalRotation = source["LocalRotation"];
+	        this.LocalScale = source["LocalScale"];
+	        this.Direction = source["Direction"];
+	        this.Center = source["Center"];
+	        this.Bound = source["Bound"];
+	    }
+	}
+	export class DynamicBoneCollider {
+	    Base?: DynamicBoneColliderBase;
+	    Radius: number;
+	    Height: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new DynamicBoneCollider(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Base = this.convertValues(source["Base"], DynamicBoneColliderBase);
+	        this.Radius = source["Radius"];
+	        this.Height = source["Height"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	export class DynamicBoneMuneCollider {
+	    Base?: DynamicBoneColliderBase;
+	    Radius: number;
+	    Height: number;
+	    ScaleRateMulMax: number;
+	    CenterRateMax: number[];
+	
+	    static createFrom(source: any = {}) {
+	        return new DynamicBoneMuneCollider(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Base = this.convertValues(source["Base"], DynamicBoneColliderBase);
+	        this.Radius = source["Radius"];
+	        this.Height = source["Height"];
+	        this.ScaleRateMulMax = source["ScaleRateMulMax"];
+	        this.CenterRateMax = source["CenterRateMax"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class DynamicBonePlaneCollider {
+	    Base?: DynamicBoneColliderBase;
+	
+	    static createFrom(source: any = {}) {
+	        return new DynamicBonePlaneCollider(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Base = this.convertValues(source["Base"], DynamicBoneColliderBase);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class FProperty {
+	    PropName: string;
+	    Number: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new FProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.Number = source["Number"];
 	    }
 	}
 	export class Material {
@@ -113,6 +286,18 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	export class MissingCollider {
+	
+	
+	    static createFrom(source: any = {}) {
+	        return new MissingCollider(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	
+	    }
+	}
 	export class PMat {
 	    Signature: string;
 	    Version: number;
@@ -133,6 +318,89 @@ export namespace COM3D2 {
 	        this.MaterialName = source["MaterialName"];
 	        this.RenderQueue = source["RenderQueue"];
 	        this.Shader = source["Shader"];
+	    }
+	}
+	export class Tex2DSubProperty {
+	    Name: string;
+	    Path: string;
+	    Offset: number[];
+	    Scale: number[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Tex2DSubProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Name = source["Name"];
+	        this.Path = source["Path"];
+	        this.Offset = source["Offset"];
+	        this.Scale = source["Scale"];
+	    }
+	}
+	export class TexRTSubProperty {
+	    DiscardedStr1: string;
+	    DiscardedStr2: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TexRTSubProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.DiscardedStr1 = source["DiscardedStr1"];
+	        this.DiscardedStr2 = source["DiscardedStr2"];
+	    }
+	}
+	export class TexProperty {
+	    PropName: string;
+	    SubTag: string;
+	    Tex2D?: Tex2DSubProperty;
+	    TexRT?: TexRTSubProperty;
+	
+	    static createFrom(source: any = {}) {
+	        return new TexProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.SubTag = source["SubTag"];
+	        this.Tex2D = this.convertValues(source["Tex2D"], Tex2DSubProperty);
+	        this.TexRT = this.convertValues(source["TexRT"], TexRTSubProperty);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	export class VecProperty {
+	    PropName: string;
+	    Vector: number[];
+	
+	    static createFrom(source: any = {}) {
+	        return new VecProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.Vector = source["Vector"];
 	    }
 	}
 

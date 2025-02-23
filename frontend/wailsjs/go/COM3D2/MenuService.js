@@ -6,6 +6,6 @@ export function ReadMenuFile(arg1) {
   return window['go']['COM3D2']['MenuService']['ReadMenuFile'](arg1);
 }
 
-export function SaveMenuFile(arg1, arg2) {
-  return window['go']['COM3D2']['MenuService']['SaveMenuFile'](arg1, arg2);
+export function WriteMenuFile(arg1, arg2) {
+  return window['go']['COM3D2']['MenuService']['WriteMenuFile'](arg1, arg2);
 }

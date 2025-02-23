@@ -4,4 +4,4 @@ import {COM3D2} from '../models';
 
 export function ReadPMatFile(arg1:string):Promise<COM3D2.PMat>;
 
-export function SavePMatFile(arg1:string,arg2:COM3D2.PMat):Promise<void>;
+export function WritePMatFile(arg1:string,arg2:COM3D2.PMat):Promise<void>;

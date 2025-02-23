@@ -8,12 +8,12 @@ import (
 
 // PMat 对应 .PMat 文件结构
 type PMat struct {
-	Signature    string
-	Version      int32
-	Hash         int32
-	MaterialName string
-	RenderQueue  float32
-	Shader       string
+	Signature    string  `json:"Signature"`
+	Version      int32   `json:"Version"`
+	Hash         int32   `json:"Hash"`
+	MaterialName string  `json:"MaterialName"`
+	RenderQueue  float32 `json:"RenderQueue"`
+	Shader       string  `json:"Shader"`
 }
 
 // ReadPMat 从 r 中读取一个 .PMat 文件，并解析为 PMat 结构。

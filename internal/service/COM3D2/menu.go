@@ -27,7 +27,7 @@ func (s *MenuService) ReadMenuFile(path string) (*COM3D2.Menu, error) {
 }
 
 // SaveMenuFile 接收 Menu 数据并写入 .menu 文件
-func (s *MenuService) SaveMenuFile(path string, menuData *COM3D2.Menu) error {
+func (s *MenuService) WriteMenuFile(path string, menuData *COM3D2.Menu) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("unable to create .menu file: %w", err)

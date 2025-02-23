@@ -6,6 +6,6 @@ export function ReadPMatFile(arg1) {
   return window['go']['COM3D2']['PMatService']['ReadPMatFile'](arg1);
 }
 
-export function SavePMatFile(arg1, arg2) {
-  return window['go']['COM3D2']['PMatService']['SavePMatFile'](arg1, arg2);
+export function WritePMatFile(arg1, arg2) {
+  return window['go']['COM3D2']['PMatService']['WritePMatFile'](arg1, arg2);
 }

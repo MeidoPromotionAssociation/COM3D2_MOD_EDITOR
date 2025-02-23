@@ -11,9 +11,9 @@ import (
 // -------------------------------------------------------
 
 type Col struct {
-	Signature string `json:"signature"` // "CM3D21_COL"
-	Version   int32  `json:"version"`   // 24102
-	Colliders []ICollider
+	Signature string      `json:"Signature"` // "CM3D21_COL"
+	Version   int32       `json:"Version"`   // 24102
+	Colliders []ICollider `json:"Colliders"`
 }
 
 // ICollider 是所有Collider的接口，不同具体类型各自实现。
@@ -29,15 +29,15 @@ type ICollider interface {
 
 // DynamicBoneColliderBase 基类
 type DynamicBoneColliderBase struct {
-	ParentName    string // base.transform.parent.name
-	SelfName      string // base.transform.name
-	LocalPosition [3]float32
-	LocalRotation [4]float32
-	LocalScale    [3]float32
+	ParentName    string     `json:"ParentName"` // base.transform.parent.name
+	SelfName      string     `json:"SelfName"`   // base.transform.name
+	LocalPosition [3]float32 `json:"LocalPosition"`
+	LocalRotation [4]float32 `json:"LocalRotation"`
+	LocalScale    [3]float32 `json:"LocalScale"`
 
-	Direction int32      // (int)this.m_Direction
-	Center    [3]float32 // m_Center.x,y,z
-	Bound     int32      // (int)this.m_Bound
+	Direction int32      `json:"Direction"` // (int)this.m_Direction
+	Center    [3]float32 `json:"Center"`    // m_Center.x,y,z
+	Bound     int32      `json:"Bound"`     // (int)this.m_Bound
 }
 
 func (c *DynamicBoneColliderBase) TypeName() string {
@@ -172,10 +172,10 @@ func WriteDynamicBoneColliderBase(w io.Writer, baseData *DynamicBoneColliderBase
 
 // DynamicBoneCollider 对应 "dbc"
 type DynamicBoneCollider struct {
-	Base *DynamicBoneColliderBase
+	Base *DynamicBoneColliderBase `json:"Base"`
 
-	Radius float32
-	Height float32
+	Radius float32 `json:"Radius"`
+	Height float32 `json:"Height"`
 }
 
 func (c *DynamicBoneCollider) TypeName() string {
@@ -235,7 +235,7 @@ func WriteDynamicBoneCollider(w io.Writer, c *DynamicBoneCollider) error {
 // DynamicBonePlaneCollider 对应 "dpc"
 // 在 C# 中并无其它独立字段，只继承基类。
 type DynamicBonePlaneCollider struct {
-	Base *DynamicBoneColliderBase
+	Base *DynamicBoneColliderBase `json:"Base"`
 }
 
 func (c *DynamicBonePlaneCollider) TypeName() string {
@@ -274,12 +274,12 @@ func WriteDynamicBonePlaneCollider(w io.Writer, c *DynamicBonePlaneCollider) err
 
 // DynamicBoneMuneCollider 对应 "dbm"
 type DynamicBoneMuneCollider struct {
-	Base *DynamicBoneColliderBase
+	Base *DynamicBoneColliderBase `json:"Base"`
 
-	Radius          float32    // m_Radius
-	Height          float32    // m_Height
-	ScaleRateMulMax float32    // m_fScaleRateMulMax
-	CenterRateMax   [3]float32 // m_CenterRateMax.x,y,z
+	Radius          float32    `json:"Radius"`          // m_Radius
+	Height          float32    `json:"Height"`          // m_Height
+	ScaleRateMulMax float32    `json:"ScaleRateMulMax"` // m_fScaleRateMulMax
+	CenterRateMax   [3]float32 `json:"CenterRateMax"`   // m_CenterRateMax.x,y,z
 
 	// C# 里有 public Maid m_maid; 但是它并没有被 Serialize/Deserialize
 	// 所以这里就不做二进制存储了。
