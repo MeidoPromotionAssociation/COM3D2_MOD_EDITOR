@@ -20,16 +20,19 @@ import type {FormListOperation} from 'antd/es/form';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {COM3D2} from '../../wailsjs/go/models';
 import {SaveFile} from '../../wailsjs/go/main/App';
-import {ColProperty, FProperty, TexProperty, VecProperty} from "../utils/manualMateModel";
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import MatePropertyItemType1 from "./MatePropertyItemType1";
 import MatePropertyItemType2 from "./MatePropertyItemType2";
 import {t} from "i18next";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
+import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
-import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
+import TexProperty = COM3D2.TexProperty;
+import ColProperty = COM3D2.ColProperty;
+import VecProperty = COM3D2.VecProperty;
+import FProperty = COM3D2.FProperty;
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -112,7 +115,7 @@ const Style1PropertiesVirtualized: React.FC<{
                 type="primary"
                 onClick={() => add()}
                 block
-                icon={<PlusOutlined />}
+                icon={<PlusOutlined/>}
                 style={{marginTop: 8}}
             >
                 {t("MateEditor.add_new_property")}
@@ -120,8 +123,6 @@ const Style1PropertiesVirtualized: React.FC<{
         </>
     );
 };
-
-
 
 
 // ======================= 样式2：按 propType 分栏 + 左列表/右编辑区  =======================
@@ -251,7 +252,7 @@ const Style2Properties: React.FC<{
                     </Radio.Group>
                     <Input.Search
                         onChange={(e) => setSearchKeyword(e.target.value)}
-                        style={{ marginTop: 8 }}
+                        style={{marginTop: 8}}
                     />
                 </div>
 
