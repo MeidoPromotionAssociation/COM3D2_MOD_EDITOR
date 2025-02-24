@@ -29,6 +29,7 @@ import {t} from "i18next";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
+import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -90,6 +91,38 @@ const Style1Properties: React.FC<{
     );
 };
 
+// 为大文件准备的虚拟渲染
+const Style1PropertiesVirtualized: React.FC<{
+    fields: FormListFieldData[];
+    add: FormListOperation["add"];
+    remove: FormListOperation["remove"];
+    form: any;
+}> = ({fields, add, remove, form}) => {
+    const {t} = useTranslation();
+
+    return (
+        <>
+            <MatePropertyListType1Virtualized
+                fields={fields}
+                remove={remove}
+                form={form}
+            />
+
+            <Button
+                type="primary"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+                style={{marginTop: 8}}
+            >
+                {t("MateEditor.add_new_property")}
+            </Button>
+        </>
+    );
+};
+
+
+
 
 // ======================= 样式2：按 propType 分栏 + 左列表/右编辑区  =======================
 const Style2Properties: React.FC<{
@@ -104,15 +137,24 @@ const Style2Properties: React.FC<{
     // 当前选中的属性下标（在 fields 数组里的 name）
     const [selectedField, setSelectedField] = useState<number | null>(null);
 
-    // 新增：用来筛选 propType
+    // 用来筛选 propType
     const [filterPropType, setFilterPropType] = useState<string>('all');
 
-    // 先按筛选规则过滤 fields
+    // 搜索关键词状态
+    const [searchKeyword, setSearchKeyword] = useState('');
+
+    // 按筛选规则和搜索过滤
     const filteredFields = fields.filter((f: FormListFieldData) => {
         const pType = form.getFieldValue(['properties', f.name, 'propType']);
-        if (filterPropType === 'all') return true;
-        return pType === filterPropType;
+        const pName = form.getFieldValue(['properties', f.name, 'propName']) || '';
+
+        // 组合过滤条件
+        const typeMatch = filterPropType === 'all' || pType === filterPropType;
+        const nameMatch = pName.toLowerCase().includes(searchKeyword.toLowerCase());
+
+        return typeMatch && nameMatch;
     });
+
 
     // 再按 propType 分组
     const grouped: Record<string, { field: FormListFieldData; index: number; propName: string }[]> = {};
@@ -207,6 +249,10 @@ const Style2Properties: React.FC<{
                         <Radio.Button value="f">{t('MateEditor.f')}</Radio.Button>
                         <Radio.Button value="unknown">{t('MateEditor.unknown')}</Radio.Button>
                     </Radio.Group>
+                    <Input.Search
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        style={{ marginTop: 8 }}
+                    />
                 </div>
 
                 {/* 左边栏，按 PropType 分组 */}
@@ -735,7 +781,22 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             <Form.List name="properties">
                                 {(fields, {add, remove}) =>
                                     viewMode === 1 ? (
-                                        <Style1Properties fields={fields} add={add} remove={remove} form={form}/>
+                                        // 根据 fields 数量选择渲染模式
+                                        fields.length > 70 ? (
+                                            <Style1PropertiesVirtualized
+                                                fields={fields}
+                                                add={add}
+                                                remove={remove}
+                                                form={form}
+                                            />
+                                        ) : (
+                                            <Style1Properties
+                                                fields={fields}
+                                                add={add}
+                                                remove={remove}
+                                                form={form}
+                                            />
+                                        )
                                     ) : (
                                         <Style2Properties fields={fields} add={add} remove={remove} form={form}/>
                                     )
