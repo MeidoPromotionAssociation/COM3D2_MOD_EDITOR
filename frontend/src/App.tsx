@@ -2,7 +2,7 @@
 import React, {useEffect} from "react";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import HomePage from "./components/HomePage";
-import {EventsEmit, EventsOnce, OnFileDrop, WindowSetTitle} from "../wailsjs/runtime";
+import {EventsEmit, EventsOnce, OnFileDrop} from "../wailsjs/runtime";
 import MenuEditorPage from "./components/MenuEditorPage";
 import MateEditorPage from "./components/MateEditorPage";
 import PMatEditorPage from "./components/PMatEditorPage";
@@ -10,8 +10,8 @@ import {getFileExtension} from "./utils/utils";
 import {useTranslation} from "react-i18next";
 import {ConfigProvider, message, theme} from "antd";
 import {useDarkMode} from "./hooks/themeSwitch";
-import {GetAppVersion} from "../wailsjs/go/main/App";
 import ColEditorPage from "./components/ColEditorPage";
+import PhyEditorPage from "./components/PhyEditorPage";
 
 
 const App: React.FC = () => {
@@ -34,8 +34,11 @@ const App: React.FC = () => {
                 case "pmat":
                     navigate("/pmat-editor", {state: {filePath}})
                     break
+                case "phy":
+                    navigate("/phy-editor", {state: {filePath}})
+                    break
                 default:
-                   message.error(t('Errors.file_type_not_supported'))
+                    message.error(t('Errors.file_type_not_supported'))
             }
         })
         return () => {
@@ -58,10 +61,13 @@ const App: React.FC = () => {
                 case "pmat":
                     navigate("/pmat-editor", {state: {filePath}})
                     break
+                case "phy":
+                    navigate("/phy-editor", {state: {filePath}})
+                    break
                 default:
                     message.error(t('Errors.file_type_not_supported'))
             }
-        },false)
+        }, false)
     }, []);
 
     useEffect(() => {
@@ -81,6 +87,7 @@ const App: React.FC = () => {
                 <Route path="/mate-editor" element={<MateEditorPage/>}/>
                 <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
                 <Route path="/col-editor" element={<ColEditorPage/>}/>
+                <Route path="/phy-editor" element={<PhyEditorPage/>}/>
             </Routes>
         </ConfigProvider>
     );

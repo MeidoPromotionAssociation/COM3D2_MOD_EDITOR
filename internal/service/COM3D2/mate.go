@@ -27,7 +27,7 @@ func (m *MateService) ReadMateFile(path string) (*COM3D2.Mate, error) {
 	return mateData, nil
 }
 
-// SaveMateFile 接收 Mate 数据并写入 .mate 文件
+// WriteMateFile 接收 Mate 数据并写入 .mate 文件
 func (m *MateService) WriteMateFile(path string, mateData *COM3D2.Mate) error {
 	f, err := os.Create(path)
 	if err != nil {

@@ -33,6 +33,7 @@ import TexProperty = COM3D2.TexProperty;
 import ColProperty = COM3D2.ColProperty;
 import VecProperty = COM3D2.VecProperty;
 import FProperty = COM3D2.FProperty;
+import {Editor} from "@monaco-editor/react";
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -323,6 +324,54 @@ const Style2Properties: React.FC<{
 };
 
 
+// ======================= 样式3：直接用 Monaco Editor 展示/编辑整个 mateData JSON =======================
+const Style3Properties: React.FC<{
+    mateData: Mate | null;
+    setMateData: (m: Mate | null) => void;
+}> = ({ mateData, setMateData }) => {
+    const [jsonValue, setJsonValue] = useState("");
+
+    useEffect(() => {
+        if (mateData) {
+            // 初次/每次切换时，把 Mate 对象序列化为 JSON
+            setJsonValue(JSON.stringify(mateData, null, 2));
+        } else {
+            setJsonValue("");
+        }
+    }, [mateData]);
+
+    // 当用户编辑 Monaco 里的 JSON
+    const handleEditorChange = (value?: string) => {
+        if (value == null) value = "";
+        setJsonValue(value);
+
+        try {
+            const parsed = JSON.parse(value);
+            // 只要 JSON 格式正常，实时更新父组件的 mateData
+            setMateData(parsed);
+        } catch (err) {
+            // console.log("Invalid JSON:", err);
+        }
+    };
+
+    return (
+        <div style={{height: "calc(100vh - 230px)"}}>
+            <Editor
+                language="json"
+                value={jsonValue}
+                onChange={handleEditorChange}
+                options={{
+                    minimap: {enabled: true},
+                    tabSize: 2,
+                }}
+            />
+        </div>
+    );
+};
+
+
+
+
 /**
  * MateEditor 组件
  *
@@ -343,10 +392,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     // 用于 antd 的表单来管理字段
     const [form] = Form.useForm();
 
-    // 用来切换样式模式：1 or 2
-    const [viewMode, setViewMode] = useState<1 | 2>(() => {
+    // 用来切换样式模式：1 or 2 or 3
+    const [viewMode, setViewMode] = useState<1 | 2 | 3>(() => {
         const saved = localStorage.getItem('mateEditorViewMode');
-        return saved ? Number(saved) as 1 | 2 : 1;
+        return saved ? Number(saved) as 1 | 2 | 3 : 1;
     });
 
     // 当组件挂载或 filePath 改变时，自动读取
@@ -772,17 +821,16 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     options={[
                                         {label: t('MateEditor.style1'), value: 1},
                                         {label: t('MateEditor.style2'), value: 2},
+                                        {label: t('MateEditor.style3'), value: 3},
                                     ]}
                                     optionType="button"
                                     buttonStyle="solid"
                                 />
                             </div>
 
-                            {/* 这里统一用一个 Form.List，根据 viewMode 分别渲染 */}
-                            <Form.List name="properties">
-                                {(fields, {add, remove}) =>
-                                    viewMode === 1 ? (
-                                        // 根据 fields 数量选择渲染模式
+                            {viewMode === 1 && (
+                                <Form.List name="properties">
+                                    {(fields, {add, remove}) =>
                                         fields.length > 70 ? (
                                             <Style1PropertiesVirtualized
                                                 fields={fields}
@@ -798,11 +846,29 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                                 form={form}
                                             />
                                         )
-                                    ) : (
-                                        <Style2Properties fields={fields} add={add} remove={remove} form={form}/>
-                                    )
-                                }
-                            </Form.List>
+                                    }
+                                </Form.List>
+                            )}
+
+                            {viewMode === 2 && (
+                                <Form.List name="properties">
+                                    {(fields, {add, remove}) => (
+                                        <Style2Properties
+                                            fields={fields}
+                                            add={add}
+                                            remove={remove}
+                                            form={form}
+                                        />
+                                    )}
+                                </Form.List>
+                            )}
+
+                            {viewMode === 3 && (
+                                <Style3Properties
+                                    mateData={mateData}
+                                    setMateData={(newVal) => setMateData(newVal)}
+                                />
+                            )}
                         </Collapse.Panel>
                     </Collapse>
                 </Form>

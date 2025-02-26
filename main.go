@@ -19,11 +19,13 @@ func main() {
 	MateService := &COM3D2.MateService{}
 	PMatService := &COM3D2.PMatService{}
 	ColService := &COM3D2.ColService{}
+	PhyService := &COM3D2.PhyService{}
 
 	MenuModel := &COM3D2.MenuModel{}
 	MateModel := &COM3D2.MateModel{}
 	PMatModel := &COM3D2.PMatModel{}
 	ColModel := &COM3D2.ColModel{}
+	PhyModel := &COM3D2.PhyModel{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -47,10 +49,12 @@ func main() {
 			MateService,
 			PMatService,
 			ColService,
+			PhyService,
 			MenuModel,
 			MateModel,
 			PMatModel,
 			ColModel,
+			PhyModel,
 		},
 	})
 

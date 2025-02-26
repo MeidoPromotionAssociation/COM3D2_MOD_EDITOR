@@ -369,7 +369,7 @@ func (m *MissingCollider) TypeName() string {
 	return "missing"
 }
 func (m *MissingCollider) Deserialize(r io.Reader, version int32) error {
-	// "missing" 字段什么都不做
+	// "missing" 字段什么都不做，typeName 已经在外层写了
 	return nil
 }
 func (m *MissingCollider) Serialize(w io.Writer, version int32) error {
@@ -391,7 +391,7 @@ func ReadCol(r io.Reader) (*Col, error) {
 		return nil, fmt.Errorf("read signature failed: %w", err)
 	}
 	if sig != ColSignature {
-		return nil, fmt.Errorf("invalid collider file signature: %s", sig)
+		return nil, fmt.Errorf("invalid col signature, want %v, got %s", ColSignature, sig)
 	}
 	file.Signature = sig
 

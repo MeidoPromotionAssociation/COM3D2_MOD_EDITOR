@@ -1,5 +1,67 @@
 export namespace COM3D2 {
 	
+	export class Keyframe {
+	    Time: number;
+	    Value: number;
+	    InTangent: number;
+	    OutTangent: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Keyframe(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Time = source["Time"];
+	        this.Value = source["Value"];
+	        this.InTangent = source["InTangent"];
+	        this.OutTangent = source["OutTangent"];
+	    }
+	}
+	export class AnimationCurve {
+	    Keyframes: Keyframe[];
+	
+	    static createFrom(source: any = {}) {
+	        return new AnimationCurve(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Keyframes = this.convertValues(source["Keyframes"], Keyframe);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class BoneValue {
+	    BoneName: string;
+	    Value: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new BoneValue(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BoneName = source["BoneName"];
+	        this.Value = source["Value"];
+	    }
+	}
 	export class Col {
 	    Signature: string;
 	    Version: number;
@@ -187,6 +249,7 @@ export namespace COM3D2 {
 	        this.Number = source["Number"];
 	    }
 	}
+	
 	export class Material {
 	    Name: string;
 	    ShaderName: string;
@@ -319,6 +382,96 @@ export namespace COM3D2 {
 	        this.RenderQueue = source["RenderQueue"];
 	        this.Shader = source["Shader"];
 	    }
+	}
+	export class Phy {
+	    Signature: string;
+	    Version: number;
+	    RootName: string;
+	    EnablePartialDamping: number;
+	    PartialDamping: BoneValue[];
+	    Damping: number;
+	    DampingDistrib: AnimationCurve;
+	    EnablePartialElasticity: number;
+	    PartialElasticity: BoneValue[];
+	    Elasticity: number;
+	    ElasticityDistrib: AnimationCurve;
+	    EnablePartialStiffness: number;
+	    PartialStiffness: BoneValue[];
+	    Stiffness: number;
+	    StiffnessDistrib: AnimationCurve;
+	    EnablePartialInert: number;
+	    PartialInert: BoneValue[];
+	    Inert: number;
+	    InertDistrib: AnimationCurve;
+	    EnablePartialRadius: number;
+	    PartialRadius: BoneValue[];
+	    Radius: number;
+	    RadiusDistrib: AnimationCurve;
+	    EndLength: number;
+	    EndOffset: number[];
+	    Gravity: number[];
+	    Force: number[];
+	    ColliderFileName: string;
+	    CollidersCount: number;
+	    ExclusionsCount: number;
+	    FreezeAxis: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Phy(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
+	        this.RootName = source["RootName"];
+	        this.EnablePartialDamping = source["EnablePartialDamping"];
+	        this.PartialDamping = this.convertValues(source["PartialDamping"], BoneValue);
+	        this.Damping = source["Damping"];
+	        this.DampingDistrib = this.convertValues(source["DampingDistrib"], AnimationCurve);
+	        this.EnablePartialElasticity = source["EnablePartialElasticity"];
+	        this.PartialElasticity = this.convertValues(source["PartialElasticity"], BoneValue);
+	        this.Elasticity = source["Elasticity"];
+	        this.ElasticityDistrib = this.convertValues(source["ElasticityDistrib"], AnimationCurve);
+	        this.EnablePartialStiffness = source["EnablePartialStiffness"];
+	        this.PartialStiffness = this.convertValues(source["PartialStiffness"], BoneValue);
+	        this.Stiffness = source["Stiffness"];
+	        this.StiffnessDistrib = this.convertValues(source["StiffnessDistrib"], AnimationCurve);
+	        this.EnablePartialInert = source["EnablePartialInert"];
+	        this.PartialInert = this.convertValues(source["PartialInert"], BoneValue);
+	        this.Inert = source["Inert"];
+	        this.InertDistrib = this.convertValues(source["InertDistrib"], AnimationCurve);
+	        this.EnablePartialRadius = source["EnablePartialRadius"];
+	        this.PartialRadius = this.convertValues(source["PartialRadius"], BoneValue);
+	        this.Radius = source["Radius"];
+	        this.RadiusDistrib = this.convertValues(source["RadiusDistrib"], AnimationCurve);
+	        this.EndLength = source["EndLength"];
+	        this.EndOffset = source["EndOffset"];
+	        this.Gravity = source["Gravity"];
+	        this.Force = source["Force"];
+	        this.ColliderFileName = source["ColliderFileName"];
+	        this.CollidersCount = source["CollidersCount"];
+	        this.ExclusionsCount = source["ExclusionsCount"];
+	        this.FreezeAxis = source["FreezeAxis"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
 	export class Tex2DSubProperty {
 	    Name: string;

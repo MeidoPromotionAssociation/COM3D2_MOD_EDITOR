@@ -120,6 +120,7 @@
     "unknown": "알 수 없음",
     "style1": "스타일 1",
     "style2": "스타일 2",
+    "style3": "JSON",
     "subTag": "하위 유형",
     "tex2d": "2D 텍스처(tex2d)",
     "tex_cube": "큐브 텍스처(cube)",

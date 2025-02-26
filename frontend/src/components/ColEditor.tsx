@@ -19,7 +19,7 @@ import type {FormListOperation} from "antd/es/form";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {SaveFile} from "../../wailsjs/go/main/App";
-import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/MateService";
+import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import ColModel = COM3D2.Col; // 注意别名，避免与 antd 的 Col 冲突
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
@@ -659,15 +659,6 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                         </Collapse.Panel>
                     </Collapse>
                 </Form>
-
-                <Divider/>
-
-                <Space>
-                    <Button type="primary" onClick={handleSaveColFile}>
-                        保存(Ctrl+S)
-                    </Button>
-                    <Button onClick={handleSaveAsColFile}>另存为</Button>
-                </Space>
             </ConfigProvider>
         </div>
     );

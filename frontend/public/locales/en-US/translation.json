@@ -120,6 +120,7 @@
     "unknown": "Unknown",
     "style1": "Style 1",
     "style2": "Style 2",
+    "style3": "JSON",
     "subTag": "Sub Type",
     "tex2d": "2D Texture (tex2d)",
     "tex_cube": "Cube Texture (cube)",
