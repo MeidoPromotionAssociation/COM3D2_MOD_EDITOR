@@ -34,6 +34,7 @@ import ColProperty = COM3D2.ColProperty;
 import VecProperty = COM3D2.VecProperty;
 import FProperty = COM3D2.FProperty;
 import {Editor} from "@monaco-editor/react";
+import {useDarkMode} from "../hooks/themeSwitch";
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -329,6 +330,7 @@ const Style3Properties: React.FC<{
     mateData: Mate | null;
     setMateData: (m: Mate | null) => void;
 }> = ({ mateData, setMateData }) => {
+    const isDarkMode = useDarkMode();
     const [jsonValue, setJsonValue] = useState("");
 
     useEffect(() => {
@@ -358,6 +360,7 @@ const Style3Properties: React.FC<{
         <div style={{height: "calc(100vh - 230px)"}}>
             <Editor
                 language="json"
+                theme={isDarkMode ? "vs-dark" : "vs"}
                 value={jsonValue}
                 onChange={handleEditorChange}
                 options={{

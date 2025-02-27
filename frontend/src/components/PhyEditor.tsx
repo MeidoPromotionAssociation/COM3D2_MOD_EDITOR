@@ -40,7 +40,7 @@ export interface PhyEditorRef {
     handleSaveAsPhyFile: () => Promise<void>;
 }
 
-// PartialMode 常量（跟后端一致）
+// PartialMode 常量
 const PartialMode_StaticOrCurve = 0;
 const PartialMode_Partial = 1;
 const PartialMode_FromBoneName = 2;
@@ -304,7 +304,7 @@ function transformFormToPhy(values: any, oldPhy: Phy): Phy {
 }
 
 /**
- * 该组件类似 MateEditor，使用一个 antd Form 来编辑 COM3D2.Phy 的所有字段
+ * 使用一个 antd Form 来编辑 COM3D2.Phy 的所有字段
  */
 const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
     const {filePath} = props;
@@ -329,7 +329,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             // 如果没有 filePath，就新建一个空的
             const empty = COM3D2.Phy.createFrom({});
             empty.Signature = "CM3D21_PHY";
-            empty.Version = 24102; // 可以自定义默认版本
+            empty.Version = 24102;
             setPhyData(empty);
             form.resetFields();
         }
@@ -427,7 +427,6 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
     }));
 
     // 渲染某个 partial 块: (enablePartialXxx, partialXxx, Xxx, XxxDistrib)
-    // 这里示例写成一个函数以简化主 render
     const renderPartialSection = (
         label: string,
         enablePartialName: string,           // enablePartialDamping

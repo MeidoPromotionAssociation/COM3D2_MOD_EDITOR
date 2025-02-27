@@ -180,8 +180,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             // colliders 是一个 Form.List，要将每个 collider 转成一条记录
             colliders: (col.Colliders || []).map((collider: any) => {
                 // collider 可能是 dbc / dpc / dbm / missing
-                // 根据 typeName 来区分
-                // 先在后端里往对象里打一个 typeName 字段（如果自动生成没有带的话，可以在前端做一次推断）
+                // 后端使用 interface 实现的多态，所以前端只能类型推断了
                 const typeName = guessColliderType(collider);
 
                 // 先把 base 中的数据拿出来
@@ -303,27 +302,20 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         return newCol;
     }
 
-    /** 如果后端没有自动给 collider 携带 typeName，可在此处根据其结构推断 */
+    /** 根据结构推断数据类型 */
     function guessColliderType(colliderObj: any): string {
-        // 约定：后端那边反序列化后，如果是 DynamicBoneCollider，就会包含 `Radius`, `Height` 字段等
-        // 也可在后端显式地加一个 colliderObj.TypeName 字段再传回来，这里直接取就行。
-        // 这里给一个简单猜测示例：
-        if (colliderObj?.Radius !== undefined && colliderObj?.Height !== undefined && colliderObj?.ScaleRateMulMax !== undefined) {
+        // 根据已知字段判断
+        if (colliderObj?.Radius !== undefined && colliderObj?.Height !== undefined && colliderObj?.ScaleRateMulMax !== undefined && colliderObj?.CenterRateMax !== undefined) {
             return "dbm";
         } else if (colliderObj?.Radius !== undefined && colliderObj?.Height !== undefined) {
             return "dbc";
         } else if (colliderObj?.Base !== undefined && colliderObj?.Radius === undefined && colliderObj?.Height === undefined) {
-            // 进一步判断有无 Base
-            // 这里仅示例：如果 "Bound" 等也有，则大概率是 dpc
-            // 也可以再看有没有别的字段...
-            if (colliderObj?.Base) return "dpc";
+            if (colliderObj?.Base) return "dpc"; // dpc 只有基类
         } else if (colliderObj?.Base === undefined) {
-            return "missing";
+            return "missing"; // missing 什么都没有
         }
         return "missing";
     }
-
-    // ====================== 下面是对 Colliders 的两种视图模式示例 ========================= //
 
     /** 样式1：所有 Collider 顺序排布 */
     const Style1Colliders: React.FC<{
@@ -368,72 +360,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         );
     };
 
-    /** 样式2：左侧列出 Collider 列表，右侧编辑当前选中 */
-    const Style2Colliders: React.FC<{
-        fields: FormListFieldData[];
-        add: FormListOperation["add"];
-        remove: FormListOperation["remove"];
-        form: any;
-    }> = ({fields, add, remove, form}) => {
-        const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-        // 左侧列表
-        const handleSelect = (idx: number) => {
-            setSelectedIndex(idx);
-        };
-
-        // 取出当前选中的 field
-        const selectedFieldData = fields.find(f => f.name === selectedIndex);
-
-        return (
-            <Row gutter={16}>
-                <AntdCol span={8} style={{borderRight: "1px solid #ddd"}}>
-                    {fields.map(({key, name, ...restField}) => {
-                        const typeName = form.getFieldValue(["colliders", name, "_typeName"]);
-                        const displayName = `${typeName} #${name}`;
-                        return (
-                            <div
-                                key={key}
-                                onClick={() => handleSelect(name)}
-                                style={{
-                                    padding: 8,
-                                    margin: 4,
-                                    borderRadius: 4,
-                                    cursor: "pointer",
-                                    backgroundColor: selectedIndex === name ? "#bae7ff" : undefined
-                                }}
-                            >
-                                {displayName}
-                            </div>
-                        );
-                    })}
-                    <Button block type="primary" onClick={() => add()}>
-                        添加新Collider
-                    </Button>
-                </AntdCol>
-                <AntdCol span={16}>
-                    {selectedIndex !== null && selectedFieldData && (
-                        <div style={{padding: 8, border: "1px solid #ccc"}}>
-                            <DynamicColliderFormItem
-                                name={selectedFieldData.name}
-                                form={form}
-                            />
-                            <Divider/>
-                            <Button
-                                danger
-                                onClick={() => {
-                                    remove(selectedFieldData.name);
-                                    setSelectedIndex(null);
-                                }}
-                            >
-                                删除该Collider
-                            </Button>
-                        </div>
-                    )}
-                </AntdCol>
-            </Row>
-        );
-    };
 
     /**
      * 用于渲染单个 Collider 的表单区域，根据 typeName 动态切换要展示的字段
@@ -578,7 +505,6 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         );
     };
 
-    // ======================== 渲染主页面 ======================== //
 
     return (
         <div style={{padding: 10}}>
@@ -618,42 +544,14 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                             </Space>
                         </Collapse.Panel>
                         <Collapse.Panel header="Colliders" key="colliders">
-                            {/* 切换视图模式 */}
-                            <Form.Item label="View Mode">
-                                <Radio.Group
-                                    value={viewMode}
-                                    onChange={(e) => {
-                                        setViewMode(e.target.value);
-                                        localStorage.setItem(
-                                            "colEditorViewMode",
-                                            e.target.value.toString()
-                                        );
-                                    }}
-                                    optionType="button"
-                                    buttonStyle="solid"
-                                >
-                                    <Radio.Button value={1}>样式1</Radio.Button>
-                                    <Radio.Button value={2}>样式2</Radio.Button>
-                                </Radio.Group>
-                            </Form.Item>
-
                             <Form.List name="colliders">
                                 {(fields, {add, remove}) =>
-                                    viewMode === 1 ? (
-                                        <Style1Colliders
-                                            fields={fields}
-                                            add={add}
-                                            remove={remove}
-                                            form={form}
-                                        />
-                                    ) : (
-                                        <Style2Colliders
-                                            fields={fields}
-                                            add={add}
-                                            remove={remove}
-                                            form={form}
-                                        />
-                                    )
+                                    <Style1Colliders
+                                        fields={fields}
+                                        add={add}
+                                        remove={remove}
+                                        form={form}
+                                    />
                                 }
                             </Form.List>
                         </Collapse.Panel>
