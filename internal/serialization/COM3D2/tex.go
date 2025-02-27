@@ -143,10 +143,8 @@ func ReadTex(r io.Reader) (*Tex, error) {
 			return nil, fmt.Errorf(".tex data too short for version=1000")
 		}
 		// C# 示例：data[16..19] 存储宽度(小端序), data[20..23] 存储高度(小端序)
-		// 这里假设是 DDS 标准头
-		width = int32(binary.BigEndian.Uint32(data[16:20]))
-		height = int32(binary.BigEndian.Uint32(data[20:24]))
-		// 当然，如果是 little-endian，需要改用 binary.LittleEndian
+		width = int32(binary.LittleEndian.Uint32(data[16:20]))
+		height = int32(binary.LittleEndian.Uint32(data[20:24]))
 	}
 
 	tex := &Tex{
