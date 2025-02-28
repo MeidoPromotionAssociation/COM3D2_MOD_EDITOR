@@ -144,6 +144,8 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 # KISS 規約
 
+*This Project is not owned or endorsed by KISS.
+
 *MODs are not supported by KISS.
 
 *KISS cannot be held responsible for any problems that may arise when using MODs.
