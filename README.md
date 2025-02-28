@@ -186,3 +186,4 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - [TypeScript](https://www.typescriptlang.org/)
 - [Ant Design](https://ant.design/)
 - [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+- [ImageMagick](https://imagemagick.org/) by ImageMagick Studio LLC
