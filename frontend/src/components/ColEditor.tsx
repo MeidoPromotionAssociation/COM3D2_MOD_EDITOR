@@ -2,7 +2,6 @@ import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react
 import {
     Button,
     Checkbox,
-    Col as AntdCol,
     Collapse,
     ConfigProvider,
     Divider,
@@ -12,7 +11,6 @@ import {
     InputNumber,
     message,
     Radio,
-    Row,
     Space
 } from "antd";
 import type {FormListOperation} from "antd/es/form";
@@ -20,16 +18,16 @@ import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {SaveFile} from "../../wailsjs/go/main/App";
 import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
-import ColModel = COM3D2.Col; // 注意别名，避免与 antd 的 Col 冲突
+import {useDarkMode} from "../hooks/themeSwitch";
+import {Editor} from "@monaco-editor/react";
+import {useTranslation} from "react-i18next";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
 import DynamicBoneMuneCollider = COM3D2.DynamicBoneMuneCollider;
 import MissingCollider = COM3D2.MissingCollider;
-import Col = COM3D2.Col;
-import {useDarkMode} from "../hooks/themeSwitch";
-import {Editor} from "@monaco-editor/react";
-import {useTranslation} from "react-i18next";
+import ColModel = COM3D2.Col;
+
 
 /** ColEditorProps:
  *  filePath: 传入要打开的 .col 文件路径
@@ -65,7 +63,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     // antd form
     const [form] = Form.useForm();
 
-    // 用来切换视图模式（类似 MateEditor 里的两种布局）
+    // 用来切换视图模式
     const [viewMode, setViewMode] = useState<1 | 2>(() => {
         const saved = localStorage.getItem("colEditorViewMode");
         return saved ? Number(saved) as 1 | 2 : 1;
@@ -119,23 +117,30 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     /** 保存 Col 文件（覆盖写回） */
     async function handleSaveColFile() {
         if (!filePath) {
-            message.error("未指定文件路径");
+            message.error(t('Errors.pls_input_file_path_first'));
             return;
         }
         if (!colData) {
-            message.error("当前没有已加载的 Col 数据");
+            message.error(t('Errors.pls_load_file_first'));
             return;
         }
         try {
+            // 模式 2 JSON 编辑，直接保存
+            if (viewMode === 2) {
+                await WriteColFile(filePath, colData);
+                message.success(t('Infos.success_save_file'));
+                return;
+            }
+            // 其他模式使用表单数据
             // 拿到表单最新数据并组装回 Col 对象
             const values = form.getFieldsValue(true);
             const newCol = transformFormToCol(values, colData);
 
             await WriteColFile(filePath, newCol);
-            message.success("保存成功");
-        } catch (err: any) {
-            message.error(`保存失败: ${err.message}`);
-            console.error(err);
+            message.success(t('Infos.success_save_file'));
+        } catch (error: any) {
+            message.error(t('Errors.save_file_failed_colon') + error);
+            console.error(error);
         }
     }
 
@@ -145,21 +150,35 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             message.error("请先读取或新建一个 Col 再尝试另存为");
             return;
         }
+
         try {
+            // 模式 2 JSON 编辑，直接保存
+            if (viewMode === 2) {
+
+                const newPath = await SaveFile("*.col", t('Infos.com3d2_col_file'));
+                if (!newPath) {
+                    // 用户取消
+                    return;
+                }
+                await WriteColFile(newPath, colData);
+                message.success(t('Infos.success_save_as_file_colon') + newPath);
+            }
+
+
             const values = form.getFieldsValue(true);
             const newCol = transformFormToCol(values, colData);
 
-            // 让用户选择一个保存路径（后端 App.SaveFile 示例）
-            const newPath = await SaveFile("*.col", "COM3D2 Collider File");
+            // 让用户选择一个保存路径
+            const newPath = await SaveFile("*.col", t('Infos.com3d2_col_file'));
             if (!newPath) {
                 // 用户取消
                 return;
             }
             await WriteColFile(newPath, newCol);
-            message.success(`另存为成功: ${newPath}`);
-        } catch (err: any) {
-            message.error(`另存为失败: ${err.message}`);
-            console.error(err);
+            message.success(t('Infos.success_save_as_file_colon') + newPath);
+        } catch (error: any) {
+            message.error(t('Errors.save_as_file_failed_colon') + error.message);
+            console.error(error);
         }
     }
 
@@ -276,7 +295,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 switch (typeName) {
                     case "dbc": {
                         const dbc = new DynamicBoneCollider({
-                            TypeName:"dbc",
+                            TypeName: "dbc",
                             Base: baseData,
                             Radius: parseFloat(item.radius) || 0,
                             Height: parseFloat(item.height) || 0
@@ -286,7 +305,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     }
                     case "dbm": {
                         const dbm = new DynamicBoneMuneCollider({
-                            TypeName:"dbm",
+                            TypeName: "dbm",
                             Base: baseData,
                             Radius: parseFloat(item.radius) || 0,
                             Height: parseFloat(item.height) || 0,
@@ -298,7 +317,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     }
                     case "dpc": {
                         const dpc = new DynamicBonePlaneCollider({
-                            TypeName:"dpc",
+                            TypeName: "dpc",
                             Base: baseData
                         });
                         newColliders.push(dpc);
@@ -306,7 +325,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     }
                     case "missing": {
                         const mc = new MissingCollider({
-                            TypeName:"missing",
+                            TypeName: "missing",
                         }); // 无字段
                         newColliders.push(mc);
                         break;
@@ -379,9 +398,9 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
     /** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
     const Style2Properties: React.FC<{
-        colData: Col | null;
-        setColData: (m: Col | null) => void;
-    }> = ({ colData, setColData }) => {
+        colData: ColModel | null;
+        setColData: (m: ColModel | null) => void;
+    }> = ({colData, setColData}) => {
         const isDarkMode = useDarkMode();
         const [jsonValue, setJsonValue] = useState("");
 
@@ -392,16 +411,14 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             } else {
                 setJsonValue("");
             }
-        }, [colData]);
+        }, [colData, form, transformColToForm]);
 
         // 当用户编辑 Monaco 里的 JSON
         const handleEditorChange = (value?: string) => {
             if (value == null) value = "";
             setJsonValue(value);
-
             try {
                 const parsed = JSON.parse(value);
-                // 只要 JSON 格式正常，实时更新父组件的 mateData
                 setColData(parsed);
             } catch (err) {
                 // console.log("Invalid JSON:", err);
@@ -423,10 +440,6 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             </div>
         );
     };
-
-
-
-
 
 
     /**
@@ -600,7 +613,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                         addonBefore={t('ColEditor.file_header.Signature')}
                                     />
                                 </Form.Item>
-                                <Form.Item name="version"   initialValue="1001">
+                                <Form.Item name="version" initialValue="1001">
                                     <Input
                                         disabled={!headerEditable}
                                         addonBefore={t('ColEditor.file_header.Version')}
@@ -662,3 +675,8 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 });
 
 export default ColEditor;
+
+
+//TODO 无法保存
+
+//TODO 切换显示模式时同步数据

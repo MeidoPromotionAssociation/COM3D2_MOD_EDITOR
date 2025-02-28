@@ -27,14 +27,14 @@ import MatePropertyItemType2 from "./MatePropertyItemType2";
 import {t} from "i18next";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
+import {Editor} from "@monaco-editor/react";
+import {useDarkMode} from "../hooks/themeSwitch";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 import TexProperty = COM3D2.TexProperty;
 import ColProperty = COM3D2.ColProperty;
 import VecProperty = COM3D2.VecProperty;
 import FProperty = COM3D2.FProperty;
-import {Editor} from "@monaco-editor/react";
-import {useDarkMode} from "../hooks/themeSwitch";
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -331,7 +331,7 @@ const Style3Properties: React.FC<{
     setMateData: (m: Mate | null) => void;
     form: any;
     transformMateToForm: (mate: Mate) => any;
-}> = ({ mateData, setMateData,form, transformMateToForm }) => {
+}> = ({mateData, setMateData, form, transformMateToForm}) => {
     const isDarkMode = useDarkMode();
     const [jsonValue, setJsonValue] = useState("");
 
@@ -339,13 +339,10 @@ const Style3Properties: React.FC<{
         if (mateData) {
             // 初次/每次切换时，把 Mate 对象序列化为 JSON
             setJsonValue(JSON.stringify(mateData, null, 2));
-            // 当 JSON 变化时同步到 form
-            const formValues = transformMateToForm(mateData);
-            form.setFieldsValue(formValues);
         } else {
             setJsonValue("");
         }
-    }, [mateData, form, transformMateToForm]);
+    }, [mateData]);
 
     // 当用户编辑 Monaco 里的 JSON
     const handleEditorChange = (value?: string) => {
@@ -356,8 +353,6 @@ const Style3Properties: React.FC<{
             const parsed = JSON.parse(value);
             // 只要 JSON 格式正常，实时更新父组件的 mateData
             setMateData(parsed);
-            const formValues = transformMateToForm(parsed);
-            form.setFieldsValue(formValues);
         } catch (err) {
             // console.log("Invalid JSON:", err);
         }
@@ -378,8 +373,6 @@ const Style3Properties: React.FC<{
         </div>
     );
 };
-
-
 
 
 /**
@@ -469,7 +462,14 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             return;
         }
         try {
-            // 先获取最新的表单数据
+            // 模式 3 JSON 编辑，直接保存
+            if (viewMode === 3) {
+                await WriteMateFile(filePath, mateData);
+                message.success(t('Infos.success_save_file'));
+                return;
+            }
+            // 其他模式使用表单数据
+            // 获取最新的表单数据
             const values = form.getFieldsValue(true);
             // form -> Mate
             const newMate = transformFormToMate(values, mateData);
@@ -492,6 +492,21 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             return;
         }
         try {
+            // 模式 3 JSON 编辑，直接保存
+            if (viewMode === 3) {
+                // 询问保存路径
+                const newPath = await SaveFile("*.mate", t('Infos.com3d2_mate_file'));
+                if (!newPath) {
+                    // 用户取消
+                    return;
+                }
+
+                await WriteMateFile(newPath, mateData);
+                message.success(t('Infos.success_save_as_file_colon') + newPath);
+                return;
+            }
+
+
             // 获取最新表单数据
             const values = form.getFieldsValue(true);
             const newMate = transformFormToMate(values, mateData);
@@ -502,7 +517,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                 // 用户取消
                 return;
             }
-
 
             await WriteMateFile(newPath, newMate);
             message.success(t('Infos.success_save_as_file_colon') + newPath);
@@ -665,7 +679,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             });
                         } else if (item.subTag === 'texRT') {
                             newProps.push({
-                                TypeName: 'tex',
+                                    TypeName: 'tex',
                                     PropName: item.propName,
                                     SubTag: 'texRT',
                                     TexRT: {

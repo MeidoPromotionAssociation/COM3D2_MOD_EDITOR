@@ -96,6 +96,9 @@ const HomePage: React.FC = () => {
                     case "col":
                         navigate("/col-editor", {state: {filePath}});
                         break;
+                    case "phy":
+                        navigate("/phy-editor", {state: {filePath}});
+                        break;
                     default:
                         alert(t('Errors.file_type_not_supported'));
                 }

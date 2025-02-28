@@ -179,9 +179,14 @@
     "Colliders": "碰撞器"
   },
   "Infos": {
-    "com3d2_menu_file": "COM3D2 .menu 文件",
-    "com3d2_mate_file": "COM3D2 .mate 文件",
-    "com3d2_pmat_file": "COM3D2 .pmat 文件",
+    "com3d2_menu_file": "COM3D2 菜单文件",
+    "com3d2_mate_file": "COM3D2 材质文件",
+    "com3d2_pmat_file": "COM3D2 渲染顺序文件",
+    "com3d2_col_file": "COM3D2 碰撞器文件",
+    "com3d2_phy_file": "COM3D2 物理文件",
+    "com3d2_anm_file": "COM3D2 动画文件",
+    "com3d2_model_file": "COM3D2 模型文件",
+    "com3d2_psk_file": "COM3D2 裙子物理文件",
     "com3d2_mod_files": "COM3D2 MOD 文件",
     "pls_open_file_first": "请先打开文件",
     "editing_colon": "正在编辑: ",
