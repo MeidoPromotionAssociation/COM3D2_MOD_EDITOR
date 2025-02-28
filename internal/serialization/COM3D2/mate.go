@@ -26,9 +26,9 @@ func ReadMate(r io.Reader) (*Mate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read .mate signature failed: %w", err)
 	}
-	if sig != MateSignature {
-		return nil, fmt.Errorf("invalid .mate signature: got %q, want %s", sig, MateSignature)
-	}
+	//if sig != MateSignature {
+	//	return nil, fmt.Errorf("invalid .mate signature: got %q, want %s", sig, MateSignature)
+	//}
 	m.Signature = sig
 
 	// 2. version (int32)
@@ -153,22 +153,22 @@ func readMaterial(r io.Reader) (*Material, error) {
 }
 
 // Dump 将 Material 写出到 w 中。
-func (mat *Material) Dump(w io.Writer) error {
+func (m *Material) Dump(w io.Writer) error {
 	// 1. name
-	if err := utilities.WriteString(w, mat.Name); err != nil {
+	if err := utilities.WriteString(w, m.Name); err != nil {
 		return fmt.Errorf("write material.name failed: %w", err)
 	}
 	// 2. shaderName
-	if err := utilities.WriteString(w, mat.ShaderName); err != nil {
+	if err := utilities.WriteString(w, m.ShaderName); err != nil {
 		return fmt.Errorf("write material.shaderName failed: %w", err)
 	}
 	// 3. shaderFilename
-	if err := utilities.WriteString(w, mat.ShaderFilename); err != nil {
+	if err := utilities.WriteString(w, m.ShaderFilename); err != nil {
 		return fmt.Errorf("write material.shaderFilename failed: %w", err)
 	}
 
 	// 4. 写出 properties
-	for _, prop := range mat.Properties {
+	for _, prop := range m.Properties {
 		if err := dumpProperty(w, prop); err != nil {
 			return fmt.Errorf("write material property failed: %w", err)
 		}
@@ -551,7 +551,8 @@ func printMaterialDetails(m *Material) {
 // UnmarshalJSON 为 Material 实现自定义 UnmarshalJSON
 // 因为 Material 的 Properties 字段是一个接口切片，需要根据 typeName 字段来决定反序列化为哪个具体类型
 func (m *Material) UnmarshalJSON(data []byte) error {
-	// 定义一个辅助类型，Properties 用 []json.RawMessage 暂存原始数据
+	// 先定义一个中间结构来接住 Colliders 的原始数据
+	// 其他字段 Signature / Version 可以直接接收
 	type Alias Material
 	aux := &struct {
 		Properties []json.RawMessage `json:"Properties"`
@@ -559,6 +560,8 @@ func (m *Material) UnmarshalJSON(data []byte) error {
 	}{
 		Alias: (*Alias)(m),
 	}
+
+	// 先把大部分字段 (Signature, Version) 解析出来
 	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
@@ -566,9 +569,9 @@ func (m *Material) UnmarshalJSON(data []byte) error {
 	// 逐个解析 Properties，根据 typeName 字段决定反序列化为哪个具体类型
 	var props []Property
 	for _, raw := range aux.Properties {
-		// 定义一个临时结构体用于提取 typeName 字段
+		// 定义一个临时结构体用于提取 TypeName 字段
 		var typeHolder struct {
-			TypeName string `json:"typeName"`
+			TypeName string `json:"TypeName"`
 		}
 		if err := json.Unmarshal(raw, &typeHolder); err != nil {
 			return err

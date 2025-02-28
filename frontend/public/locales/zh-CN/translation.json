@@ -14,6 +14,8 @@
     "MenuEditor": "Menu 编辑器",
     "MateEditor": "Mate 编辑器",
     "PMateEditor": "PMate 编辑器",
+    "ColEditor": "Col 编辑器",
+    "PhyEditor": "Phy 编辑器",
     "open_file": "打开文件",
     "save_file": "保存文件",
     "save_as_file": "另存为"
@@ -164,6 +166,17 @@
     "renderQueue_tip": "渲染顺序 RQ；游戏本体会将此值设置为对应的渲染顺序（2.41.1），值越大越后渲染，一般情况下 GPU 层层渲染，后渲染的会叠加在前面渲染的上，默认范围 0 - 5000",
     "shaderName": "着色器名",
     "shaderName_tip": "着色器名；对于游戏来说没有用，游戏本体甚至不读取这一字段（2.41.1），但是编辑器会使用它参与哈希计算，避免不同着色器但同名材质的材质已经被缓存，从而导致渲染顺序错误，所以你最好填写正确的着色器名"
+  },
+  "ColEditor": {
+    "file_header": {
+      "file_head": "文件头",
+      "Signature": "文件签名",
+      "Version": "文件版本",
+      "enable_edit_do_not_edit": "不要修改"
+    },
+    "style1": "样式 1",
+    "style2": "JSON",
+    "Colliders": "碰撞器"
   },
   "Infos": {
     "com3d2_menu_file": "COM3D2 .menu 文件",

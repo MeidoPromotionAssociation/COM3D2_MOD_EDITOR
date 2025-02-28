@@ -1,10 +1,4 @@
-import React, {
-    forwardRef,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState
-} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {
     Button,
     Checkbox,
@@ -12,23 +6,21 @@ import {
     ConfigProvider,
     Divider,
     Form,
-    FormInstance,
-    FormListFieldData,
     Input,
     InputNumber,
     message,
     Radio,
     Space
 } from "antd";
-import {QuestionCircleOutlined, DeleteOutlined, PlusOutlined} from "@ant-design/icons";
+import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
+import {ReadPhyFile, WritePhyFile} from "../../wailsjs/go/COM3D2/PhyService";
+import {SaveFile} from "../../wailsjs/go/main/App";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
 import Keyframe = COM3D2.Keyframe;
-import {ReadPhyFile, WritePhyFile} from "../../wailsjs/go/COM3D2/PhyService";
-import {SaveFile} from "../../wailsjs/go/main/App";
 
 export interface PhyEditorProps {
     filePath?: string;
@@ -574,7 +566,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                                 </Checkbox>
                             </Form.Item>
                             <Form.Item label="RootName" name="rootName">
-                                <Input />
+                                <Input/>
                             </Form.Item>
                         </Collapse.Panel>
 

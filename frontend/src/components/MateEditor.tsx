@@ -329,7 +329,9 @@ const Style2Properties: React.FC<{
 const Style3Properties: React.FC<{
     mateData: Mate | null;
     setMateData: (m: Mate | null) => void;
-}> = ({ mateData, setMateData }) => {
+    form: any;
+    transformMateToForm: (mate: Mate) => any;
+}> = ({ mateData, setMateData,form, transformMateToForm }) => {
     const isDarkMode = useDarkMode();
     const [jsonValue, setJsonValue] = useState("");
 
@@ -337,10 +339,13 @@ const Style3Properties: React.FC<{
         if (mateData) {
             // 初次/每次切换时，把 Mate 对象序列化为 JSON
             setJsonValue(JSON.stringify(mateData, null, 2));
+            // 当 JSON 变化时同步到 form
+            const formValues = transformMateToForm(mateData);
+            form.setFieldsValue(formValues);
         } else {
             setJsonValue("");
         }
-    }, [mateData]);
+    }, [mateData, form, transformMateToForm]);
 
     // 当用户编辑 Monaco 里的 JSON
     const handleEditorChange = (value?: string) => {
@@ -351,6 +356,8 @@ const Style3Properties: React.FC<{
             const parsed = JSON.parse(value);
             // 只要 JSON 格式正常，实时更新父组件的 mateData
             setMateData(parsed);
+            const formValues = transformMateToForm(parsed);
+            form.setFieldsValue(formValues);
         } catch (err) {
             // console.log("Invalid JSON:", err);
         }
@@ -419,6 +426,15 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             form.resetFields();
         }
     }, [filePath]);
+
+    // 当 mateData 变化时同步到表单
+    useEffect(() => {
+        if (mateData) {
+            const formValues = transformMateToForm(mateData);
+            form.setFieldsValue(formValues);
+        }
+    }, [mateData, form]);
+
 
     /**
      * 读取 .mate 文件
@@ -525,19 +541,19 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      * 便于 antd 的 Form 做统一管理
      */
     const transformMateToForm = (mate: Mate) => {
-        // 尝试推断出 typeName
+        // 尝试推断出 TypeName
         mate.Material?.Properties?.forEach((prop: any) => {
-            if (!('typeName' in prop)) {
+            if (!('TypeName' in prop)) {
                 if ('Tex2D' in prop || 'TexRT' in prop) {
-                    prop.typeName = 'tex';
+                    prop.TypeName = 'tex';
                 } else if ('Color' in prop) {
-                    prop.typeName = 'col';
+                    prop.TypeName = 'col';
                 } else if ('Vector' in prop) {
-                    prop.typeName = 'vec';
+                    prop.TypeName = 'vec';
                 } else if ('Number' in prop) {
-                    prop.typeName = 'f';
+                    prop.TypeName = 'f';
                 } else {
-                    prop.typeName = 'unknown';
+                    prop.TypeName = 'unknown';
                 }
             }
         });
@@ -551,7 +567,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             shaderFilename: mate.Material?.ShaderFilename,
             properties: mate.Material?.Properties?.map((prop) => {
                 // 不同类型的 property
-                switch (prop.typeName) {
+                switch (prop.TypeName) {
                     case 'tex':
                         // TS: prop as TexProperty
                         const texProp = prop as TexProperty;
@@ -637,7 +653,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         // 根据 subTag 判断
                         if (item.subTag === 'tex2d' || item.subTag === 'cube') {
                             newProps.push({
-                                typeName: 'tex',
+                                TypeName: 'tex',
                                 PropName: item.propName,
                                 SubTag: item.subTag,
                                 Tex2D: {
@@ -649,7 +665,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             });
                         } else if (item.subTag === 'texRT') {
                             newProps.push({
-                                    typeName: 'tex',
+                                TypeName: 'tex',
                                     PropName: item.propName,
                                     SubTag: 'texRT',
                                     TexRT: {
@@ -661,7 +677,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         } else if (item.subTag === 'null') {
                             // 生成一个空的 tex 属性
                             newProps.push({
-                                typeName: 'tex',
+                                TypeName: 'tex',
                                 PropName: item.propName,
                                 SubTag: 'null',
                             });
@@ -669,7 +685,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'col':
                         newProps.push({
-                            typeName: 'col',
+                            TypeName: 'col',
                             PropName: item.propName,
                             Color: [
                                 parseFloat(item.colorR) || 0,
@@ -681,7 +697,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'vec':
                         newProps.push({
-                            typeName: 'vec',
+                            TypeName: 'vec',
                             PropName: item.propName,
                             Vector: [
                                 parseFloat(item.vec0) || 0,
@@ -693,7 +709,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'f':
                         newProps.push({
-                            typeName: 'f',
+                            TypeName: 'f',
                             PropName: item.propName,
                             Number: parseFloat(item.number) || 0,
                         });
@@ -870,6 +886,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 <Style3Properties
                                     mateData={mateData}
                                     setMateData={(newVal) => setMateData(newVal)}
+                                    form={form}
+                                    transformMateToForm={transformMateToForm}
                                 />
                             )}
                         </Collapse.Panel>

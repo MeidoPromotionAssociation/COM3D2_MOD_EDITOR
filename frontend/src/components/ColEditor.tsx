@@ -26,6 +26,10 @@ import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
 import DynamicBoneMuneCollider = COM3D2.DynamicBoneMuneCollider;
 import MissingCollider = COM3D2.MissingCollider;
+import Col = COM3D2.Col;
+import {useDarkMode} from "../hooks/themeSwitch";
+import {Editor} from "@monaco-editor/react";
+import {useTranslation} from "react-i18next";
 
 /** ColEditorProps:
  *  filePath: 传入要打开的 .col 文件路径
@@ -49,6 +53,7 @@ export interface ColEditorRef {
  *  - 类似 MateEditor 的用法
  */
 const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
+    const {t} = useTranslation();
     const {filePath} = props;
 
     // Col 数据对象
@@ -186,7 +191,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 // 先把 base 中的数据拿出来
                 let base = (collider.Base as DynamicBoneColliderBase) || {};
                 const formItem: any = {
-                    _typeName: typeName,
+                    TypeName: typeName,
                     parentName: base.ParentName,
                     selfName: base.SelfName,
                     localPosition: base.LocalPosition || [0, 0, 0],
@@ -201,12 +206,14 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 switch (typeName) {
                     case "dbc": {
                         // DynamicBoneCollider
+                        formItem.TypeName = "dbc";
                         formItem.radius = collider.Radius;
                         formItem.height = collider.Height;
                         break;
                     }
                     case "dbm": {
                         // DynamicBoneMuneCollider
+                        formItem.TypeName = "dbm";
                         formItem.radius = collider.Radius;
                         formItem.height = collider.Height;
                         formItem.scaleRateMulMax = collider.ScaleRateMulMax;
@@ -214,11 +221,14 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                         break;
                     }
                     case "dpc": {
+                        // DynamicBonePlaneCollider
+                        formItem.TypeName = "dpc";
                         // PlaneCollider 只有 base，没有额外字段
                         break;
                     }
                     case "missing": {
                         // missingCollider 无字段
+                        formItem.TypeName = "missing";
                         break;
                     }
                 }
@@ -243,7 +253,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         const newColliders: any[] = [];
         if (Array.isArray(values.colliders)) {
             for (const item of values.colliders) {
-                const typeName = item._typeName;
+                const typeName = item.TypeName;
                 if (!typeName) {
                     // 无类型，不处理
                     continue;
@@ -251,6 +261,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
                 // 先构造 base
                 const baseData = new DynamicBoneColliderBase({
+                    TypeName: typeName,
                     ParentName: item.parentName || "",
                     SelfName: item.selfName || "",
                     LocalPosition: item.localPosition || [0, 0, 0],
@@ -265,6 +276,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 switch (typeName) {
                     case "dbc": {
                         const dbc = new DynamicBoneCollider({
+                            TypeName:"dbc",
                             Base: baseData,
                             Radius: parseFloat(item.radius) || 0,
                             Height: parseFloat(item.height) || 0
@@ -274,6 +286,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     }
                     case "dbm": {
                         const dbm = new DynamicBoneMuneCollider({
+                            TypeName:"dbm",
                             Base: baseData,
                             Radius: parseFloat(item.radius) || 0,
                             Height: parseFloat(item.height) || 0,
@@ -285,13 +298,16 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     }
                     case "dpc": {
                         const dpc = new DynamicBonePlaneCollider({
+                            TypeName:"dpc",
                             Base: baseData
                         });
                         newColliders.push(dpc);
                         break;
                     }
                     case "missing": {
-                        const mc = new MissingCollider(); // 无字段
+                        const mc = new MissingCollider({
+                            TypeName:"missing",
+                        }); // 无字段
                         newColliders.push(mc);
                         break;
                     }
@@ -327,7 +343,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         return (
             <>
                 {fields.map(({key, name, ...restField}) => {
-                    const typeName = form.getFieldValue(["colliders", name, "_typeName"]);
+                    const typeName = form.getFieldValue(["colliders", name, "TypeName"]);
                     return (
                         <div
                             key={key}
@@ -361,6 +377,57 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     };
 
 
+    /** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
+    const Style2Properties: React.FC<{
+        colData: Col | null;
+        setColData: (m: Col | null) => void;
+    }> = ({ colData, setColData }) => {
+        const isDarkMode = useDarkMode();
+        const [jsonValue, setJsonValue] = useState("");
+
+        useEffect(() => {
+            if (colData) {
+                // 初次/每次切换时，把 Mate 对象序列化为 JSON
+                setJsonValue(JSON.stringify(colData, null, 2));
+            } else {
+                setJsonValue("");
+            }
+        }, [colData]);
+
+        // 当用户编辑 Monaco 里的 JSON
+        const handleEditorChange = (value?: string) => {
+            if (value == null) value = "";
+            setJsonValue(value);
+
+            try {
+                const parsed = JSON.parse(value);
+                // 只要 JSON 格式正常，实时更新父组件的 mateData
+                setColData(parsed);
+            } catch (err) {
+                // console.log("Invalid JSON:", err);
+            }
+        };
+
+        return (
+            <div style={{height: "calc(100vh - 230px)"}}>
+                <Editor
+                    language="json"
+                    theme={isDarkMode ? "vs-dark" : "vs"}
+                    value={jsonValue}
+                    onChange={handleEditorChange}
+                    options={{
+                        minimap: {enabled: true},
+                        tabSize: 2,
+                    }}
+                />
+            </div>
+        );
+    };
+
+
+
+
+
 
     /**
      * 用于渲染单个 Collider 的表单区域，根据 typeName 动态切换要展示的字段
@@ -371,13 +438,13 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                                                             }) => {
         // 这里可以使用 <Form.Item> 包裹具体的字段
         // 其中 position/rotation/scale/center 都是 array，可以做成 3/4 个 <InputNumber> 并排
-        const typeName = Form.useWatch(["colliders", name, "_typeName"], form);
+        const typeName = Form.useWatch(["colliders", name, "TypeName"], form);
 
         return (
             <Space direction="vertical" style={{width: "100%"}}>
                 <Form.Item
                     label="Collider类型"
-                    name={[name, "_typeName"]}
+                    name={[name, "TypeName"]}
                     rules={[{required: true, message: "请选择 Collider 类型"}]}
                 >
                     <Radio.Group>
@@ -525,35 +592,67 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     labelCol={{style: {width: "180px"}}}
                 >
                     <Collapse defaultActiveKey={["basic", "colliders"]}>
-                        <Collapse.Panel header="File Header" key="basic">
-                            <Space wrap>
-                                <Form.Item label="Signature" name="signature">
-                                    <Input disabled={!headerEditable}/>
+                        <Collapse.Panel header={t('ColEditor.file_header.file_head')} key="basic">
+                            <Space>
+                                <Form.Item name="signature" initialValue="CM3D21_COL">
+                                    <Input
+                                        disabled={!headerEditable}
+                                        addonBefore={t('ColEditor.file_header.Signature')}
+                                    />
                                 </Form.Item>
-                                <Form.Item label="Version" name="version">
-                                    <InputNumber disabled={!headerEditable}/>
+                                <Form.Item name="version"   initialValue="1001">
+                                    <Input
+                                        disabled={!headerEditable}
+                                        addonBefore={t('ColEditor.file_header.Version')}
+                                    />
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox
                                         checked={headerEditable}
                                         onChange={(e) => setHeaderEditable(e.target.checked)}
                                     >
-                                        允许编辑文件头（一般不建议修改）
+                                        {t('ColEditor.file_header.enable_edit_do_not_edit')}
                                     </Checkbox>
                                 </Form.Item>
                             </Space>
                         </Collapse.Panel>
-                        <Collapse.Panel header="Colliders" key="colliders">
-                            <Form.List name="colliders">
-                                {(fields, {add, remove}) =>
-                                    <Style1Colliders
-                                        fields={fields}
-                                        add={add}
-                                        remove={remove}
-                                        form={form}
-                                    />
-                                }
-                            </Form.List>
+                        <Collapse.Panel header={t('ColEditor.Colliders')} key="colliders">
+                            <div style={{marginBottom: 8}}>
+                                <Radio.Group
+                                    block
+                                    value={viewMode}
+                                    onChange={(e) => {
+                                        setViewMode(e.target.value);
+                                        localStorage.setItem('mateEditorViewMode', e.target.value.toString());
+                                    }}
+                                    options={[
+                                        {label: t('ColEditor.style1'), value: 1},
+                                        {label: t('ColEditor.style2'), value: 2},
+                                    ]}
+                                    optionType="button"
+                                    buttonStyle="solid"
+                                />
+                            </div>
+
+                            {viewMode === 1 && (
+                                <Form.List name="colliders">
+                                    {(fields, {add, remove}) =>
+                                        <Style1Colliders
+                                            fields={fields}
+                                            add={add}
+                                            remove={remove}
+                                            form={form}
+                                        />
+                                    }
+                                </Form.List>
+                            )}
+
+                            {viewMode === 2 && (
+                                <Style2Properties
+                                    colData={colData}
+                                    setColData={(newVal) => setColData(newVal)}
+                                />
+                            )}
                         </Collapse.Panel>
                     </Collapse>
                 </Form>

@@ -2,6 +2,7 @@ package COM3D2
 
 import (
 	"COM3D2_MOD_EDITOR_V2/internal/serialization/utilities"
+	"encoding/json"
 	"fmt"
 	"io"
 )
@@ -444,7 +445,7 @@ func ReadCol(r io.Reader) (*Col, error) {
 // -------------------------------------------------------
 
 // Dump 把 Col 写出到 w 中
-func (c Col) Dump(w io.Writer) error {
+func (c *Col) Dump(w io.Writer) error {
 	// 1. 写 Signature
 	if err := utilities.WriteString(w, c.Signature); err != nil {
 		return fmt.Errorf("write signature failed: %w", err)
@@ -470,5 +471,61 @@ func (c Col) Dump(w io.Writer) error {
 			return fmt.Errorf("collider.Serialize failed at index %d: %w", i, err)
 		}
 	}
+	return nil
+}
+
+// UnmarshalJSON 为 Col 实现自定义 UnmarshalJSON
+// 因为 Col 的 ICollider 字段是一个接口切片，需要根据 typeName 字段来决定反序列化为哪个具体类型
+func (c *Col) UnmarshalJSON(data []byte) error {
+	// 先定义一个中间结构来接住 Colliders 的原始数据
+	// 其他字段 Signature / Version 可以直接接收
+	type colAlias Col
+	var temp struct {
+		Colliders []json.RawMessage `json:"Colliders"`
+		*colAlias
+	}
+	temp.colAlias = (*colAlias)(c)
+
+	// 先把大部分字段 (Signature, Version) 解析出来
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	// 此时 c.Signature 和 c.Version 已经有值了
+	// 逐个解析 Colliders
+	var result []ICollider
+	for _, raw := range temp.Colliders {
+		// 1. 先解析出 TypeName 用来分辨子类型
+		var typeHolder struct {
+			TypeName string `json:"TypeName"`
+		}
+		if err := json.Unmarshal(raw, &typeHolder); err != nil {
+			return err
+		}
+
+		// 2. 根据 TypeName 创建对应的 collider 实例
+		var collider ICollider
+		switch typeHolder.TypeName {
+		case "dbc":
+			collider = &DynamicBoneCollider{}
+		case "dpc":
+			collider = &DynamicBonePlaneCollider{}
+		case "dbm":
+			collider = &DynamicBoneMuneCollider{}
+		case "missing":
+			collider = &MissingCollider{}
+		default:
+			return fmt.Errorf("unrecognized collider TypeName: %q", typeHolder.TypeName)
+		}
+
+		// 3. 用创建好的实例再去解析整个 JSON
+		if err := json.Unmarshal(raw, collider); err != nil {
+			return err
+		}
+		result = append(result, collider)
+	}
+
+	// 全部解析完毕，赋值给真实字段
+	c.Colliders = result
 	return nil
 }

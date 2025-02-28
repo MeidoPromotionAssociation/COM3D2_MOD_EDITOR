@@ -25,9 +25,9 @@ func ReadPMat(r io.Reader) (*PMat, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read .PMat signature failed: %w", err)
 	}
-	if sig != PMatSignature {
-		return nil, fmt.Errorf("invalid .PMat signature: got %q, want \"CM3D2_PMATERIAL\"", sig)
-	}
+	//if sig != PMatSignature {
+	//	return nil, fmt.Errorf("invalid .PMat signature: got %q, want \"CM3D2_PMATERIAL\"", sig)
+	//}
 	p.Signature = sig
 
 	// 2. version (int32)

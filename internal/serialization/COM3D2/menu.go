@@ -33,9 +33,9 @@ func ReadMenu(r io.Reader) (*Menu, error) {
 	if err != nil {
 		return nil, err
 	}
-	if sig != MenuSignature {
-		return nil, fmt.Errorf("invalid signature, got %q, want %s", sig, MenuSignature)
-	}
+	//if sig != MenuSignature {
+	//	return nil, fmt.Errorf("invalid signature, got %q, want %s", sig, MenuSignature)
+	//}
 	m.Signature = sig
 
 	// 2. Version (4 bytes little-endian)

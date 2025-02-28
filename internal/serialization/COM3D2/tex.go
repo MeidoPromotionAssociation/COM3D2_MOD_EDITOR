@@ -60,9 +60,9 @@ func ReadTex(r io.Reader) (*Tex, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read .tex signature failed: %w", err)
 	}
-	if sig != TexSignature {
-		return nil, fmt.Errorf("invalid .tex signature: got %q, want %v", sig, TexSignature)
-	}
+	//if sig != TexSignature {
+	//	return nil, fmt.Errorf("invalid .tex signature: got %q, want %v", sig, TexSignature)
+	//}
 
 	// 2. Version
 	ver, err := utilities.ReadInt32(r)
@@ -629,7 +629,7 @@ func isLossyCompression(format string) bool {
 	}
 
 	// 对于WebP，需要进一步检查是否是有损模式，但这需要更复杂的检测
-	// 这里简化处理，默认WebP为有损
+	// 所以这里简化处理，默认WebP为有损
 
 	return lossyFormats[format]
 }

@@ -26,14 +26,6 @@ type AnimationCurve struct {
 	Keyframes []Keyframe
 }
 
-// Keyframe 与 UnityEngine.Keyframe 对应
-type Keyframe struct {
-	Time       float32
-	Value      float32
-	InTangent  float32
-	OutTangent float32
-}
-
 // BoneValue 存储一个骨骼名称与对应 float 值
 type BoneValue struct {
 	BoneName string
@@ -110,9 +102,9 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read signature failed: %w", err)
 	}
-	if sig != PhySignature {
-		return nil, fmt.Errorf("invalid phy signature, want %v, got %q", PhySignature, sig)
-	}
+	//if sig != PhySignature {
+	//	return nil, fmt.Errorf("invalid phy signature, want %v, got %q", PhySignature, sig)
+	//}
 	p.Signature = sig
 
 	// 2. Version
