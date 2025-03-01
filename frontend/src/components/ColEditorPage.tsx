@@ -23,7 +23,7 @@ const ColEditorPage: React.FC = () => {
     // 导航栏按钮回调
     const handleOpenFile = async () => {
         try {
-            const result = await SelectFile("*.col", t('Infos.com3d2_pmat_file'));
+            const result = await SelectFile("*.col", t('Infos.com3d2_col_file'));
             if (result) {
                 navigate("/col-editor", {state: {filePath: result}});
             }

@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {
     Button,
     Checkbox,
@@ -27,6 +27,328 @@ import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
 import DynamicBoneMuneCollider = COM3D2.DynamicBoneMuneCollider;
 import MissingCollider = COM3D2.MissingCollider;
 import ColModel = COM3D2.Col;
+
+
+
+/** 样式1：所有 Collider 顺序排布 */
+const Style1Colliders: React.FC<{
+    fields: FormListFieldData[];
+    add: FormListOperation["add"];
+    remove: FormListOperation["remove"];
+    form: any;
+}> = ({fields, add, remove, form}) => {
+    return (
+        <>
+            {fields.map(({key, name, ...restField}) => {
+                const typeName = form.getFieldValue(["colliders", name, "TypeName"]);
+                return (
+                    <div
+                        key={key}
+                        style={{
+                            position: "relative",
+                            padding: 8,
+                            marginBottom: 10,
+                            border: "1px solid #ccc",
+                            borderRadius: 4
+                        }}
+                    >
+                        <DynamicColliderFormItem name={name} form={form}/>
+                        <Button
+                            onClick={() => remove(name)}
+                            style={{position: "absolute", top: 4, right: 4}}
+                            danger
+                        >
+                            删除
+                        </Button>
+                        <Divider orientation="left" plain>
+                            {typeName}
+                        </Divider>
+                    </div>
+                );
+            })}
+            <Button icon={<></>} block type="primary" onClick={() => add()}>
+                添加新Collider
+            </Button>
+        </>
+    );
+};
+
+
+
+/**
+ * 用于渲染单个 Collider 的表单区域，根据 typeName 动态切换要展示的字段
+ */
+const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
+                                                                            name,
+                                                                            form
+                                                                        }) => {
+    // 这里可以使用 <Form.Item> 包裹具体的字段
+    // 其中 position/rotation/scale/center 都是 array，可以做成 3/4 个 <InputNumber> 并排
+    const typeName = Form.useWatch(["colliders", name, "TypeName"], form);
+
+    return (
+        <Space direction="vertical" style={{width: "100%"}}>
+            <Form.Item
+                label="Collider类型"
+                name={[name, "TypeName"]}
+                rules={[{required: true, message: "请选择 Collider 类型"}]}
+            >
+                <Radio.Group>
+                    <Radio value="dbc">dbc</Radio>
+                    <Radio value="dpc">dpc</Radio>
+                    <Radio value="dbm">dbm</Radio>
+                    <Radio value="missing">missing</Radio>
+                </Radio.Group>
+            </Form.Item>
+
+            {/* base 公共字段 */}
+            <Form.Item label="ParentName" name={[name, "parentName"]}>
+                <Input/>
+            </Form.Item>
+            <Form.Item label="SelfName" name={[name, "selfName"]}>
+                <Input/>
+            </Form.Item>
+
+            {/* LocalPosition (3个数) */}
+            <Form.Item label="LocalPosition">
+                <Input.Group compact>
+                    <Form.Item name={[name, "localPosition", 0]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="x"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localPosition", 1]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="y"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localPosition", 2]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="z"/>
+                    </Form.Item>
+                </Input.Group>
+            </Form.Item>
+
+            {/* LocalRotation (4个数) */}
+            <Form.Item label="LocalRotation">
+                <Input.Group compact>
+                    <Form.Item name={[name, "localRotation", 0]} noStyle>
+                        <InputNumber style={{width: "25%"}} placeholder="x"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localRotation", 1]} noStyle>
+                        <InputNumber style={{width: "25%"}} placeholder="y"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localRotation", 2]} noStyle>
+                        <InputNumber style={{width: "25%"}} placeholder="z"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localRotation", 3]} noStyle>
+                        <InputNumber style={{width: "25%"}} placeholder="w"/>
+                    </Form.Item>
+                </Input.Group>
+            </Form.Item>
+
+            {/* LocalScale (3个数) */}
+            <Form.Item label="LocalScale">
+                <Input.Group compact>
+                    <Form.Item name={[name, "localScale", 0]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="sx"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localScale", 1]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="sy"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "localScale", 2]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="sz"/>
+                    </Form.Item>
+                </Input.Group>
+            </Form.Item>
+
+            <Form.Item label="Direction" name={[name, "direction"]}>
+                <InputNumber/>
+            </Form.Item>
+
+            <Form.Item label="Center">
+                <Input.Group compact>
+                    <Form.Item name={[name, "center", 0]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="cx"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "center", 1]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="cy"/>
+                    </Form.Item>
+                    <Form.Item name={[name, "center", 2]} noStyle>
+                        <InputNumber style={{width: "33%"}} placeholder="cz"/>
+                    </Form.Item>
+                </Input.Group>
+            </Form.Item>
+
+            <Form.Item label="Bound" name={[name, "bound"]}>
+                <InputNumber/>
+            </Form.Item>
+
+            {/* 只有 dbc/dbm 才显示 radius/height */}
+            {(typeName === "dbc" || typeName === "dbm") && (
+                <>
+                    <Form.Item label="Radius" name={[name, "radius"]}>
+                        <InputNumber/>
+                    </Form.Item>
+                    <Form.Item label="Height" name={[name, "height"]}>
+                        <InputNumber/>
+                    </Form.Item>
+                </>
+            )}
+
+            {/* dbm 独有的字段 */}
+            {typeName === "dbm" && (
+                <>
+                    <Form.Item label="ScaleRateMulMax" name={[name, "scaleRateMulMax"]}>
+                        <InputNumber/>
+                    </Form.Item>
+                    <Form.Item label="CenterRateMax">
+                        <Input.Group compact>
+                            <Form.Item name={[name, "centerRateMax", 0]} noStyle>
+                                <InputNumber style={{width: "33%"}} placeholder="crx"/>
+                            </Form.Item>
+                            <Form.Item name={[name, "centerRateMax", 1]} noStyle>
+                                <InputNumber style={{width: "33%"}} placeholder="cry"/>
+                            </Form.Item>
+                            <Form.Item name={[name, "centerRateMax", 2]} noStyle>
+                                <InputNumber style={{width: "33%"}} placeholder="crz"/>
+                            </Form.Item>
+                        </Input.Group>
+                    </Form.Item>
+                </>
+            )}
+
+            {/* missingCollider 无字段，不需要额外内容 */}
+        </Space>
+    );
+};
+
+/** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
+// const Style2Properties: React.FC<{
+//     colData: ColModel | null;
+//     setColData: (m: ColModel | null) => void;
+// }> = ({colData, setColData}) => {
+//     const isDarkMode = useDarkMode();
+//     const [jsonValue, setJsonValue] = useState("");
+//
+//     useEffect(() => {
+//         if (colData) {
+//             // 初次/每次切换时，把对象序列化为 JSON
+//             setJsonValue(JSON.stringify(colData, null, 2));
+//         } else {
+//             setJsonValue("");
+//         }
+//     }, []);
+//
+//     // 当用户在编辑器里输入时
+//     const handleEditorChange = (value?: string) => {
+//         const newVal = value ?? "";
+//         setJsonValue(newVal);
+//
+//         try {
+//             const parsed = JSON.parse(newVal);
+//
+//             if (JSON.stringify(parsed) !== JSON.stringify(colData)) {
+//                 setColData(parsed);
+//             }
+//         } catch (err) {
+//             // JSON 不合法就先不往外层写
+//         }
+//     };
+//
+//     return (
+//         <div style={{height: "calc(100vh - 230px)"}}>
+//             <Editor
+//                 language="json"
+//                 theme={isDarkMode ? "vs-dark" : "vs"}
+//                 value={jsonValue}
+//                 onChange={handleEditorChange}
+//                 options={{
+//                     minimap: {enabled: true},
+//                     tabSize: 2,
+//                 }}
+//             />
+//         </div>
+//     );
+// };
+
+const Style2Properties: React.FC<{
+    colData: ColModel | null;
+    setColData: (m: ColModel | null) => void;
+}> = ({colData, setColData}) => {
+    const isDarkMode = useDarkMode();
+    const [jsonValue, setJsonValue] = useState("");
+    const editorRef = useRef<any>(null);
+    const isInternalUpdate = useRef(false);
+    const prevColDataRef = useRef<string | null>(null);
+
+    // 处理 ColData 的外部更新（如文件加载）
+    useEffect(() => {
+        if (colData) {
+            const colDataJson = JSON.stringify(colData);
+            // Only update if this is an external change, not from our editor
+            if (!isInternalUpdate.current && colDataJson !== prevColDataRef.current) {
+                setJsonValue(JSON.stringify(colData, null, 2));
+                prevColDataRef.current = colDataJson;
+            }
+        } else {
+            setJsonValue("");
+            prevColDataRef.current = null;
+        }
+    }, [colData]);
+
+    // 初始化第一次渲染
+    useEffect(() => {
+        if (colData) {
+            setJsonValue(JSON.stringify(colData, null, 2));
+            prevColDataRef.current = JSON.stringify(colData);
+        }
+    }, []);
+
+    // Handle the editor being mounted
+    const handleEditorDidMount = (editor: any) => {
+        editorRef.current = editor;
+    };
+
+    // When user edits in the editor
+    const handleEditorChange = (value?: string) => {
+        const newVal = value ?? "";
+
+        // Update local state without full re-render
+        if (newVal !== jsonValue) {
+            setJsonValue(newVal);
+        }
+
+        try {
+            const parsed = JSON.parse(newVal);
+
+            // Only update parent if actual content changed
+            if (JSON.stringify(parsed) !== JSON.stringify(colData)) {
+                isInternalUpdate.current = true;
+                setColData(parsed);
+                prevColDataRef.current = JSON.stringify(parsed);
+
+                // Reset the flag after a delay to allow React to process
+                setTimeout(() => {
+                    isInternalUpdate.current = false;
+                }, 0);
+            }
+        } catch (err) {
+            // JSON is not valid, don't update parent
+        }
+    };
+
+    return (
+        <div style={{height: "calc(100vh - 230px)"}}>
+            <Editor
+                language="json"
+                theme={isDarkMode ? "vs-dark" : "vs"}
+                value={jsonValue}
+                onChange={handleEditorChange}
+                onMount={handleEditorDidMount}
+                options={{
+                    minimap: {enabled: true},
+                    tabSize: 2,
+                }}
+            />
+        </div>
+    );
+};
 
 
 /** ColEditorProps:
@@ -352,238 +674,13 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         return "missing";
     }
 
-    /** 样式1：所有 Collider 顺序排布 */
-    const Style1Colliders: React.FC<{
-        fields: FormListFieldData[];
-        add: FormListOperation["add"];
-        remove: FormListOperation["remove"];
-        form: any;
-    }> = ({fields, add, remove, form}) => {
-        return (
-            <>
-                {fields.map(({key, name, ...restField}) => {
-                    const typeName = form.getFieldValue(["colliders", name, "TypeName"]);
-                    return (
-                        <div
-                            key={key}
-                            style={{
-                                position: "relative",
-                                padding: 8,
-                                marginBottom: 10,
-                                border: "1px solid #ccc",
-                                borderRadius: 4
-                            }}
-                        >
-                            <DynamicColliderFormItem name={name} form={form}/>
-                            <Button
-                                onClick={() => remove(name)}
-                                style={{position: "absolute", top: 4, right: 4}}
-                                danger
-                            >
-                                删除
-                            </Button>
-                            <Divider orientation="left" plain>
-                                {typeName}
-                            </Divider>
-                        </div>
-                    );
-                })}
-                <Button icon={<></>} block type="primary" onClick={() => add()}>
-                    添加新Collider
-                </Button>
-            </>
-        );
-    };
-
-
-    /** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
-    const Style2Properties: React.FC<{
-        colData: ColModel | null;
-        setColData: (m: ColModel | null) => void;
-    }> = ({colData, setColData}) => {
-        const isDarkMode = useDarkMode();
-        const [jsonValue, setJsonValue] = useState("");
-
-        useEffect(() => {
-            if (colData) {
-                // 初次/每次切换时，把 Mate 对象序列化为 JSON
-                setJsonValue(JSON.stringify(colData, null, 2));
-            } else {
-                setJsonValue("");
-            }
-        }, [colData, form, transformColToForm]);
-
-        // 当用户编辑 Monaco 里的 JSON
-        const handleEditorChange = (value?: string) => {
-            if (value == null) value = "";
-            setJsonValue(value);
-            try {
-                const parsed = JSON.parse(value);
-                setColData(parsed);
-            } catch (err) {
-                // console.log("Invalid JSON:", err);
-            }
-        };
-
-        return (
-            <div style={{height: "calc(100vh - 230px)"}}>
-                <Editor
-                    language="json"
-                    theme={isDarkMode ? "vs-dark" : "vs"}
-                    value={jsonValue}
-                    onChange={handleEditorChange}
-                    options={{
-                        minimap: {enabled: true},
-                        tabSize: 2,
-                    }}
-                />
-            </div>
-        );
-    };
-
-
-    /**
-     * 用于渲染单个 Collider 的表单区域，根据 typeName 动态切换要展示的字段
-     */
-    const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
-                                                                                name,
-                                                                                form
-                                                                            }) => {
-        // 这里可以使用 <Form.Item> 包裹具体的字段
-        // 其中 position/rotation/scale/center 都是 array，可以做成 3/4 个 <InputNumber> 并排
-        const typeName = Form.useWatch(["colliders", name, "TypeName"], form);
-
-        return (
-            <Space direction="vertical" style={{width: "100%"}}>
-                <Form.Item
-                    label="Collider类型"
-                    name={[name, "TypeName"]}
-                    rules={[{required: true, message: "请选择 Collider 类型"}]}
-                >
-                    <Radio.Group>
-                        <Radio value="dbc">dbc</Radio>
-                        <Radio value="dpc">dpc</Radio>
-                        <Radio value="dbm">dbm</Radio>
-                        <Radio value="missing">missing</Radio>
-                    </Radio.Group>
-                </Form.Item>
-
-                {/* base 公共字段 */}
-                <Form.Item label="ParentName" name={[name, "parentName"]}>
-                    <Input/>
-                </Form.Item>
-                <Form.Item label="SelfName" name={[name, "selfName"]}>
-                    <Input/>
-                </Form.Item>
-
-                {/* LocalPosition (3个数) */}
-                <Form.Item label="LocalPosition">
-                    <Input.Group compact>
-                        <Form.Item name={[name, "localPosition", 0]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="x"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localPosition", 1]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="y"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localPosition", 2]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="z"/>
-                        </Form.Item>
-                    </Input.Group>
-                </Form.Item>
-
-                {/* LocalRotation (4个数) */}
-                <Form.Item label="LocalRotation">
-                    <Input.Group compact>
-                        <Form.Item name={[name, "localRotation", 0]} noStyle>
-                            <InputNumber style={{width: "25%"}} placeholder="x"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localRotation", 1]} noStyle>
-                            <InputNumber style={{width: "25%"}} placeholder="y"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localRotation", 2]} noStyle>
-                            <InputNumber style={{width: "25%"}} placeholder="z"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localRotation", 3]} noStyle>
-                            <InputNumber style={{width: "25%"}} placeholder="w"/>
-                        </Form.Item>
-                    </Input.Group>
-                </Form.Item>
-
-                {/* LocalScale (3个数) */}
-                <Form.Item label="LocalScale">
-                    <Input.Group compact>
-                        <Form.Item name={[name, "localScale", 0]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="sx"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localScale", 1]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="sy"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "localScale", 2]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="sz"/>
-                        </Form.Item>
-                    </Input.Group>
-                </Form.Item>
-
-                <Form.Item label="Direction" name={[name, "direction"]}>
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item label="Center">
-                    <Input.Group compact>
-                        <Form.Item name={[name, "center", 0]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="cx"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "center", 1]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="cy"/>
-                        </Form.Item>
-                        <Form.Item name={[name, "center", 2]} noStyle>
-                            <InputNumber style={{width: "33%"}} placeholder="cz"/>
-                        </Form.Item>
-                    </Input.Group>
-                </Form.Item>
-
-                <Form.Item label="Bound" name={[name, "bound"]}>
-                    <InputNumber/>
-                </Form.Item>
-
-                {/* 只有 dbc/dbm 才显示 radius/height */}
-                {(typeName === "dbc" || typeName === "dbm") && (
-                    <>
-                        <Form.Item label="Radius" name={[name, "radius"]}>
-                            <InputNumber/>
-                        </Form.Item>
-                        <Form.Item label="Height" name={[name, "height"]}>
-                            <InputNumber/>
-                        </Form.Item>
-                    </>
-                )}
-
-                {/* dbm 独有的字段 */}
-                {typeName === "dbm" && (
-                    <>
-                        <Form.Item label="ScaleRateMulMax" name={[name, "scaleRateMulMax"]}>
-                            <InputNumber/>
-                        </Form.Item>
-                        <Form.Item label="CenterRateMax">
-                            <Input.Group compact>
-                                <Form.Item name={[name, "centerRateMax", 0]} noStyle>
-                                    <InputNumber style={{width: "33%"}} placeholder="crx"/>
-                                </Form.Item>
-                                <Form.Item name={[name, "centerRateMax", 1]} noStyle>
-                                    <InputNumber style={{width: "33%"}} placeholder="cry"/>
-                                </Form.Item>
-                                <Form.Item name={[name, "centerRateMax", 2]} noStyle>
-                                    <InputNumber style={{width: "33%"}} placeholder="crz"/>
-                                </Form.Item>
-                            </Input.Group>
-                        </Form.Item>
-                    </>
-                )}
-
-                {/* missingCollider 无字段，不需要额外内容 */}
-            </Space>
-        );
-    };
+    // 当 colData 变化时同步到表单
+    useEffect(() => {
+        if (colData) {
+            const formValues = transformColToForm(colData);
+            form.setFieldsValue(formValues);
+        }
+    }, [colData, form]);
 
 
     return (
@@ -635,6 +732,13 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                     block
                                     value={viewMode}
                                     onChange={(e) => {
+                                        // Get current form values and update mateData before switching view
+                                        const currentFormValues = form.getFieldsValue(true);
+                                        if (colData && viewMode !== 2) { // 非模式 2 时更新表单数据，因为模式 2 是 JSON
+                                            const updatedCol = transformFormToCol(currentFormValues, colData);
+                                            setColData(updatedCol);
+                                        }
+
                                         setViewMode(e.target.value);
                                         localStorage.setItem('mateEditorViewMode', e.target.value.toString());
                                     }}
@@ -678,5 +782,3 @@ export default ColEditor;
 
 
 //TODO 无法保存
-
-//TODO 切换显示模式时同步数据

@@ -329,32 +329,66 @@ const Style2Properties: React.FC<{
 const Style3Properties: React.FC<{
     mateData: Mate | null;
     setMateData: (m: Mate | null) => void;
-    form: any;
-    transformMateToForm: (mate: Mate) => any;
-}> = ({mateData, setMateData, form, transformMateToForm}) => {
+}> = ({mateData, setMateData}) => {
     const isDarkMode = useDarkMode();
     const [jsonValue, setJsonValue] = useState("");
+    const editorRef = useRef<any>(null);
+    const isInternalUpdate = useRef(false);
+    const prevColDataRef = useRef<string | null>(null);
 
+    // 处理 ColData 的外部更新（如文件加载）
     useEffect(() => {
         if (mateData) {
-            // 初次/每次切换时，把 Mate 对象序列化为 JSON
-            setJsonValue(JSON.stringify(mateData, null, 2));
+            const mateDataJson = JSON.stringify(mateData);
+            // Only update if this is an external change, not from our editor
+            if (!isInternalUpdate.current && mateDataJson !== prevColDataRef.current) {
+                setJsonValue(JSON.stringify(mateData, null, 2));
+                prevColDataRef.current = mateDataJson;
+            }
         } else {
             setJsonValue("");
+            prevColDataRef.current = null;
         }
     }, [mateData]);
 
-    // 当用户编辑 Monaco 里的 JSON
+    // 初始化第一次渲染
+    useEffect(() => {
+        if (mateData) {
+            setJsonValue(JSON.stringify(mateData, null, 2));
+            prevColDataRef.current = JSON.stringify(mateData);
+        }
+    }, []);
+
+    // Handle the editor being mounted
+    const handleEditorDidMount = (editor: any) => {
+        editorRef.current = editor;
+    };
+
+    // When user edits in the editor
     const handleEditorChange = (value?: string) => {
-        if (value == null) value = "";
-        setJsonValue(value);
+        const newVal = value ?? "";
+
+        // Update local state without full re-render
+        if (newVal !== jsonValue) {
+            setJsonValue(newVal);
+        }
 
         try {
-            const parsed = JSON.parse(value);
-            // 只要 JSON 格式正常，实时更新父组件的 mateData
-            setMateData(parsed);
+            const parsed = JSON.parse(newVal);
+
+            // Only update parent if actual content changed
+            if (JSON.stringify(parsed) !== JSON.stringify(mateData)) {
+                isInternalUpdate.current = true;
+                setMateData(parsed);
+                prevColDataRef.current = JSON.stringify(parsed);
+
+                // Reset the flag after a delay to allow React to process
+                setTimeout(() => {
+                    isInternalUpdate.current = false;
+                }, 0);
+            }
         } catch (err) {
-            // console.log("Invalid JSON:", err);
+            // JSON is not valid, don't update parent
         }
     };
 
@@ -365,6 +399,7 @@ const Style3Properties: React.FC<{
                 theme={isDarkMode ? "vs-dark" : "vs"}
                 value={jsonValue}
                 onChange={handleEditorChange}
+                onMount={handleEditorDidMount}
                 options={{
                     minimap: {enabled: true},
                     tabSize: 2,
@@ -373,6 +408,7 @@ const Style3Properties: React.FC<{
         </div>
     );
 };
+
 
 
 /**
@@ -401,6 +437,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         return saved ? Number(saved) as 1 | 2 | 3 : 1;
     });
 
+
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
         if (filePath) {
@@ -420,15 +457,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         }
     }, [filePath]);
 
-    // 当 mateData 变化时同步到表单
-    useEffect(() => {
-        if (mateData) {
-            const formValues = transformMateToForm(mateData);
-            form.setFieldsValue(formValues);
-        }
-    }, [mateData, form]);
-
-
     /**
      * 读取 .mate 文件
      */
@@ -439,7 +467,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         }
         try {
             const data = await ReadMateFile(filePath);
-            console.log(data);
             setMateData(data);
             // 同步到 form
             form.setFieldsValue(transformMateToForm(data));
@@ -738,6 +765,16 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         return newMate;
     };
 
+
+
+    // 当 mateData 变化时同步到表单
+    useEffect(() => {
+        if (mateData) {
+            const formValues = transformMateToForm(mateData);
+            form.setFieldsValue(formValues);
+        }
+    }, [mateData, form]);
+
     return (
         <div style={{padding: 10}}>
             <ConfigProvider
@@ -848,6 +885,13 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     block
                                     value={viewMode}
                                     onChange={(e) => {
+                                        // Get current form values and update mateData before switching view
+                                        const currentFormValues = form.getFieldsValue(true);
+                                        if (mateData && viewMode !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
+                                            const updatedMate = transformFormToMate(currentFormValues, mateData);
+                                            setMateData(updatedMate);
+                                        }
+
                                         setViewMode(e.target.value);
                                         localStorage.setItem('mateEditorViewMode', e.target.value.toString());
                                     }}
@@ -900,8 +944,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 <Style3Properties
                                     mateData={mateData}
                                     setMateData={(newVal) => setMateData(newVal)}
-                                    form={form}
-                                    transformMateToForm={transformMateToForm}
                                 />
                             )}
                         </Collapse.Panel>

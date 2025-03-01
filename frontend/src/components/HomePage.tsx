@@ -5,14 +5,16 @@ import {Button, Dropdown, Layout, MenuProps, message, notification} from "antd";
 import {CheckLatestVersion, GetAppVersion, SelectFile} from "../../wailsjs/go/main/App";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
-import {DownOutlined, TranslationOutlined} from "@ant-design/icons";
+import {DownOutlined, GithubOutlined, TranslationOutlined} from "@ant-design/icons";
 import {getFileExtension} from "../utils/utils";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 
 const {Content} = Layout;
 const STORAGE_KEY = "lastCheckTime"; // 存储上次检查时间的键
 const CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 小时（毫秒）
+const GITHUB_URL = "https://github.com/90135/COM3D2_MOD_EDITOR";
 const GITHUB_RELEASE_URL = "https://github.com/90135/COM3D2_MOD_EDITOR/releases";
+
 
 
 const HomePage: React.FC = () => {
@@ -74,13 +76,12 @@ const HomePage: React.FC = () => {
         checkUpdate(); // 组件加载时自动检查更新
     }, []);
 
-
     /**
      * 触发 Wails 的文件选择对话框，并跳转到对应页面
      */
     const handleSelectFile = async () => {
         try {
-            const filePath = await SelectFile("*.menu;*.mate;*.pmat;.col", t('Infos.com3d2_mod_files'));
+            const filePath = await SelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'));
             if (filePath) {
                 const extension = getFileExtension(filePath);
                 switch (extension) {
@@ -153,6 +154,14 @@ const HomePage: React.FC = () => {
                         <TranslationOutlined/><DownOutlined/>
                     </Button>
                 </Dropdown>
+
+
+                <Button type="text" size="large" style={{marginTop: 10, color: "#666"}}
+                onClick={
+                    () => BrowserOpenURL(GITHUB_URL)
+                }>
+                    <GithubOutlined />
+                </Button>
 
             </Content>
         </Layout>
