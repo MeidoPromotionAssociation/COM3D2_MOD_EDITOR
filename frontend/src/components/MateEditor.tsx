@@ -67,14 +67,14 @@ const Style1Properties: React.FC<{
     return (
         <>
             {/* 2. 遍历分组后的数据进行渲染 */}
-            {Object.entries(groupedFields).map(([propType, groupFields]) => (
-                <div key={propType}>
+            {Object.entries(groupedFields).map(([propType, groupFields],id) => (
+                <div key={`groupedFields-${id}`}>
                     {/* 3. 在每个 propType 组的开头加一个分割线 */}
                     <Divider>{t(`MateEditor.${propType}`)}</Divider>
 
                     {/* 4. 渲染该 propType 组内的所有属性 */}
-                    {groupFields.map(({key, name, ...restField}) => (
-                        <div key={key} style={{position: "relative", marginBottom: 16}}>
+                    {groupFields.map(({key, name, ...restField},id) => (
+                        <div key={`groupFields-item-${groupFields}-${id}-${propType}-${name}`} style={{position: "relative", marginBottom: 16}}>
                             <MatePropertyItemType1 name={name} restField={restField} form={form}/>
                             <Button
                                 onClick={() => remove(name)}
@@ -96,7 +96,7 @@ const Style1Properties: React.FC<{
     );
 };
 
-// ------------------- 样式1：简单的上下排列，为大文件准备的虚拟渲染 -------------------
+// ------------------- 样式1.5：简单的上下排列，为大文件准备的虚拟渲染 -------------------
 const Style1PropertiesVirtualized: React.FC<{
     fields: FormListFieldData[];
     add: FormListOperation["add"];
@@ -261,12 +261,12 @@ const Style2Properties: React.FC<{
 
                 {/* 左边栏，按 PropType 分组 */}
                 {groupKeys.map((PropType) => (
-                    <div key={PropType} style={{textAlign: 'left', marginBottom: 16}}>
+                    <div style={{textAlign: 'left', marginBottom: 16}}>
                         <Divider plain><b>{t(`MateEditor.${PropType}`)}</b></Divider>
                         {grouped[PropType].map(({field, index, propName}) => (
                             <div
                                 id={`sidebar-item-${index}`}
-                                key={field.key}
+                                key={`sidebar-item-${PropType}-${field.key}`}
                                 onClick={() => setSelectedField(index)}
                                 style={{
                                     padding: '4px 8px',
@@ -304,7 +304,7 @@ const Style2Properties: React.FC<{
                         flexDirection: 'column',
                     }}>
                         <MatePropertyItemType2
-                            key={'property-item-' + selectedFieldData.key} // 确保每个属性都有独立的 key
+                            key={'property-item-' + selectedFieldData.key}
                             name={selectedFieldData.name}
                             restField={selectedFieldData}
                             form={form}
@@ -607,6 +607,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             materialName: mate.Material?.Name,
             shaderName: mate.Material?.ShaderName,
             shaderFilename: mate.Material?.ShaderFilename,
+
             properties: mate.Material?.Properties?.map((prop) => {
                 // 不同类型的 property
                 switch (prop.TypeName) {

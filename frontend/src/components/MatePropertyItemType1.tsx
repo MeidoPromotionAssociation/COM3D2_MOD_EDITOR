@@ -23,7 +23,6 @@ const MatePropertyItemType1 = ({
 
     return (
         <div
-            key={`property-item-${name}`}
             style={{
                 marginBottom: 8,
                 padding: 8,
@@ -31,16 +30,15 @@ const MatePropertyItemType1 = ({
                 borderRadius: 4,
                 textAlign: 'left',
             }}
+            key = {Math.random()}
         >
-            <Form.Item
+            <Form.Item initialValue='tex'
                 {...restField}
                 label={t('MateEditor.property_type')}
                 name={[name, 'propType']}
                 labelCol={{style: {width: '100px'}}}
-                //style={{ display: 'flex', alignItems: 'center' }} // 让内容水平排列
             >
                 <Select
-                    //style={{ width: '20vw', flexShrink: 0 }}
                     dropdownStyle={{textAlign: 'left'}}
                     options={[
                         {label: t('MateEditor.tex'), value: 'tex'},

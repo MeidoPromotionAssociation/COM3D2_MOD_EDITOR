@@ -11,6 +11,7 @@ import {
     InputNumber,
     message,
     Radio,
+    Select,
     Space
 } from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
@@ -55,7 +56,7 @@ const Style1Colliders: React.FC<{
                             borderRadius: 4
                         }}
                     >
-                        <DynamicColliderFormItem name={name} form={form}/>
+                        <DynamicColliderFormItem name={name} restField={restField} form={form}/>
                         <Button
                             onClick={() => remove(name)}
                             style={{position: "absolute", bottom: 0, right: 0}}
@@ -76,10 +77,11 @@ const Style1Colliders: React.FC<{
 /**
  * 用于渲染单个 Collider 的表单区域，根据 typeName 动态切换要展示的字段
  */
-const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
-                                                                            name,
-                                                                            form
-                                                                        }) => {
+const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: any }> = ({
+                                                                                            name,
+                                                                                            restField,
+                                                                                            form
+                                                                                        }) => {
     const {t} = useTranslation();
     // 其中 position/rotation/scale/center 都是 array
     const typeName = Form.useWatch(["colliders", name, "TypeName"], form);
@@ -94,16 +96,20 @@ const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
                 textAlign: 'left',
             }}
         >
-            <Form.Item
+            <Form.Item initialValue='dbc'
+                {...restField}
                 label={t('ColEditor.collider_type')}
-                name={[name, "TypeName"]}
+                name={[name, 'TypeName']}
             >
-                <Radio.Group>
-                    <Radio value="dbc">dbc</Radio>
-                    <Radio value="dpc">dpc</Radio>
-                    <Radio value="dbm">dbm</Radio>
-                    <Radio value="missing">missing</Radio>
-                </Radio.Group>
+                <Select
+                    dropdownStyle={{textAlign: 'left'}}
+                    options={[
+                        {label: t('ColEditor.dbc'), value: 'dbc'},
+                        {label: t('ColEditor.dpc'), value: 'dpc'},
+                        {label: t('ColEditor.dbm'), value: 'dbm'},
+                        {label: t('ColEditor.missing'), value: 'missing'},
+                    ]}
+                />
             </Form.Item>
 
 
@@ -518,7 +524,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
      */
 // 要在 transformColToForm 函数内进行的修改
     function transformColToForm(col: ColModel) {
-        // 1. 先给每个 collider 注入推断后的 TypeName（如果还没有）
+        // 1. 先给每个 collider 注入推断后的 TypeName
         (col.Colliders || []).forEach((collider: any) => {
             if (!("TypeName" in collider)) {
                 collider.TypeName = guessColliderType(collider);
@@ -529,12 +535,12 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         return {
             signature: col.Signature,
             version: col.Version,
-            // 将 colliders
-            colliders: col.Colliders?.map((collider: any) => {
-                const base = (collider.Base as DynamicBoneColliderBase) || {};
-                // 这里统一用 propType 来表示类型
+
+            colliders: col.Colliders?.map((collider) => {
+                const base = (collider.Base as DynamicBoneColliderBase);
+
                 const item: any = {
-                    propType: collider.TypeName,
+                    TypeName: collider.TypeName,
                     parentName: base.ParentName,
                     selfName: base.SelfName,
                     localPosition: base.LocalPosition || [0, 0, 0],
@@ -563,7 +569,6 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                         // missingCollider 无额外字段
                         break;
                     default:
-                        // 如果有其他未识别类型，可在此处理
                         break;
                 }
                 return item;
@@ -588,15 +593,9 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         const newColliders: any[] = [];
         if (Array.isArray(values.colliders)) {
             for (const item of values.colliders) {
-                const typeName = item.TypeName;
-                if (!typeName) {
-                    // 无类型，不处理
-                    continue;
-                }
+                const typeName = item.TypeName || 'dbc'; // Default to 'dbc' if empty
 
-                // 先构造 base
                 const baseData = new DynamicBoneColliderBase({
-                    TypeName: typeName,
                     ParentName: item.parentName || "",
                     SelfName: item.selfName || "",
                     LocalPosition: item.localPosition || [0, 0, 0],
@@ -607,46 +606,44 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     Bound: Number(item.bound)
                 });
 
-                // 根据类型生成对应 collider
+                let collider: any;
                 switch (typeName) {
                     case "dbc": {
-                        const dbc = new DynamicBoneCollider({
-                            TypeName: "dbc",
+                        collider = new DynamicBoneCollider({
                             Base: baseData,
                             Radius: parseFloat(item.radius) || 0,
                             Height: parseFloat(item.height) || 0
                         });
-                        newColliders.push(dbc);
                         break;
                     }
                     case "dbm": {
-                        const dbm = new DynamicBoneMuneCollider({
-                            TypeName: "dbm",
+                        collider = new DynamicBoneMuneCollider({
                             Base: baseData,
                             Radius: parseFloat(item.radius) || 0,
                             Height: parseFloat(item.height) || 0,
                             ScaleRateMulMax: parseFloat(item.scaleRateMulMax) || 0,
                             CenterRateMax: item.centerRateMax || [0, 0, 0]
                         });
-                        newColliders.push(dbm);
                         break;
                     }
                     case "dpc": {
-                        const dpc = new DynamicBonePlaneCollider({
-                            TypeName: "dpc",
+                        collider = new DynamicBonePlaneCollider({
                             Base: baseData
                         });
-                        newColliders.push(dpc);
                         break;
                     }
                     case "missing": {
-                        const mc = new MissingCollider({
-                            TypeName: "missing",
-                        }); // 无字段
-                        newColliders.push(mc);
+                        collider = new MissingCollider({});
                         break;
                     }
+                    default: {
+                        console.error("Unknown col type " + typeName);
+                    }
                 }
+                // Explicitly set the TypeName property
+                collider.TypeName = typeName;
+
+                newColliders.push(collider);
             }
         }
         newCol.Colliders = newColliders;
@@ -695,7 +692,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     size="small"
                     labelCol={{style: {width: '10vw'}}}
                 >
-                    <Collapse defaultActiveKey={["basic", "colliders"]}>
+                    <Collapse defaultActiveKey={["colliders"]}>
                         <Collapse.Panel header={t('ColEditor.file_header.file_head')} key="basic">
                             <Space>
                                 <Form.Item name="signature"
@@ -729,9 +726,10 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                     onChange={(e) => {
                                         // Get current form values and update mateData before switching view
                                         const currentFormValues = form.getFieldsValue(true);
-                                        if (colData && (viewMode != 2)) { // 非模式 2 时更新表单数据，因为模式 2 是 JSON
+                                        if (colData && (viewMode != 2)) { // 非模式 2 时从表单拿数据，因为模式 2 是 JSON
                                             const updatedCol = transformFormToCol(currentFormValues, colData);
                                             setColData(updatedCol);
+                                            console.log(updatedCol)
                                         }
 
                                         setViewMode(e.target.value);

@@ -8,11 +8,6 @@ import {DeleteOutlined} from "@ant-design/icons";
 import MatePropertyItemType1 from "./MatePropertyItemType1";
 import {t} from "i18next";
 
-interface FieldItem {
-    key: number;       // field.key
-    name: number;      // field.name
-}
-
 // 分组后扁平化出来的列表项类型
 type MyListItem =
     | {
@@ -75,7 +70,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                     type: "property",
                     field: {
                         ...field,
-                        compositeKey: `${groupIndex}-${field.name}`
+                        compositeKey: `${groupIndex}-${field.key}`
                     }
                 });
             });
@@ -208,7 +203,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                             if (item.type === 'group') {
                                 return `group-${item.propType}-${index}`;
                             } else {
-                                return `property-${item.field.compositeKey}`;
+                                return `property-${item.field.compositeKey}-${index}`;
                             }
                         }}
                     >
