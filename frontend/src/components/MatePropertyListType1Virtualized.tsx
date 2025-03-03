@@ -70,7 +70,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                     type: "property",
                     field: {
                         ...field,
-                        compositeKey: `${groupIndex}-${field.key}`
+                        compositeKey: undefined // 避免 key 冲突
                     }
                 });
             });
