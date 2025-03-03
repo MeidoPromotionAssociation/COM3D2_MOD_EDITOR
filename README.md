@@ -143,6 +143,15 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 <br>
 <br>
 
+# How to Dev
+
+1. install [Golang](https://go.dev/)  1.24+
+2. run `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
+3. install [Nodejs](https://nodejs.org/) v22
+4. install pnpm `npm install -g npm@11.1.0`
+5. run `wails dev` in project root to run in dev mode
+6. run `wails build` to build project
+
 
 # KISS 規約
 
