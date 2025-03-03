@@ -7,6 +7,7 @@
     "current_version": "当前版本：{{currentVersion}}",
     "latest_version": "最新版本：{{latestVersion}}",
     "pls_get_update_form_github": "请前往 GitHub 下载更新~",
+    "new_version_button": "新版本可用🚀",
     "go_github": "前往 GitHub"
   },
   "EditorNavBar": {
@@ -115,7 +116,7 @@
     "all": "全部",
     "tex": "贴图(tex)",
     "col": "颜色(col)",
-    "col_tip": "颜色(col) 颜色值，游戏本体会将对应纹理的颜色设置为此值",
+    "col_tip": "颜色(col) 颜色值，游戏本体会将对应纹理名的颜色设置为此值，注意取值范围是 0-1 而不是 0-255",
     "f": "浮点(f)",
     "vec": "向量(vec)",
     "vec_tip": "向量(vec) 向量值，其实是颜色，只不过 RGBA 改成了 XYZW，游戏本体会将对应纹理的颜色设置为此值",
@@ -176,7 +177,21 @@
     },
     "style1": "样式 1",
     "style2": "JSON",
-    "Colliders": "碰撞器"
+    "Colliders": "碰撞器",
+    "add_collider": "添加碰撞器",
+    "collider_type": "碰撞器类型",
+    "ParentName": "父节点名",
+    "SelfName": "自身节点名",
+    "LocalPosition": "本地位置",
+    "LocalRotation": "本地旋转",
+    "LocalScale": "本地缩放",
+    "Direction": "方向",
+    "Center": "中心",
+    "Radius": "半径",
+    "Height": "高度",
+    "Bound": "Bound",
+    "ScaleRateMulMax": "缩放倍率上限",
+    "CenterRateMax": "中心倍率上限"
   },
   "Infos": {
     "com3d2_menu_file": "COM3D2 菜单文件",
@@ -201,7 +216,7 @@
     "read_mate_file_failed_colon": "读取.mate 文件失败：",
     "read_pmate_file_failed_colon": "读取.pmat 文件失败：",
     "pls_input_menu_file_path_to_open": "请输入要打开的 .menu 文件路径",
-    "pls_input_file_path_first": "请先输入文件路径",
+    "pls_input_file_path_first": "请先输入文件路径，新建文件请使用另存为",
     "pls_load_file_first": "请先加载文件",
     "save_file_failed_colon": "保存文件失败: ",
     "save_as_file_failed_colon": "文件另存为失败: ",

@@ -10,9 +10,10 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
-var (
+const (
 	// GitHubApiURL GitHub API 版本检查 URL
 	GitHubApiURL = "https://api.github.com/repos/90135/COM3D2_MOD_EDITOR/releases/latest"
 	// CurrentVersion 当前应用版本
@@ -123,7 +124,10 @@ func (a *App) CheckLatestVersion() (VersionCheckResult, error) {
 
 // fetchLatestVersion 从 GitHub 获取最新 release 版本
 func fetchLatestVersion() (version string, err error) {
-	resp, err := http.Get(GitHubApiURL)
+	client := &http.Client{
+		Timeout: 120 * time.Second,
+	}
+	resp, err := client.Get(GitHubApiURL)
 	if err != nil {
 		return "", err
 	}

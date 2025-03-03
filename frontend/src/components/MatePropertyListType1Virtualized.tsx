@@ -63,7 +63,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
     // ----------------------------------------------------
     const renderList: MyListItem[] = useMemo(() => {
         const items: MyListItem[] = [];
-        Object.entries(grouped).forEach(([propType, groupFields]) => {
+        Object.entries(grouped).forEach(([propType, groupFields], groupIndex) => {
             // 先插入一个“分组头”
             items.push({
                 type: "group",
@@ -73,7 +73,10 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
             groupFields.forEach((field) => {
                 items.push({
                     type: "property",
-                    field
+                    field: {
+                        ...field,
+                        compositeKey: `${groupIndex}-${field.name}`
+                    }
                 });
             });
         });
@@ -200,6 +203,14 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                         width={width}
                         itemCount={renderList.length}
                         itemSize={getItemSize}
+                        itemKey={(index) => {
+                            const item = renderList[index];
+                            if (item.type === 'group') {
+                                return `group-${item.propType}-${index}`;
+                            } else {
+                                return `property-${item.field.compositeKey}`;
+                            }
+                        }}
                     >
                         {Row}
                     </VariableSizeList>

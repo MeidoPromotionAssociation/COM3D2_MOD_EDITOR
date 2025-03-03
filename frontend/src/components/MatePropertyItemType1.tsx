@@ -23,6 +23,7 @@ const MatePropertyItemType1 = ({
 
     return (
         <div
+            key={`property-item-${name}`}
             style={{
                 marginBottom: 8,
                 padding: 8,
@@ -194,7 +195,7 @@ const MatePropertyItemType1 = ({
                             name={[name, 'colorR']}
                             labelCol={{style: {width: '100px'}}}
                         >
-                            <InputNumber min={0} max={255}/>
+                            <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -202,7 +203,7 @@ const MatePropertyItemType1 = ({
                             name={[name, 'colorG']}
                             labelCol={{style: {width: '100px'}}}
                         >
-                            <InputNumber min={0} max={255}/>
+                            <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -210,7 +211,7 @@ const MatePropertyItemType1 = ({
                             name={[name, 'colorB']}
                             labelCol={{style: {width: '100px'}}}
                         >
-                            <InputNumber min={0} max={255}/>
+                            <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}

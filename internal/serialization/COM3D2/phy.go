@@ -6,32 +6,6 @@ import (
 	"io"
 )
 
-// PartialMode 枚举与 C# 对应
-const (
-	PartialMode_StaticOrCurve int32 = 0 // C#里的 StaticOrCurve
-	PartialMode_Partial       int32 = 1 // C#里的 Partial
-	PartialMode_FromBoneName  int32 = 2 // C#里的 FromBoneName
-)
-
-// FreezeAxis 枚举与 C# 对应
-const (
-	FreezeAxis_None int32 = 0
-	FreezeAxis_X    int32 = 1
-	FreezeAxis_Y    int32 = 2
-	FreezeAxis_Z    int32 = 3
-)
-
-// AnimationCurve 用于存储 Keyframe 数组
-type AnimationCurve struct {
-	Keyframes []Keyframe
-}
-
-// BoneValue 存储一个骨骼名称与对应 float 值
-type BoneValue struct {
-	BoneName string
-	Value    float32
-}
-
 // -------------------------------------------------------
 // 定义 Phy (Phy) 的数据结构
 // -------------------------------------------------------
@@ -91,6 +65,32 @@ type Phy struct {
 
 	// 12. FreezeAxis
 	FreezeAxis int32
+}
+
+// PartialMode 枚举与 C# 对应
+const (
+	PartialMode_StaticOrCurve int32 = 0 // C#里的 StaticOrCurve
+	PartialMode_Partial       int32 = 1 // C#里的 Partial
+	PartialMode_FromBoneName  int32 = 2 // C#里的 FromBoneName
+)
+
+// FreezeAxis 枚举与 C# 对应
+const (
+	FreezeAxis_None int32 = 0
+	FreezeAxis_X    int32 = 1
+	FreezeAxis_Y    int32 = 2
+	FreezeAxis_Z    int32 = 3
+)
+
+// AnimationCurve 用于存储 Keyframe 数组
+type AnimationCurve struct {
+	Keyframes []Keyframe
+}
+
+// BoneValue 存储一个骨骼名称与对应 float 值
+type BoneValue struct {
+	BoneName string
+	Value    float32
 }
 
 // ReadPhy 读取 "CM3D21_PHY" 格式

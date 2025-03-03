@@ -7,6 +7,7 @@ import {COM3D2} from "../../wailsjs/go/models";
 import {useTranslation} from "react-i18next";
 import {ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
 import PMat = COM3D2.PMat;
+import {COM3D2HeaderConstants} from "../utils/consts";
 
 
 export interface PMatEditorProps {
@@ -26,8 +27,8 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     const [pmatData, setPMatData] = useState<PMat | null>(null);
 
     // 只读区（通常不建议修改）的字段
-    const [signature, setSignature] = useState("CM3D2_PMATERIAL");
-    const [version, setVersion] = useState(1000);
+    const [signature, setSignature] = useState(String(COM3D2HeaderConstants.PMatSignature));
+    const [version, setVersion] = useState(Number(COM3D2HeaderConstants.PMatVersion));
     const [hash, setHash] = useState(0);
 
     // 可编辑区
@@ -44,8 +45,8 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有文件，则初始化为新文件
             const pmat = new (PMat);
-            pmat.Signature = "CM3D2_PMATERIAL";
-            pmat.Version = 1000;
+            pmat.Signature = COM3D2HeaderConstants.PMatSignature;
+            pmat.Version = COM3D2HeaderConstants.PMatVersion;
             setPMatData(pmat);
             return;
         }

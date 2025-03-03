@@ -17,6 +17,7 @@ import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {ReadPhyFile, WritePhyFile} from "../../wailsjs/go/COM3D2/PhyService";
 import {SaveFile} from "../../wailsjs/go/main/App";
+import {COM3D2HeaderConstants} from "../utils/consts";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
@@ -320,8 +321,8 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             WindowSetTitle("Phy Editor");
             // 如果没有 filePath，就新建一个空的
             const empty = COM3D2.Phy.createFrom({});
-            empty.Signature = "CM3D21_PHY";
-            empty.Version = 24102;
+            empty.Signature = COM3D2HeaderConstants.PhySignature;
+            empty.Version = COM3D2HeaderConstants.PhyVersion;
             setPhyData(empty);
             form.resetFields();
         }

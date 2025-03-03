@@ -13,6 +13,7 @@ import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 import {ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
+import {COM3D2HeaderConstants} from "../utils/consts";
 
 type FormatType = "treeIndent" | "colonSplit" | "JSON" | "TSV";
 
@@ -91,8 +92,8 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
                 setMenuData(new (Menu));
                 // default values
-                setSignature("CM3D2_MENU");
-                setVersion(1000);
+                setSignature(COM3D2HeaderConstants.MenuSignature);
+                setVersion(COM3D2HeaderConstants.MenuVersion);
                 setBodySize(0);
                 updateCommandsText([], displayFormat);
                 return;

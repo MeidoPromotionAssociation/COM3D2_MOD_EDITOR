@@ -24,7 +24,6 @@ import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import MatePropertyItemType1 from "./MatePropertyItemType1";
 import MatePropertyItemType2 from "./MatePropertyItemType2";
-import {t} from "i18next";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
 import {Editor} from "@monaco-editor/react";
@@ -35,6 +34,7 @@ import TexProperty = COM3D2.TexProperty;
 import ColProperty = COM3D2.ColProperty;
 import VecProperty = COM3D2.VecProperty;
 import FProperty = COM3D2.FProperty;
+import {COM3D2HeaderConstants} from "../utils/consts";
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -96,7 +96,7 @@ const Style1Properties: React.FC<{
     );
 };
 
-// 为大文件准备的虚拟渲染
+// ------------------- 样式1：简单的上下排列，为大文件准备的虚拟渲染 -------------------
 const Style1PropertiesVirtualized: React.FC<{
     fields: FormListFieldData[];
     add: FormListOperation["add"];
@@ -134,6 +134,7 @@ const Style2Properties: React.FC<{
     remove: FormListOperation['remove'];
     form: any;
 }> = ({fields, add, remove, form}) => {
+    const {t} = useTranslation();
     // 引用左侧列表容器
     const leftSidebarRef = useRef<HTMLDivElement>(null);
 
@@ -450,8 +451,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有文件，则初始化为新文件
             const mate = new Mate();
-            mate.Signature = "CM3D2_MATERIAL";
-            mate.Version = 2001;
+            mate.Signature = COM3D2HeaderConstants.MateSignature;
+            mate.Version = COM3D2HeaderConstants.MateVersion;
             setMateData(mate);
             form.resetFields();
         }
@@ -798,13 +799,13 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     <Collapse defaultActiveKey={['basic', 'properties']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.file_head')}>
                             <Space>
-                                <Form.Item name="signature" initialValue="CM3D2_MATERIAL">
+                                <Form.Item name="signature" initialValue={COM3D2HeaderConstants.MateSignature}>
                                     <Input
                                         disabled={!isHeaderEditable}
                                         addonBefore={t('MateEditor.file_header.Signature')}
                                     />
                                 </Form.Item>
-                                <Form.Item name="version" initialValue="2001">
+                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.MateVersion.toString()}>
                                     <InputNumber
                                         disabled={!isHeaderEditable}
                                         addonBefore={t('MateEditor.file_header.Version')}

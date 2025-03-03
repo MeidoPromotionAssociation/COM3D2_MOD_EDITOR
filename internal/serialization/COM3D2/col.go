@@ -391,9 +391,9 @@ func ReadCol(r io.Reader) (*Col, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read signature failed: %w", err)
 	}
-	if sig != ColSignature {
-		return nil, fmt.Errorf("invalid col signature, want %v, got %s", ColSignature, sig)
-	}
+	//if sig != ColSignature {
+	//	return nil, fmt.Errorf("invalid col signature, want %v, got %s", ColSignature, sig)
+	//}
 	file.Signature = sig
 
 	// 2. Version

@@ -23,9 +23,9 @@ const MatePropertyItemType2 = ({
     const {t} = useTranslation();
 
     // 监听 Form 里的颜色值
-    const colorR = Form.useWatch([`properties`, name, 'colorR'], form) || 255;
-    const colorG = Form.useWatch([`properties`, name, 'colorG'], form) || 255;
-    const colorB = Form.useWatch([`properties`, name, 'colorB'], form) || 255;
+    const colorR = Form.useWatch([`properties`, name, 'colorR'], form) || 1;
+    const colorG = Form.useWatch([`properties`, name, 'colorG'], form) || 1;
+    const colorB = Form.useWatch([`properties`, name, 'colorB'], form) || 1;
     const colorA = Form.useWatch([`properties`, name, 'colorA'], form) ?? 1;
 
     // 颜色状态 (用于 ColorPicker)
@@ -211,7 +211,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorR']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={255}/>
+                            <InputNumber  min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -219,7 +219,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorG']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={255}/>
+                            <InputNumber  min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -227,7 +227,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorB']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={255}/>
+                            <InputNumber  min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}

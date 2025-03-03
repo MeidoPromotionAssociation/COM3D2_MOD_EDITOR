@@ -13,21 +13,30 @@ interface ColorPickerSyncProps {
 const ColorPickerSync: React.FC<ColorPickerSyncProps> = ({form, name}) => {
     // 监听表单中当前项的颜色数值
     const property = Form.useWatch(['properties', name], form) || {};
-    const {colorR = 255, colorG = 255, colorB = 255, colorA = 1} = property;
+    const {colorR = 1, colorG = 1, colorB = 1, colorA = 1} = property;
 
     // 根据数值输入框数据构造 AggregationColor 对象
     const currentAggregationColor = useMemo(() => {
+        // 转成 [0,255]
+        const to255 = (val: number) => Math.round(val * 255);
+
         const componentToHex = (c: number): string => {
             const hex = Math.round(c).toString(16);
             return hex.length === 1 ? '0' + hex : hex;
         };
-        const alpha = Math.round(colorA * 255);
+
+        const r255 = to255(colorR);
+        const g255 = to255(colorG);
+        const b255 = to255(colorB);
+        const a255 = to255(colorA);
+
         const hexString =
             '#' +
-            componentToHex(colorR) +
-            componentToHex(colorG) +
-            componentToHex(colorB) +
-            componentToHex(alpha);
+            componentToHex(r255) +
+            componentToHex(g255) +
+            componentToHex(b255) +
+            componentToHex(a255);
+
         return new AggregationColor(hexString);
     }, [colorR, colorG, colorB, colorA]);
 
@@ -44,16 +53,19 @@ const ColorPickerSync: React.FC<ColorPickerSyncProps> = ({form, name}) => {
 
     // 更新表单中数值输入框的数据
     const updateNumericFields = useCallback((newColor: AggregationColor) => {
-        // 假设 newColor.toRgb() 返回 { r, g, b, a }
-        const rgb = newColor.toRgb();
+        // newColor.toRgb() 返回 { r, g, b, a }
+        const rgba = newColor.toRgb();
+
         const currentProperties = form.getFieldValue('properties') || [];
         const updatedProperties = [...currentProperties];
+
+        // 注意：选色器中的 r, g, b 为 [0,255]，而表单存储 [0,1]
         updatedProperties[name] = {
             ...updatedProperties[name],
-            colorR: rgb.r,
-            colorG: rgb.g,
-            colorB: rgb.b,
-            colorA: rgb.a,
+            colorR: rgba.r / 255,
+            colorG: rgba.g / 255,
+            colorB: rgba.b / 255,
+            colorA: rgba.a,
         };
         form.setFieldsValue({properties: updatedProperties});
     }, [form, name]);

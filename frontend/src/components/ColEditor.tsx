@@ -4,7 +4,7 @@ import {
     Checkbox,
     Collapse,
     ConfigProvider,
-    Divider,
+    Flex,
     Form,
     FormListFieldData,
     Input,
@@ -13,6 +13,7 @@ import {
     Radio,
     Space
 } from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
 import type {FormListOperation} from "antd/es/form";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
@@ -21,13 +22,13 @@ import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {Editor} from "@monaco-editor/react";
 import {useTranslation} from "react-i18next";
+import {COM3D2HeaderConstants} from "../utils/consts";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
 import DynamicBoneMuneCollider = COM3D2.DynamicBoneMuneCollider;
 import MissingCollider = COM3D2.MissingCollider;
 import ColModel = COM3D2.Col;
-
 
 
 /** 样式1：所有 Collider 顺序排布 */
@@ -37,6 +38,8 @@ const Style1Colliders: React.FC<{
     remove: FormListOperation["remove"];
     form: any;
 }> = ({fields, add, remove, form}) => {
+    const {t} = useTranslation();
+
     return (
         <>
             {fields.map(({key, name, ...restField}) => {
@@ -55,24 +58,19 @@ const Style1Colliders: React.FC<{
                         <DynamicColliderFormItem name={name} form={form}/>
                         <Button
                             onClick={() => remove(name)}
-                            style={{position: "absolute", top: 4, right: 4}}
-                            danger
+                            style={{position: "absolute", bottom: 0, right: 0}}
+                            icon={<DeleteOutlined/>}
                         >
-                            删除
                         </Button>
-                        <Divider orientation="left" plain>
-                            {typeName}
-                        </Divider>
                     </div>
                 );
             })}
             <Button icon={<></>} block type="primary" onClick={() => add()}>
-                添加新Collider
+                {t('ColEditor.add_collider')}
             </Button>
         </>
     );
 };
-
 
 
 /**
@@ -82,16 +80,23 @@ const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
                                                                             name,
                                                                             form
                                                                         }) => {
-    // 这里可以使用 <Form.Item> 包裹具体的字段
-    // 其中 position/rotation/scale/center 都是 array，可以做成 3/4 个 <InputNumber> 并排
+    const {t} = useTranslation();
+    // 其中 position/rotation/scale/center 都是 array
     const typeName = Form.useWatch(["colliders", name, "TypeName"], form);
 
     return (
-        <Space direction="vertical" style={{width: "100%"}}>
+        <div
+            style={{
+                marginBottom: 8,
+                padding: 8,
+                border: '1px solid #000',
+                borderRadius: 4,
+                textAlign: 'left',
+            }}
+        >
             <Form.Item
-                label="Collider类型"
+                label={t('ColEditor.collider_type')}
                 name={[name, "TypeName"]}
-                rules={[{required: true, message: "请选择 Collider 类型"}]}
             >
                 <Radio.Group>
                     <Radio value="dbc">dbc</Radio>
@@ -101,92 +106,124 @@ const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
                 </Radio.Group>
             </Form.Item>
 
-            {/* base 公共字段 */}
-            <Form.Item label="ParentName" name={[name, "parentName"]}>
-                <Input/>
-            </Form.Item>
-            <Form.Item label="SelfName" name={[name, "selfName"]}>
-                <Input/>
-            </Form.Item>
 
-            {/* LocalPosition (3个数) */}
-            <Form.Item label="LocalPosition">
-                <Input.Group compact>
-                    <Form.Item name={[name, "localPosition", 0]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="x"/>
+            {/* 当类型不是 missing 时才渲染公共字段 */}
+            {typeName !== 'missing' && (
+                <>
+                    {/* base 公共字段 */}
+                    <Form.Item label={t('ColEditor.ParentName')} name={[name, "parentName"]}>
+                        <Input/>
                     </Form.Item>
-                    <Form.Item name={[name, "localPosition", 1]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="y"/>
+                    <Form.Item label={t('ColEditor.SelfName')} name={[name, "selfName"]}>
+                        <Input/>
                     </Form.Item>
-                    <Form.Item name={[name, "localPosition", 2]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="z"/>
-                    </Form.Item>
-                </Input.Group>
-            </Form.Item>
 
-            {/* LocalRotation (4个数) */}
-            <Form.Item label="LocalRotation">
-                <Input.Group compact>
-                    <Form.Item name={[name, "localRotation", 0]} noStyle>
-                        <InputNumber style={{width: "25%"}} placeholder="x"/>
+                    {/* LocalPosition (3个数) */}
+                    <Form.Item label={t('ColEditor.LocalPosition')}>
+                        <Flex gap="middle">
+                            <Form.Item name={[name, "localPosition", 0]} noStyle>
+                                <InputNumber
+                                    addonBefore="X"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localPosition", 1]} noStyle>
+                                <InputNumber
+                                    addonBefore="Y"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localPosition", 2]} noStyle>
+                                <InputNumber
+                                    addonBefore="Z"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                        </Flex>
                     </Form.Item>
-                    <Form.Item name={[name, "localRotation", 1]} noStyle>
-                        <InputNumber style={{width: "25%"}} placeholder="y"/>
-                    </Form.Item>
-                    <Form.Item name={[name, "localRotation", 2]} noStyle>
-                        <InputNumber style={{width: "25%"}} placeholder="z"/>
-                    </Form.Item>
-                    <Form.Item name={[name, "localRotation", 3]} noStyle>
-                        <InputNumber style={{width: "25%"}} placeholder="w"/>
-                    </Form.Item>
-                </Input.Group>
-            </Form.Item>
 
-            {/* LocalScale (3个数) */}
-            <Form.Item label="LocalScale">
-                <Input.Group compact>
-                    <Form.Item name={[name, "localScale", 0]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="sx"/>
+                    {/* LocalRotation (4个数) */}
+                    <Form.Item label={t('ColEditor.LocalRotation')}>
+                        <Flex gap="middle">
+                            <Form.Item name={[name, "localRotation", 0]} noStyle>
+                                <InputNumber
+                                    addonBefore="X"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localRotation", 1]} noStyle>
+                                <InputNumber
+                                    addonBefore="Y"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localRotation", 2]} noStyle>
+                                <InputNumber
+                                    addonBefore="Z"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localRotation", 3]} noStyle>
+                                <InputNumber
+                                    addonBefore="W"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                        </Flex>
                     </Form.Item>
-                    <Form.Item name={[name, "localScale", 1]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="sy"/>
-                    </Form.Item>
-                    <Form.Item name={[name, "localScale", 2]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="sz"/>
-                    </Form.Item>
-                </Input.Group>
-            </Form.Item>
 
-            <Form.Item label="Direction" name={[name, "direction"]}>
-                <InputNumber/>
-            </Form.Item>
+                    {/* LocalScale (3个数) */}
+                    <Form.Item label={t('ColEditor.LocalScale')}>
+                        <Flex gap="middle">
+                            <Form.Item name={[name, "localScale", 0]} noStyle>
+                                <InputNumber
+                                    addonBefore="SX"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localScale", 1]} noStyle>
+                                <InputNumber
+                                    addonBefore="SY"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "localScale", 2]} noStyle>
+                                <InputNumber
+                                    addonBefore="SZ"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                        </Flex>
+                    </Form.Item>
 
-            <Form.Item label="Center">
-                <Input.Group compact>
-                    <Form.Item name={[name, "center", 0]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="cx"/>
+                    <Form.Item label={t('ColEditor.Direction')} name={[name, "direction"]}>
+                        <InputNumber style={{width: "20%"}}/>
                     </Form.Item>
-                    <Form.Item name={[name, "center", 1]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="cy"/>
-                    </Form.Item>
-                    <Form.Item name={[name, "center", 2]} noStyle>
-                        <InputNumber style={{width: "33%"}} placeholder="cz"/>
-                    </Form.Item>
-                </Input.Group>
-            </Form.Item>
 
-            <Form.Item label="Bound" name={[name, "bound"]}>
-                <InputNumber/>
-            </Form.Item>
+                    <Form.Item label={t('ColEditor.Center')}>
+                        <Flex gap="middle">
+                            <Form.Item name={[name, "center", 0]} noStyle>
+                                <InputNumber
+                                    addonBefore="CX"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "center", 1]} noStyle>
+                                <InputNumber
+                                    addonBefore="CY"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item name={[name, "center", 2]} noStyle>
+                                <InputNumber
+                                    addonBefore="CZ"
+                                    style={{width: "20%"}}/>
+                            </Form.Item>
+                        </Flex>
+                    </Form.Item>
+
+                    <Form.Item label={t('ColEditor.Bound')} name={[name, "bound"]}>
+                        <InputNumber style={{width: "20%"}}/>
+                    </Form.Item>
+                </>
+            )}
 
             {/* 只有 dbc/dbm 才显示 radius/height */}
             {(typeName === "dbc" || typeName === "dbm") && (
                 <>
-                    <Form.Item label="Radius" name={[name, "radius"]}>
-                        <InputNumber/>
+                    <Form.Item label={t('ColEditor.Radius')} name={[name, "radius"]}>
+                        <InputNumber style={{width: "20%"}}/>
                     </Form.Item>
-                    <Form.Item label="Height" name={[name, "height"]}>
-                        <InputNumber/>
+                    <Form.Item label={t('ColEditor.Height')} name={[name, "height"]}>
+                        <InputNumber style={{width: "20%"}}/>
                     </Form.Item>
                 </>
             )}
@@ -194,79 +231,37 @@ const DynamicColliderFormItem: React.FC<{ name: number; form: any }> = ({
             {/* dbm 独有的字段 */}
             {typeName === "dbm" && (
                 <>
-                    <Form.Item label="ScaleRateMulMax" name={[name, "scaleRateMulMax"]}>
-                        <InputNumber/>
+                    <Form.Item label={t('ColEditor.ScaleRateMulMax')} name={[name, "scaleRateMulMax"]}>
+                        <InputNumber style={{width: "20%"}}/>
                     </Form.Item>
-                    <Form.Item label="CenterRateMax">
-                        <Input.Group compact>
+                    <Form.Item label={t('ColEditor.CenterRateMax')}>
+                        <Flex gap="middle">
                             <Form.Item name={[name, "centerRateMax", 0]} noStyle>
-                                <InputNumber style={{width: "33%"}} placeholder="crx"/>
+                                <InputNumber
+                                    addonBefore="CRX"
+                                    style={{width: "20%"}}/>
                             </Form.Item>
                             <Form.Item name={[name, "centerRateMax", 1]} noStyle>
-                                <InputNumber style={{width: "33%"}} placeholder="cry"/>
+                                <InputNumber
+                                    addonBefore="CRY"
+                                    style={{width: "20%"}}/>
                             </Form.Item>
                             <Form.Item name={[name, "centerRateMax", 2]} noStyle>
-                                <InputNumber style={{width: "33%"}} placeholder="crz"/>
+                                <InputNumber
+                                    addonBefore="CRZ"
+                                    style={{width: "20%"}}/>
                             </Form.Item>
-                        </Input.Group>
+                        </Flex>
                     </Form.Item>
                 </>
             )}
 
             {/* missingCollider 无字段，不需要额外内容 */}
-        </Space>
+        </div>
     );
 };
 
 /** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
-// const Style2Properties: React.FC<{
-//     colData: ColModel | null;
-//     setColData: (m: ColModel | null) => void;
-// }> = ({colData, setColData}) => {
-//     const isDarkMode = useDarkMode();
-//     const [jsonValue, setJsonValue] = useState("");
-//
-//     useEffect(() => {
-//         if (colData) {
-//             // 初次/每次切换时，把对象序列化为 JSON
-//             setJsonValue(JSON.stringify(colData, null, 2));
-//         } else {
-//             setJsonValue("");
-//         }
-//     }, []);
-//
-//     // 当用户在编辑器里输入时
-//     const handleEditorChange = (value?: string) => {
-//         const newVal = value ?? "";
-//         setJsonValue(newVal);
-//
-//         try {
-//             const parsed = JSON.parse(newVal);
-//
-//             if (JSON.stringify(parsed) !== JSON.stringify(colData)) {
-//                 setColData(parsed);
-//             }
-//         } catch (err) {
-//             // JSON 不合法就先不往外层写
-//         }
-//     };
-//
-//     return (
-//         <div style={{height: "calc(100vh - 230px)"}}>
-//             <Editor
-//                 language="json"
-//                 theme={isDarkMode ? "vs-dark" : "vs"}
-//                 value={jsonValue}
-//                 onChange={handleEditorChange}
-//                 options={{
-//                     minimap: {enabled: true},
-//                     tabSize: 2,
-//                 }}
-//             />
-//         </div>
-//     );
-// };
-
 const Style2Properties: React.FC<{
     colData: ColModel | null;
     setColData: (m: ColModel | null) => void;
@@ -294,6 +289,7 @@ const Style2Properties: React.FC<{
 
     // 初始化第一次渲染
     useEffect(() => {
+        console.log(colData)
         if (colData) {
             setJsonValue(JSON.stringify(colData, null, 2));
             prevColDataRef.current = JSON.stringify(colData);
@@ -400,28 +396,22 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             );
             handleReadColFile();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2");
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 没有 filePath 时，可初始化一个新的 Col 对象
             const empty = new ColModel();
-            empty.Signature = "CM3D21_COL";
-            empty.Version = 24102;
+            empty.Signature = COM3D2HeaderConstants.ColSignature;
+            empty.Version = COM3D2HeaderConstants.ColVersion;
             empty.Colliders = [];
             setColData(empty);
             form.resetFields();
         }
     }, [filePath]);
 
-    /** 暴露给父组件的 Ref 方法：读取、保存、另存为 */
-    useImperativeHandle(ref, () => ({
-        handleReadColFile,
-        handleSaveColFile,
-        handleSaveAsColFile
-    }));
 
     /** 读取 Col 文件 */
     async function handleReadColFile() {
         if (!filePath) {
-            message.error("请先选择一个 .col 文件");
+            message.error(t('Infos.pls_open_file_first'));
             return;
         }
         try {
@@ -429,10 +419,9 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             setColData(data);
             // 映射到 Form
             form.setFieldsValue(transformColToForm(data));
-            message.success(`读取成功: ${filePath}`);
-        } catch (err: any) {
-            message.error(`读取失败: ${err.message}`);
-            console.error(err);
+        } catch (error: any) {
+            console.error(error);
+            message.error(t('Errors.read_mate_file_failed_colon') + error);
         }
     }
 
@@ -461,8 +450,8 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             await WriteColFile(filePath, newCol);
             message.success(t('Infos.success_save_file'));
         } catch (error: any) {
-            message.error(t('Errors.save_file_failed_colon') + error);
             console.error(error);
+            message.error(t('Errors.save_file_failed_colon') + error);
         }
     }
 
@@ -516,23 +505,36 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [handleSaveColFile]);
 
+
+    /** 暴露给父组件的 Ref 方法：读取、保存、另存为 */
+    useImperativeHandle(ref, () => ({
+        handleReadColFile,
+        handleSaveColFile,
+        handleSaveAsColFile
+    }));
+
     /**
      * 将后端的 Col 对象 -> 前端表单字段
      */
+// 要在 transformColToForm 函数内进行的修改
     function transformColToForm(col: ColModel) {
+        // 1. 先给每个 collider 注入推断后的 TypeName（如果还没有）
+        (col.Colliders || []).forEach((collider: any) => {
+            if (!("TypeName" in collider)) {
+                collider.TypeName = guessColliderType(collider);
+            }
+        });
+
+        // 2. 返回顶层字段 + 一个统一的“properties”
         return {
             signature: col.Signature,
             version: col.Version,
-            // colliders 是一个 Form.List，要将每个 collider 转成一条记录
-            colliders: (col.Colliders || []).map((collider: any) => {
-                // collider 可能是 dbc / dpc / dbm / missing
-                // 后端使用 interface 实现的多态，所以前端只能类型推断了
-                const typeName = guessColliderType(collider);
-
-                // 先把 base 中的数据拿出来
-                let base = (collider.Base as DynamicBoneColliderBase) || {};
-                const formItem: any = {
-                    TypeName: typeName,
+            // 将 colliders
+            colliders: col.Colliders?.map((collider: any) => {
+                const base = (collider.Base as DynamicBoneColliderBase) || {};
+                // 这里统一用 propType 来表示类型
+                const item: any = {
+                    propType: collider.TypeName,
                     parentName: base.ParentName,
                     selfName: base.SelfName,
                     localPosition: base.LocalPosition || [0, 0, 0],
@@ -543,40 +545,32 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     bound: base.Bound
                 };
 
-                // 根据不同类型追加字段
-                switch (typeName) {
-                    case "dbc": {
-                        // DynamicBoneCollider
-                        formItem.TypeName = "dbc";
-                        formItem.radius = collider.Radius;
-                        formItem.height = collider.Height;
+                switch (collider.TypeName) {
+                    case "dbc":
+                        item.radius = collider.Radius;
+                        item.height = collider.Height;
                         break;
-                    }
-                    case "dbm": {
-                        // DynamicBoneMuneCollider
-                        formItem.TypeName = "dbm";
-                        formItem.radius = collider.Radius;
-                        formItem.height = collider.Height;
-                        formItem.scaleRateMulMax = collider.ScaleRateMulMax;
-                        formItem.centerRateMax = collider.CenterRateMax || [0, 0, 0];
+                    case "dbm":
+                        item.radius = collider.Radius;
+                        item.height = collider.Height;
+                        item.scaleRateMulMax = collider.ScaleRateMulMax;
+                        item.centerRateMax = collider.CenterRateMax || [0, 0, 0];
                         break;
-                    }
-                    case "dpc": {
-                        // DynamicBonePlaneCollider
-                        formItem.TypeName = "dpc";
-                        // PlaneCollider 只有 base，没有额外字段
+                    case "dpc":
+                        // DynamicBonePlaneCollider 没有额外字段
                         break;
-                    }
-                    case "missing": {
-                        // missingCollider 无字段
-                        formItem.TypeName = "missing";
+                    case "missing":
+                        // missingCollider 无额外字段
                         break;
-                    }
+                    default:
+                        // 如果有其他未识别类型，可在此处理
+                        break;
                 }
-                return formItem;
+                return item;
             })
         };
     }
+
 
     /**
      * 前端表单字段 -> Col 对象
@@ -587,7 +581,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
         if (headerEditable) {
             newCol.Signature = values.signature;
-            newCol.Version = Number(values.version);
+            newCol.Version = parseInt(values.version, 10);
         }
 
         // 处理 colliders
@@ -699,18 +693,19 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     layout="horizontal"
                     labelAlign="left"
                     size="small"
-                    labelCol={{style: {width: "180px"}}}
+                    labelCol={{style: {width: '10vw'}}}
                 >
                     <Collapse defaultActiveKey={["basic", "colliders"]}>
                         <Collapse.Panel header={t('ColEditor.file_header.file_head')} key="basic">
                             <Space>
-                                <Form.Item name="signature" initialValue="CM3D21_COL">
+                                <Form.Item name="signature"
+                                           initialValue={COM3D2HeaderConstants.ColSignature.toString()}>
                                     <Input
                                         disabled={!headerEditable}
                                         addonBefore={t('ColEditor.file_header.Signature')}
                                     />
                                 </Form.Item>
-                                <Form.Item name="version" initialValue="1001">
+                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.ColVersion.toString()}>
                                     <Input
                                         disabled={!headerEditable}
                                         addonBefore={t('ColEditor.file_header.Version')}
@@ -734,13 +729,13 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                     onChange={(e) => {
                                         // Get current form values and update mateData before switching view
                                         const currentFormValues = form.getFieldsValue(true);
-                                        if (colData && viewMode !== 2) { // 非模式 2 时更新表单数据，因为模式 2 是 JSON
+                                        if (colData && (viewMode != 2)) { // 非模式 2 时更新表单数据，因为模式 2 是 JSON
                                             const updatedCol = transformFormToCol(currentFormValues, colData);
                                             setColData(updatedCol);
                                         }
 
                                         setViewMode(e.target.value);
-                                        localStorage.setItem('mateEditorViewMode', e.target.value.toString());
+                                        localStorage.setItem('colEditorViewMode', e.target.value.toString());
                                     }}
                                     options={[
                                         {label: t('ColEditor.style1'), value: 1},
@@ -779,6 +774,3 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 });
 
 export default ColEditor;
-
-
-//TODO 无法保存

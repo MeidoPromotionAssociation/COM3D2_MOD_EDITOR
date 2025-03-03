@@ -8,8 +8,8 @@ import (
 
 // PMat 对应 .PMat 文件结构
 type PMat struct {
-	Signature    string  `json:"Signature"`
-	Version      int32   `json:"Version"`
+	Signature    string  `json:"Signature"` // "CM3D2_PMATERIAL"
+	Version      int32   `json:"Version"`   // 1000
 	Hash         int32   `json:"Hash"`
 	MaterialName string  `json:"MaterialName"`
 	RenderQueue  float32 `json:"RenderQueue"`
