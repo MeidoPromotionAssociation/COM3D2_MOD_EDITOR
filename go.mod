@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/wailsapp/wails/v2 v2.10.0
+	github.com/wailsapp/wails/v2 v2.10.1
 )
 
 require (
