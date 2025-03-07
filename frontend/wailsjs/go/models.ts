@@ -249,6 +249,54 @@ export namespace COM3D2 {
 	        this.Number = source["Number"];
 	    }
 	}
+	export class KeyWord {
+	    Key: string;
+	    Value: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new KeyWord(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Key = source["Key"];
+	        this.Value = source["Value"];
+	    }
+	}
+	export class KeyWordProperty {
+	    PropName: string;
+	    Count: number;
+	    KeyWords: KeyWord[];
+	
+	    static createFrom(source: any = {}) {
+	        return new KeyWordProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.Count = source["Count"];
+	        this.KeyWords = this.convertValues(source["KeyWords"], KeyWord);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	
 	export class Material {
 	    Name: string;
@@ -473,6 +521,20 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	export class RangeProperty {
+	    PropName: string;
+	    Number: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new RangeProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.Number = source["Number"];
+	    }
+	}
 	export class Tex2DSubProperty {
 	    Name: string;
 	    Path: string;
@@ -489,6 +551,22 @@ export namespace COM3D2 {
 	        this.Path = source["Path"];
 	        this.Offset = source["Offset"];
 	        this.Scale = source["Scale"];
+	    }
+	}
+	export class TexOffsetProperty {
+	    PropName: string;
+	    OffsetX: number;
+	    OffsetY: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new TexOffsetProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.OffsetX = source["OffsetX"];
+	        this.OffsetY = source["OffsetY"];
 	    }
 	}
 	export class TexRTSubProperty {
@@ -542,6 +620,22 @@ export namespace COM3D2 {
 		}
 	}
 	
+	export class TexScaleProperty {
+	    PropName: string;
+	    ScaleX: number;
+	    ScaleY: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new TexScaleProperty(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PropName = source["PropName"];
+	        this.ScaleX = source["ScaleX"];
+	        this.ScaleY = source["ScaleY"];
+	    }
+	}
 	export class VecProperty {
 	    PropName: string;
 	    Vector: number[];

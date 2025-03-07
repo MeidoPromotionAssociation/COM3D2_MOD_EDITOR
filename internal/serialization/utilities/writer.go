@@ -37,12 +37,22 @@ func WriteString(w io.Writer, s string) error {
 }
 
 // WriteFloat32 写一个 float32 (4 bytes, little-endian)
+// 在 C# 中是 BinaryWriter.WriteSingle
 func WriteFloat32(w io.Writer, val float32) error {
 	var buf [4]byte
 	bits := math.Float32bits(val)
 	binary.LittleEndian.PutUint32(buf[:], bits)
 	_, err := w.Write(buf[:])
 	return err
+}
+
+// WriteBool 写一个字节，如果 b 为 true 则写入 1，否则写入 0
+func WriteBool(w io.Writer, v bool) error {
+	var b byte
+	if v {
+		b = 1
+	}
+	return WriteByte(w, b)
 }
 
 // -------------------- Float2 / Float3 / Float4 / Float4x4 --------------------

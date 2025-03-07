@@ -29,6 +29,7 @@ func ReadInt32(r io.Reader) (int32, error) {
 }
 
 // ReadFloat32 从 r 中读取 4 个字节，以 little-endian 解码成 float32
+// 在 C# 中是 BinaryReader.ReadSingle
 func ReadFloat32(r io.Reader) (float32, error) {
 	var buf [4]byte
 	_, err := io.ReadFull(r, buf[:])
@@ -54,6 +55,16 @@ func ReadString(r io.Reader) (string, error) {
 		return "", fmt.Errorf("read string bytes failed: %w", err)
 	}
 	return string(data), nil
+}
+
+// ReadBool 读取一个字节，返回 bool，如果字节非 0 则返回 true，否则返回 false
+// 对应 C# 中的 BinaryReader.ReadBoolean
+func ReadBool(r io.Reader) (bool, error) {
+	b, err := ReadByte(r)
+	if err != nil {
+		return false, fmt.Errorf("read bool failed: %w", err)
+	}
+	return b != 0, nil
 }
 
 // PeekByte 偷看下一个字节，不移动读取指针。

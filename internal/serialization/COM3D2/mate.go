@@ -204,17 +204,21 @@ func readProperty(r io.Reader) (Property, error) {
 
 	switch typeStr {
 	case "tex":
-		// => TexProperty
 		return readTexProperty(r, propName)
 	case "col":
-		// => ColProperty
 		return readColProperty(r, propName)
 	case "vec":
-		// => VecProperty
 		return readVecProperty(r, propName)
 	case "f":
-		// => FProperty
 		return readFProperty(r, propName)
+	case "range":
+		return readRangeProperty(r, propName)
+	case "tex_offset":
+		return readTexOffsetProperty(r, propName)
+	case "tex_scale":
+		return readTexScaleProperty(r, propName)
+	case "keyword":
+		return readKeyWordProperty(r, propName)
 	default:
 		return nil, fmt.Errorf("unknown property type: %q", typeStr)
 	}
@@ -324,6 +328,77 @@ func dumpProperty(w io.Writer, prop Property) error {
 			return fmt.Errorf("write FProperty float failed: %w", err)
 		}
 
+	case *RangeProperty:
+		// 写出类型标识 "range"
+		if err := utilities.WriteString(w, p.TypeName()); err != nil {
+			return fmt.Errorf("write RangeProperty type failed: %w", err)
+		}
+		// 写出属性名
+		if err := utilities.WriteString(w, p.PropName); err != nil {
+			return fmt.Errorf("write RangeProperty name failed: %w", err)
+		}
+		// 写出一个 float32
+		if err := utilities.WriteFloat32(w, p.Number); err != nil {
+			return fmt.Errorf("write RangeProperty float failed: %w", err)
+		}
+
+	case *TexOffsetProperty:
+		// 写出类型标识 "tex_offset"
+		if err := utilities.WriteString(w, p.TypeName()); err != nil {
+			return fmt.Errorf("write TexOffsetProperty type failed: %w", err)
+		}
+		// 写出属性名
+		if err := utilities.WriteString(w, p.PropName); err != nil {
+			return fmt.Errorf("write TexOffsetProperty name failed: %w", err)
+		}
+		// 写出两个 float32
+		if err := utilities.WriteFloat32(w, p.OffsetX); err != nil {
+			return fmt.Errorf("write TexOffsetProperty float x failed: %w", err)
+		}
+
+		if err := utilities.WriteFloat32(w, p.OffsetY); err != nil {
+			return fmt.Errorf("write TexOffsetProperty float y failed: %w", err)
+		}
+
+	case *TexScaleProperty:
+		// 写出类型标识 "tex_scale"
+		if err := utilities.WriteString(w, p.TypeName()); err != nil {
+			return fmt.Errorf("write TexScaleProperty type failed: %w", err)
+		}
+		// 写出属性名
+		if err := utilities.WriteString(w, p.PropName); err != nil {
+			return fmt.Errorf("write TexScaleProperty name failed: %w", err)
+		}
+		// 写出两个 float32
+		if err := utilities.WriteFloat32(w, p.ScaleX); err != nil {
+			return fmt.Errorf("write TexScaleProperty float x failed: %w", err)
+		}
+		if err := utilities.WriteFloat32(w, p.ScaleY); err != nil {
+			return fmt.Errorf("write TexScaleProperty float y failed: %w", err)
+		}
+
+	case *KeyWordProperty:
+		// 写出类型标识 "keyword"
+		if err := utilities.WriteString(w, p.TypeName()); err != nil {
+			return fmt.Errorf("write KeyWordProperty type failed: %w", err)
+		}
+		// 写出属性名
+		if err := utilities.WriteString(w, p.PropName); err != nil {
+			return fmt.Errorf("write KeyWordProperty name failed: %w", err)
+		}
+		// 写出 count
+		if err := utilities.WriteInt32(w, p.Count); err != nil {
+			return fmt.Errorf("write KeyWordProperty count failed: %w", err)
+		}
+		// 循环写出 count 个 keyword
+		for i, kv := range p.KeyWords {
+			if err := utilities.WriteString(w, kv.Key); err != nil {
+				return fmt.Errorf("write KeyWords[%d] key failed: %w", i, err)
+			}
+			if err := utilities.WriteBool(w, kv.Value); err != nil {
+				return fmt.Errorf("write KeyWords[%d] value failed: %w", i, err)
+			}
+		}
 	default:
 		// 如果出现未知类型，返回错误
 		return fmt.Errorf("unknown property type: %T", p)
@@ -510,6 +585,132 @@ func readFProperty(r io.Reader, propName string) (Property, error) {
 	return p, nil
 }
 
+// -------------------------------------------------------------------
+// 5) RangeProperty => "range"
+// Only COM3D2_5 +
+
+type RangeProperty struct {
+	PropName string  `json:"PropName"`
+	Number   float32 `json:"Number"`
+}
+
+func (f *RangeProperty) TypeName() string { return "range" }
+
+func readRangeProperty(r io.Reader, propName string) (Property, error) {
+	p := &RangeProperty{PropName: propName}
+
+	val, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return nil, fmt.Errorf("read RangeProperty float failed: %w", err)
+	}
+	p.Number = val
+	return p, nil
+}
+
+// -------------------------------------------------------------------
+// 6) TexOffsetProperty => "tex_offset"
+// Only COM3D2_5 +
+
+type TexOffsetProperty struct {
+	PropName string  `json:"PropName"`
+	OffsetX  float32 `json:"OffsetX"`
+	OffsetY  float32 `json:"OffsetY"`
+}
+
+func (f *TexOffsetProperty) TypeName() string { return "tex_offset" }
+
+func readTexOffsetProperty(r io.Reader, propName string) (Property, error) {
+	p := &TexOffsetProperty{PropName: propName}
+
+	x, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return nil, fmt.Errorf("read RangeProperty float x failed: %w", err)
+	}
+	p.OffsetX = x
+
+	y, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return nil, fmt.Errorf("read RangeProperty float y failed: %w", err)
+	}
+	p.OffsetY = y
+
+	return p, nil
+}
+
+// -------------------------------------------------------------------
+// 7) TexScaleProperty => "tex_scale"
+// Only COM3D2_5 +
+
+type TexScaleProperty struct {
+	PropName string  `json:"PropName"`
+	ScaleX   float32 `json:"ScaleX"`
+	ScaleY   float32 `json:"ScaleY"`
+}
+
+func (f *TexScaleProperty) TypeName() string { return "tex_scale" }
+
+func readTexScaleProperty(r io.Reader, propName string) (Property, error) {
+	p := &TexScaleProperty{PropName: propName}
+
+	x, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return nil, fmt.Errorf("read RangeProperty float x failed: %w", err)
+	}
+	p.ScaleX = x
+
+	y, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return nil, fmt.Errorf("read RangeProperty float y failed: %w", err)
+	}
+	p.ScaleY = y
+
+	return p, nil
+}
+
+// -------------------------------------------------------------------
+// 8) KeyWordProperty => "keyword"
+// Only COM3D2_5 +
+
+type KeyWordProperty struct {
+	PropName string    `json:"PropName"`
+	Count    int32     `json:"Count"`
+	KeyWords []KeyWord `json:"KeyWords"`
+}
+
+type KeyWord struct {
+	Key   string `json:"Key"`
+	Value bool   `json:"Value"`
+}
+
+func (f *KeyWordProperty) TypeName() string { return "keyword" }
+
+func readKeyWordProperty(r io.Reader, propName string) (Property, error) {
+	p := &KeyWordProperty{PropName: propName}
+
+	count, err := utilities.ReadInt32(r)
+	if err != nil {
+		return nil, fmt.Errorf("read KeyWord count failed: %w", err)
+	}
+
+	p.Count = count
+	p.KeyWords = make([]KeyWord, count)
+	for i := int32(0); i < count; i++ {
+		key, err := utilities.ReadString(r)
+		if err != nil {
+			return nil, fmt.Errorf("read KeyWord key failed: %w", err)
+		}
+		value, err := utilities.ReadBool(r)
+		if err != nil {
+			return nil, fmt.Errorf("read KeyWord value failed: %w", err)
+		}
+		p.KeyWords[i] = KeyWord{
+			Key:   key,
+			Value: value,
+		}
+	}
+	return p, nil
+}
+
 // printMaterialDetails 打印 Material 的详细信息
 // Debug 使用
 func printMaterialDetails(m *Material) {
@@ -544,6 +745,23 @@ func printMaterialDetails(m *Material) {
 		case *FProperty:
 			fmt.Printf("    PropName: %s\n", p.PropName)
 			fmt.Printf("    Number: %v\n", p.Number)
+		case *RangeProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    Number: %v\n", p.Number)
+		case *TexOffsetProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    OffsetX: %v\n", p.OffsetX)
+			fmt.Printf("    OffsetY: %v\n", p.OffsetY)
+		case *TexScaleProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    ScaleX: %v\n", p.ScaleX)
+			fmt.Printf("    ScaleY: %v\n", p.ScaleY)
+		case *KeyWordProperty:
+			fmt.Printf("    PropName: %s\n", p.PropName)
+			fmt.Printf("    Count: %v\n", p.Count)
+			for i, kw := range p.KeyWords {
+				fmt.Printf("      - Key[%d]: %s, Value: %v\n", i, kw.Key, kw.Value)
+			}
 		}
 	}
 }
@@ -601,6 +819,30 @@ func (m *Material) UnmarshalJSON(data []byte) error {
 				return err
 			}
 			props = append(props, &fp)
+		case "range":
+			var r RangeProperty
+			if err := json.Unmarshal(raw, &r); err != nil {
+				return err
+			}
+			props = append(props, &r)
+		case "tex_offset":
+			var t TexOffsetProperty
+			if err := json.Unmarshal(raw, &t); err != nil {
+				return err
+			}
+			props = append(props, &t)
+		case "tex_scale":
+			var s TexScaleProperty
+			if err := json.Unmarshal(raw, &s); err != nil {
+				return err
+			}
+			props = append(props, &s)
+		case "keyword":
+			var k KeyWordProperty
+			if err := json.Unmarshal(raw, &k); err != nil {
+				return err
+			}
+			props = append(props, &k)
 		default:
 			return fmt.Errorf("unknown property type: %s", typeHolder.TypeName)
 		}
