@@ -259,7 +259,7 @@ const MatePropertyItemType2 = ({
                         name={[name, 'vec0']}
                         labelCol={{style: {width: '60px'}}}
                     >
-                        <InputNumber/>
+                        <InputNumber min={0} max={1} step={0.01}/>
                     </Form.Item>
                     <Form.Item
                         {...restField}
@@ -267,7 +267,7 @@ const MatePropertyItemType2 = ({
                         name={[name, 'vec1']}
                         labelCol={{style: {width: '60px'}}}
                     >
-                        <InputNumber/>
+                        <InputNumber min={0} max={1} step={0.01}/>
                     </Form.Item>
                     <Form.Item
                         {...restField}
@@ -275,7 +275,7 @@ const MatePropertyItemType2 = ({
                         name={[name, 'vec2']}
                         labelCol={{style: {width: '60px'}}}
                     >
-                        <InputNumber/>
+                        <InputNumber min={0} max={1} step={0.01}/>
                     </Form.Item>
                     <Form.Item
                         {...restField}
@@ -283,7 +283,7 @@ const MatePropertyItemType2 = ({
                         name={[name, 'vec3']}
                         labelCol={{style: {width: '60px'}}}
                     >
-                        <InputNumber/>
+                        <InputNumber min={0} max={1} step={0.01}/>
                     </Form.Item>
                     <Form.Item>
                         <Tooltip title={t('MateEditor.vec_tip')}>
