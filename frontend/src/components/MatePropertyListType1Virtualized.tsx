@@ -12,7 +12,7 @@ import {t} from "i18next";
 type MyListItem =
     | {
     type: "group";          // 分组头
-    propType: string;       // 分组名称
+    TypeName: string;       // 分组名称
 }
     | {
     type: "property";       // 具体属性条目
@@ -39,16 +39,16 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
     const rowHeights = useRef<Record<number, number>>({});
 
     // -------------------------
-    // 1) 先按 propType 分组
+    // 1) 先按 TypeName 分组
     // -------------------------
     const grouped = useMemo(() => {
         const result: Record<string, any[]> = {};
         fields.forEach((field) => {
-            const propType = form.getFieldValue(["properties", field.name, "propType"]) || "unknown";
-            if (!result[propType]) {
-                result[propType] = [];
+            const TypeName = form.getFieldValue(["properties", field.name, "TypeName"]) || "unknown";
+            if (!result[TypeName]) {
+                result[TypeName] = [];
             }
-            result[propType].push(field);
+            result[TypeName].push(field);
         });
         return result;
     }, [fields, form]);
@@ -58,11 +58,11 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
     // ----------------------------------------------------
     const renderList: MyListItem[] = useMemo(() => {
         const items: MyListItem[] = [];
-        Object.entries(grouped).forEach(([propType, groupFields], groupIndex) => {
+        Object.entries(grouped).forEach(([TypeName, groupFields], groupIndex) => {
             // 先插入一个“分组头”
             items.push({
                 type: "group",
-                propType
+                TypeName
             });
             // 再插入若干“property”项
             groupFields.forEach((field) => {
@@ -70,7 +70,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                     type: "property",
                     field: {
                         ...field,
-                        compositeKey: undefined // 避免 key 冲突
+                        key: undefined // 避免 key 冲突
                     }
                 });
             });
@@ -141,7 +141,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
 
         if (item.type === "group") {
             // 分组头
-            const {propType} = item;
+            const {TypeName} = item;
             return (
                 <div style={style}>
                     <div
@@ -152,7 +152,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                         }}
                         style={{willChange: 'scroll-position'}}
                     >
-                        <Divider style={{margin: "8px 0"}}>{t(`MateEditor.${propType}`)}</Divider>
+                        <Divider style={{margin: "8px 0"}}>{t(`MateEditor.${TypeName}`)}</Divider>
                         <br></br>
                     </div>
                 </div>
@@ -201,9 +201,9 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                         itemKey={(index) => {
                             const item = renderList[index];
                             if (item.type === 'group') {
-                                return `group-${item.propType}-${index}`;
+                                return `group-${item.TypeName}-${index}`;
                             } else {
-                                return `property-${item.field.compositeKey}-${index}`;
+                                return `property-${item.field}-${index}`;
                             }
                         }}
                     >

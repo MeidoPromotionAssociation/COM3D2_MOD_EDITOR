@@ -79,6 +79,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class ColProperty {
+	    TypeName: string;
 	    PropName: string;
 	    Color: number[];
 	
@@ -88,6 +89,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.Color = source["Color"];
 	    }
@@ -236,6 +238,7 @@ export namespace COM3D2 {
 		}
 	}
 	export class FProperty {
+	    TypeName: string;
 	    PropName: string;
 	    Number: number;
 	
@@ -245,16 +248,18 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.Number = source["Number"];
 	    }
 	}
-	export class KeyWord {
+	
+	export class Keyword {
 	    Key: string;
 	    Value: boolean;
 	
 	    static createFrom(source: any = {}) {
-	        return new KeyWord(source);
+	        return new Keyword(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -263,20 +268,22 @@ export namespace COM3D2 {
 	        this.Value = source["Value"];
 	    }
 	}
-	export class KeyWordProperty {
+	export class KeywordProperty {
+	    TypeName: string;
 	    PropName: string;
 	    Count: number;
-	    KeyWords: KeyWord[];
+	    Keywords: Keyword[];
 	
 	    static createFrom(source: any = {}) {
-	        return new KeyWordProperty(source);
+	        return new KeywordProperty(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.Count = source["Count"];
-	        this.KeyWords = this.convertValues(source["KeyWords"], KeyWord);
+	        this.Keywords = this.convertValues(source["Keywords"], Keyword);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -297,7 +304,6 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
-	
 	export class Material {
 	    Name: string;
 	    ShaderName: string;
@@ -522,6 +528,7 @@ export namespace COM3D2 {
 		}
 	}
 	export class RangeProperty {
+	    TypeName: string;
 	    PropName: string;
 	    Number: number;
 	
@@ -531,6 +538,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.Number = source["Number"];
 	    }
@@ -554,6 +562,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class TexOffsetProperty {
+	    TypeName: string;
 	    PropName: string;
 	    OffsetX: number;
 	    OffsetY: number;
@@ -564,6 +573,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.OffsetX = source["OffsetX"];
 	        this.OffsetY = source["OffsetY"];
@@ -584,6 +594,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class TexProperty {
+	    TypeName: string;
 	    PropName: string;
 	    SubTag: string;
 	    Tex2D?: Tex2DSubProperty;
@@ -595,6 +606,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.SubTag = source["SubTag"];
 	        this.Tex2D = this.convertValues(source["Tex2D"], Tex2DSubProperty);
@@ -621,6 +633,7 @@ export namespace COM3D2 {
 	}
 	
 	export class TexScaleProperty {
+	    TypeName: string;
 	    PropName: string;
 	    ScaleX: number;
 	    ScaleY: number;
@@ -631,12 +644,14 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.ScaleX = source["ScaleX"];
 	        this.ScaleY = source["ScaleY"];
 	    }
 	}
 	export class VecProperty {
+	    TypeName: string;
 	    PropName: string;
 	    Vector: number[];
 	
@@ -646,6 +661,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.Vector = source["Vector"];
 	    }

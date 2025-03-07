@@ -28,13 +28,17 @@ import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../hooks/themeSwitch";
+import {COM3D2HeaderConstants} from "../utils/consts";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 import TexProperty = COM3D2.TexProperty;
 import ColProperty = COM3D2.ColProperty;
 import VecProperty = COM3D2.VecProperty;
 import FProperty = COM3D2.FProperty;
-import {COM3D2HeaderConstants} from "../utils/consts";
+import RangeProperty = COM3D2.RangeProperty;
+import TexOffsetProperty = COM3D2.TexOffsetProperty;
+import TexScaleProperty = COM3D2.TexScaleProperty;
+import KeywordProperty = COM3D2.KeywordProperty;
 
 interface MateEditorProps {
     filePath?: string; // 传入要打开的 .mate 文件路径
@@ -56,25 +60,26 @@ const Style1Properties: React.FC<{
 }> = ({fields, add, remove, form}) => {
     const {t} = useTranslation();
 
-    // 1. 先按 propType 进行分组
+    // 1. 先按 TypeName 进行分组
     const groupedFields = fields.reduce((acc, field) => {
-        const propType = form.getFieldValue(['properties', field.name, 'propType']) || "unknown"; // 获取 propType
-        if (!acc[propType]) acc[propType] = [];
-        acc[propType].push(field);
+        const typeName = form.getFieldValue(['properties', field.name, 'TypeName']) || "unknown"; // 获取 TypeName
+        if (!acc[typeName]) acc[typeName] = [];
+        acc[typeName].push(field);
         return acc;
     }, {} as Record<string, FormListFieldData[]>);
 
     return (
         <>
             {/* 2. 遍历分组后的数据进行渲染 */}
-            {Object.entries(groupedFields).map(([propType, groupFields],id) => (
+            {Object.entries(groupedFields).map(([typeName, groupFields], id) => (
                 <div key={`groupedFields-${id}`}>
-                    {/* 3. 在每个 propType 组的开头加一个分割线 */}
-                    <Divider>{t(`MateEditor.${propType}`)}</Divider>
+                    {/* 3. 在每个 typeName 组的开头加一个分割线 */}
+                    <Divider>{t(`MateEditor.${typeName}`)}</Divider>
 
-                    {/* 4. 渲染该 propType 组内的所有属性 */}
-                    {groupFields.map(({key, name, ...restField},id) => (
-                        <div key={`groupFields-item-${groupFields}-${id}-${propType}-${name}`} style={{position: "relative", marginBottom: 16}}>
+                    {/* 4. 渲染该 typeName 组内的所有属性 */}
+                    {groupFields.map(({key, name, ...restField}, id) => (
+                        <div key={`groupFields-item-${groupFields}-${id}-${typeName}-${name}`}
+                             style={{position: "relative", marginBottom: 16}}>
                             <MatePropertyItemType1 name={name} restField={restField} form={form}/>
                             <Button
                                 onClick={() => remove(name)}
@@ -127,7 +132,7 @@ const Style1PropertiesVirtualized: React.FC<{
 };
 
 
-// ======================= 样式2：按 propType 分栏 + 左列表/右编辑区  =======================
+// ======================= 样式2：按 typeName 分栏 + 左列表/右编辑区  =======================
 const Style2Properties: React.FC<{
     fields: FormListFieldData[];
     add: FormListOperation['add'];
@@ -141,29 +146,29 @@ const Style2Properties: React.FC<{
     // 当前选中的属性下标（在 fields 数组里的 name）
     const [selectedField, setSelectedField] = useState<number | null>(null);
 
-    // 用来筛选 propType
-    const [filterPropType, setFilterPropType] = useState<string>('all');
+    // 用来筛选 typeName
+    const [filterTypeName, setFilterTypeName] = useState<string>('all');
 
     // 搜索关键词状态
     const [searchKeyword, setSearchKeyword] = useState('');
 
     // 按筛选规则和搜索过滤
     const filteredFields = fields.filter((f: FormListFieldData) => {
-        const pType = form.getFieldValue(['properties', f.name, 'propType']);
+        const pType = form.getFieldValue(['properties', f.name, 'TypeName']);
         const pName = form.getFieldValue(['properties', f.name, 'propName']) || '';
 
         // 组合过滤条件
-        const typeMatch = filterPropType === 'all' || pType === filterPropType;
+        const typeMatch = filterTypeName === 'all' || pType === filterTypeName;
         const nameMatch = pName.toLowerCase().includes(searchKeyword.toLowerCase());
 
         return typeMatch && nameMatch;
     });
 
 
-    // 再按 propType 分组
+    // 再按 TypeName 分组
     const grouped: Record<string, { field: FormListFieldData; index: number; propName: string }[]> = {};
     filteredFields.forEach((f: FormListFieldData) => {
-        const pType = form.getFieldValue(['properties', f.name, 'propType']);
+        const pType = form.getFieldValue(['properties', f.name, 'TypeName']);
         const pName = form.getFieldValue(['properties', f.name, 'propName']) || t('MateEditor.no_name');
         if (!grouped[pType]) {
             grouped[pType] = [];
@@ -185,8 +190,8 @@ const Style2Properties: React.FC<{
     // 键盘事件处理函数，用于根据方向键更新选中项
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         // 扁平化所有选项的索引数组
-        const flatIndices = groupKeys.reduce((acc: number[], propType) => {
-            const indices = grouped[propType].map(item => item.index);
+        const flatIndices = groupKeys.reduce((acc: number[], TypeName) => {
+            const indices = grouped[TypeName].map(item => item.index);
             return acc.concat(indices);
         }, []);
 
@@ -239,11 +244,11 @@ const Style2Properties: React.FC<{
                      display: 'flex',
                      flexDirection: 'column',
                  }}>
-                {/* PropType 选择器 靠左 */}
+                {/* TypeName 选择器 靠左 */}
                 <div style={{textAlign: 'left', marginBottom: 8}}>
                     <Radio.Group
-                        value={filterPropType}
-                        onChange={(e) => setFilterPropType(e.target.value)}
+                        value={filterTypeName}
+                        onChange={(e) => setFilterTypeName(e.target.value)}
                         optionType="button"
                     >
                         <Radio.Button value="all">{t('MateEditor.all')}</Radio.Button>
@@ -259,14 +264,14 @@ const Style2Properties: React.FC<{
                     />
                 </div>
 
-                {/* 左边栏，按 PropType 分组 */}
-                {groupKeys.map((PropType) => (
+                {/* 左边栏，按 TypeName 分组 */}
+                {groupKeys.map((TypeName) => (
                     <div style={{textAlign: 'left', marginBottom: 16}}>
-                        <Divider plain><b>{t(`MateEditor.${PropType}`)}</b></Divider>
-                        {grouped[PropType].map(({field, index, propName}) => (
+                        <Divider plain><b>{t(`MateEditor.${TypeName}`)}</b></Divider>
+                        {grouped[TypeName].map(({field, index, propName}) => (
                             <div
                                 id={`sidebar-item-${index}`}
-                                key={`sidebar-item-${PropType}-${field.key}`}
+                                key={`sidebar-item-${TypeName}-${field.key}`}
                                 onClick={() => setSelectedField(index)}
                                 style={{
                                     padding: '4px 8px',
@@ -409,7 +414,6 @@ const Style3Properties: React.FC<{
         </div>
     );
 };
-
 
 
 /**
@@ -583,23 +587,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      * 便于 antd 的 Form 做统一管理
      */
     const transformMateToForm = (mate: Mate) => {
-        // 尝试推断出 TypeName
-        mate.Material?.Properties?.forEach((prop: any) => {
-            if (!('TypeName' in prop)) {
-                if ('Tex2D' in prop || 'TexRT' in prop) {
-                    prop.TypeName = 'tex';
-                } else if ('Color' in prop) {
-                    prop.TypeName = 'col';
-                } else if ('Vector' in prop) {
-                    prop.TypeName = 'vec';
-                } else if ('Number' in prop) {
-                    prop.TypeName = 'f';
-                } else {
-                    prop.TypeName = 'unknown';
-                }
-            }
-        });
-
         return {
             signature: mate.Signature,
             version: mate.Version,
@@ -615,7 +602,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         // TS: prop as TexProperty
                         const texProp = prop as TexProperty;
                         return {
-                            propType: 'tex',
+                            TypeName: texProp.TypeName,
                             propName: texProp.PropName,
                             subTag: texProp.SubTag,
                             // 针对 tex2d / cube
@@ -632,7 +619,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     case 'col':
                         const colProp = prop as ColProperty;
                         return {
-                            propType: 'col',
+                            TypeName: colProp.TypeName,
                             propName: colProp.PropName,
                             colorR: colProp.Color[0],
                             colorG: colProp.Color[1],
@@ -642,7 +629,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     case 'vec':
                         const vecProp = prop as VecProperty;
                         return {
-                            propType: 'vec',
+                            TypeName: vecProp.TypeName,
                             propName: vecProp.PropName,
                             vec0: vecProp.Vector[0],
                             vec1: vecProp.Vector[1],
@@ -652,13 +639,44 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     case 'f':
                         const fProp = prop as FProperty;
                         return {
-                            propType: 'f',
+                            TypeName: fProp.TypeName,
                             propName: fProp.PropName,
                             number: fProp.Number,
                         };
+                    case 'range':
+                        const rangeProp = prop as RangeProperty;
+                        return {
+                            TypeName: rangeProp.TypeName,
+                            propName: rangeProp.PropName,
+                            number: rangeProp.Number,
+                        };
+                    case 'tex_offset':
+                        const texOffsetProp = prop as TexOffsetProperty;
+                        return {
+                            TypeName: texOffsetProp.TypeName,
+                            propName: texOffsetProp.PropName,
+                            offsetX: texOffsetProp.OffsetX,
+                            offsetY: texOffsetProp.OffsetY,
+                        };
+                    case 'tex_scale':
+                        const texScaleProp = prop as TexScaleProperty;
+                        return {
+                            TypeName: texScaleProp.TypeName,
+                            propName: texScaleProp.PropName,
+                            scaleX: texScaleProp.ScaleX,
+                            scaleY: texScaleProp.ScaleY,
+                        };
+                    case 'keyword':
+                        const keywordProp = prop as KeywordProperty;
+                        return {
+                            TypeName: keywordProp.TypeName,
+                            propName: keywordProp.PropName,
+                            count: keywordProp.Count,
+                            keyword: keywordProp.Keywords,
+                        };
                     default:
                         return {
-                            propType: 'unknown',
+                            TypeName: 'unknown',
                             propName: 'unknown',
                         };
                 }
@@ -691,12 +709,12 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         const newProps: any[] = [];
         if (Array.isArray(values.properties)) {
             values.properties.forEach((item: any) => {
-                switch (item.propType) {
+                switch (item.TypeName) {
                     case 'tex':
                         // 根据 subTag 判断
                         if (item.subTag === 'tex2d' || item.subTag === 'cube') {
                             newProps.push({
-                                TypeName: 'tex',
+                                TypeName: item.TypeName,
                                 PropName: item.propName,
                                 SubTag: item.subTag,
                                 Tex2D: {
@@ -708,7 +726,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             });
                         } else if (item.subTag === 'texRT') {
                             newProps.push({
-                                    TypeName: 'tex',
+                                    TypeName: item.TypeName,
                                     PropName: item.propName,
                                     SubTag: 'texRT',
                                     TexRT: {
@@ -720,7 +738,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         } else if (item.subTag === 'null') {
                             // 生成一个空的 tex 属性
                             newProps.push({
-                                TypeName: 'tex',
+                                TypeName: item.TypeName,
                                 PropName: item.propName,
                                 SubTag: 'null',
                             });
@@ -728,7 +746,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'col':
                         newProps.push({
-                            TypeName: 'col',
+                            TypeName: item.TypeName,
                             PropName: item.propName,
                             Color: [
                                 parseFloat(item.colorR) || 0,
@@ -740,7 +758,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'vec':
                         newProps.push({
-                            TypeName: 'vec',
+                            TypeName: item.TypeName,
                             PropName: item.propName,
                             Vector: [
                                 parseFloat(item.vec0) || 0,
@@ -752,9 +770,40 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         break;
                     case 'f':
                         newProps.push({
-                            TypeName: 'f',
+                            TypeName: item.TypeName,
                             PropName: item.propName,
                             Number: parseFloat(item.number) || 0,
+                        });
+                        break;
+                    case 'range':
+                        newProps.push({
+                            TypeName: item.TypeName,
+                            PropName: item.propName,
+                            Number: parseFloat(item.number) || 0,
+                        });
+                        break;
+                    case 'tex_offset':
+                        newProps.push({
+                            TypeName: item.TypeName,
+                            PropName: item.propName,
+                            OffsetX: parseFloat(item.offsetX) || 0,
+                            OffsetY: parseFloat(item.offsetY) || 0,
+                        });
+                        break;
+                    case 'tex_scale':
+                        newProps.push({
+                            TypeName: item.TypeName,
+                            PropName: item.propName,
+                            ScaleX: parseFloat(item.scaleX) || 0,
+                            ScaleY: parseFloat(item.scaleY) || 0,
+                        });
+                        break;
+                    case 'keyword':
+                        newProps.push({
+                            TypeName: item.TypeName,
+                            PropName: item.propName,
+                            Count: parseInt(item.count, 10) || 0,
+                            Keywords: item.keyword,
                         });
                         break;
                     default:
@@ -766,7 +815,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         newMate.Material.Properties = newProps as any;
         return newMate;
     };
-
 
 
     // 当 mateData 变化时同步到表单

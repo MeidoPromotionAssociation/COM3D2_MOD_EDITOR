@@ -13,7 +13,7 @@ func (s *ColModel) Dummy(COM3D2.Col, COM3D2.DynamicBoneColliderBase, COM3D2.Dyna
 type MateModel struct{}
 
 // Dummy 用于让 wails 识别 mate 对应结构体，需要在签名中使用所有结构体
-func (s *MateModel) Dummy(COM3D2.Mate, COM3D2.Material, COM3D2.TexProperty, COM3D2.Tex2DSubProperty, COM3D2.TexRTSubProperty, COM3D2.ColProperty, COM3D2.VecProperty, COM3D2.FProperty, COM3D2.RangeProperty, COM3D2.TexOffsetProperty, COM3D2.TexScaleProperty, COM3D2.KeyWordProperty, COM3D2.KeyWord) {
+func (s *MateModel) Dummy(COM3D2.Mate, COM3D2.Material, COM3D2.TexProperty, COM3D2.Tex2DSubProperty, COM3D2.TexRTSubProperty, COM3D2.ColProperty, COM3D2.VecProperty, COM3D2.FProperty, COM3D2.RangeProperty, COM3D2.TexOffsetProperty, COM3D2.TexScaleProperty, COM3D2.KeywordProperty, COM3D2.Keyword) {
 }
 
 // MenuModel 用于让 wails 识别 menu 对应结构体

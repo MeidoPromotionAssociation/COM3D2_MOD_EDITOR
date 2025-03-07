@@ -7,7 +7,7 @@ import ColorPickerSync from "./ColorPickerSync";
 
 /**
  * 单独的 PropertyItem 组件，用于渲染每个 properties 项目，
- * 并使用 Form.useWatch 监听当前项目的 propType 和 subTag 字段变化
+ * 并使用 Form.useWatch 监听当前项目的 TypeName 和 subTag 字段变化
  */
 const MatePropertyItemType2 = ({
                                    name,
@@ -18,7 +18,7 @@ const MatePropertyItemType2 = ({
     restField: any;
     form: any;
 }) => {
-    const currentPropType = Form.useWatch(['properties', name, 'propType'], form);
+    const currentTypeName = Form.useWatch(['properties', name, 'TypeName'], form);
     const currentSubTag = Form.useWatch(['properties', name, 'subTag'], form);
     const {t} = useTranslation();
 
@@ -62,7 +62,7 @@ const MatePropertyItemType2 = ({
             <Form.Item
                 {...restField}
                 label={t('MateEditor.property_type')}
-                name={[name, 'propType']}
+                name={[name, 'TypeName']}
                 labelCol={{style: {width: '100px'}}}
             >
                 <Select
@@ -84,7 +84,7 @@ const MatePropertyItemType2 = ({
             >
                 <Input/>
             </Form.Item>
-            {currentPropType === 'tex' && (
+            {currentTypeName === 'tex' && (
                 <>
                     <Form.Item
                         {...restField}
@@ -202,7 +202,7 @@ const MatePropertyItemType2 = ({
                     )}
                 </>
             )}
-            {currentPropType === 'col' && (
+            {currentTypeName === 'col' && (
                 <>
                     <Space>
                         <Form.Item
@@ -251,7 +251,7 @@ const MatePropertyItemType2 = ({
                     </Form.Item>
                 </>
             )}
-            {currentPropType === 'vec' && (
+            {currentTypeName === 'vec' && (
                 <Space align="baseline">
                     <Form.Item
                         {...restField}
@@ -292,7 +292,7 @@ const MatePropertyItemType2 = ({
                     </Form.Item>
                 </Space>
             )}
-            {currentPropType === 'f' && (
+            {currentTypeName === 'f' && (
                 <Form.Item
                     {...restField}
                     label={t('MateEditor.number')}
