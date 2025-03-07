@@ -97,9 +97,9 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
             }}
         >
             <Form.Item initialValue='dbc'
-                {...restField}
-                label={t('ColEditor.collider_type')}
-                name={[name, 'TypeName']}
+                       {...restField}
+                       label={t('ColEditor.collider_type')}
+                       name={[name, 'TypeName']}
             >
                 <Select
                     dropdownStyle={{textAlign: 'left'}}

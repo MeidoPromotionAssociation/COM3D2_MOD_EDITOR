@@ -49,7 +49,7 @@ func ReadAnm(r io.Reader) (*Anm, error) {
 	clip.Version = ver
 
 	// 在 clip.BoneCurves 中定位到当前骨骼对应的下标
-	var currentBoneIndex int = -1
+	var currentBoneIndex = -1
 
 	// 3. 循环读取，直到 b == 0
 	for {
@@ -139,8 +139,8 @@ func ReadAnm(r io.Reader) (*Anm, error) {
 		return clip, nil
 		//return nil, fmt.Errorf("read useBustKeyR failed: %w", err)
 	}
-	clip.BustKeyLeft = (bustKeyL != 0)
-	clip.BustKeyRight = (bustKeyR != 0)
+	clip.BustKeyLeft = bustKeyL != 0
+	clip.BustKeyRight = bustKeyR != 0
 
 	return clip, nil
 }

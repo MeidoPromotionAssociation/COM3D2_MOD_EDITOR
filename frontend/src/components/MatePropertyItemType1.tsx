@@ -30,7 +30,6 @@ const MatePropertyItemType1 = ({
                 borderRadius: 4,
                 textAlign: 'left',
             }}
-            key = {Math.random()}
         >
             <Form.Item initialValue='tex'
                 {...restField}
