@@ -104,8 +104,7 @@ export const m_strDefSlotName: string[] = [
 // From COM3D2 2.41.1
 // Parts color
 // for infinite color
-export enum PARTS_COLOR
-{
+export enum PARTS_COLOR {
     NONE = -1,
     EYE_L,
     EYE_R,

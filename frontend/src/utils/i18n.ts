@@ -21,11 +21,11 @@ i18n
     // init i18next
     // for all options read: https://www.i18next.com/overview/configuration-options
     .init({
-        debug: true,
-
+        debug: false,
+        load: 'currentOnly',
+        nonExplicitSupportedLngs: true,
+        saveMissing: true,
         fallbackLng: {
-            'en-US': ['en', 'en-GB'],
-            'zh-CN': ['zh-TW', 'zh-Hant', 'zh'],
             'default': ['zh-CN']
         },
         interpolation: {

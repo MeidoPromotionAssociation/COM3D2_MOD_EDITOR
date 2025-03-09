@@ -2,7 +2,7 @@
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Dropdown, Layout, MenuProps, message} from "antd";
-import {GetAppVersion, SelectFile} from "../../wailsjs/go/main/App";
+import {SelectFile} from "../../wailsjs/go/main/App";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
 import {DownOutlined, GithubOutlined, TranslationOutlined} from "@ant-design/icons";
@@ -53,12 +53,12 @@ const HomePage: React.FC = () => {
                         navigate("/phy-editor", {state: {filePath}});
                         break;
                     default:
-                        alert(t('Errors.file_type_not_supported'));
+                        message.error(t('Errors.file_type_not_supported'));
                 }
             }
         } catch (err) {
             console.error(err);
-            alert(t('Errors.file_selection_error_colon') + err);
+            message.error(t('Errors.file_selection_error_colon') + err);
         }
     };
 
@@ -110,7 +110,7 @@ const HomePage: React.FC = () => {
                         <Button
                             type="primary"
                             danger
-                            style={{ width: "20%" }}
+                            style={{width: "20%"}}
                             onClick={() => BrowserOpenURL(GitHubReleaseUrl)}
                         >
                             {t('HomePage.new_version_button')}
@@ -126,18 +126,17 @@ const HomePage: React.FC = () => {
                     justifyContent: "center",
                     alignItems: "center"
                 }}>
-                <Button type="primary" onClick={handleSelectFile}>{t('HomePage.choose_file')}</Button>
-                <p style={{marginTop: 20, color: "#666"}}>
-                    {t('HomePage.pls_select_a_file_to_edit')}
-                </p>
+                    <Button type="primary" onClick={handleSelectFile}>{t('HomePage.choose_file')}</Button>
+                    <p style={{marginTop: 20, color: "#666"}}>
+                        {t('HomePage.pls_select_a_file_to_edit')}
+                    </p>
 
-                <Dropdown menu={languageMenu} placement="bottomRight">
-                    <Button>
-                        <TranslationOutlined/><DownOutlined/>
-                    </Button>
-                </Dropdown>
+                    <Dropdown menu={languageMenu} placement="bottomRight">
+                        <Button>
+                            <TranslationOutlined/><DownOutlined/>
+                        </Button>
+                    </Dropdown>
                 </div>
-
 
 
                 {/* 页面底部 */}
@@ -148,7 +147,7 @@ const HomePage: React.FC = () => {
                     alignItems: 'center',
                     padding: '0px 0'
                 }}>
-                    <Button type="text" size="large" style={{ color: "#666" }}
+                    <Button type="text" size="large" style={{color: "#666"}}
                             onClick={() => BrowserOpenURL(GitHubUrl)}>
                         <GithubOutlined/>
                     </Button>

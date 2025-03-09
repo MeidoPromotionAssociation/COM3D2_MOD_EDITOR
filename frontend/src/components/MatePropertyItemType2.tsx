@@ -221,7 +221,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorR']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber  min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -229,7 +229,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorG']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber  min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -237,7 +237,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorB']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber  min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             {...restField}
@@ -394,23 +394,23 @@ const MatePropertyItemType2 = ({
             )}
             {currentTypeName === 'keyword' && (
                 <Form.List name={[name, 'keywords']}>
-                    {(fields, { add, remove }) => (
-                        <div style={{ width: '100%' }}>
-                            {fields.map(({ key, name: fieldName }) => (
+                    {(fields, {add, remove}) => (
+                        <div style={{width: '100%'}}>
+                            {fields.map(({key, name: fieldName}) => (
                                 <Flex align="center" justify="space-between">
                                     <Space key={key} align="center">
                                         <Form.Item
                                             {...restField}
                                             name={[fieldName, 'key']}
                                             label={t('MateEditor.keyword_no_brackets')}
-                                            labelCol={{ style: { width: '100px' } }}
+                                            labelCol={{style: {width: '100px'}}}
                                         >
                                             <Input
                                                 suffix={
-                                                <Tooltip title={t('MateEditor.keyword_tip')}>
-                                                    <QuestionCircleOutlined/>
-                                                </Tooltip>
-                                            }
+                                                    <Tooltip title={t('MateEditor.keyword_tip')}>
+                                                        <QuestionCircleOutlined/>
+                                                    </Tooltip>
+                                                }
 
                                             />
                                         </Form.Item>

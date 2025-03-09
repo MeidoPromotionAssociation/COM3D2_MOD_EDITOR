@@ -30,10 +30,12 @@ const App: React.FC = () => {
         localStorage.getItem(NewVersionAvailableKey) === 'true'
     );
     const [checkUpdateFailed, setCheckUpdateFailed] = React.useState(false);
-    
+
     // 检查本地存储的上次检查更新时间
     const shouldCheckUpdate = () => {
         const latestVersion = localStorage.getItem(LatestVersionKey);
+        console.log("checkIfShouldCheckUpdate", latestVersion)
+
         if (latestVersion) {
             // 去除版本号前的 'v' 前缀
             const current = AppVersion.replace(/^v/, '').split('.').map(Number);
@@ -44,14 +46,24 @@ const App: React.FC = () => {
                 const currSeg = current[i] || 0;
                 const latestSeg = latest[i] || 0;
 
+                console.log(`Comparing segment ${i}: ${currSeg} vs ${latestSeg}`)
+
                 if (latestSeg > currSeg) {
                     localStorage.removeItem(NewVersionAvailableKey);
                     setIsNewVersionAvailable(false);
                     return true;
                 } else if (latestSeg < currSeg) {
+                    // 当本地版本更高时，清除更新提示
+                    localStorage.removeItem(NewVersionAvailableKey);
+                    setIsNewVersionAvailable(false);
                     return false;
                 }
             }
+
+            // 版本完全相同时
+            localStorage.removeItem(NewVersionAvailableKey);
+            setIsNewVersionAvailable(false);
+            return false;
         }
 
         // 每 24 小时检查一次
@@ -103,6 +115,9 @@ const App: React.FC = () => {
                 case "pmat":
                     navigate("/pmat-editor", {state: {filePath}})
                     break
+                case "col":
+                    navigate("/col-editor", {state: {filePath}})
+                    break
                 case "phy":
                     navigate("/phy-editor", {state: {filePath}})
                     break
@@ -129,6 +144,9 @@ const App: React.FC = () => {
                     break
                 case "pmat":
                     navigate("/pmat-editor", {state: {filePath}})
+                    break
+                case "col":
+                    navigate("/col-editor", {state: {filePath}})
                     break
                 case "phy":
                     navigate("/phy-editor", {state: {filePath}})

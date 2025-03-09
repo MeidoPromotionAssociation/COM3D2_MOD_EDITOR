@@ -290,7 +290,7 @@ const Style2Properties: React.FC<{
                                 {/* 添加删除按钮 */}
                                 <Button
                                     type="text"
-                                    icon={<DeleteOutlined />}
+                                    icon={<DeleteOutlined/>}
                                     onClick={(e) => {
                                         e.stopPropagation(); // 阻止点击事件冒泡
                                         remove(index);       // 删除当前属性
@@ -314,8 +314,8 @@ const Style2Properties: React.FC<{
                     type="primary"
                     onClick={() => {
                         const initialValue = filterTypeName !== 'all'
-                            ? { TypeName: filterTypeName }
-                            : { TypeName: 'unknown' }; // 当选择"全部"时默认 unknown 类型
+                            ? {TypeName: filterTypeName}
+                            : {TypeName: 'unknown'}; // 当选择"全部"时默认 unknown 类型
                         add(initialValue);
                         setSelectedField(null);
                     }}

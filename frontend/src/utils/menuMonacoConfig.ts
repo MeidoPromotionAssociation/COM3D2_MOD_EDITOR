@@ -156,12 +156,12 @@ const Autocomplete = (monacoInstance: any) => {
 
                         // snippet 直接插入多行示例
                         suggestions.push({
-                            label: `${cmdKey}` + "  (" + t('MenuEditor.snippet.pre_filled') +")",
+                            label: `${cmdKey}` + "  (" + t('MenuEditor.snippet.pre_filled') + ")",
                             kind: monacoInstance.languages.CompletionItemKind.Snippet,
                             insertText: createSnippetForCommand(cmdKey),
                             insertTextRules:
                             monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: t('MenuEditor.snippet.pre_filled_tip') ,
+                            documentation: t('MenuEditor.snippet.pre_filled_tip'),
                         });
                     });
                 } else {

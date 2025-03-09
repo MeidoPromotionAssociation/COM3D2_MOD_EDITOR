@@ -1,7 +1,7 @@
 // frontend/src/components/MenuEditorPage.tsx
 import React, {useRef} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Layout} from "antd";
+import {Layout, message} from "antd";
 import MenuEditor, {MenuEditorRef} from "./MenuEditor";
 import NavBar from "./NavBar";
 import {SelectFile} from "../../wailsjs/go/main/App";
@@ -29,7 +29,7 @@ const MenuEditorPage: React.FC = () => {
             }
         } catch (err) {
             console.error(err);
-            alert(t('Errors.file_selection_error_colon') + err);
+            message.error(t('Errors.file_selection_error_colon') + err);
         }
     };
 

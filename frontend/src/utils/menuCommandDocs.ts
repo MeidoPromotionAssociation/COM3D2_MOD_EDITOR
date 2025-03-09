@@ -47,10 +47,10 @@ export const getCommandSnippetMap = (): Record<string, string[]> => ({
     "icon": [t('MenuEditor.snippet.icon_filename')],
     "icons": [t('MenuEditor.snippet.icon_filename')],
     "maskitem": [t('MenuEditor.snippet.MPN')],
-    "マテリアル変更":[t('MenuEditor.snippet.MPN'), t('MenuEditor.snippet.mate_number'), t('MenuEditor.snippet.mate_filename')],
+    "マテリアル変更": [t('MenuEditor.snippet.MPN'), t('MenuEditor.snippet.mate_number'), t('MenuEditor.snippet.mate_filename')],
     "tex": [t('MenuEditor.snippet.MPN'), t('MenuEditor.snippet.mate_number'), t('MenuEditor.snippet.mate_filename')],
     "node消去": [t('MenuEditor.snippet.bone_name_keyword')],
-    "カテゴリ名":[t('MenuEditor.snippet.MPN'),t('MenuEditor.snippet.mate_number'),t('MenuEditor.snippet.mate_name'),t('MenuEditor.snippet.layer_number'),t('MenuEditor.snippet.tex_filename'),],
+    "カテゴリ名": [t('MenuEditor.snippet.MPN'), t('MenuEditor.snippet.mate_number'), t('MenuEditor.snippet.mate_name'), t('MenuEditor.snippet.layer_number'), t('MenuEditor.snippet.tex_filename'),],
 });
 
 

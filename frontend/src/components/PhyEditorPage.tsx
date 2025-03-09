@@ -1,7 +1,7 @@
 // frontend/src/components/PhyEditorPage.tsx
 import React, {useRef} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Layout} from "antd";
+import {Layout, message} from "antd";
 import NavBar from "./NavBar";
 import {SelectFile} from "../../wailsjs/go/main/App";
 import {useTranslation} from "react-i18next";
@@ -29,7 +29,7 @@ const PMatEditorPage: React.FC = () => {
             }
         } catch (err) {
             console.error(err);
-            alert(t('Errors.file_selection_error_colon') + err);
+            message.error(t('Errors.file_selection_error_colon') + err);
         }
     };
 
