@@ -19,7 +19,7 @@ type Col struct {
 
 // ICollider 是所有Collider的接口，不同具体类型各自实现。
 type ICollider interface {
-	TypeName() string
+	TypeNameFunc() string
 	Deserialize(r io.Reader, version int32) error
 	Serialize(w io.Writer, version int32) error
 }
@@ -41,7 +41,7 @@ type DynamicBoneColliderBase struct {
 	Bound     int32      `json:"Bound"`     // (int)this.m_Bound
 }
 
-func (c *DynamicBoneColliderBase) TypeName() string {
+func (c *DynamicBoneColliderBase) TypeNameFunc() string {
 	return "base" // not in C#
 }
 func (c *DynamicBoneColliderBase) Deserialize(r io.Reader, version int32) error {
@@ -179,7 +179,7 @@ type DynamicBoneCollider struct {
 	Height float32 `json:"Height"`
 }
 
-func (c *DynamicBoneCollider) TypeName() string {
+func (c *DynamicBoneCollider) TypeNameFunc() string {
 	return "dbc"
 }
 func (c *DynamicBoneCollider) Deserialize(r io.Reader, version int32) error {
@@ -239,7 +239,7 @@ type DynamicBonePlaneCollider struct {
 	Base *DynamicBoneColliderBase `json:"Base"`
 }
 
-func (c *DynamicBonePlaneCollider) TypeName() string {
+func (c *DynamicBonePlaneCollider) TypeNameFunc() string {
 	return "dpc"
 }
 func (c *DynamicBonePlaneCollider) Deserialize(r io.Reader, version int32) error {
@@ -286,7 +286,7 @@ type DynamicBoneMuneCollider struct {
 	// 所以这里就不做二进制存储了。
 }
 
-func (c *DynamicBoneMuneCollider) TypeName() string {
+func (c *DynamicBoneMuneCollider) TypeNameFunc() string {
 	return "dbm"
 }
 func (c *DynamicBoneMuneCollider) Deserialize(r io.Reader, version int32) error {
@@ -366,7 +366,7 @@ func WriteDynamicBoneMuneCollider(w io.Writer, c *DynamicBoneMuneCollider) error
 // MissingCollider 对应 "missing"
 type MissingCollider struct{}
 
-func (m *MissingCollider) TypeName() string {
+func (m *MissingCollider) TypeNameFunc() string {
 	return "missing"
 }
 func (m *MissingCollider) Deserialize(r io.Reader, version int32) error {
@@ -461,7 +461,7 @@ func (c *Col) Dump(w io.Writer) error {
 	}
 	// 4. 遍历写出每个 collider
 	for i, collider := range c.Colliders {
-		typeName := collider.TypeName()
+		typeName := collider.TypeNameFunc()
 		// 先写 typeName
 		if err := utilities.WriteString(w, typeName); err != nil {
 			return fmt.Errorf("write collider type failed at index %d: %w", i, err)
@@ -495,15 +495,15 @@ func (c *Col) UnmarshalJSON(data []byte) error {
 	// 逐个解析 Colliders
 	var result []ICollider
 	for _, raw := range temp.Colliders {
-		// 1. 先解析出 TypeName 用来分辨子类型
+		// 1. 先解析出 GetTypeName 用来分辨子类型
 		var typeHolder struct {
-			TypeName string `json:"TypeName"`
+			TypeName string `json:"GetTypeName"`
 		}
 		if err := json.Unmarshal(raw, &typeHolder); err != nil {
 			return err
 		}
 
-		// 2. 根据 TypeName 创建对应的 collider 实例
+		// 2. 根据 GetTypeName 创建对应的 collider 实例
 		var collider ICollider
 		switch typeHolder.TypeName {
 		case "dbc":
@@ -515,7 +515,7 @@ func (c *Col) UnmarshalJSON(data []byte) error {
 		case "missing":
 			collider = &MissingCollider{}
 		default:
-			return fmt.Errorf("unrecognized collider TypeName: %q", typeHolder.TypeName)
+			return fmt.Errorf("unrecognized collider GetTypeName: %q", typeHolder.TypeName)
 		}
 
 		// 3. 用创建好的实例再去解析整个 JSON

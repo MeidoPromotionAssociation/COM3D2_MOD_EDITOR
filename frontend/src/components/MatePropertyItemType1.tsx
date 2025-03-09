@@ -1,6 +1,6 @@
-import {Form, Input, InputNumber, Select, Space, Tooltip} from "antd";
+import {Button, Flex, Form, Input, InputNumber, Select, Space, Switch, Tooltip} from "antd";
 import {useTranslation} from "react-i18next";
-import {QuestionCircleOutlined} from "@ant-design/icons";
+import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import React from "react";
 import ColorPickerSync from "./ColorPickerSync";
 
@@ -32,10 +32,10 @@ const MatePropertyItemType1 = ({
             }}
         >
             <Form.Item initialValue='tex'
-                {...restField}
-                label={t('MateEditor.property_type')}
-                name={[name, 'TypeName']}
-                labelCol={{style: {width: '100px'}}}
+                       {...restField}
+                       label={t('MateEditor.property_type')}
+                       name={[name, 'TypeName']}
+                       labelCol={{style: {width: '100px'}}}
             >
                 <Select
                     dropdownStyle={{textAlign: 'left'}}
@@ -44,6 +44,10 @@ const MatePropertyItemType1 = ({
                         {label: t('MateEditor.col'), value: 'col'},
                         {label: t('MateEditor.vec'), value: 'vec'},
                         {label: t('MateEditor.f'), value: 'f'},
+                        {label: t('MateEditor.range'), value: 'range'},
+                        {label: t('MateEditor.tex_offset'), value: 'tex_offset'},
+                        {label: t('MateEditor.tex_scale'), value: 'tex_scale'},
+                        {label: t('MateEditor.keyword'), value: 'keyword'},
                         {label: t('MateEditor.unknown'), value: 'unknown'},
                     ]}
                 />
@@ -240,7 +244,7 @@ const MatePropertyItemType1 = ({
                         name={[name, 'vec0']}
                         labelCol={{style: {width: '100px'}}}
                     >
-                        <InputNumber min={0} max={1} step={0.01}/>
+                        <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item
                         {...restField}
@@ -248,7 +252,7 @@ const MatePropertyItemType1 = ({
                         name={[name, 'vec1']}
                         labelCol={{style: {width: '100px'}}}
                     >
-                        <InputNumber min={0} max={1} step={0.01}/>
+                        <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item
                         {...restField}
@@ -256,7 +260,7 @@ const MatePropertyItemType1 = ({
                         name={[name, 'vec2']}
                         labelCol={{style: {width: '100px'}}}
                     >
-                        <InputNumber min={0} max={1} step={0.01}/>
+                        <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item
                         {...restField}
@@ -264,7 +268,7 @@ const MatePropertyItemType1 = ({
                         name={[name, 'vec3']}
                         labelCol={{style: {width: '100px'}}}
                     >
-                        <InputNumber min={0} max={1} step={0.01}/>
+                        <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item>
                         <Tooltip title={t('MateEditor.vec_tip')}>
@@ -274,14 +278,137 @@ const MatePropertyItemType1 = ({
                 </Space>
             )}
             {currentTypeName === 'f' && (
-                <Form.Item
-                    {...restField}
-                    label={t('MateEditor.number')}
-                    name={[name, 'number']}
-                    labelCol={{style: {width: '100px'}}}
-                >
-                    <InputNumber style={{width: '100%'}}/>
-                </Form.Item>
+                <Flex gap="small" style={{width: '100%'}}>
+                    <Form.Item
+                        {...restField}
+                        label={t('MateEditor.number')}
+                        name={[name, 'number']}
+                        labelCol={{style: {width: '100px'}}}
+                        style={{flex: 1}}
+                    >
+                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Tooltip title={t('MateEditor.f_tip')}>
+                            <QuestionCircleOutlined/>
+                        </Tooltip>
+                    </Form.Item>
+                </Flex>
+            )}
+            {currentTypeName === 'range' && (
+                <Flex gap="small" style={{width: '100%'}}>
+                    <Form.Item
+                        {...restField}
+                        label={t('MateEditor.number')}
+                        name={[name, 'number']}
+                        labelCol={{style: {width: '100px'}}}
+                        style={{flex: 1}}
+                    >
+                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Tooltip title={t('MateEditor.range_tip')}>
+                            <QuestionCircleOutlined/>
+                        </Tooltip>
+                    </Form.Item>
+                </Flex>
+            )}
+            {currentTypeName === 'tex_offset' && (
+                <Flex gap="small" style={{width: '100%'}}>
+                    <Form.Item
+                        {...restField}
+                        label={t('MateEditor.offsetX')}
+                        name={[name, 'offsetX']}
+                        labelCol={{style: {width: '100px'}}}
+                        style={{flex: 1}}
+                    >
+                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item
+                        {...restField}
+                        label={t('MateEditor.offsetY')}
+                        name={[name, 'offsetY']}
+                        labelCol={{style: {width: '100px'}}}
+                        style={{flex: 1}}
+                    >
+                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Tooltip title={t('MateEditor.tex_offset_tip')}>
+                            <QuestionCircleOutlined/>
+                        </Tooltip>
+                    </Form.Item>
+                </Flex>
+            )}
+            {currentTypeName === 'tex_scale' && (
+                <Flex gap="small" style={{width: '100%'}}>
+                    <Form.Item
+                        {...restField}
+                        label={t('MateEditor.scaleX')}
+                        name={[name, 'scaleX']}
+                        labelCol={{style: {width: '100px'}}}
+                        style={{flex: 1}}
+                    >
+                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item
+                        {...restField}
+                        label={t('MateEditor.scaleY')}
+                        name={[name, 'scaleY']}
+                        labelCol={{style: {width: '100px'}}}
+                        style={{flex: 1}}
+                    >
+                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Tooltip title={t('MateEditor.tex_scale_tip')}>
+                            <QuestionCircleOutlined/>
+                        </Tooltip>
+                    </Form.Item>
+                </Flex>
+            )}
+            {currentTypeName === 'keyword' && (
+                <Form.List name={[name, 'keywords']}>
+                    {(fields, { add, remove }) => (
+                        <div style={{ width: '100%' }}>
+                            {fields.map(({ key, name: fieldName }) => (
+                                <Flex align="center" justify="space-between">
+                                    <Space key={key} align="center">
+                                        <Form.Item
+                                            {...restField}
+                                            name={[fieldName, 'key']}
+                                            label={t('MateEditor.keyword_no_brackets')}
+                                            labelCol={{ style: { width: '100px' } }}
+                                        >
+                                            <Input suffix={
+                                                <Tooltip title={t('MateEditor.keyword_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[fieldName, 'value']}
+                                            valuePropName="checked"
+                                        >
+                                            <Switch checkedChildren="true" unCheckedChildren="false" size="default"/>
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Button type="text" onClick={() => remove(fieldName)} size='middle'>
+                                                <DeleteOutlined/>
+                                            </Button>
+                                        </Form.Item>
+                                    </Space>
+                                </Flex>
+                            ))}
+                            <Form.Item>
+                                <Button type="dashed" onClick={() => add()} block>
+                                    {t('MateEditor.add_key_value')}
+                                </Button>
+                            </Form.Item>
+                        </div>
+                    )}
+                </Form.List>
             )}
         </div>
     );

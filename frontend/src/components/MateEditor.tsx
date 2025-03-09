@@ -252,10 +252,14 @@ const Style2Properties: React.FC<{
                         optionType="button"
                     >
                         <Radio.Button value="all">{t('MateEditor.all')}</Radio.Button>
-                        <Radio.Button value="tex">{t('MateEditor.tex')}</Radio.Button>
-                        <Radio.Button value="col">{t('MateEditor.col')}</Radio.Button>
-                        <Radio.Button value="vec">{t('MateEditor.vec')}</Radio.Button>
-                        <Radio.Button value="f">{t('MateEditor.f')}</Radio.Button>
+                        <Radio.Button value="tex">{t('MateEditor.tex_no_brackets')}</Radio.Button>
+                        <Radio.Button value="col">{t('MateEditor.col_no_brackets')}</Radio.Button>
+                        <Radio.Button value="vec">{t('MateEditor.vec_no_brackets')}</Radio.Button>
+                        <Radio.Button value="f">{t('MateEditor.f_no_brackets')}</Radio.Button>
+                        <Radio.Button value="range">{t('MateEditor.range_no_brackets')}</Radio.Button>
+                        <Radio.Button value="texOffset">{t('MateEditor.tex_offset_no_brackets')}</Radio.Button>
+                        <Radio.Button value="texScale">{t('MateEditor.tex_scale_no_brackets')}</Radio.Button>
+                        <Radio.Button value="keyword">{t('MateEditor.keyword_no_brackets')}</Radio.Button>
                         <Radio.Button value="unknown">{t('MateEditor.unknown')}</Radio.Button>
                     </Radio.Group>
                     <Input.Search
@@ -279,9 +283,29 @@ const Style2Properties: React.FC<{
                                     borderRadius: 4,
                                     backgroundColor: selectedField === index ? '#e6f7ff' : undefined,
                                     marginBottom: 4,
+                                    position: 'relative',
                                 }}
                             >
                                 {propName}
+                                {/* 添加删除按钮 */}
+                                <Button
+                                    type="text"
+                                    icon={<DeleteOutlined />}
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // 阻止点击事件冒泡
+                                        remove(index);       // 删除当前属性
+                                        if (selectedField === index) {
+                                            setSelectedField(null); // 如果删除的是当前选中项，清除选中状态
+                                        }
+                                    }}
+                                    style={{
+                                        position: 'absolute',
+                                        right: 4,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        padding: '0 4px'
+                                    }}
+                                />
                             </div>
                         ))}
                     </div>
@@ -289,7 +313,10 @@ const Style2Properties: React.FC<{
                 <Button
                     type="primary"
                     onClick={() => {
-                        add();
+                        const initialValue = filterTypeName !== 'all'
+                            ? { TypeName: filterTypeName }
+                            : { TypeName: 'unknown' }; // 当选择"全部"时默认 unknown 类型
+                        add(initialValue);
                         setSelectedField(null);
                     }}
                     icon={<PlusOutlined/>}
@@ -431,7 +458,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     const [mateData, setMateData] = useState<Mate | null>(null);
 
     // 是否允许编辑 Signature, Version 等字段（默认禁用）
-    const [isHeaderEditable, setIsHeaderEditable] = useState(false);
+    const [isSignatureEditable, setIsSignatureEditable] = useState(false);
+
+    // 是否允许编辑文件头的其他字段（默认启用，仅模式 3 禁用，模式 3 应当在 JSON 中直接编辑）
+    const [isHeaderEditable, setIsHeaderEditable] = useState(true);
 
     // 用于 antd 的表单来管理字段
     const [form] = Form.useForm();
@@ -671,8 +701,11 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         return {
                             TypeName: keywordProp.TypeName,
                             propName: keywordProp.PropName,
-                            count: keywordProp.Count,
-                            keyword: keywordProp.Keywords,
+                            // count: keywordProp.Count, // 自动计算
+                            keywords: keywordProp.Keywords.map(k => ({
+                                key: k.Key,
+                                value: k.Value
+                            })),
                         };
                     default:
                         return {
@@ -691,7 +724,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         const newMate = COM3D2.Mate.createFrom(oldMate);
 
         // 基本字段
-        if (isHeaderEditable) {
+        if (isSignatureEditable) {
             newMate.Signature = values.signature;
             newMate.Version = parseInt(values.version, 10);
         }
@@ -799,11 +832,16 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         });
                         break;
                     case 'keyword':
+                        const keywords = item.keywords?.map((k: any) => ({
+                            Key: k?.key || '',
+                            Value: typeof k?.value === 'boolean' ? k.value : false
+                        })) || [];
+
                         newProps.push({
                             TypeName: item.TypeName,
                             PropName: item.propName,
-                            Count: parseInt(item.count, 10) || 0,
-                            Keywords: item.keyword,
+                            Count: keywords.length,  // 自动计算数量
+                            Keywords: keywords
                         });
                         break;
                     default:
@@ -844,26 +882,27 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     labelAlign="left"
                     // Form 级别统一设置 labelCol
                     labelCol={{style: {width: '15vw'}}}
+                    requiredMark={false}
                 >
                     <Collapse defaultActiveKey={['basic', 'properties']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.file_head')}>
                             <Space>
                                 <Form.Item name="signature" initialValue={COM3D2HeaderConstants.MateSignature}>
                                     <Input
-                                        disabled={!isHeaderEditable}
+                                        disabled={!isSignatureEditable}
                                         addonBefore={t('MateEditor.file_header.Signature')}
                                     />
                                 </Form.Item>
                                 <Form.Item name="version" initialValue={COM3D2HeaderConstants.MateVersion.toString()}>
                                     <InputNumber
-                                        disabled={!isHeaderEditable}
+                                        disabled={!isSignatureEditable}
                                         addonBefore={t('MateEditor.file_header.Version')}
                                     />
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox
-                                        checked={isHeaderEditable}
-                                        onChange={(e) => setIsHeaderEditable(e.target.checked)}
+                                        checked={isSignatureEditable}
+                                        onChange={(e) => setIsSignatureEditable(e.target.checked)}
                                     >
                                         {t('MateEditor.file_header.enable_edit_do_not_edit')}
                                     </Checkbox>
@@ -872,6 +911,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
                             <Form.Item name="name">
                                 <Input
+                                    disabled={!isHeaderEditable}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                       {t('MateEditor.file_header.Name')}
@@ -886,6 +926,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                             <Form.Item name="materialName">
                                 <Input
+                                    disabled={!isHeaderEditable}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                       {t('MateEditor.file_header.Material_Name')}
@@ -900,6 +941,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                             <Form.Item name="shaderName">
                                 <Input
+                                    disabled={!isHeaderEditable}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                       {t('MateEditor.file_header.Material_ShaderName')}
@@ -914,6 +956,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                             <Form.Item name="shaderFilename">
                                 <Input
+                                    disabled={!isHeaderEditable}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                       {t('MateEditor.file_header.Material_ShaderFilename')}
@@ -937,9 +980,15 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     onChange={(e) => {
                                         // Get current form values and update mateData before switching view
                                         const currentFormValues = form.getFieldsValue(true);
-                                        if (mateData && viewMode !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
+                                        if (mateData && e.target.value !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
                                             const updatedMate = transformFormToMate(currentFormValues, mateData);
                                             setMateData(updatedMate);
+                                        }
+
+                                        if (e.target.value === 3) {
+                                            setIsHeaderEditable(false) // 模式 3 不允许编辑表单文件头，应当直接在 JSON 中编辑
+                                        } else {
+                                            setIsHeaderEditable(true)
                                         }
 
                                         setViewMode(e.target.value);
@@ -1005,3 +1054,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 });
 
 export default MateEditor;
+
+
+//TODO 补充 2.5 的新参数

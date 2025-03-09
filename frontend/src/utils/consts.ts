@@ -1,3 +1,6 @@
+import {GetAppVersion} from "../../wailsjs/go/main/App";
+
+export const AppVersion = await GetAppVersion()
 
 export const LastUpdateCheckTimeKey = "LastUpdateCheckTimeKey"; // 存储上次检查时间的键
 
@@ -8,6 +11,8 @@ export const UpdateCheckInterval = 24 * 60 * 60 * 1000; // 检查更新的间隔
 export const GitHubUrl = "https://github.com/90135/COM3D2_MOD_EDITOR"; // GitHub 仓库地址
 
 export const GitHubReleaseUrl = "https://github.com/90135/COM3D2_MOD_EDITOR/releases"; // GitHub 仓库的发布页面地址
+
+export const ChineseMODGuideUrl = "https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese" // 中文 MOD 教程，简明 MOD 教程
 
 export const COM3D2HeaderConstants = {  // COM3D2 文件头常量
     MenuSignature: "CM3D2_MENU",

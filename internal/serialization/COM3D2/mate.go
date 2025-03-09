@@ -745,13 +745,14 @@ func (f *KeywordProperty) Read(r io.Reader) error {
 	}
 	f.PropName = name
 
-	// 读取一个 int32
+	// 读取一个 int32， keyword 的数量
 	count, err := utilities.ReadInt32(r)
 	if err != nil {
 		return fmt.Errorf("read Keyword count failed: %w", err)
 	}
-
 	f.Count = count
+
+	// 循环读取 count 个 keyword
 	f.Keywords = make([]Keyword, count)
 	for i := int32(0); i < count; i++ {
 		key, err := utilities.ReadString(r)
