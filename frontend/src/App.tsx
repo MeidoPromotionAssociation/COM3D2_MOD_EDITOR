@@ -12,7 +12,13 @@ import {ConfigProvider, message, theme} from "antd";
 import {useDarkMode} from "./hooks/themeSwitch";
 import ColEditorPage from "./components/ColEditorPage";
 import PhyEditorPage from "./components/PhyEditorPage";
-import {LastUpdateCheckTimeKey, NewVersionAvailableKey, UpdateCheckInterval} from "./utils/consts";
+import {
+    AppVersion,
+    LastUpdateCheckTimeKey,
+    LatestVersionKey,
+    NewVersionAvailableKey,
+    UpdateCheckInterval
+} from "./utils/consts";
 import {CheckLatestVersion} from "../wailsjs/go/main/App";
 
 
@@ -24,10 +30,31 @@ const App: React.FC = () => {
         localStorage.getItem(NewVersionAvailableKey) === 'true'
     );
     const [checkUpdateFailed, setCheckUpdateFailed] = React.useState(false);
-
+    
     // 检查本地存储的上次检查更新时间
     const shouldCheckUpdate = () => {
-        // 还是每 24 小时检查一次，这样就不需要比较复杂的更新后清除缓存的逻辑了
+        const latestVersion = localStorage.getItem(LatestVersionKey);
+        if (latestVersion) {
+            // 去除版本号前的 'v' 前缀
+            const current = AppVersion.replace(/^v/, '').split('.').map(Number);
+            const latest = latestVersion.replace(/^v/, '').split('.').map(Number);
+
+            // 严格比较三个版本段
+            for (let i = 0; i < 3; i++) { // 限制比较 MAJOR.MINOR.PATCH
+                const currSeg = current[i] || 0;
+                const latestSeg = latest[i] || 0;
+
+                if (latestSeg > currSeg) {
+                    localStorage.removeItem(NewVersionAvailableKey);
+                    setIsNewVersionAvailable(false);
+                    return true;
+                } else if (latestSeg < currSeg) {
+                    return false;
+                }
+            }
+        }
+
+        // 每 24 小时检查一次
         console.debug("checkIfShouldCheckUpdate")
         const lastCheckTime = localStorage.getItem(LastUpdateCheckTimeKey);
         if (!lastCheckTime) return true; // 第一次检查
@@ -47,6 +74,7 @@ const App: React.FC = () => {
         try {
             const result = await CheckLatestVersion();
             localStorage.setItem(NewVersionAvailableKey, result.IsNewer.toString());
+            localStorage.setItem(LatestVersionKey, result.LatestVersion);
             setIsNewVersionAvailable(result.IsNewer);
             setCheckUpdateFailed(false);
         } catch (error) {

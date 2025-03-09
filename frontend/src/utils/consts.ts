@@ -6,6 +6,8 @@ export const LastUpdateCheckTimeKey = "LastUpdateCheckTimeKey"; // 存储上次�
 
 export const NewVersionAvailableKey = "NewVersionAvailableKey"; // 存储新版本是否可用的键
 
+export const LatestVersionKey = "LatestVersionKey" // 存储最新版本号的键
+
 export const UpdateCheckInterval = 24 * 60 * 60 * 1000; // 检查更新的间隔 24 小时（毫秒）
 
 export const GitHubUrl = "https://github.com/90135/COM3D2_MOD_EDITOR"; // GitHub 仓库地址
