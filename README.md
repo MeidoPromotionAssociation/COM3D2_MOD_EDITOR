@@ -25,7 +25,8 @@ For now, it allows you to edit files in these formats
 ### Highlights
 
 - Fully open source, completely free, and completely free; say goodbye to non-open source non-free software.
-- With full i18n support, you can add your own language files in the `frontend/public/locales` folder. Some languages ​​use AI translation. If you are not satisfied, please feel free to submit translations through PR or Issue.
+- With full i18n support, you can add your own language files in the `frontend/public/locales` folder. Some languages
+  ​​use AI translation. If you are not satisfied, please feel free to submit translations through PR or Issue.
 - With complete entry help, don’t know what to fill in the box? You are in the right place!
 - With light mode and dark mode.
 - .menu editing syntax highlighting.
@@ -33,14 +34,13 @@ For now, it allows you to edit files in these formats
 
 <br>
 
-Maybe also check out my MOD Making Tutorial (in Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+Maybe also check out my MOD Making Tutorial (in
+Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
 
-
-| ScreenShot | ScreenShot | ScreenShot | ScreenShot |
-|-------|-------|-------|-------|
+| ScreenShot                | ScreenShot                | ScreenShot                | ScreenShot                |
+|---------------------------|---------------------------|---------------------------|---------------------------|
 | ![1](.github/image/1.png) | ![2](.github/image/2.png) | ![3](.github/image/3.png) | ![4](.github/image/4.png) |
 | ![5](.github/image/5.png) | ![6](.github/image/6.png) | ![7](.github/image/7.png) | ![8](.github/image/8.png) |
-
 
 <br>
 <br>
@@ -70,19 +70,20 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 ### 亮点
 
 - 完全开源，完全免费，完全自由；和非开源的非自由软件说再见。
-- 拥有完整的 i18n 支持，您可以在 `frontend/public/locales` 文件夹中添加自己的语言文件，部分语言使用 AI 翻译，如果您不满意，请随时通过 PR 或 Issue 提交翻译。
+- 拥有完整的 i18n 支持，您可以在 `frontend/public/locales` 文件夹中添加自己的语言文件，部分语言使用 AI 翻译，如果您不满意，请随时通过
+  PR 或 Issue 提交翻译。
 - 拥有完整的条目帮助，不知道框内该填什么？你来对地方了！
 - 拥有浅色模式和暗黑模式。
 - .menu 编辑语法高亮。
 - 多合一。
 
-
 <br>
 
-也许也可以看看我的 MOD 制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+也许也可以看看我的 MOD
+制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
 
-| 截图 | 截图 | 截图 | 截图 |
-|-------|-------|-------|-------|
+| 截图                        | 截图                        | 截图                        | 截图                        |
+|---------------------------|---------------------------|---------------------------|---------------------------|
 | ![1](.github/image/1.png) | ![2](.github/image/2.png) | ![3](.github/image/3.png) | ![4](.github/image/4.png) |
 | ![5](.github/image/5.png) | ![6](.github/image/6.png) | ![7](.github/image/7.png) | ![8](.github/image/8.png) |
 
@@ -116,7 +117,8 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 ### ハイライト
 
 - 完全にオープンソース、完全に無料、そして完全にフリー。オープンソースではない、フリーではないソフトウェアとはお別れです。
-- 完全な i18n サポートにより、`frontend/public/locales` フォルダーに独自の言語ファイルを追加できます。一部の言語は AI を使用して翻訳されています。満足できない場合は、PR または Issue 経由でお気軽に翻訳を送信してください。
+- 完全な i18n サポートにより、`frontend/public/locales` フォルダーに独自の言語ファイルを追加できます。一部の言語は AI
+  を使用して翻訳されています。満足できない場合は、PR または Issue 経由でお気軽に翻訳を送信してください。
 - 完全な入力ヘルプがありますが、ボックスに何を入力すればよいかわかりませんか?あなたは正しい場所に来ました！
 - ファイルのドラッグとファイルとして開くことをサポート
 - ライトモードとダークモードがあります。
@@ -128,15 +130,10 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 また、私の MOD 制作チュートリアル（中国語）もぜひご覧ください：
 [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
 
-
-| SS | SS | SS | SS |
-|-------|-------|-------|-------|
+| SS                        | SS                        | SS                        | SS                        |
+|---------------------------|---------------------------|---------------------------|---------------------------|
 | ![1](.github/image/1.png) | ![2](.github/image/2.png) | ![3](.github/image/3.png) | ![4](.github/image/4.png) |
 | ![5](.github/image/5.png) | ![6](.github/image/6.png) | ![7](.github/image/7.png) | ![8](.github/image/8.png) |
-
-
-
-
 
 <br>
 <br>
@@ -151,7 +148,6 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 4. install Pnpm `npm install -g pnpm@latest-10`
 5. run `wails dev` in project root to run in dev mode
 6. run `wails build` in project root to build project
-
 
 # KISS 規約
 
