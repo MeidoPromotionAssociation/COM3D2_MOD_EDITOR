@@ -8,17 +8,16 @@ import {useTranslation} from "react-i18next";
 import {DownOutlined, GithubOutlined, TranslationOutlined} from "@ant-design/icons";
 import {getFileExtension} from "../utils/utils";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
-import {AppVersion, ChineseMODGuideUrl, GitHubReleaseUrl, GitHubUrl, NewVersionAvailableKey} from "../utils/consts";
+import {AppVersion, ChineseMODGuideUrl, GitHubReleaseUrl, GitHubUrl} from "../utils/consts";
+import {useVersionCheck} from "../utils/CheckUpdate";
 
 const {Content} = Layout;
 
 const HomePage: React.FC = () => {
     const {t, i18n} = useTranslation();
     const navigate = useNavigate();
-    const [isNewVersionAvailable] = React.useState(
-        localStorage.getItem(NewVersionAvailableKey) === 'true'
-    );
     const [language, setLanguage] = React.useState('zh-CN');
+    const hasUpdate = useVersionCheck();
 
     // 设置窗口标题
     useEffect(() => {
@@ -100,7 +99,7 @@ const HomePage: React.FC = () => {
             >
 
                 {/* 页面顶部 */}
-                {isNewVersionAvailable && (
+                {hasUpdate && (
                     <div style={{
                         width: "100%",
                         display: "flex",

@@ -1054,6 +1054,3 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 });
 
 export default MateEditor;
-
-
-//TODO 补充 2.5 的新参数

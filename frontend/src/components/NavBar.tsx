@@ -4,8 +4,9 @@ import {Button, Layout, Menu} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {HomeOutlined} from "@ant-design/icons";
-import {GitHubReleaseUrl, NewVersionAvailableKey} from "../utils/consts";
+import {GitHubReleaseUrl} from "../utils/consts";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
+import {useVersionCheck} from "../utils/CheckUpdate";
 
 const {Header} = Layout;
 
@@ -27,17 +28,20 @@ const NavBar: React.FC<EditorNavBarProps> = ({
     // 根据当前路径确定选中菜单项（假设路由名称与菜单 key 一致）
     const selectedKey = location.pathname.substring(1);
 
-    const [isNewVersionAvailable] = React.useState(
-        localStorage.getItem(NewVersionAvailableKey) === 'true'
-    );
+    const hasUpdate = useVersionCheck();
 
     const handleMenuClick = (e: any) => {
         navigate(`/${e.key}`);
     };
 
     return (
-        <Header style={{display: "flex", alignItems: "center", padding: "0 20px"}}>
-            {isNewVersionAvailable && (
+        <Header
+            style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0 20px",
+            }}>
+            {hasUpdate && (
                 <Button
                     type="primary"
                     danger
@@ -59,23 +63,30 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                     NEW
                 </Button>
             )}
-            <div style={{flex: 1}}>
+            <div style={{
+                flex: 1,
+            }}>
                 <Menu
                     theme="dark"
                     mode="horizontal"
                     selectedKeys={[selectedKey]}
                     onClick={handleMenuClick}
+                    overflowedIndicator={null}
                     items={[
                         {key: "", icon: <HomeOutlined/>,},
                         {key: "menu-editor", label: t('EditorNavBar.MenuEditor')},
                         {key: "mate-editor", label: t('EditorNavBar.MateEditor')},
                         {key: "pmat-editor", label: t('EditorNavBar.PMateEditor')},
                         {key: "col-editor", label: t('EditorNavBar.ColEditor')},
-                        {key: "phy-editor", label: t('EditorNavBar.PhyEditor')},
-                    ]}
+                        {key: "phy-editor", label: t('EditorNavBar.PhyEditor')},]}
                 />
             </div>
-            <div>
+            <div
+                style={{
+                    flexShrink: 0, // 禁止按钮区域收缩
+                    whiteSpace: "nowrap", // 防止按钮换行
+                    marginLeft: 16 // 添加左侧间距
+                }}>
                 <Button type="primary" onClick={onOpenFile}
                         style={{marginRight: 8}}>{t('EditorNavBar.open_file')}</Button>
                 <Button onClick={onSaveFile} style={{marginRight: 8}}>{t('EditorNavBar.save_file')}</Button>
