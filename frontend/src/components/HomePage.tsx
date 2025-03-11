@@ -1,7 +1,7 @@
 // frontend/src/components/HomePage.tsx
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Dropdown, Layout, MenuProps} from "antd";
+import {Button, Dropdown, FloatButton, Layout, MenuProps} from "antd";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
 import {DownOutlined, GithubOutlined, SettingOutlined, TranslationOutlined} from "@ant-design/icons";
@@ -101,13 +101,12 @@ const HomePage: React.FC = () => {
                         </Button>
                     </Dropdown>
 
-                    <Button
-                        type="text"
+                    <FloatButton
                         style={{marginTop: 20}}
                         onClick={() => navigate("/settings")}
+                        icon={<SettingOutlined/>}
                     >
-                        <SettingOutlined/>
-                    </Button>
+                    </FloatButton>
                 </div>
 
 
@@ -127,9 +126,16 @@ const HomePage: React.FC = () => {
                     {language === "zh-CN" && (
                         <Button type='text'
                                 onClick={() => BrowserOpenURL(ChineseMODGuideUrl)}>
-                            简明 MOD 教程
+                            <p>简明 MOD 教程</p>
                         </Button>
                     )}
+
+
+                    <Button type="text" size="large" style={{color: "#666"}}
+                            onClick={() => BrowserOpenURL(GitHubUrl)}>
+                        <p>Made With ❤ By 90135</p>
+                    </Button>
+
                 </div>
 
             </Content>

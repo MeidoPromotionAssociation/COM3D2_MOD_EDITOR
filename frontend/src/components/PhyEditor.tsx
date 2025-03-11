@@ -17,11 +17,11 @@ import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {ReadPhyFile, WritePhyFile} from "../../wailsjs/go/COM3D2/PhyService";
 import {SaveFile} from "../../wailsjs/go/main/App";
-import {COM3D2HeaderConstants} from "../utils/consts";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
 import Keyframe = COM3D2.Keyframe;
+import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 
 export interface PhyEditorProps {
     filePath?: string;

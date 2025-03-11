@@ -109,6 +109,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class DynamicBoneColliderBase {
+	    TypeName: string;
 	    ParentName: string;
 	    SelfName: string;
 	    LocalPosition: number[];
@@ -124,6 +125,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.ParentName = source["ParentName"];
 	        this.SelfName = source["SelfName"];
 	        this.LocalPosition = source["LocalPosition"];
@@ -135,6 +137,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class DynamicBoneCollider {
+	    TypeName: string;
 	    Base?: DynamicBoneColliderBase;
 	    Radius: number;
 	    Height: number;
@@ -145,6 +148,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.Base = this.convertValues(source["Base"], DynamicBoneColliderBase);
 	        this.Radius = source["Radius"];
 	        this.Height = source["Height"];
@@ -170,6 +174,7 @@ export namespace COM3D2 {
 	}
 	
 	export class DynamicBoneMuneCollider {
+	    TypeName: string;
 	    Base?: DynamicBoneColliderBase;
 	    Radius: number;
 	    Height: number;
@@ -182,6 +187,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.Base = this.convertValues(source["Base"], DynamicBoneColliderBase);
 	        this.Radius = source["Radius"];
 	        this.Height = source["Height"];
@@ -208,6 +214,7 @@ export namespace COM3D2 {
 		}
 	}
 	export class DynamicBonePlaneCollider {
+	    TypeName: string;
 	    Base?: DynamicBoneColliderBase;
 	
 	    static createFrom(source: any = {}) {
@@ -216,6 +223,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TypeName = source["TypeName"];
 	        this.Base = this.convertValues(source["Base"], DynamicBoneColliderBase);
 	    }
 	
@@ -404,7 +412,7 @@ export namespace COM3D2 {
 		}
 	}
 	export class MissingCollider {
-	
+	    TypeName: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new MissingCollider(source);
@@ -412,7 +420,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	
+	        this.TypeName = source["TypeName"];
 	    }
 	}
 	export class PMat {

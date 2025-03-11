@@ -13,369 +13,8 @@ import (
 
 type Col struct {
 	Signature string      `json:"Signature"` // "CM3D21_COL"
-	Version   int32       `json:"Version"`   // 24102
+	Version   int32       `json:"Version"`   // 24201 this update ever version, but nothing change
 	Colliders []ICollider `json:"Colliders"`
-}
-
-// ICollider 是所有Collider的接口，不同具体类型各自实现。
-type ICollider interface {
-	TypeNameFunc() string
-	Deserialize(r io.Reader, version int32) error
-	Serialize(w io.Writer, version int32) error
-}
-
-// -------------------------------------------------------
-// 一些Collider类型示例
-// -------------------------------------------------------
-
-// DynamicBoneColliderBase 基类
-type DynamicBoneColliderBase struct {
-	ParentName    string     `json:"ParentName"` // base.transform.parent.name
-	SelfName      string     `json:"SelfName"`   // base.transform.name
-	LocalPosition [3]float32 `json:"LocalPosition"`
-	LocalRotation [4]float32 `json:"LocalRotation"`
-	LocalScale    [3]float32 `json:"LocalScale"`
-
-	Direction int32      `json:"Direction"` // (int)this.m_Direction
-	Center    [3]float32 `json:"Center"`    // m_Center.x,y,z
-	Bound     int32      `json:"Bound"`     // (int)this.m_Bound
-}
-
-func (c *DynamicBoneColliderBase) TypeNameFunc() string {
-	return "base" // not in C#
-}
-func (c *DynamicBoneColliderBase) Deserialize(r io.Reader, version int32) error {
-	data, err := ReadDynamicBoneColliderBase(r)
-	if err != nil {
-		return err
-	}
-	*c = data
-	return nil
-}
-func (c *DynamicBoneColliderBase) Serialize(w io.Writer, version int32) error {
-	return WriteDynamicBoneColliderBase(w, c)
-}
-
-// ReadDynamicBoneColliderBase 读取 DynamicBoneColliderBase 的数据
-func ReadDynamicBoneColliderBase(r io.Reader) (DynamicBoneColliderBase, error) {
-	var result DynamicBoneColliderBase
-	var err error
-
-	// 1. ParentName
-	result.ParentName, err = utilities.ReadString(r)
-	if err != nil {
-		return result, fmt.Errorf("read parentName failed: %w", err)
-	}
-
-	// 2. SelfName
-	result.SelfName, err = utilities.ReadString(r)
-	if err != nil {
-		return result, fmt.Errorf("read selfName failed: %w", err)
-	}
-
-	// 3. localPosition
-	for i := 0; i < 3; i++ {
-		result.LocalPosition[i], err = utilities.ReadFloat32(r)
-		if err != nil {
-			return result, fmt.Errorf("read localPosition[%d] failed: %w", i, err)
-		}
-	}
-
-	// 4. localRotation
-	for i := 0; i < 4; i++ {
-		result.LocalRotation[i], err = utilities.ReadFloat32(r)
-		if err != nil {
-			return result, fmt.Errorf("read localRotation[%d] failed: %w", i, err)
-		}
-	}
-
-	// 5. localScale
-	for i := 0; i < 3; i++ {
-		result.LocalScale[i], err = utilities.ReadFloat32(r)
-		if err != nil {
-			return result, fmt.Errorf("read localScale[%d] failed: %w", i, err)
-		}
-	}
-
-	// 6. Direction
-	result.Direction, err = utilities.ReadInt32(r)
-	if err != nil {
-		return result, fmt.Errorf("read direction failed: %w", err)
-	}
-
-	// 7. Center (x,y,z)
-	for i := 0; i < 3; i++ {
-		result.Center[i], err = utilities.ReadFloat32(r)
-		if err != nil {
-			return result, fmt.Errorf("read center[%d] failed: %w", i, err)
-		}
-	}
-
-	// 8. Bound
-	result.Bound, err = utilities.ReadInt32(r)
-	if err != nil {
-		return result, fmt.Errorf("read bound failed: %w", err)
-	}
-
-	return result, nil
-}
-
-func WriteDynamicBoneColliderBase(w io.Writer, baseData *DynamicBoneColliderBase) error {
-	// 1. ParentName
-	if err := utilities.WriteString(w, baseData.ParentName); err != nil {
-		return fmt.Errorf("write parentName failed: %w", err)
-	}
-	// 2. SelfName
-	if err := utilities.WriteString(w, baseData.SelfName); err != nil {
-		return fmt.Errorf("write selfName failed: %w", err)
-	}
-
-	// 3. localPosition
-	for i := 0; i < 3; i++ {
-		if err := utilities.WriteFloat32(w, baseData.LocalPosition[i]); err != nil {
-			return fmt.Errorf("write localPosition[%d] failed: %w", i, err)
-		}
-	}
-
-	// 4. localRotation
-	for i := 0; i < 4; i++ {
-		if err := utilities.WriteFloat32(w, baseData.LocalRotation[i]); err != nil {
-			return fmt.Errorf("write localRotation[%d] failed: %w", i, err)
-		}
-	}
-
-	// 5. localScale
-	for i := 0; i < 3; i++ {
-		if err := utilities.WriteFloat32(w, baseData.LocalScale[i]); err != nil {
-			return fmt.Errorf("write localScale[%d] failed: %w", i, err)
-		}
-	}
-
-	// 6. Direction
-	if err := utilities.WriteInt32(w, baseData.Direction); err != nil {
-		return fmt.Errorf("write direction failed: %w", err)
-	}
-
-	// 7. Center
-	for i := 0; i < 3; i++ {
-		if err := utilities.WriteFloat32(w, baseData.Center[i]); err != nil {
-			return fmt.Errorf("write center[%d] failed: %w", i, err)
-		}
-	}
-
-	// 8. Bound
-	if err := utilities.WriteInt32(w, baseData.Bound); err != nil {
-		return fmt.Errorf("write bound failed: %w", err)
-	}
-
-	return nil
-}
-
-// DynamicBoneCollider 对应 "dbc"
-type DynamicBoneCollider struct {
-	Base *DynamicBoneColliderBase `json:"Base"`
-
-	Radius float32 `json:"Radius"`
-	Height float32 `json:"Height"`
-}
-
-func (c *DynamicBoneCollider) TypeNameFunc() string {
-	return "dbc"
-}
-func (c *DynamicBoneCollider) Deserialize(r io.Reader, version int32) error {
-	data, err := ReadDynamicBoneCollider(r)
-	if err != nil {
-		return err
-	}
-	*c = *data
-	return nil
-}
-func (c *DynamicBoneCollider) Serialize(w io.Writer, version int32) error {
-	return WriteDynamicBoneCollider(w, c)
-}
-
-func ReadDynamicBoneCollider(r io.Reader) (*DynamicBoneCollider, error) {
-	baseData, err := ReadDynamicBoneColliderBase(r)
-	if err != nil {
-		return nil, fmt.Errorf("read base collider failed: %w", err)
-	}
-
-	// 读派生字段
-	radius, err := utilities.ReadFloat32(r)
-	if err != nil {
-		return nil, fmt.Errorf("read m_Radius failed: %w", err)
-	}
-	height, err := utilities.ReadFloat32(r)
-	if err != nil {
-		return nil, fmt.Errorf("read m_Height failed: %w", err)
-	}
-
-	c := &DynamicBoneCollider{
-		Base:   &baseData,
-		Radius: radius,
-		Height: height,
-	}
-	return c, nil
-}
-
-func WriteDynamicBoneCollider(w io.Writer, c *DynamicBoneCollider) error {
-	// 先写基类字段
-	if err := WriteDynamicBoneColliderBase(w, c.Base); err != nil {
-		return fmt.Errorf("write base collider failed: %w", err)
-	}
-	// 再写派生字段
-	if err := utilities.WriteFloat32(w, c.Radius); err != nil {
-		return fmt.Errorf("write m_Radius failed: %w", err)
-	}
-	if err := utilities.WriteFloat32(w, c.Height); err != nil {
-		return fmt.Errorf("write m_Height failed: %w", err)
-	}
-	return nil
-}
-
-// DynamicBonePlaneCollider 对应 "dpc"
-// 在 C# 中并无其它独立字段，只继承基类。
-type DynamicBonePlaneCollider struct {
-	Base *DynamicBoneColliderBase `json:"Base"`
-}
-
-func (c *DynamicBonePlaneCollider) TypeNameFunc() string {
-	return "dpc"
-}
-func (c *DynamicBonePlaneCollider) Deserialize(r io.Reader, version int32) error {
-	data, err := ReadDynamicBonePlaneCollider(r)
-	if err != nil {
-		return err
-	}
-	*c = *data
-	return nil
-}
-func (c *DynamicBonePlaneCollider) Serialize(w io.Writer, version int32) error {
-	return WriteDynamicBonePlaneCollider(w, c)
-}
-
-// ReadDynamicBonePlaneCollider 对应C#的 Deserialize
-func ReadDynamicBonePlaneCollider(r io.Reader) (*DynamicBonePlaneCollider, error) {
-	baseData, err := ReadDynamicBoneColliderBase(r)
-	if err != nil {
-		return nil, fmt.Errorf("read base collider for plane failed: %w", err)
-	}
-	return &DynamicBonePlaneCollider{
-		Base: &baseData,
-	}, nil
-}
-
-// WriteDynamicBonePlaneCollider 对应C#的 Serialize
-func WriteDynamicBonePlaneCollider(w io.Writer, c *DynamicBonePlaneCollider) error {
-	if err := WriteDynamicBoneColliderBase(w, c.Base); err != nil {
-		return fmt.Errorf("write base collider for plane failed: %w", err)
-	}
-	return nil
-}
-
-// DynamicBoneMuneCollider 对应 "dbm"
-type DynamicBoneMuneCollider struct {
-	Base *DynamicBoneColliderBase `json:"Base"`
-
-	Radius          float32    `json:"Radius"`          // m_Radius
-	Height          float32    `json:"Height"`          // m_Height
-	ScaleRateMulMax float32    `json:"ScaleRateMulMax"` // m_fScaleRateMulMax
-	CenterRateMax   [3]float32 `json:"CenterRateMax"`   // m_CenterRateMax.x,y,z
-
-	// C# 里有 public Maid m_maid; 但是它并没有被 Serialize/Deserialize
-	// 所以这里就不做二进制存储了。
-}
-
-func (c *DynamicBoneMuneCollider) TypeNameFunc() string {
-	return "dbm"
-}
-func (c *DynamicBoneMuneCollider) Deserialize(r io.Reader, version int32) error {
-	data, err := ReadDynamicBoneMuneCollider(r)
-	if err != nil {
-		return err
-	}
-	*c = *data
-	return nil
-}
-func (c *DynamicBoneMuneCollider) Serialize(w io.Writer, version int32) error {
-	return WriteDynamicBoneMuneCollider(w, c)
-}
-
-func ReadDynamicBoneMuneCollider(r io.Reader) (*DynamicBoneMuneCollider, error) {
-	baseData, err := ReadDynamicBoneColliderBase(r)
-	if err != nil {
-		return nil, fmt.Errorf("read base collider failed: %w", err)
-	}
-
-	radius, err := utilities.ReadFloat32(r)
-	if err != nil {
-		return nil, fmt.Errorf("read m_Radius failed: %w", err)
-	}
-	height, err := utilities.ReadFloat32(r)
-	if err != nil {
-		return nil, fmt.Errorf("read m_Height failed: %w", err)
-	}
-	scaleRateMulMax, err := utilities.ReadFloat32(r)
-	if err != nil {
-		return nil, fmt.Errorf("read m_fScaleRateMulMax failed: %w", err)
-	}
-
-	var centerRateMax [3]float32
-	for i := 0; i < 3; i++ {
-		centerRateMax[i], err = utilities.ReadFloat32(r)
-		if err != nil {
-			return nil, fmt.Errorf("read m_CenterRateMax[%d] failed: %w", i, err)
-		}
-	}
-
-	c := &DynamicBoneMuneCollider{
-		Base:            &baseData,
-		Radius:          radius,
-		Height:          height,
-		ScaleRateMulMax: scaleRateMulMax,
-		CenterRateMax:   centerRateMax,
-	}
-	return c, nil
-}
-
-func WriteDynamicBoneMuneCollider(w io.Writer, c *DynamicBoneMuneCollider) error {
-	// 1. 写基类字段
-	if err := WriteDynamicBoneColliderBase(w, c.Base); err != nil {
-		return fmt.Errorf("write base collider failed: %w", err)
-	}
-
-	// 2. 写派生类新增字段
-	if err := utilities.WriteFloat32(w, c.Radius); err != nil {
-		return fmt.Errorf("write m_Radius failed: %w", err)
-	}
-	if err := utilities.WriteFloat32(w, c.Height); err != nil {
-		return fmt.Errorf("write m_Height failed: %w", err)
-	}
-	if err := utilities.WriteFloat32(w, c.ScaleRateMulMax); err != nil {
-		return fmt.Errorf("write m_fScaleRateMulMax failed: %w", err)
-	}
-	for i := 0; i < 3; i++ {
-		if err := utilities.WriteFloat32(w, c.CenterRateMax[i]); err != nil {
-			return fmt.Errorf("write m_CenterRateMax[%d] failed: %w", i, err)
-		}
-	}
-
-	return nil
-}
-
-// MissingCollider 对应 "missing"
-type MissingCollider struct{}
-
-func (m *MissingCollider) TypeNameFunc() string {
-	return "missing"
-}
-func (m *MissingCollider) Deserialize(r io.Reader, version int32) error {
-	// "missing" 字段什么都不做，typeName 已经在外层写了
-	return nil
-}
-func (m *MissingCollider) Serialize(w io.Writer, version int32) error {
-	// 同上，什么也不写
-	return nil
 }
 
 // -------------------------------------------------------
@@ -431,8 +70,8 @@ func ReadCol(r io.Reader) (*Col, error) {
 			return nil, fmt.Errorf("unrecognized collider type %q at index %d", typeName, i)
 		}
 
-		if err := collider.Deserialize(r, ver); err != nil {
-			return nil, fmt.Errorf("collider.Deserialize failed at index %d: %w", i, err)
+		if err := collider.Read(r, ver); err != nil {
+			return nil, fmt.Errorf("collider.Read failed at index %d: %w", i, err)
 		}
 		file.Colliders = append(file.Colliders, collider)
 	}
@@ -461,16 +100,360 @@ func (c *Col) Dump(w io.Writer) error {
 	}
 	// 4. 遍历写出每个 collider
 	for i, collider := range c.Colliders {
-		typeName := collider.TypeNameFunc()
+		typeName := collider.GetTypeName()
 		// 先写 typeName
 		if err := utilities.WriteString(w, typeName); err != nil {
 			return fmt.Errorf("write collider type failed at index %d: %w", i, err)
 		}
 		// 写具体数据
-		if err := collider.Serialize(w, c.Version); err != nil {
-			return fmt.Errorf("collider.Serialize failed at index %d: %w", i, err)
+		if err := collider.Write(w, c.Version); err != nil {
+			return fmt.Errorf("collider.Write failed at index %d: %w", i, err)
 		}
 	}
+	return nil
+}
+
+// ICollider 是所有Collider的接口，不同具体类型各自实现。
+// 注意在每个 struct 中保存 TypeName 是故意的，否则前端类型推断困难
+type ICollider interface {
+	GetTypeName() string
+	Read(r io.Reader, version int32) error
+	Write(w io.Writer, version int32) error
+}
+
+// -------------------------------------------------------
+// Collider 类型
+// -------------------------------------------------------
+
+// DynamicBoneColliderBase 基类
+type DynamicBoneColliderBase struct {
+	TypeName      string     `json:"TypeName"  default:"base"` // "base"
+	ParentName    string     `json:"ParentName"`               // base.transform.parent.name
+	SelfName      string     `json:"SelfName"`                 // base.transform.name
+	LocalPosition [3]float32 `json:"LocalPosition"`
+	LocalRotation [4]float32 `json:"LocalRotation"`
+	LocalScale    [3]float32 `json:"LocalScale"`
+
+	Direction int32      `json:"Direction"` // (int)this.m_Direction
+	Center    [3]float32 `json:"Center"`    // m_Center.x,y,z
+	Bound     int32      `json:"Bound"`     // (int)this.m_Bound
+}
+
+func (base *DynamicBoneColliderBase) GetTypeName() string {
+	return "base" // not in C#
+}
+
+func (base *DynamicBoneColliderBase) Read(r io.Reader, version int32) error {
+	base.TypeName = base.GetTypeName()
+
+	var err error
+
+	// 1. ParentName
+	base.ParentName, err = utilities.ReadString(r)
+	if err != nil {
+		return fmt.Errorf("read parentName failed: %w", err)
+	}
+
+	// 2. SelfName
+	base.SelfName, err = utilities.ReadString(r)
+	if err != nil {
+		return fmt.Errorf("read selfName failed: %w", err)
+	}
+
+	// 3. localPosition
+	for i := 0; i < 3; i++ {
+		base.LocalPosition[i], err = utilities.ReadFloat32(r)
+		if err != nil {
+			return fmt.Errorf("read localPosition[%d] failed: %w", i, err)
+		}
+	}
+
+	// 4. localRotation
+	for i := 0; i < 4; i++ {
+		base.LocalRotation[i], err = utilities.ReadFloat32(r)
+		if err != nil {
+			return fmt.Errorf("read localRotation[%d] failed: %w", i, err)
+		}
+	}
+
+	// 5. localScale
+	for i := 0; i < 3; i++ {
+		base.LocalScale[i], err = utilities.ReadFloat32(r)
+		if err != nil {
+			return fmt.Errorf("read localScale[%d] failed: %w", i, err)
+		}
+	}
+
+	// 6. Direction
+	base.Direction, err = utilities.ReadInt32(r)
+	if err != nil {
+		return fmt.Errorf("read direction failed: %w", err)
+	}
+
+	// 7. Center (x,y,z)
+	for i := 0; i < 3; i++ {
+		base.Center[i], err = utilities.ReadFloat32(r)
+		if err != nil {
+			return fmt.Errorf("read center[%d] failed: %w", i, err)
+		}
+	}
+
+	// 8. Bound
+	base.Bound, err = utilities.ReadInt32(r)
+	if err != nil {
+		return fmt.Errorf("read bound failed: %w", err)
+	}
+
+	return nil
+}
+
+func (base *DynamicBoneColliderBase) Write(w io.Writer, version int32) error {
+	// 1. ParentName
+	if err := utilities.WriteString(w, base.ParentName); err != nil {
+		return fmt.Errorf("write parentName failed: %w", err)
+	}
+	// 2. SelfName
+	if err := utilities.WriteString(w, base.SelfName); err != nil {
+		return fmt.Errorf("write selfName failed: %w", err)
+	}
+
+	// 3. localPosition
+	for i := 0; i < 3; i++ {
+		if err := utilities.WriteFloat32(w, base.LocalPosition[i]); err != nil {
+			return fmt.Errorf("write localPosition[%d] failed: %w", i, err)
+		}
+	}
+
+	// 4. localRotation
+	for i := 0; i < 4; i++ {
+		if err := utilities.WriteFloat32(w, base.LocalRotation[i]); err != nil {
+			return fmt.Errorf("write localRotation[%d] failed: %w", i, err)
+		}
+	}
+
+	// 5. localScale
+	for i := 0; i < 3; i++ {
+		if err := utilities.WriteFloat32(w, base.LocalScale[i]); err != nil {
+			return fmt.Errorf("write localScale[%d] failed: %w", i, err)
+		}
+	}
+
+	// 6. Direction
+	if err := utilities.WriteInt32(w, base.Direction); err != nil {
+		return fmt.Errorf("write direction failed: %w", err)
+	}
+
+	// 7. Center
+	for i := 0; i < 3; i++ {
+		if err := utilities.WriteFloat32(w, base.Center[i]); err != nil {
+			return fmt.Errorf("write center[%d] failed: %w", i, err)
+		}
+	}
+
+	// 8. Bound
+	if err := utilities.WriteInt32(w, base.Bound); err != nil {
+		return fmt.Errorf("write bound failed: %w", err)
+	}
+
+	return nil
+}
+
+// DynamicBoneCollider 对应 "dbc"
+type DynamicBoneCollider struct {
+	TypeName string                   `json:"TypeName" default:"dbc"` // "dbc"
+	Base     *DynamicBoneColliderBase `json:"Base"`
+
+	Radius float32 `json:"Radius"`
+	Height float32 `json:"Height"`
+}
+
+func (dbc *DynamicBoneCollider) GetTypeName() string {
+	return "dbc"
+}
+
+func (dbc *DynamicBoneCollider) Read(r io.Reader, version int32) error {
+	dbc.TypeName = dbc.GetTypeName()
+
+	// 先读基类字段
+	baseData := DynamicBoneColliderBase{}
+	err := baseData.Read(r, version)
+	if err != nil {
+		return fmt.Errorf("read base collider failed: %w", err)
+	}
+	dbc.Base = &baseData
+
+	// 读 2 个 Float32
+	radius, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return fmt.Errorf("read m_Radius failed: %w", err)
+	}
+	height, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return fmt.Errorf("read m_Height failed: %w", err)
+	}
+	dbc.Radius = radius
+	dbc.Height = height
+
+	return nil
+}
+
+func (dbc *DynamicBoneCollider) Write(w io.Writer, version int32) error {
+	// 先写基类字段
+	err := dbc.Base.Write(w, version)
+	if err != nil {
+		return err
+	}
+
+	// 写 2 个 Float32
+	if err := utilities.WriteFloat32(w, dbc.Radius); err != nil {
+		return fmt.Errorf("write m_Radius failed: %w", err)
+	}
+
+	if err := utilities.WriteFloat32(w, dbc.Height); err != nil {
+		return fmt.Errorf("write m_Height failed: %w", err)
+	}
+	return nil
+}
+
+// DynamicBonePlaneCollider 对应 "dpc"
+// 在 C# 中并无其它独立字段，只继承基类。
+type DynamicBonePlaneCollider struct {
+	TypeName string                   `json:"TypeName" default:"dpc"` // "dpc"
+	Base     *DynamicBoneColliderBase `json:"Base"`
+}
+
+func (dpc *DynamicBonePlaneCollider) GetTypeName() string {
+	return "dpc"
+}
+
+func (dpc *DynamicBonePlaneCollider) Read(r io.Reader, version int32) error {
+	dpc.TypeName = dpc.GetTypeName()
+
+	// 只有基类字段
+	baseData := DynamicBoneColliderBase{}
+	err := baseData.Read(r, version)
+	if err != nil {
+		return fmt.Errorf("read base collider for dpc failed: %w", err)
+	}
+	dpc.Base = &baseData
+
+	return nil
+}
+
+func (dpc *DynamicBonePlaneCollider) Write(w io.Writer, version int32) error {
+	// 只有基类字段
+	if err := dpc.Base.Write(w, version); err != nil {
+		return fmt.Errorf("write base collider for dpc failed: %w", err)
+	}
+
+	return nil
+}
+
+// DynamicBoneMuneCollider 对应 "dbm"
+type DynamicBoneMuneCollider struct {
+	TypeName string                   `json:"TypeName" default:"dbm"` // "dbm"
+	Base     *DynamicBoneColliderBase `json:"Base"`
+
+	Radius          float32    `json:"Radius"`          // m_Radius
+	Height          float32    `json:"Height"`          // m_Height
+	ScaleRateMulMax float32    `json:"ScaleRateMulMax"` // m_fScaleRateMulMax
+	CenterRateMax   [3]float32 `json:"CenterRateMax"`   // m_CenterRateMax.x,y,z
+
+	// C# 里有 public Maid m_maid; 但是它并没有被 Write/Read
+	// 所以这里就不做二进制存储了。
+}
+
+func (c *DynamicBoneMuneCollider) GetTypeName() string {
+	return "dbm"
+}
+
+func (c *DynamicBoneMuneCollider) Read(r io.Reader, version int32) error {
+	c.TypeName = c.GetTypeName()
+
+	baseData := DynamicBoneColliderBase{}
+	err := baseData.Read(r, version)
+	if err != nil {
+		return fmt.Errorf("read base collider for dbm failed: %w", err)
+	}
+	c.Base = &baseData
+
+	radius, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return fmt.Errorf("read m_Radius failed: %w", err)
+	}
+	c.Radius = radius
+
+	height, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return fmt.Errorf("read m_Height failed: %w", err)
+	}
+	c.Height = height
+
+	scaleRateMulMax, err := utilities.ReadFloat32(r)
+	if err != nil {
+		return fmt.Errorf("read m_fScaleRateMulMax failed: %w", err)
+	}
+	c.ScaleRateMulMax = scaleRateMulMax
+
+	var centerRateMax [3]float32
+	for i := 0; i < 3; i++ {
+		centerRateMax[i], err = utilities.ReadFloat32(r)
+		if err != nil {
+			return fmt.Errorf("read m_CenterRateMax[%d] failed: %w", i, err)
+		}
+	}
+	c.CenterRateMax = centerRateMax
+
+	return nil
+}
+
+func (c *DynamicBoneMuneCollider) Write(w io.Writer, version int32) error {
+	// 写基类字段
+	if err := c.Base.Write(w, version); err != nil {
+		return fmt.Errorf("write base collider failed: %w", err)
+	}
+
+	// 写 2 个 Float32
+	if err := utilities.WriteFloat32(w, c.Radius); err != nil {
+		return fmt.Errorf("write m_Radius failed: %w", err)
+	}
+
+	if err := utilities.WriteFloat32(w, c.Height); err != nil {
+		return fmt.Errorf("write m_Height failed: %w", err)
+	}
+
+	// 写 1 个 Float32
+	if err := utilities.WriteFloat32(w, c.ScaleRateMulMax); err != nil {
+		return fmt.Errorf("write m_fScaleRateMulMax failed: %w", err)
+	}
+
+	// 写 3 个 Float32
+	for i := 0; i < 3; i++ {
+		if err := utilities.WriteFloat32(w, c.CenterRateMax[i]); err != nil {
+			return fmt.Errorf("write m_CenterRateMax[%d] failed: %w", i, err)
+		}
+	}
+
+	return nil
+}
+
+// MissingCollider 对应 "missing"
+type MissingCollider struct {
+	TypeName string `json:"TypeName" default:"missing"` // "missing"
+}
+
+func (m *MissingCollider) GetTypeName() string {
+	return "missing"
+}
+
+func (m *MissingCollider) Read(r io.Reader, version int32) error {
+	m.TypeName = m.GetTypeName()
+	// "missing" 字段什么都不做，typeName 已经在外层写了
+	return nil
+}
+
+func (m *MissingCollider) Write(w io.Writer, version int32) error {
+	// 同上，什么也不写
 	return nil
 }
 
@@ -495,15 +478,15 @@ func (c *Col) UnmarshalJSON(data []byte) error {
 	// 逐个解析 Colliders
 	var result []ICollider
 	for _, raw := range temp.Colliders {
-		// 1. 先解析出 GetTypeName 用来分辨子类型
+		// 1. 先解析出 TypeName 用来分辨子类型
 		var typeHolder struct {
-			TypeName string `json:"GetTypeName"`
+			TypeName string `json:"TypeName"`
 		}
 		if err := json.Unmarshal(raw, &typeHolder); err != nil {
 			return err
 		}
 
-		// 2. 根据 GetTypeName 创建对应的 collider 实例
+		// 2. 根据 TypeName 创建对应的 collider 实例
 		var collider ICollider
 		switch typeHolder.TypeName {
 		case "dbc":
@@ -515,7 +498,7 @@ func (c *Col) UnmarshalJSON(data []byte) error {
 		case "missing":
 			collider = &MissingCollider{}
 		default:
-			return fmt.Errorf("unrecognized collider GetTypeName: %q", typeHolder.TypeName)
+			return fmt.Errorf("unrecognized collider TypeName: %q", typeHolder.TypeName)
 		}
 
 		// 3. 用创建好的实例再去解析整个 JSON

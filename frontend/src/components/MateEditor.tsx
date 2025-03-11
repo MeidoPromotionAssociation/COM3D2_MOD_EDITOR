@@ -28,7 +28,7 @@ import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../hooks/themeSwitch";
-import {COM3D2HeaderConstants} from "../utils/consts";
+import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 import TexProperty = COM3D2.TexProperty;

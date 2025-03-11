@@ -11,9 +11,9 @@ import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 import {ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
-import {COM3D2HeaderConstants} from "../utils/consts";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
+import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 
 type FormatType = "treeIndent" | "colonSplit" | "JSON" | "TSV";
 

@@ -6,7 +6,7 @@ import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {useTranslation} from "react-i18next";
 import {ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
-import {COM3D2HeaderConstants} from "../utils/consts";
+import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import PMat = COM3D2.PMat;
 
 

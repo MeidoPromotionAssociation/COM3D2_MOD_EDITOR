@@ -19,23 +19,3 @@ export const GitHubUrl = "https://github.com/90135/COM3D2_MOD_EDITOR"; // GitHub
 export const GitHubReleaseUrl = "https://github.com/90135/COM3D2_MOD_EDITOR/releases"; // GitHub 仓库的发布页面地址
 
 export const ChineseMODGuideUrl = "https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese" // 中文 MOD 教程，简明 MOD 教程
-
-export const COM3D2HeaderConstants = {  // COM3D2 文件头常量
-    MenuSignature: "CM3D2_MENU",
-    MenuVersion: 1000,
-    MateSignature: "CM3D2_MATERIAL",
-    MateVersion: 2001,
-    PMatSignature: "CM3D2_PMATERIAL",
-    PMatVersion: 1000,
-    ColSignature: "CM3D21_COL",
-    ColVersion: 24102,
-    PhySignature: "CM3D21_PHY",
-    PhyVersion: 24102,
-    TexSignature: "CM3D2_TEX",
-    TexVersion: 1010,
-    AnmSignature: "CM3D2_ANIM",
-    AnmVersion: 1001,
-
-    endByte: 0x00,
-    MateEndString: "end"
-} as const;

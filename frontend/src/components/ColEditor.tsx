@@ -23,7 +23,7 @@ import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {Editor} from "@monaco-editor/react";
 import {useTranslation} from "react-i18next";
-import {COM3D2HeaderConstants} from "../utils/consts";
+import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
@@ -524,14 +524,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
      */
 // 要在 transformColToForm 函数内进行的修改
     function transformColToForm(col: ColModel) {
-        // 1. 先给每个 collider 注入推断后的 TypeName
-        (col.Colliders || []).forEach((collider: any) => {
-            if (!("TypeName" in collider)) {
-                collider.TypeName = guessColliderType(collider);
-            }
-        });
-
-        // 2. 返回顶层字段 + 一个统一的“properties”
+        // 返回顶层字段 + 一个统一的“properties”
         return {
             signature: col.Signature,
             version: col.Version,
@@ -593,7 +586,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         const newColliders: any[] = [];
         if (Array.isArray(values.colliders)) {
             for (const item of values.colliders) {
-                const typeName = item.TypeName || 'dbc'; // Default to 'dbc' if empty
+                const typeName = item.TypeName || 'missing'; // Default to 'dbc' if empty
 
                 const baseData = new DynamicBoneColliderBase({
                     ParentName: item.parentName || "",
@@ -648,21 +641,6 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         }
         newCol.Colliders = newColliders;
         return newCol;
-    }
-
-    /** 根据结构推断数据类型 */
-    function guessColliderType(colliderObj: any): string {
-        // 根据已知字段判断
-        if (colliderObj?.Radius !== undefined && colliderObj?.Height !== undefined && colliderObj?.ScaleRateMulMax !== undefined && colliderObj?.CenterRateMax !== undefined) {
-            return "dbm";
-        } else if (colliderObj?.Radius !== undefined && colliderObj?.Height !== undefined) {
-            return "dbc";
-        } else if (colliderObj?.Base !== undefined && colliderObj?.Radius === undefined && colliderObj?.Height === undefined) {
-            if (colliderObj?.Base) return "dpc"; // dpc 只有基类
-        } else if (colliderObj?.Base === undefined) {
-            return "missing"; // missing 什么都没有
-        }
-        return "missing";
     }
 
     // 当 colData 变化时同步到表单

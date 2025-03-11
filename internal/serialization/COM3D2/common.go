@@ -8,9 +8,9 @@ const (
 	PMatSignature = "CM3D2_PMATERIAL"
 	PMatVersion   = 1000
 	ColSignature  = "CM3D21_COL"
-	ColVersion    = 24102
+	ColVersion    = 24201
 	PhySignature  = "CM3D21_PHY"
-	PhyVersion    = 24102
+	PhyVersion    = 24201
 	TexSignature  = "CM3D2_TEX"
 	TexVersion    = 1010
 	AnmSignature  = "CM3D2_ANIM"
