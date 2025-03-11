@@ -1,23 +1,23 @@
 // frontend/src/components/HomePage.tsx
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Dropdown, Layout, MenuProps, message} from "antd";
-import {SelectFile} from "../../wailsjs/go/main/App";
+import {Button, Dropdown, Layout, MenuProps} from "antd";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
-import {DownOutlined, GithubOutlined, TranslationOutlined} from "@ant-design/icons";
-import {getFileExtension} from "../utils/utils";
+import {DownOutlined, GithubOutlined, SettingOutlined, TranslationOutlined} from "@ant-design/icons";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {AppVersion, ChineseMODGuideUrl, GitHubReleaseUrl, GitHubUrl} from "../utils/consts";
 import {useVersionCheck} from "../utils/CheckUpdate";
+import useFileHandlers from "../hooks/fileHanlder";
 
 const {Content} = Layout;
 
 const HomePage: React.FC = () => {
     const {t, i18n} = useTranslation();
-    const navigate = useNavigate();
     const [language, setLanguage] = React.useState('zh-CN');
     const hasUpdate = useVersionCheck();
+    const {handleSelectFile, handleSaveFile} = useFileHandlers();
+    const navigate = useNavigate();
 
     // 设置窗口标题
     useEffect(() => {
@@ -27,44 +27,6 @@ const HomePage: React.FC = () => {
         setTitle();
     });
 
-    /**
-     * 触发 Wails 的文件选择对话框，并跳转到对应页面
-     */
-    const handleSelectFile = async () => {
-        try {
-            const filePath = await SelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'));
-            if (filePath) {
-                const extension = getFileExtension(filePath);
-                switch (extension) {
-                    case "menu":
-                        navigate("/menu-editor", {state: {filePath}});
-                        break;
-                    case "mate":
-                        navigate("/mate-editor", {state: {filePath}});
-                        break;
-                    case "pmat":
-                        navigate("/pmat-editor", {state: {filePath}});
-                        break;
-                    case "col":
-                        navigate("/col-editor", {state: {filePath}});
-                        break;
-                    case "phy":
-                        navigate("/phy-editor", {state: {filePath}});
-                        break;
-                    default:
-                        message.error(t('Errors.file_type_not_supported'));
-                }
-            }
-        } catch (err) {
-            console.error(err);
-            message.error(t('Errors.file_selection_error_colon') + err);
-        }
-    };
-
-
-    const onSaveFile = async () => {
-        message.warning(t('Errors.no_file_to_save'));
-    }
 
     const handleLanguageChange: MenuProps['onClick'] = (e) => {
         i18n.changeLanguage(e.key);
@@ -85,7 +47,9 @@ const HomePage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             {/* 统一的导航栏；首页只传入打开文件回调 */}
-            <NavBar onOpenFile={handleSelectFile} onSaveFile={onSaveFile} onSaveAsFile={onSaveFile}/>
+            <NavBar onOpenFile={() => handleSelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'))}
+                    onSaveFile={handleSaveFile}
+                    onSaveAsFile={handleSaveFile}/>
 
             <Content
                 style={{
@@ -117,7 +81,7 @@ const HomePage: React.FC = () => {
                     </div>
                 )}
 
-
+                {/* 页面中部 */}
                 <div style={{
                     flex: 1,
                     display: "flex",
@@ -125,7 +89,8 @@ const HomePage: React.FC = () => {
                     justifyContent: "center",
                     alignItems: "center"
                 }}>
-                    <Button type="primary" onClick={handleSelectFile}>{t('HomePage.choose_file')}</Button>
+                    <Button type="primary"
+                            onClick={() => handleSelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'))}>{t('HomePage.choose_file')}</Button>
                     <p style={{marginTop: 20, color: "#666"}}>
                         {t('HomePage.pls_select_a_file_to_edit')}
                     </p>
@@ -135,6 +100,14 @@ const HomePage: React.FC = () => {
                             <TranslationOutlined/><DownOutlined/>
                         </Button>
                     </Dropdown>
+
+                    <Button
+                        type="text"
+                        style={{marginTop: 20}}
+                        onClick={() => navigate("/settings")}
+                    >
+                        <SettingOutlined/>
+                    </Button>
                 </div>
 
 

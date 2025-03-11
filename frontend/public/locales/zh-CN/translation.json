@@ -219,6 +219,12 @@
     "ScaleRateMulMax": "缩放倍率上限",
     "CenterRateMax": "中心倍率上限"
   },
+  "SettingsPage": {
+    "is_check_update": "是否检查更新",
+    "is_check_update_tip": "默认为 true，访问 Github Api 获取最新版本信息，间隔 24 小时检查一次，如果上一次检查失败，则间隔 1 小时再检查一次。如果清除了浏览器缓存，此选项会重置",
+    "dismiss_update_note": "清除更新提示",
+    "dismiss_update_note_tip": "清除更新提示，如果有新版本，就会显示新版本提示，除非你手动清除。需要关闭更新检查，否则下次检查更新还会出现"
+  },
   "Infos": {
     "com3d2_menu_file": "COM3D2 菜单文件",
     "com3d2_mate_file": "COM3D2 材质文件",

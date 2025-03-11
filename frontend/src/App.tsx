@@ -12,6 +12,7 @@ import {ConfigProvider, message, theme} from "antd";
 import {useDarkMode} from "./hooks/themeSwitch";
 import ColEditorPage from "./components/ColEditorPage";
 import PhyEditorPage from "./components/PhyEditorPage";
+import SettingsPage from "./components/SettingsPage";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -93,6 +94,7 @@ const App: React.FC = () => {
                 <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
                 <Route path="/col-editor" element={<ColEditorPage/>}/>
                 <Route path="/phy-editor" element={<PhyEditorPage/>}/>
+                <Route path="/settings" element={<SettingsPage/>}/>
             </Routes>
         </ConfigProvider>
     );

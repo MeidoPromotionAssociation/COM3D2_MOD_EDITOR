@@ -5,6 +5,7 @@ import {
     LatestVersionKey,
     NewVersionAvailableKey,
     RetryInterval,
+    SettingCheckUpdateKey,
     UpdateCheckInterval
 } from "./consts";
 import {CheckLatestVersion} from "../../wailsjs/go/main/App";
@@ -28,6 +29,8 @@ export async function checkForUpdates(): Promise<boolean> {
         // 如果已经记录了新版本可用，直接返回
         if (newVersionAvailable === 'true') {
             return true;
+        } else if (newVersionAvailable === 'false') {
+            return false;
         }
 
         // 检查是否需要进行更新检查
@@ -66,8 +69,17 @@ export async function checkForUpdates(): Promise<boolean> {
  * @returns {boolean} 是否应该检查更新
  */
 function shouldCheckForUpdate(): boolean {
-    const lastCheckTime = localStorage.getItem(LastUpdateCheckTimeKey);
+    // 检查用户是否启用更新检查
+    const check = localStorage.getItem(SettingCheckUpdateKey);
+    if (check === null) {
+        // 没有这个 key 就先存一个，默认true
+        localStorage.setItem(SettingCheckUpdateKey, 'true');
+    }
+    if (check === 'false') {
+        return false;
+    }
 
+    const lastCheckTime = localStorage.getItem(LastUpdateCheckTimeKey);
     if (!lastCheckTime) {
         return true; // 从未检查过，应该检查
     }
