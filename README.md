@@ -61,6 +61,10 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 <br>
 
+QQ 967954608 加群暗号 MOD
+
+<br>
+
 目前，它允许您编辑以下格式的文件
 
 - .menu
