@@ -12,9 +12,10 @@ import {
     message,
     Radio,
     Select,
-    Space
+    Space,
+    Tooltip
 } from "antd";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import type {FormListOperation} from "antd/es/form";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
@@ -44,7 +45,6 @@ const Style1Colliders: React.FC<{
     return (
         <>
             {fields.map(({key, name, ...restField}) => {
-                const typeName = form.getFieldValue(["colliders", name, "TypeName"]);
                 return (
                     <div
                         key={key}
@@ -66,7 +66,7 @@ const Style1Colliders: React.FC<{
                     </div>
                 );
             })}
-            <Button icon={<></>} block type="primary" onClick={() => add()}>
+            <Button block type="primary" onClick={() => add()}>
                 {t('ColEditor.add_collider')}
             </Button>
         </>
@@ -118,10 +118,22 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
                 <>
                     {/* base 公共字段 */}
                     <Form.Item label={t('ColEditor.ParentName')} name={[name, "parentName"]}>
-                        <Input/>
+                        <Input
+                            suffix={
+                                <Tooltip title={t('ColEditor.ParentName_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            }
+                        />
                     </Form.Item>
                     <Form.Item label={t('ColEditor.SelfName')} name={[name, "selfName"]}>
-                        <Input/>
+                        <Input
+                            suffix={
+                                <Tooltip title={t('ColEditor.SelfName_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            }
+                        />
                     </Form.Item>
 
                     {/* LocalPosition (3个数) */}
@@ -141,6 +153,11 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
                                 <InputNumber
                                     addonBefore="Z"
                                     style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item noStyle>
+                                <Tooltip title={t('ColEditor.LocalPosition_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
                             </Form.Item>
                         </Flex>
                     </Form.Item>
@@ -168,6 +185,11 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
                                     addonBefore="W"
                                     style={{width: "20%"}}/>
                             </Form.Item>
+                            <Form.Item noStyle>
+                                <Tooltip title={t('ColEditor.LocalRotation_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </Form.Item>
                         </Flex>
                     </Form.Item>
 
@@ -189,73 +211,131 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
                                     addonBefore="SZ"
                                     style={{width: "20%"}}/>
                             </Form.Item>
+                            <Form.Item noStyle>
+                                <Tooltip title={t('ColEditor.LocalScale_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </Form.Item>
                         </Flex>
                     </Form.Item>
 
-                    <Form.Item label={t('ColEditor.Direction')} name={[name, "direction"]}>
-                        <InputNumber style={{width: "20%"}}/>
-                    </Form.Item>
+                    <Flex gap="small">
+                        <Form.Item label={t('ColEditor.Direction')} name={[name, "direction"]} initialValue={1}>
+                            <InputNumber style={{width: "93.5%"}} max={2} min={0} step={1}/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Tooltip title={t('ColEditor.Direction_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </Form.Item>
+                    </Flex>
 
                     <Form.Item label={t('ColEditor.Center')}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "center", 0]} noStyle>
+                            <Form.Item name={[name, "center", 0]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="CX"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "center", 1]} noStyle>
+                            <Form.Item name={[name, "center", 1]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="CY"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "center", 2]} noStyle>
+                            <Form.Item name={[name, "center", 2]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="CZ"
                                     style={{width: "20%"}}/>
                             </Form.Item>
+                            <Form.Item noStyle>
+                                <Tooltip title={t('ColEditor.Center_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </Form.Item>
                         </Flex>
                     </Form.Item>
 
-                    <Form.Item label={t('ColEditor.Bound')} name={[name, "bound"]}>
-                        <InputNumber style={{width: "20%"}}/>
-                    </Form.Item>
+                    <Flex gap="small">
+                        <Form.Item label={t('ColEditor.Bound')} name={[name, "bound"]}>
+                            <InputNumber style={{width: "93.5%"}}/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Tooltip title={t('ColEditor.Bound_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </Form.Item>
+                    </Flex>
                 </>
             )}
 
             {/* 只有 dbc/dbm 才显示 radius/height */}
             {(typeName === "dbc" || typeName === "dbm") && (
                 <>
-                    <Form.Item label={t('ColEditor.Radius')} name={[name, "radius"]}>
-                        <InputNumber style={{width: "20%"}}/>
-                    </Form.Item>
-                    <Form.Item label={t('ColEditor.Height')} name={[name, "height"]}>
-                        <InputNumber style={{width: "20%"}}/>
-                    </Form.Item>
+                    <Flex gap="small">
+                        <Form.Item label={t('ColEditor.Radius')} name={[name, "radius"]} initialValue={0.5}>
+                            <InputNumber style={{width: "93.5%"}}/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Tooltip title={t('ColEditor.Radius_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </Form.Item>
+                    </Flex>
+
+                    <Flex gap="small">
+                        <Form.Item label={t('ColEditor.Height')} name={[name, "height"]}>
+                            <InputNumber style={{width: "93.5%"}}/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Tooltip title={t('ColEditor.Height_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </Form.Item>
+                    </Flex>
                 </>
             )}
 
             {/* dbm 独有的字段 */}
             {typeName === "dbm" && (
                 <>
-                    <Form.Item label={t('ColEditor.ScaleRateMulMax')} name={[name, "scaleRateMulMax"]}>
-                        <InputNumber style={{width: "20%"}}/>
-                    </Form.Item>
+                    <Flex gap="small">
+                        <Form.Item label={t('ColEditor.ScaleRateMulMax')} name={[name, "scaleRateMulMax"]}
+                                   initialValue={1}>
+                            <InputNumber style={{width: "93.5%"}}/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Tooltip title={t('ColEditor.ScaleRateMulMax_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </Form.Item>
+                    </Flex>
+
                     <Form.Item label={t('ColEditor.CenterRateMax')}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "centerRateMax", 0]} noStyle>
+                            <Form.Item name={[name, "centerRateMax", 0]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="CRX"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "centerRateMax", 1]} noStyle>
+                            <Form.Item name={[name, "centerRateMax", 1]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="CRY"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "centerRateMax", 2]} noStyle>
+                            <Form.Item name={[name, "centerRateMax", 2]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="CRZ"
                                     style={{width: "20%"}}/>
+                            </Form.Item>
+                            <Form.Item noStyle>
+                                <Tooltip title={t('ColEditor.CenterRateMax_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </Form.Item>
+                            <Form.Item noStyle>
+                                <Tooltip title={t('ColEditor.dbm_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
                             </Form.Item>
                         </Flex>
                     </Form.Item>
@@ -397,9 +477,8 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     useEffect(() => {
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle(
-                "COM3D2 MOD EDITOR V2 —— Editing: " + fileName + "  (" + filePath + ")"
-            );
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+
             handleReadColFile();
         } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
@@ -464,7 +543,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     /** 另存为 Col 文件 */
     async function handleSaveAsColFile() {
         if (!colData) {
-            message.error("请先读取或新建一个 Col 再尝试另存为");
+            message.error(t('Errors.pls_load_file_first'));
             return;
         }
 

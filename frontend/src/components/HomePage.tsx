@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
     // 设置窗口标题
     useEffect(() => {
         const setTitle = async () => {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + AppVersion);
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
         }
         setTitle();
     });
@@ -107,6 +107,10 @@ const HomePage: React.FC = () => {
                         icon={<SettingOutlined/>}
                     >
                     </FloatButton>
+
+                    <p>
+                        {AppVersion}
+                    </p>
                 </div>
 
 
