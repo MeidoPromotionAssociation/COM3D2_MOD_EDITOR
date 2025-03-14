@@ -1,6 +1,8 @@
-// monacoInstance 为 any 不代表它真的是 any，只是引入类型会导致最终二进制文件变大 3MB
 import {enumMap, getCommandSnippetMap, getMenuCommandDocs} from "./menuCommandDocs";
 import {t} from "i18next";
+
+// 用于存储已初始化的 Monaco 实例
+const initializedMonacoInstances = new WeakMap()
 
 // 语言定义
 const defineLanguages = (monacoInstance: any) => {
@@ -234,15 +236,16 @@ function createSnippetForCommand(cmdName: string): string {
 
 // 初始化 Monaco 编辑器，接受 beforeMount 调用
 export const setupMonacoEditor = (monacoInstance: any, isDarkMode: boolean) => {
-    // 只初始化一次
-    if (monacoInstance.__alreadyCustomInited) {
+    // 只初始化一次，否则切换编辑器时会重复初始化，自动补全会出现多个选项
+    if (initializedMonacoInstances.has(monacoInstance)) {
         return;
     }
+
     defineLanguages(monacoInstance);
     defineHoverProviders(monacoInstance);
     defineTheme(monacoInstance, isDarkMode);
     customShortcut(monacoInstance);
     Autocomplete(monacoInstance);
 
-    monacoInstance.__alreadyCustomInited = true;
+    initializedMonacoInstances.set(monacoInstance, true);
 };
