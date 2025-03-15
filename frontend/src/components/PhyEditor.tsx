@@ -1,27 +1,34 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {
     Button,
     Checkbox,
     Collapse,
     ConfigProvider,
-    Divider,
+    Flex,
     Form,
     Input,
     InputNumber,
     message,
     Radio,
-    Space
+    Select,
+    Space,
+    Table,
+    Tooltip
 } from "antd";
-import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
+import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {ReadPhyFile, WritePhyFile} from "../../wailsjs/go/COM3D2/PhyService";
 import {SaveFile} from "../../wailsjs/go/main/App";
+import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
+import {useTranslation} from "react-i18next";
+import {Editor} from "@monaco-editor/react";
+import {useDarkMode} from "../hooks/themeSwitch";
+import {ReadColFile} from "../../wailsjs/go/COM3D2/ColService";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
 import Keyframe = COM3D2.Keyframe;
-import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 
 export interface PhyEditorProps {
     filePath?: string;
@@ -43,6 +50,85 @@ const FreezeAxis_None = 0;
 const FreezeAxis_X = 1;
 const FreezeAxis_Y = 2;
 const FreezeAxis_Z = 3;
+
+
+interface Style2PhyProps {
+    phyData: Phy | null;
+    setPhyData: (newData: Phy | null) => void;
+}
+
+const Style2PhyProperties: React.FC<Style2PhyProps> = ({phyData, setPhyData}) => {
+    const isDarkMode = useDarkMode();
+    const [jsonValue, setJsonValue] = useState("");
+    const editorRef = useRef<any>(null);
+    // 避免自身更新时触发的 useEffect 重复
+    const isInternalUpdate = useRef(false);
+    const prevPhyRef = useRef<string | null>(null);
+
+    // 当 phyData 外部发生变化时，如果不是我们自己内部触发的，就同步到编辑器
+    useEffect(() => {
+        if (phyData) {
+            const phyDataJson = JSON.stringify(phyData);
+            // 如果不是内部更新 & 内容有变化，就更新编辑器
+            if (!isInternalUpdate.current && phyDataJson !== prevPhyRef.current) {
+                setJsonValue(JSON.stringify(phyData, null, 2));
+                prevPhyRef.current = phyDataJson;
+            }
+        } else {
+            setJsonValue("");
+            prevPhyRef.current = null;
+        }
+    }, [phyData]);
+
+    // 用户在编辑器里修改时
+    const handleEditorChange = (value?: string) => {
+        const newVal = value ?? "";
+        if (newVal !== jsonValue) {
+            setJsonValue(newVal);
+        }
+
+        try {
+            const parsed = JSON.parse(newVal);
+            // JSON 合法，且与当前 phyData 不相同时，更新到外部
+            if (JSON.stringify(parsed) !== JSON.stringify(phyData)) {
+                isInternalUpdate.current = true;
+                setPhyData(parsed);
+                prevPhyRef.current = JSON.stringify(parsed);
+                // 一点小延时，避免 useEffect 再次判断时还在内部更新中
+                setTimeout(() => {
+                    isInternalUpdate.current = false;
+                }, 0);
+            }
+        } catch (err) {
+            // JSON 不合法时，不更新外部
+        }
+    };
+
+    const handleEditorDidMount = (editor: any) => {
+        editorRef.current = editor;
+    };
+
+    return (
+        <div style={{
+            height: "calc(100vh - 165px)",
+            borderRadius: '8px',   // 添加圆角
+            overflow: 'hidden'     // 隐藏超出圆角范围的部分
+        }}>
+            <Editor
+                language="json"
+                theme={isDarkMode ? "vs-dark" : "vs"}
+                value={jsonValue}
+                onChange={handleEditorChange}
+                onMount={handleEditorDidMount}
+                options={{
+                    minimap: {enabled: true},
+                    tabSize: 2,
+                }}
+            />
+        </div>
+    );
+};
+
 
 /**
  * 将后端的 Phy 对象转换为 antd Form 可以直接使用的表单数据
@@ -301,6 +387,7 @@ function transformFormToPhy(values: any, oldPhy: Phy): Phy {
  */
 const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
     const {filePath} = props;
+    const {t} = useTranslation();
 
     // 从后端读取到的 phy 数据
     const [phyData, setPhyData] = useState<Phy | null>(null);
@@ -311,14 +398,37 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
     // antd 的表单
     const [form] = Form.useForm();
 
+    // 监听表单值
+    const enablePartialDamping = Form.useWatch('enablePartialDamping', form);
+    const enablePartialElasticity = Form.useWatch('enablePartialElasticity', form);
+    const enablePartialStiffness = Form.useWatch('enablePartialStiffness', form);
+    const enablePartialInert = Form.useWatch('enablePartialInert', form);
+    const enablePartialRadius = Form.useWatch('enablePartialRadius', form);
+    const colliderFileName = Form.useWatch('colliderFileName', form);
+
+    //  viewMode，1=表单模式，2=JSON模式
+    const [viewMode, setViewMode] = useState<1 | 2>(() => {
+        const saved = localStorage.getItem("phyEditorViewMode");
+        return saved ? (Number(saved) as 1 | 2) : 1;
+    });
+
+    // 当 phyData / viewMode 变化时，如果处于表单模式，就把 phyData => form
+    useEffect(() => {
+        if (phyData && viewMode === 1) {
+            form.setFieldsValue(transformPhyToForm(phyData));
+        }
+    }, [phyData, viewMode, form]);
+
+
     // 当传入的 filePath 改变时，自动执行读取
     useEffect(() => {
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("Editing: " + fileName + "  (" + filePath + ")");
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+
             handleReadPhyFile();
         } else {
-            WindowSetTitle("Phy Editor");
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有 filePath，就新建一个空的
             const empty = COM3D2.Phy.createFrom({});
             empty.Signature = COM3D2HeaderConstants.PhySignature;
@@ -333,19 +443,18 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
      */
     const handleReadPhyFile = async () => {
         if (!filePath) {
-            message.error("请先选择文件！");
+            message.error(t('Infos.pls_open_file_first'));
             return;
         }
         try {
             const data = await ReadPhyFile(filePath);
-            console.log("读取到 phy 数据:", data);
             setPhyData(data);
 
             // 同步到表单
             form.setFieldsValue(transformPhyToForm(data));
         } catch (error: any) {
             console.error(error);
-            message.error("读取 .phy 文件失败：" + error);
+            message.error(t('Errors.read_phy_file_failed_colon') + error);
         }
     };
 
@@ -354,11 +463,11 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
      */
     const handleSavePhyFile = async () => {
         if (!filePath) {
-            message.error("当前没有打开的文件，无法保存");
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
         }
         if (!phyData) {
-            message.error("请先加载文件！");
+            message.error(t('Errors.pls_load_file_first'));
             return;
         }
         try {
@@ -367,10 +476,10 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             const newPhy = transformFormToPhy(values, phyData);
 
             await WritePhyFile(filePath, newPhy);
-            message.success("保存成功！");
+            message.success(t('Infos.success_save_file'));
         } catch (error: any) {
             console.error(error);
-            message.error("保存失败：" + error);
+            message.error(t('Errors.save_file_failed_colon') + error);
         }
     };
 
@@ -379,12 +488,12 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
      */
     const handleSaveAsPhyFile = async () => {
         if (!phyData) {
-            message.error("请先加载文件！");
+            message.error(t('Errors.save_as_file_failed_colon') + t('Errors.pls_load_file_first'));
             return;
         }
         try {
             // 询问保存路径
-            const newPath = await SaveFile("*.phy", "COM3D2 phy file");
+            const newPath = await SaveFile("*.phy", t('Infos.com3d2_phy_file'));
             if (!newPath) {
                 return; // 用户取消
             }
@@ -393,10 +502,10 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             const newPhy = transformFormToPhy(values, phyData);
 
             await WritePhyFile(newPath, newPhy);
-            message.success("另存为成功：" + newPath);
+            message.success(t('Infos.success_save_as_file_colon') + newPath);
         } catch (error: any) {
+            message.error(t('Errors.save_as_file_failed_colon') + error.message);
             console.error(error);
-            message.error("另存为失败：" + error);
         }
     };
 
@@ -419,9 +528,40 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
         handleSaveAsPhyFile
     }));
 
+
+    // 自动计算 col 文件中的碰撞器数量
+    const handleAutoCalculateColliders = async () => {
+        if (!filePath) {
+            message.error(t('Infos.pls_open_file_first'));
+            return;
+        }
+
+        if (!colliderFileName) {
+            message.error(t('Errors.autoCalcColliderError.pls_fill_file_name_first'));
+            return;
+        }
+
+        try {
+            // 获取 phy 文件所在目录
+            const dirPath = filePath.split(/[\\/]/).slice(0, -1).join('/');
+            const colFilePath = `${dirPath}/${colliderFileName}.col`;
+
+            // 调用后端读取 col 文件
+            const col = await ReadColFile(colFilePath);
+            form.setFieldsValue({collidersCount: col.Colliders.length});
+
+            message.success(t('Infos.auto_count_success'));
+        } catch (error: any) {
+            console.error(error);
+            message.error(t('Errors.autoCalcColliderError.read_file_filed') + "  " + error);
+        }
+    };
+
+
     // 渲染某个 partial 块: (enablePartialXxx, partialXxx, Xxx, XxxDistrib)
     const renderPartialSection = (
         label: string,
+        partialMode: number,                // 当前模式
         enablePartialName: string,           // enablePartialDamping
         partialListName: string,            // partialDamping
         floatFieldName: string,             // damping
@@ -429,110 +569,205 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
     ) => {
         return (
             <>
-                <Divider>{label}</Divider>
-                <Form.Item label="PartialMode" name={enablePartialName}>
-                    <Radio.Group>
-                        <Radio value={PartialMode_StaticOrCurve}>Static/Curve(0)</Radio>
-                        <Radio value={PartialMode_Partial}>Partial(1)</Radio>
-                        <Radio value={PartialMode_FromBoneName}>FromBoneName(2)</Radio>
-                    </Radio.Group>
-                </Form.Item>
-                {/* 只有当 mode==1 时，才显示骨骼列表 */}
+                <div
+                    style={{
+                        textAlign: 'left',
+                    }}
+                >
+                    <Flex gap="small">
+                        <Form.Item label={t('PhyEditor.PartialMode')} name={enablePartialName}
+                                   initialValue={PartialMode_StaticOrCurve}>
+                            <Select
+                                dropdownStyle={{textAlign: 'left'}}
+                                options={[
+                                    {label: t('PhyEditor.PartialMode_StaticOrCurve'), value: PartialMode_StaticOrCurve},
+                                    {label: t('PhyEditor.PartialMode_Partial'), value: PartialMode_Partial},
+                                    {label: t('PhyEditor.PartialMode_FromBoneName'), value: PartialMode_FromBoneName},
+                                ]}
+                                style={{width: '100vh'}}
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Tooltip title={t('PhyEditor.PartialMode_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </Form.Item>
+                    </Flex>
+                </div>
+
+
+                <Flex gap="small">
+                    <Form.Item label={t('PhyEditor.default_value')} name={floatFieldName}>
+                        <InputNumber style={{width: '100vh'}} max={1} min={0} step={0.01}/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Tooltip title={t('PhyEditor.default_value_tip')}>
+                            <QuestionCircleOutlined/>
+                        </Tooltip>
+                    </Form.Item>
+                </Flex>
+
+
                 <Form.List name={partialListName}>
                     {(fields, {add, remove}) => {
-                        // 根据 enablePartialName 的值动态控制显示
-                        const partialMode = form.getFieldValue(enablePartialName);
-                        if (partialMode !== PartialMode_Partial) {
-                            return null;
+                        {/* 只有当 mode === PartialMode_StaticOrCurve 时，才显示骨骼列表 */
                         }
+                        if (partialMode !== PartialMode_Partial) return null;
+
                         return (
-                            <div style={{marginLeft: 24, marginBottom: 8}}>
-                                <Button
-                                    size="small"
-                                    type="dashed"
-                                    onClick={() => add({boneName: "", value: 0})}
-                                    icon={<PlusOutlined/>}
-                                >
-                                    添加 BoneValue
-                                </Button>
-                                {fields.map(({key, name, ...restField}) => (
-                                    <Space key={key} style={{display: "flex", marginTop: 8}} align="baseline">
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, "boneName"]}
-                                            label="BoneName"
-                                        >
-                                            <Input style={{width: 180}}/>
-                                        </Form.Item>
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, "value"]}
-                                            label="Value"
-                                        >
-                                            <InputNumber/>
-                                        </Form.Item>
-                                        <Button
-                                            danger
-                                            icon={<DeleteOutlined/>}
-                                            onClick={() => remove(name)}
-                                        />
-                                    </Space>
-                                ))}
-                            </div>
+                            <Table
+                                dataSource={fields}
+                                rowKey="name"
+                                size="small"
+                                bordered
+                                pagination={false}
+                                footer={() =>
+                                    <Button
+                                        size="small"
+                                        onClick={() => add({boneName: "", value: 0})}
+                                        style={{width: '100%'}}
+                                    >
+                                        {t('PhyEditor.add_BoneValue')}
+                                    </Button>
+                                }
+                                columns={[
+                                    {
+                                        title: t('PhyEditor.BoneValue'),
+                                        children: [
+                                            {
+                                                title: t('PhyEditor.BoneName'),
+                                                render: (_, field) => (
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'boneName']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <Input style={{width: '100%'}}/>
+                                                    </Form.Item>
+                                                )
+                                            },
+                                            {
+                                                title: t('PhyEditor.Value'),
+                                                render: (_, field) => (
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'value']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                                                    </Form.Item>
+                                                )
+                                            },
+                                            {
+                                                title: t('PhyEditor.operate'),
+                                                width: 80,
+                                                render: (_, field) => (
+                                                    <Button
+                                                        icon={<DeleteOutlined/>}
+                                                        onClick={() => remove(field.name)}
+                                                        size="small"
+                                                    />
+                                                )
+                                            }
+                                        ]
+                                    }
+                                ]}
+                            />
                         );
                     }}
                 </Form.List>
 
-                <Form.Item label={`${label} 默认值`} name={floatFieldName}>
-                    <InputNumber/>
-                </Form.Item>
+                <br></br>
+
                 {/* 曲线 keyframes */}
                 <Form.List name={keyframesFieldName}>
                     {(fields, {add, remove}) => (
                         <>
-                            <div>Keyframes</div>
-                            <Button
+                            <Table
+                                dataSource={fields}
+                                rowKey="name"
                                 size="small"
-                                type="dashed"
-                                onClick={() => add({time: 0, value: 0, inTangent: 0, outTangent: 0})}
-                                icon={<PlusOutlined/>}
-                                style={{marginBottom: 8}}
-                            >
-                                添加Keyframe
-                            </Button>
-                            {fields.map(({key, name, ...restField}) => (
-                                <Space key={key} style={{display: "flex", marginBottom: 8}} align="baseline">
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "time"]}
-                                        label="Time"
+                                bordered
+                                pagination={false}
+                                footer={() =>
+                                    <Button
+                                        size="small"
+                                        onClick={() => add({time: 0, value: 0, inTangent: 0, outTangent: 0})}
+                                        style={{width: '100%'}}
                                     >
-                                        <InputNumber style={{width: 70}}/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "value"]}
-                                        label="Value"
-                                    >
-                                        <InputNumber style={{width: 70}}/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "inTangent"]}
-                                        label="InT"
-                                    >
-                                        <InputNumber style={{width: 70}}/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "outTangent"]}
-                                        label="OutT"
-                                    >
-                                        <InputNumber style={{width: 70}}/>
-                                    </Form.Item>
-                                    <Button danger icon={<DeleteOutlined/>} onClick={() => remove(name)}/>
-                                </Space>
-                            ))}
+                                        {t('PhyEditor.add_keyframe')}
+                                    </Button>}
+                                columns={[
+                                    {
+                                        title: t('PhyEditor.keyframe'),
+                                        children: [
+                                            {
+                                                title: t('PhyEditor.Time'),
+                                                width: 100,
+                                                render: (_, field) => (
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'time']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                                                    </Form.Item>
+                                                )
+                                            },
+                                            {
+                                                title: t('PhyEditor.Value'),
+                                                width: 100,
+                                                render: (_, field) => (
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'value']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                                                    </Form.Item>
+                                                )
+                                            },
+                                            {
+                                                title: t('PhyEditor.InTangent'),
+                                                width: 100,
+                                                render: (_, field) => (
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'inTangent']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                                                    </Form.Item>
+                                                )
+                                            },
+                                            {
+                                                title: t('PhyEditor.OutTangent'),
+                                                width: 100,
+                                                render: (_, field) => (
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'outTangent']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
+                                                    </Form.Item>
+                                                )
+                                            },
+                                            {
+                                                title: t('PhyEditor.operate'),
+                                                width: 80,
+                                                render: (_, field) => (
+                                                    <Button
+                                                        icon={<DeleteOutlined/>}
+                                                        onClick={() => remove(field.name)}
+                                                        size="small"
+                                                    />
+                                                )
+                                            }
+                                        ]
+                                    }
+                                ]}
+                            />
                         </>
                     )}
                 </Form.List>
@@ -541,151 +776,310 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
     };
 
     return (
-        <ConfigProvider>
-            <div style={{padding: 10}}>
+        <div style={{
+            padding: 10,
+        }}>
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Form: {
+                            itemMarginBottom: 10
+                        }
+                    }
+                }}
+            >
                 <Form
                     form={form}
-                    layout="vertical"
+                    layout="horizontal"
                     labelAlign="left"
-                    style={{marginTop: 10}}
+                    size="small"
+                    labelCol={{style: {width: '15vw'}}}
                 >
-                    <Collapse defaultActiveKey={["base", "damping", "elasticity"]}>
+                    <Collapse>
                         {/* 基础信息 */}
-                        <Collapse.Panel key="base" header="基础信息">
-                            <Form.Item label="Signature" name="signature">
-                                <Input disabled={!isHeaderEditable}/>
-                            </Form.Item>
-                            <Form.Item label="Version" name="version">
-                                <InputNumber disabled={!isHeaderEditable}/>
-                            </Form.Item>
-                            <Form.Item>
-                                <Checkbox
-                                    checked={isHeaderEditable}
-                                    onChange={(e) => setIsHeaderEditable(e.target.checked)}
-                                >
-                                    解锁编辑 Signature/Version（谨慎修改）
-                                </Checkbox>
-                            </Form.Item>
-                            <Form.Item label="RootName" name="rootName">
-                                <Input/>
-                            </Form.Item>
-                        </Collapse.Panel>
-
-                        {/* damping */}
-                        <Collapse.Panel key="damping" header="Damping">
-                            {renderPartialSection(
-                                "Damping",
-                                "enablePartialDamping",
-                                "partialDamping",
-                                "damping",
-                                "dampingDistribKeyframes"
-                            )}
-                        </Collapse.Panel>
-
-                        {/* elasticity */}
-                        <Collapse.Panel key="elasticity" header="Elasticity">
-                            {renderPartialSection(
-                                "Elasticity",
-                                "enablePartialElasticity",
-                                "partialElasticity",
-                                "elasticity",
-                                "elasticityDistribKeyframes"
-                            )}
-                        </Collapse.Panel>
-
-                        {/* stiffness */}
-                        <Collapse.Panel key="stiffness" header="Stiffness">
-                            {renderPartialSection(
-                                "Stiffness",
-                                "enablePartialStiffness",
-                                "partialStiffness",
-                                "stiffness",
-                                "stiffnessDistribKeyframes"
-                            )}
-                        </Collapse.Panel>
-
-                        {/* inert */}
-                        <Collapse.Panel key="inert" header="Inert">
-                            {renderPartialSection(
-                                "Inert",
-                                "enablePartialInert",
-                                "partialInert",
-                                "inert",
-                                "inertDistribKeyframes"
-                            )}
-                        </Collapse.Panel>
-
-                        {/* radius */}
-                        <Collapse.Panel key="radius" header="Radius">
-                            {renderPartialSection(
-                                "Radius",
-                                "enablePartialRadius",
-                                "partialRadius",
-                                "radius",
-                                "radiusDistribKeyframes"
-                            )}
-                        </Collapse.Panel>
-
-                        <Collapse.Panel key="others" header="其它参数">
-                            <Divider>End</Divider>
-                            <Form.Item label="EndLength" name="endLength">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="EndOffsetX" name="endOffsetX">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="EndOffsetY" name="endOffsetY">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="EndOffsetZ" name="endOffsetZ">
-                                <InputNumber/>
-                            </Form.Item>
-
-                            <Divider>Gravity</Divider>
-                            <Form.Item label="gravityX" name="gravityX">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="gravityY" name="gravityY">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="gravityZ" name="gravityZ">
-                                <InputNumber/>
-                            </Form.Item>
-
-                            <Divider>Force</Divider>
-                            <Form.Item label="forceX" name="forceX">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="forceY" name="forceY">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="forceZ" name="forceZ">
-                                <InputNumber/>
-                            </Form.Item>
-
-                            <Divider>Collider</Divider>
-                            <Form.Item label="ColliderFileName" name="colliderFileName">
-                                <Input/>
-                            </Form.Item>
-                            <Form.Item label="CollidersCount" name="collidersCount">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="ExclusionsCount" name="exclusionsCount">
-                                <InputNumber/>
-                            </Form.Item>
-                            <Form.Item label="FreezeAxis" name="freezeAxis">
-                                <Radio.Group>
-                                    <Radio value={FreezeAxis_None}>None(0)</Radio>
-                                    <Radio value={FreezeAxis_X}>X(1)</Radio>
-                                    <Radio value={FreezeAxis_Y}>Y(2)</Radio>
-                                    <Radio value={FreezeAxis_Z}>Z(3)</Radio>
-                                </Radio.Group>
+                        <Collapse.Panel key="base" header={t('PhyEditor.file_header.file_head')}>
+                            <Space>
+                                <Form.Item name="signature"
+                                           initialValue={COM3D2HeaderConstants.PhySignature.toString()}>
+                                    <Input
+                                        disabled={!isHeaderEditable}
+                                        addonBefore={t('PhyEditor.file_header.Signature')}
+                                    />
+                                </Form.Item>
+                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.PhyVersion.toString()}>
+                                    <Input
+                                        disabled={!isHeaderEditable}
+                                        addonBefore={t('PhyEditor.file_header.Version')}
+                                    />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Checkbox
+                                        checked={isHeaderEditable}
+                                        onChange={(e) => setIsHeaderEditable(e.target.checked)}
+                                    >
+                                        {t('PhyEditor.file_header.enable_edit_do_not_edit')}
+                                    </Checkbox>
+                                </Form.Item>
+                            </Space>
+                            <Form.Item name="rootName">
+                                <Input
+                                    addonBefore={t('PhyEditor.file_header.RootName')}
+                                    suffix={
+                                        <Tooltip title={t('PhyEditor.file_header.RootName_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    }
+                                />
                             </Form.Item>
                         </Collapse.Panel>
                     </Collapse>
+
+                    <div style={{marginBottom: 8, marginTop: 8}}>
+                        <Radio.Group
+                            block
+                            value={viewMode}
+                            onChange={(e) => {
+                                // 在切换显示模式之前获取当前表单值并更新 phyData
+                                const currentFormValues = form.getFieldsValue(true);
+                                if ((viewMode != 2) && phyData) { // 非模式 2 时从表单拿数据，因为模式 2 是 JSON
+                                    const updatedPhy = transformFormToPhy(currentFormValues, phyData);
+                                    setPhyData(updatedPhy);
+                                }
+                                setViewMode(e.target.value);
+                                localStorage.setItem("phyEditorViewMode", e.target.value.toString());
+                            }}
+                            options={[
+                                {label: t('PhyEditor.style1'), value: 1},
+                                {label: t('PhyEditor.style2'), value: 2},
+                            ]}
+                            optionType="button"
+                            buttonStyle="solid"
+                        />
+                    </div>
+
+                    {viewMode === 1 && (
+
+                        <Collapse
+                            defaultActiveKey={['damping', 'elasticity', 'stiffness', 'inert', 'radius', 'others']}>
+                            {/* damping */}
+                            <Collapse.Panel key="damping" header={t('PhyEditor.Damping')}>
+                                {renderPartialSection(
+                                    "Damping",
+                                    enablePartialDamping,
+                                    "enablePartialDamping",
+                                    "partialDamping",
+                                    "damping",
+                                    "dampingDistribKeyframes"
+                                )}
+                            </Collapse.Panel>
+
+                            {/* elasticity */}
+                            <Collapse.Panel key="elasticity" header={t('PhyEditor.Elasticity')}>
+                                {renderPartialSection(
+                                    "Elasticity",
+                                    enablePartialElasticity,
+                                    "enablePartialElasticity",
+                                    "partialElasticity",
+                                    "elasticity",
+                                    "elasticityDistribKeyframes"
+                                )}
+                            </Collapse.Panel>
+
+                            {/* stiffness */}
+                            <Collapse.Panel key="stiffness" header={t('PhyEditor.Stiffness')}>
+                                {renderPartialSection(
+                                    "Stiffness",
+                                    enablePartialStiffness,
+                                    "enablePartialStiffness",
+                                    "partialStiffness",
+                                    "stiffness",
+                                    "stiffnessDistribKeyframes"
+                                )}
+                            </Collapse.Panel>
+
+                            {/* inert */}
+                            <Collapse.Panel key="inert" header={t('PhyEditor.Inert')}>
+                                {renderPartialSection(
+                                    "Inert",
+                                    enablePartialInert,
+                                    "enablePartialInert",
+                                    "partialInert",
+                                    "inert",
+                                    "inertDistribKeyframes"
+                                )}
+                            </Collapse.Panel>
+
+                            {/* radius */}
+                            <Collapse.Panel key="radius" header={t('PhyEditor.Radius')}>
+                                {renderPartialSection(
+                                    "Radius",
+                                    enablePartialRadius,
+                                    "enablePartialRadius",
+                                    "partialRadius",
+                                    "radius",
+                                    "radiusDistribKeyframes"
+                                )}
+                            </Collapse.Panel>
+
+                            <Collapse.Panel key="others" header={t('PhyEditor.other')}>
+
+                                <Flex gap="small">
+                                    <Form.Item label={t('PhyEditor.EndLength')} name="endLength" initialValue={0}>
+                                        <InputNumber style={{width: 205}}/>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Tooltip title={t('PhyEditor.EndLength_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    </Form.Item>
+                                </Flex>
+
+                                <Form.Item label={t('PhyEditor.EndOffset')}>
+                                    <Flex gap="middle">
+                                        <Form.Item name="endOffsetX" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="X"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item name="endOffsetY" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="Y"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item name="endOffsetZ" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="Z"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Tooltip title={t('PhyEditor.EndOffset_tip')}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        </Form.Item>
+                                    </Flex>
+                                </Form.Item>
+
+
+                                <Form.Item label={t('PhyEditor.Gravity')}>
+                                    <Flex gap="middle">
+                                        <Form.Item name="gravityX" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="X"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item name="gravityY" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="Y"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item name="gravityZ" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="Z"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Tooltip title={t('PhyEditor.Gravity_tip')}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        </Form.Item>
+                                    </Flex>
+                                </Form.Item>
+
+
+                                <Form.Item label={t('PhyEditor.Force')}>
+                                    <Flex gap="middle">
+                                        <Form.Item name="forceX" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="X"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item name="forceY" initialValue={-0.01}>
+                                            <InputNumber
+                                                addonBefore="Y"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item name="forceZ" initialValue={0}>
+                                            <InputNumber
+                                                addonBefore="Z"
+                                                style={{width: "100%"}} step={0.01}/>
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Tooltip title={t('PhyEditor.Force_tip')}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        </Form.Item>
+                                    </Flex>
+                                </Form.Item>
+
+
+                                <Flex gap="small">
+                                    <Form.Item label={t('PhyEditor.ColliderFileName')} name="colliderFileName">
+                                        <Input style={{width: 205}}/>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Tooltip title={t('PhyEditor.ColliderFileName_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    </Form.Item>
+                                </Flex>
+
+                                <Flex gap="small">
+                                    <Form.Item label={t('PhyEditor.ColliderCount')} name="collidersCount">
+                                        <InputNumber style={{width: 205}}/>
+                                    </Form.Item>
+                                    <Button
+                                        onClick={handleAutoCalculateColliders}
+                                    >
+                                        {t('PhyEditor.auto_count')}
+                                    </Button>
+                                    <Form.Item>
+                                        <Tooltip title={t('PhyEditor.ColliderCount_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    </Form.Item>
+                                </Flex>
+
+
+                                <Flex gap="small">
+                                    <Form.Item label={t('PhyEditor.ExclusionsCount')} name="exclusionsCount"
+                                               initialValue={0}>
+                                        <InputNumber style={{width: 205}}/>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Tooltip title={t('PhyEditor.ExclusionsCount_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    </Form.Item>
+                                </Flex>
+
+                                <Flex gap="small">
+                                    <Form.Item label={t('PhyEditor.FreezeAxis')} name="freezeAxis">
+                                        <Radio.Group
+                                            options={[
+                                                {value: FreezeAxis_None, label: t('PhyEditor.FreezeAxis_None')},
+                                                {value: FreezeAxis_X, label: 'X(1)'},
+                                                {value: FreezeAxis_Y, label: 'Y(2)'},
+                                                {value: FreezeAxis_Z, label: 'Z(3)'},
+                                            ]}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Tooltip title={t('PhyEditor.FreezeAxis_tip')}>
+                                            <QuestionCircleOutlined/>
+                                        </Tooltip>
+                                    </Form.Item>
+                                </Flex>
+                            </Collapse.Panel>
+                        </Collapse>
+                    )}
+
+                    {viewMode === 2 && (
+                        <Style2PhyProperties phyData={phyData} setPhyData={setPhyData}/>
+                    )}
+
                 </Form>
-            </div>
-        </ConfigProvider>
+            </ConfigProvider>
+        </div>
     );
 });
 

@@ -170,13 +170,15 @@
     "tex_scale_tip": "纹理缩放；仅 COM3D2.5+ 生效。游戏会设置对应纹理的纹理缩放 (3.42.1) Material.SetTextureScale",
     "keyword": "关键词（keyword）",
     "keyword_no_brackets": "关键词",
+    "keyword_valve": "值",
     "keyword_tip": "关键词；仅 COM3D2.5+ 生效。用于启用或禁用某个着色器功能 (3.42.1) Material.EnableKeyword Material.DisableKeyword",
     "add_key_value": "添加键值对",
-    "undefined": "未定义"
+    "undefined": "未定义",
+    "operate": "操作"
   },
   "PMatEditor": {
     "file_header": {
-      "file_head": "文件头",
+      "file_head": "文件头（通常无需修改）",
       "Signature": "文件签名",
       "Version": "文件版本",
       "Hash": "哈希",
@@ -192,7 +194,7 @@
   },
   "ColEditor": {
     "file_header": {
-      "file_head": "文件头",
+      "file_head": "文件头（通常无需修改）",
       "Signature": "文件签名",
       "Version": "文件版本",
       "enable_edit_do_not_edit": "不要修改"
@@ -232,6 +234,65 @@
     "CenterRateMax_tip": "最大中心偏移（CenterRateMax）；定义形变最大时的中心点偏移量，通过线性插值与基础中心点(Center)混合，最终中心 = Vector3.Lerp(中心, 最大中心偏移, BlendValue/1.3f)，默认值 0,0,0",
     "dbm_tip": "当角色进行深呼吸或胸部起伏动作时，通过调整这两个参数可以实现：碰撞体半径随胸部扩张而增大（最大缩放倍率），碰撞体中心位置随动作偏移（最大中心偏移），从而保持物理碰撞与视觉模型的一致性"
   },
+  "PhyEditor": {
+    "file_header": {
+      "file_head": "文件头",
+      "Signature": "文件签名",
+      "Version": "文件版本",
+      "RootName": "根节点名",
+      "RootName_tip": "根节点名（RootName）；要施加物理效果的根 Transform 名称。看起来没用，游戏本体似乎只是读取并丢弃，但不建议留空（2.42.1）",
+      "enable_edit_do_not_edit": "不要修改"
+    },
+    "style1": "样式 1",
+    "style2": "JSON",
+    "Damping": "阻尼（Damping）",
+    "Damping_tip": "阻尼（Damping）；控制骨骼运动衰减的速度，高阻尼值会使运动更快停止，(0=无衰减，1=立即停止)，默认值 0.5",
+    "Elasticity": "弹性（Elasticity）",
+    "Elasticity_tip": "弹性（Elasticity）；弹力/复原力，控制骨骼恢复原始姿态的速度，(0=无弹性，1=立即复位)，默认值 0.1",
+    "Stiffness": "刚度（Stiffness）",
+    "Stiffness_tip": "刚度（Stiffness）；刚度系数，保持骨骼原始方向的能力，(0=自由移动，1=完全固定)，默认值 0.1",
+    "Inert": "惯性（Inert）",
+    "Inert_tip": "惯性（Inert）；控制骨骼跟随角色移动的灵敏度，值越大角色移动对骨骼的位置变化影响越小，(0=完全响应移动，1=完全忽略移动)，适用于防止快速移动时出现不自然的剧烈晃动，默认值 0",
+    "Radius": "半径（Radius）",
+    "Radius_tip": "半径（Radius）；基础碰撞检测范围，值越大骨骼与其他物体的碰撞检测范围越大，默认值 0",
+    "other": "其他参数",
+    "EndLength": "末端骨骼长度",
+    "EndLength_tip": "末端骨骼长度（EndLength）；末端骨骼延伸长度，如果不为零，则在 Transform 层次结构的末尾产生额外的骨头（可以理解为在最后一段骨头上额外加一个骨头）。默认值 0",
+    "EndOffset": "末端骨骼坐标",
+    "EndOffset_tip": "末端骨骼偏移（EndOffset）；末端骨骼的局部坐标偏移，如果均为 0 则不会添加末端骨，默认值 0,0,0",
+    "Gravity": "重力",
+    "Gravity_tip": "重力（Gravity）；模拟重力方向，施加到骨骼上的初始状态偏移值，默认值 0,0,0",
+    "Force": "外力",
+    "Force_tip": "外力（Force）；持续作用力，在骨骼上施加一个外力，默认值 0,-0.01,0",
+    "Collider": "碰撞器",
+    "ColliderFileName": "碰撞器文件名",
+    "ColliderFileName_tip": "碰撞器文件名（ColliderFileName）；填写 foobar.col 的文件名，但是去掉 .col 后缀，建议与 phy 文件同名",
+    "ColliderCount": "碰撞器数量",
+    "ColliderCount_tip": "碰撞器数量（ColliderCount）；碰撞器数量，填写'碰撞器文件名'对应的 col 文件中的碰撞器数量，点击自动计算按钮可以自动在本文件同一文件夹中查找在'碰撞器文件名'中填写的的 col 文件并计算碰撞器数量",
+    "auto_count": "自动计算",
+    "ExclusionsCount": "排除数量",
+    "ExclusionsCount_tip": "排除数量（ExclusionsCount）；似乎是要排除的骨骼数量，但只有数量没有具体的骨骼名，疑似本功能已被弃用（2.42.1）",
+    "FreezeAxis": "冻结轴",
+    "FreezeAxis_tip": "冻结轴（FreezeAxis）；冻结轴，使骨头只在指定的轴上移动，默认值 0",
+    "FreezeAxis_None": "无(0)",
+    "PartialMode": "模式",
+    "PartialMode_tip": "模式（PartialMode）；0 静态或曲线：直接使用设置值，1 按部位：按骨骼单独设置值，2 按骨骼名，自动从旧版本骨头名称设置值",
+    "PartialMode_StaticOrCurve": "静态或曲线（0）",
+    "PartialMode_Partial": "按部位（1）",
+    "PartialMode_FromBoneName": "按骨骼名（2）",
+    "default_value": "默认值",
+    "default_value_tip": "默认值（DefaultValue）；默认值，如果没有设置按部位设置或使用关键帧，则使用此值",
+    "BoneValue": "骨骼值",
+    "add_BoneValue": "添加骨骼值",
+    "BoneName": "骨骼名",
+    "Value": "值",
+    "operate": "操作",
+    "keyframe": "关键帧",
+    "add_keyframe": "添加关键帧",
+    "Time": "时间",
+    "InTangent": "入切线",
+    "OutTangent": "出切线"
+  },
   "SettingsPage": {
     "is_check_update": "是否检查更新",
     "is_check_update_tip": "默认为 true，访问 Github Api 获取最新版本信息，间隔 24 小时检查一次，如果上一次检查失败，则间隔 1 小时再检查一次。如果清除了浏览器缓存，此选项会重置",
@@ -252,7 +313,8 @@
     "editing_colon": "正在编辑: ",
     "success_save_file": "文件保存成功",
     "success_save_as_file": "文件另存为成功",
-    "success_save_as_file_colon": "文件另存为成功: "
+    "success_save_as_file_colon": "文件另存为成功: ",
+    "auto_count_success": "自动计算成功"
   },
   "Errors": {
     "fail_to_check_update": "检查更新失败",
@@ -260,8 +322,13 @@
     "read_menu_file_failed_colon": "读取 .menu 文件失败：",
     "read_mate_file_failed_colon": "读取.mate 文件失败：",
     "read_pmate_file_failed_colon": "读取.pmat 文件失败：",
-    "pls_input_menu_file_path_to_open": "请输入要打开的 .menu 文件路径",
-    "pls_input_file_path_first": "请先输入文件路径，新建文件请使用另存为",
+    "read_col_file_failed_colon": "读取.col 文件失败：",
+    "read_phy_file_failed_colon": "读取.phy 文件失败：",
+    "read_anm_file_failed_colon": "读取.anm 文件失败：",
+    "read_model_file_failed_colon": "读取.model 文件失败：",
+    "read_psk_file_failed_colon": "读取.psk 文件失败：",
+    "read_tex_file_failed_colon": "读取.tex 文件失败：",
+    "pls_open_file_first_new_file_use_save_as": "请先打开文件，新建文件请使用另存为",
     "pls_load_file_first": "请先加载文件",
     "save_file_failed_colon": "保存文件失败: ",
     "save_as_file_failed_colon": "文件另存为失败: ",
@@ -269,6 +336,10 @@
     "json_parse_failed": "JSON 解析失败",
     "no_file_to_save": "没有文件可供保存",
     "invalid_path_or_mate_data": "无效文件路径或 Mate 数据",
-    "file_type_not_supported": "暂时不支持此文件类型"
+    "file_type_not_supported": "暂时不支持此文件类型",
+    "autoCalcColliderError": {
+      "pls_fill_file_name_first": "请先在'碰撞器文件名'中填写文件名",
+      "read_file_filed": "读取对应的 col 文件失败"
+    }
   }
 }

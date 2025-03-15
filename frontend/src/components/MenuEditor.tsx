@@ -134,7 +134,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
          */
         const handleReadMenuFile = async () => {
             if (!filePath) {
-                message.error(t('Errors.pls_input_menu_file_path_to_open'));
+                message.error(t('Infos.pls_open_file_first'));
                 return;
             }
             try {
@@ -169,7 +169,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
          */
         const handleSaveMenuFile = async () => {
             if (!filePath) {
-                message.error(t('Errors.pls_input_file_path_first'));
+                message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
                 return;
             }
             if (!menuData) {

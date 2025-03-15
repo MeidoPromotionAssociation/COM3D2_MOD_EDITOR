@@ -89,10 +89,6 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
     return (
         <div
             style={{
-                marginBottom: 8,
-                padding: 8,
-                border: '1px solid #000',
-                borderRadius: 4,
                 textAlign: 'left',
             }}
         >
@@ -510,14 +506,14 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             form.setFieldsValue(transformColToForm(data));
         } catch (error: any) {
             console.error(error);
-            message.error(t('Errors.read_mate_file_failed_colon') + error);
+            message.error(t('Errors.read_col_file_failed_colon') + error);
         }
     }
 
     /** 保存 Col 文件（覆盖写回） */
     async function handleSaveColFile() {
         if (!filePath) {
-            message.error(t('Errors.pls_input_file_path_first'));
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
         }
         if (!colData) {

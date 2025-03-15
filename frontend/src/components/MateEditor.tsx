@@ -520,7 +520,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      */
     const handleSaveMateFile = async () => {
         if (!filePath) {
-            message.error(t('Errors.pls_input_file_path_first'));
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
         }
         if (!mateData) {

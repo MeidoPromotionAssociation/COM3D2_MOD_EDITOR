@@ -17,64 +17,66 @@ type Phy struct {
 	// 2. 版本 (例如 24102)
 	Version int32
 
-	// 3. Root 名称
+	// 3. RootBone 名称
 	RootName string
 
-	// 4. 部分模式 + 骨骼列表（Damping）
-	EnablePartialDamping int32
+	// 4. Damping 阻尼相关参数
+	EnablePartialDamping int32 // PartialMode 枚举
 	PartialDamping       []BoneValue
 	Damping              float32
 	DampingDistrib       AnimationCurve
 
-	// 5. 部分模式 + 骨骼列表（Elasticity）
+	// 5. Elasticity 弹性相关参数
 	EnablePartialElasticity int32
 	PartialElasticity       []BoneValue
 	Elasticity              float32
 	ElasticityDistrib       AnimationCurve
 
-	// 6. 部分模式 + 骨骼列表（Stiffness）
+	// 6. Stiffness 刚度相关参数
 	EnablePartialStiffness int32
 	PartialStiffness       []BoneValue
 	Stiffness              float32
 	StiffnessDistrib       AnimationCurve
 
-	// 7. 部分模式 + 骨骼列表（Inert）
+	// 7. Inert 惯性相关参数
 	EnablePartialInert int32
 	PartialInert       []BoneValue
 	Inert              float32
 	InertDistrib       AnimationCurve
 
-	// 8. 部分模式 + 骨骼列表（Radius）
+	// 8. 碰撞半径相关参数
 	EnablePartialRadius int32
 	PartialRadius       []BoneValue
 	Radius              float32
 	RadiusDistrib       AnimationCurve
 
-	// 9. 其他几个 float
+	// 9. 骨骼末端参数
 	EndLength float32
 	EndOffset [3]float32
-	Gravity   [3]float32
-	Force     [3]float32
 
-	// 10. ColliderFileName, 不做深入读取
-	ColliderFileName string
-	CollidersCount   int32
+	// 10. 外力参数
+	Gravity [3]float32
+	Force   [3]float32
 
-	// 11. ExclusionsCount
-	ExclusionsCount int32
+	// 10. 碰撞器相关参数
+	ColliderFileName string // 碰撞器文件名
+	CollidersCount   int32  // 碰撞器数量
 
-	// 12. FreezeAxis
-	FreezeAxis int32
+	// 11.  排除骨骼
+	ExclusionsCount int32 // 排除的骨骼数量
+
+	// 12. 冻结轴向
+	FreezeAxis int32 // FreezeAxis 枚举
 }
 
-// PartialMode 枚举与 C# 对应
+// PartialMode 枚举
 const (
-	PartialMode_StaticOrCurve int32 = 0 // C#里的 StaticOrCurve
-	PartialMode_Partial       int32 = 1 // C#里的 Partial
-	PartialMode_FromBoneName  int32 = 2 // C#里的 FromBoneName
+	PartialMode_StaticOrCurve int32 = 0 // C#里的 StaticOrCurve，静态或曲线模式
+	PartialMode_Partial       int32 = 1 // C#里的 Partial，部位模式
+	PartialMode_FromBoneName  int32 = 2 // C#里的 FromBoneName，骨骼名模式
 )
 
-// FreezeAxis 枚举与 C# 对应
+// FreezeAxis 枚举
 const (
 	FreezeAxis_None int32 = 0
 	FreezeAxis_X    int32 = 1
@@ -191,7 +193,7 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 		return nil, fmt.Errorf("read RadiusDistrib failed: %w", err)
 	}
 
-	// 9. EndLength, EndOffset (x,y,z), Gravity (x,y,z), Force (x,y,z)
+	// 9. EndLength, EndOffset (x,y,z)
 	p.EndLength, err = utilities.ReadFloat32(r)
 	if err != nil {
 		return nil, fmt.Errorf("read EndLength failed: %w", err)
@@ -203,7 +205,8 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 			return nil, fmt.Errorf("read EndOffset[%d] failed: %w", i, err)
 		}
 	}
-	// Gravity
+
+	// 10.  Gravity (x,y,z), Force (x,y,z)
 	for i := 0; i < 3; i++ {
 		p.Gravity[i], err = utilities.ReadFloat32(r)
 		if err != nil {
@@ -218,31 +221,33 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 		}
 	}
 
-	// 10. ColliderFileName
+	// 11. ColliderFileName
 	cfn, err := utilities.ReadString(r)
 	if err != nil {
 		return nil, fmt.Errorf("read ColliderFileName failed: %w", err)
 	}
 	p.ColliderFileName = cfn
 
-	// 11. CollidersCount
+	// 12. CollidersCount
 	colCount, err := utilities.ReadInt32(r)
 	if err != nil {
 		return nil, fmt.Errorf("read CollidersCount failed: %w", err)
 	}
 	p.CollidersCount = colCount
 
-	// 虽然此处 C# 里有循环给 m_Colliders 分配，但并未写任何内容，所以这里直接略过。
-	// 因为碰撞器有自己的格式，phy 内不包含
+	// 虽然 C# 记录了 CollidersCount，但并没有写任何内容
+	// 目前记录 CollidersCount 只是为了初始化列表
 
-	// 12. ExclusionsCount
+	// 13. ExclusionsCount
 	excCount, err := utilities.ReadInt32(r)
 	if err != nil {
 		return nil, fmt.Errorf("read ExclusionsCount failed: %w", err)
 	}
 	p.ExclusionsCount = excCount
 
-	// 同样，C# 只写了数量，没有写任何 Transform 名称
+	// 同样，C# 只写了数量，没有写任何内容
+	// 猜测此功能已弃用
+	// 目前记录 ExclusionsCount 只是为了初始化列表
 
 	// 13. FreezeAxis
 	fa, err := utilities.ReadInt32(r)
@@ -356,13 +361,19 @@ func (p *Phy) Dump(w io.Writer) error {
 	if err := utilities.WriteInt32(w, p.CollidersCount); err != nil {
 		return fmt.Errorf("write CollidersCount failed: %w", err)
 	}
-	// 因为 C# 没写具体的 Collider 内容，这里也就不写
+
+	// 虽然 C# 记录了 CollidersCount，但并没有写任何内容，所以这里直接略过
+	// 猜测因为以前 phy 和 col 是合并的
+	// 但是碰撞器有自己的格式 col，所以 phy 内不写出 col 的内容
+	// 记录 CollidersCount 只是为了初始化列表
 
 	// 15. ExclusionsCount
 	if err := utilities.WriteInt32(w, p.ExclusionsCount); err != nil {
 		return fmt.Errorf("write ExclusionsCount failed: %w", err)
 	}
-	// 同样略过实际 Exclusions
+	// 同样，C# 只写了数量，没有写任何内容
+	// 猜测此功能已弃用
+	// 记录 ExclusionsCount 只是为了初始化列表
 
 	// 16. FreezeAxis
 	if err := utilities.WriteInt32(w, p.FreezeAxis); err != nil {
@@ -377,29 +388,30 @@ func (p *Phy) Dump(w io.Writer) error {
 //	int(PartialMode) -> 如果 != PartialMode_Partial, 结束；
 //	int(boneCount) -> 循环读取 boneName + floatValue
 func readPartial(r io.Reader) (int32, []BoneValue, error) {
-	mode, err := utilities.ReadInt32(r)
+	mode, err := utilities.ReadInt32(r) // 读取 PartialMode，对应 PartialMode 枚举
 	if err != nil {
 		return 0, nil, fmt.Errorf("read partialMode failed: %w", err)
 	}
-	if mode != PartialMode_Partial {
+	if mode != PartialMode_Partial { // 如果不是 PartialMode_Partial 部位模式，直接返回
 		return mode, nil, nil
 	}
 
-	count, err := utilities.ReadInt32(r)
+	count, err := utilities.ReadInt32(r) // 读取骨骼数量
 	if err != nil {
 		return mode, nil, fmt.Errorf("read partial count failed: %w", err)
 	}
+
 	vals := make([]BoneValue, count)
-	for i := 0; i < int(count); i++ {
-		bn, err := utilities.ReadString(r)
+	for i := 0; i < int(count); i++ { // 循环读取骨骼名称和对应 float 值
+		bn, err := utilities.ReadString(r) // 读取骨骼名称
 		if err != nil {
 			return mode, nil, fmt.Errorf("read boneName failed: %w", err)
 		}
-		fv, err := utilities.ReadFloat32(r)
+		fv, err := utilities.ReadFloat32(r) // 读取对应 float 值
 		if err != nil {
 			return mode, nil, fmt.Errorf("read boneValue failed: %w", err)
 		}
-		vals[i] = BoneValue{BoneName: bn, Value: fv}
+		vals[i] = BoneValue{BoneName: bn, Value: fv} // 存储到切片中
 	}
 	return mode, vals, nil
 }
@@ -432,7 +444,7 @@ func writePartial(w io.Writer, mode int32, values []BoneValue) error {
 
 // 读取 AnimationCurve：先读 int(个数)，若为 0 则返回空
 func readAnimationCurve(r io.Reader) (AnimationCurve, error) {
-	n, err := utilities.ReadInt32(r)
+	n, err := utilities.ReadInt32(r) // 读取 Keyframe 数量
 	if err != nil {
 		return AnimationCurve{}, fmt.Errorf("read curve keyCount failed: %w", err)
 	}
@@ -441,19 +453,19 @@ func readAnimationCurve(r io.Reader) (AnimationCurve, error) {
 	}
 	arr := make([]Keyframe, n)
 	for i := 0; i < int(n); i++ {
-		t, err := utilities.ReadFloat32(r)
+		t, err := utilities.ReadFloat32(r) // 读取关键帧时间
 		if err != nil {
 			return AnimationCurve{}, fmt.Errorf("read time failed: %w", err)
 		}
-		v, err := utilities.ReadFloat32(r)
+		v, err := utilities.ReadFloat32(r) // 读取关键帧值
 		if err != nil {
 			return AnimationCurve{}, fmt.Errorf("read value failed: %w", err)
 		}
-		inT, err := utilities.ReadFloat32(r)
+		inT, err := utilities.ReadFloat32(r) // 读取关键字入切线
 		if err != nil {
 			return AnimationCurve{}, fmt.Errorf("read inTangent failed: %w", err)
 		}
-		outT, err := utilities.ReadFloat32(r)
+		outT, err := utilities.ReadFloat32(r) // 读取关键字出切线
 		if err != nil {
 			return AnimationCurve{}, fmt.Errorf("read outTangent failed: %w", err)
 		}

@@ -81,7 +81,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
      */
     const handleReadPMatFile = async () => {
         if (!filePath) {
-            message.error(t("Errors.pls_input_file_path_first"));
+            message.error(t("Errors.pls_open_file_first_new_file_use_save_as"));
             return;
         }
         try {
@@ -106,7 +106,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
      */
     const handleSavePMatFile = async () => {
         if (!filePath) {
-            message.error(t("Errors.pls_input_file_path_first"));
+            message.error(t("Errors.pls_open_file_first_new_file_use_save_as"));
             return;
         }
         if (!pmatData) {
