@@ -464,7 +464,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                     onClick={handleShowHelp}
                                     size="small"
                                     type="text"
-                                    style={{position: "absolute", bottom: 0, right: 0,zIndex: 9999}}
+                                    style={{position: "absolute", bottom: 0, right: 0, zIndex: 9999}}
                                     icon={<QuestionCircleOutlined/>}
                                 />
                                 <Modal title={t('MenuEditor.menu_editor_help')} open={isHelpModalVisible}

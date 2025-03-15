@@ -975,77 +975,77 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         </Collapse.Panel>
                     </Collapse>
 
-                        {/* 用 Radio 切换样式 */}
-                        <div style={{marginBottom: 8,marginTop:8}}>
-                            <Radio.Group
-                                block
-                                value={viewMode}
-                                onChange={(e) => {
-                                    // Get current form values and update mateData before switching view
-                                    const currentFormValues = form.getFieldsValue(true);
-                                    if (mateData && e.target.value !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
-                                        const updatedMate = transformFormToMate(currentFormValues, mateData);
-                                        setMateData(updatedMate);
-                                    }
+                    {/* 用 Radio 切换样式 */}
+                    <div style={{marginBottom: 8, marginTop: 8}}>
+                        <Radio.Group
+                            block
+                            value={viewMode}
+                            onChange={(e) => {
+                                // Get current form values and update mateData before switching view
+                                const currentFormValues = form.getFieldsValue(true);
+                                if (mateData && e.target.value !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
+                                    const updatedMate = transformFormToMate(currentFormValues, mateData);
+                                    setMateData(updatedMate);
+                                }
 
-                                    if (e.target.value === 3) {
-                                        setIsHeaderEditable(false) // 模式 3 不允许编辑表单文件头，应当直接在 JSON 中编辑
-                                    } else {
-                                        setIsHeaderEditable(true)
-                                    }
+                                if (e.target.value === 3) {
+                                    setIsHeaderEditable(false) // 模式 3 不允许编辑表单文件头，应当直接在 JSON 中编辑
+                                } else {
+                                    setIsHeaderEditable(true)
+                                }
 
-                                    setViewMode(e.target.value);
-                                    localStorage.setItem('mateEditorViewMode', e.target.value.toString());
-                                }}
-                                options={[
-                                    {label: t('MateEditor.style1'), value: 1},
-                                    {label: t('MateEditor.style2'), value: 2},
-                                    {label: t('MateEditor.style3'), value: 3},
-                                ]}
-                                optionType="button"
-                                buttonStyle="solid"
-                            />
-                        </div>
+                                setViewMode(e.target.value);
+                                localStorage.setItem('mateEditorViewMode', e.target.value.toString());
+                            }}
+                            options={[
+                                {label: t('MateEditor.style1'), value: 1},
+                                {label: t('MateEditor.style2'), value: 2},
+                                {label: t('MateEditor.style3'), value: 3},
+                            ]}
+                            optionType="button"
+                            buttonStyle="solid"
+                        />
+                    </div>
 
-                    {viewMode !== 3 &&(
-                    <Collapse defaultActiveKey={['properties']}>
-                        <Collapse.Panel key="properties" header={t('MateEditor.property')}>
-                            {viewMode === 1 && (
-                                <Form.List name="properties">
-                                    {(fields, {add, remove}) =>
-                                        fields.length > 70 ? (
-                                            <Style1PropertiesVirtualized
+                    {viewMode !== 3 && (
+                        <Collapse defaultActiveKey={['properties']}>
+                            <Collapse.Panel key="properties" header={t('MateEditor.property')}>
+                                {viewMode === 1 && (
+                                    <Form.List name="properties">
+                                        {(fields, {add, remove}) =>
+                                            fields.length > 70 ? (
+                                                <Style1PropertiesVirtualized
+                                                    fields={fields}
+                                                    add={add}
+                                                    remove={remove}
+                                                    form={form}
+                                                />
+                                            ) : (
+                                                <Style1Properties
+                                                    fields={fields}
+                                                    add={add}
+                                                    remove={remove}
+                                                    form={form}
+                                                />
+                                            )
+                                        }
+                                    </Form.List>
+                                )}
+
+                                {viewMode === 2 && (
+                                    <Form.List name="properties">
+                                        {(fields, {add, remove}) => (
+                                            <Style2Properties
                                                 fields={fields}
                                                 add={add}
                                                 remove={remove}
                                                 form={form}
                                             />
-                                        ) : (
-                                            <Style1Properties
-                                                fields={fields}
-                                                add={add}
-                                                remove={remove}
-                                                form={form}
-                                            />
-                                        )
-                                    }
-                                </Form.List>
-                            )}
-
-                            {viewMode === 2 && (
-                                <Form.List name="properties">
-                                    {(fields, {add, remove}) => (
-                                        <Style2Properties
-                                            fields={fields}
-                                            add={add}
-                                            remove={remove}
-                                            form={form}
-                                        />
-                                    )}
-                                </Form.List>
-                            )}
-                        </Collapse.Panel>
-                    </Collapse>
+                                        )}
+                                    </Form.List>
+                                )}
+                            </Collapse.Panel>
+                        </Collapse>
                     )}
 
                     {viewMode === 3 && (

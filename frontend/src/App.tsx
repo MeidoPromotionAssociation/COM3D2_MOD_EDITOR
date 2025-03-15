@@ -84,7 +84,7 @@ const App: React.FC = () => {
 
     // 为了让 monaco 从本地而不是 CDN 加载
     const monacoInit = async () => {
-        const loader =  await import("@monaco-editor/loader");
+        const loader = await import("@monaco-editor/loader");
         const monaco = await import("monaco-editor")
         const editorWorker = await import("monaco-editor/esm/vs/editor/editor.worker?worker")
         const jsonWorker = await import("monaco-editor/esm/vs/language/json/json.worker?worker")
