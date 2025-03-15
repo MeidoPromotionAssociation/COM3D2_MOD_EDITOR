@@ -416,7 +416,11 @@ const Style2Properties: React.FC<{
     };
 
     return (
-        <div style={{height: "calc(100vh - 230px)"}}>
+        <div style={{
+            height: "calc(100vh - 165px)",
+            borderRadius: '8px',   // 添加圆角
+            overflow: 'hidden'     // 隐藏超出圆角范围的部分
+        }}>
             <Editor
                 language="json"
                 theme={isDarkMode ? "vs-dark" : "vs"}
@@ -749,7 +753,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     size="small"
                     labelCol={{style: {width: '10vw'}}}
                 >
-                    <Collapse defaultActiveKey={["colliders"]}>
+                    <Collapse>
                         <Collapse.Panel header={t('ColEditor.file_header.file_head')} key="basic">
                             <Space>
                                 <Form.Item name="signature"
@@ -775,33 +779,35 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                 </Form.Item>
                             </Space>
                         </Collapse.Panel>
-                        <Collapse.Panel header={t('ColEditor.Colliders')} key="colliders">
-                            <div style={{marginBottom: 8}}>
-                                <Radio.Group
-                                    block
-                                    value={viewMode}
-                                    onChange={(e) => {
-                                        // Get current form values and update mateData before switching view
-                                        const currentFormValues = form.getFieldsValue(true);
-                                        if (colData && (viewMode != 2)) { // 非模式 2 时从表单拿数据，因为模式 2 是 JSON
-                                            const updatedCol = transformFormToCol(currentFormValues, colData);
-                                            setColData(updatedCol);
-                                            console.log(updatedCol)
-                                        }
+                    </Collapse>
 
-                                        setViewMode(e.target.value);
-                                        localStorage.setItem('colEditorViewMode', e.target.value.toString());
-                                    }}
-                                    options={[
-                                        {label: t('ColEditor.style1'), value: 1},
-                                        {label: t('ColEditor.style2'), value: 2},
-                                    ]}
-                                    optionType="button"
-                                    buttonStyle="solid"
-                                />
-                            </div>
+                    <div style={{marginBottom: 8, marginTop: 8}}>
+                        <Radio.Group
+                            block
+                            value={viewMode}
+                            onChange={(e) => {
+                                // 在切换显示模式之前获取当前表单值并更新 colData
+                                const currentFormValues = form.getFieldsValue(true);
+                                if (colData && (viewMode != 2)) { // 非模式 2 时从表单拿数据，因为模式 2 是 JSON
+                                    const updatedCol = transformFormToCol(currentFormValues, colData);
+                                    setColData(updatedCol);
+                                }
 
-                            {viewMode === 1 && (
+                                setViewMode(e.target.value);
+                                localStorage.setItem('colEditorViewMode', e.target.value.toString());
+                            }}
+                            options={[
+                                {label: t('ColEditor.style1'), value: 1},
+                                {label: t('ColEditor.style2'), value: 2},
+                            ]}
+                            optionType="button"
+                            buttonStyle="solid"
+                        />
+                    </div>
+
+                    {viewMode === 1 && (
+                        <Collapse defaultActiveKey={["colliders"]}>
+                            <Collapse.Panel header={t('ColEditor.Colliders')} key="colliders">
                                 <Form.List name="colliders">
                                     {(fields, {add, remove}) =>
                                         <Style1Colliders
@@ -812,16 +818,16 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                         />
                                     }
                                 </Form.List>
-                            )}
+                            </Collapse.Panel>
+                        </Collapse>
+                    )}
 
-                            {viewMode === 2 && (
-                                <Style2Properties
-                                    colData={colData}
-                                    setColData={(newVal) => setColData(newVal)}
-                                />
-                            )}
-                        </Collapse.Panel>
-                    </Collapse>
+                    {viewMode === 2 && (
+                        <Style2Properties
+                            colData={colData}
+                            setColData={(newVal) => setColData(newVal)}
+                        />
+                    )}
                 </Form>
             </ConfigProvider>
         </div>

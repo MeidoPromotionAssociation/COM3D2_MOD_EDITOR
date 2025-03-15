@@ -341,7 +341,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         };
 
         return (
-            <div style={{padding: 20}}>
+            <div style={{padding: 10}}>
                 {menuData && (
                     <div
                         style={{
@@ -351,6 +351,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                         {/* 文件头编辑区 */}
                         <div style={{marginBottom: 10}}>
                             <Collapse
+                                size="small"
                                 items={[{
                                     key: '1',
                                     label: t('MenuEditor.file_header.file_head_usually_no_modify_required'),
@@ -432,11 +433,12 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                         </div>
 
                         {/* Commands 编辑区 */}
-                        <div style={{marginTop: 10}}>
+                        <div style={{marginTop: 8}}>
                             <div style={{marginBottom: 8}}>
                                 {/*<span>Commands 显示格式: </span>*/}
                                 <Flex vertical gap="middle">
                                     <Radio.Group
+                                        size="small"
                                         block
                                         options={formatOptions}
                                         defaultValue="treeIndent"
@@ -453,7 +455,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
                             <div
                                 style={{
-                                    height: 'calc(100vh - 205px)',
+                                    height: "calc(100vh - 165px)",
                                     borderRadius: '8px',   // 添加圆角
                                     overflow: 'hidden'     // 隐藏超出圆角范围的部分
                                 }}
@@ -462,7 +464,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                     onClick={handleShowHelp}
                                     size="small"
                                     type="text"
-                                    style={{position: "absolute", bottom: 0, right: 0}}
+                                    style={{position: "absolute", bottom: 0, right: 0,zIndex: 9999}}
                                     icon={<QuestionCircleOutlined/>}
                                 />
                                 <Modal title={t('MenuEditor.menu_editor_help')} open={isHelpModalVisible}

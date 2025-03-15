@@ -195,11 +195,12 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     };
 
     return (
-        <div style={{padding: 20}}>
+        <div style={{padding: 10}}>
             {pmatData && (
                 <div style={{height: "100%"}}>
                     {/* 基于 MenuEditor 的风格，做一个折叠面板放只读区 */}
                     <Collapse
+                        size="small"
                         items={[
                             {
                                 key: "1",

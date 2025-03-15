@@ -426,7 +426,11 @@ const Style3Properties: React.FC<{
     };
 
     return (
-        <div style={{height: "calc(100vh - 230px)"}}>
+        <div style={{
+            height: "calc(100vh - 165px)",
+            borderRadius: '8px',   // 添加圆角
+            overflow: 'hidden'     // 隐藏超出圆角范围的部分
+        }}>
             <Editor
                 language="json"
                 theme={isDarkMode ? "vs-dark" : "vs"}
@@ -877,14 +881,13 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                 <Form
                     form={form}
                     layout="horizontal"
-                    style={{marginTop: 10}}
                     size="small"
                     labelAlign="left"
                     // Form 级别统一设置 labelCol
                     labelCol={{style: {width: '15vw'}}}
                     requiredMark={false}
                 >
-                    <Collapse defaultActiveKey={['basic', 'properties']}>
+                    <Collapse defaultActiveKey={['basic']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.file_head')}>
                             <Space>
                                 <Form.Item name="signature" initialValue={COM3D2HeaderConstants.MateSignature}>
@@ -970,40 +973,43 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 />
                             </Form.Item>
                         </Collapse.Panel>
+                    </Collapse>
 
+                        {/* 用 Radio 切换样式 */}
+                        <div style={{marginBottom: 8,marginTop:8}}>
+                            <Radio.Group
+                                block
+                                value={viewMode}
+                                onChange={(e) => {
+                                    // Get current form values and update mateData before switching view
+                                    const currentFormValues = form.getFieldsValue(true);
+                                    if (mateData && e.target.value !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
+                                        const updatedMate = transformFormToMate(currentFormValues, mateData);
+                                        setMateData(updatedMate);
+                                    }
+
+                                    if (e.target.value === 3) {
+                                        setIsHeaderEditable(false) // 模式 3 不允许编辑表单文件头，应当直接在 JSON 中编辑
+                                    } else {
+                                        setIsHeaderEditable(true)
+                                    }
+
+                                    setViewMode(e.target.value);
+                                    localStorage.setItem('mateEditorViewMode', e.target.value.toString());
+                                }}
+                                options={[
+                                    {label: t('MateEditor.style1'), value: 1},
+                                    {label: t('MateEditor.style2'), value: 2},
+                                    {label: t('MateEditor.style3'), value: 3},
+                                ]}
+                                optionType="button"
+                                buttonStyle="solid"
+                            />
+                        </div>
+
+                    {viewMode !== 3 &&(
+                    <Collapse defaultActiveKey={['properties']}>
                         <Collapse.Panel key="properties" header={t('MateEditor.property')}>
-                            {/* 用 Radio 切换样式 */}
-                            <div style={{marginBottom: 8}}>
-                                <Radio.Group
-                                    block
-                                    value={viewMode}
-                                    onChange={(e) => {
-                                        // Get current form values and update mateData before switching view
-                                        const currentFormValues = form.getFieldsValue(true);
-                                        if (mateData && e.target.value !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
-                                            const updatedMate = transformFormToMate(currentFormValues, mateData);
-                                            setMateData(updatedMate);
-                                        }
-
-                                        if (e.target.value === 3) {
-                                            setIsHeaderEditable(false) // 模式 3 不允许编辑表单文件头，应当直接在 JSON 中编辑
-                                        } else {
-                                            setIsHeaderEditable(true)
-                                        }
-
-                                        setViewMode(e.target.value);
-                                        localStorage.setItem('mateEditorViewMode', e.target.value.toString());
-                                    }}
-                                    options={[
-                                        {label: t('MateEditor.style1'), value: 1},
-                                        {label: t('MateEditor.style2'), value: 2},
-                                        {label: t('MateEditor.style3'), value: 3},
-                                    ]}
-                                    optionType="button"
-                                    buttonStyle="solid"
-                                />
-                            </div>
-
                             {viewMode === 1 && (
                                 <Form.List name="properties">
                                     {(fields, {add, remove}) =>
@@ -1038,15 +1044,16 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     )}
                                 </Form.List>
                             )}
-
-                            {viewMode === 3 && (
-                                <Style3Properties
-                                    mateData={mateData}
-                                    setMateData={(newVal) => setMateData(newVal)}
-                                />
-                            )}
                         </Collapse.Panel>
                     </Collapse>
+                    )}
+
+                    {viewMode === 3 && (
+                        <Style3Properties
+                            mateData={mateData}
+                            setMateData={(newVal) => setMateData(newVal)}
+                        />
+                    )}
                 </Form>
             </ConfigProvider>
         </div>
