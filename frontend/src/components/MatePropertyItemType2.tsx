@@ -1,6 +1,6 @@
-import {Button, Flex, Form, Input, InputNumber, Select, Space, Switch, Tooltip} from "antd";
+import {Button, Flex, Form, Input, InputNumber, Select, Space, Switch, Table, Tooltip} from "antd";
 import {useTranslation} from "react-i18next";
-import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import {AggregationColor} from "antd/es/color-picker/color";
 import ColorPickerSync from "./ColorPickerSync";
@@ -395,46 +395,71 @@ const MatePropertyItemType2 = ({
             {currentTypeName === 'keyword' && (
                 <Form.List name={[name, 'keywords']}>
                     {(fields, {add, remove}) => (
-                        <div style={{width: '100%'}}>
-                            {fields.map(({key, name: fieldName}) => (
-                                <Flex align="center" justify="space-between">
-                                    <Space key={key} align="center">
+                        <Table
+                            dataSource={fields}
+                            rowKey="key"
+                            size="small"
+                            bordered
+                            pagination={false}
+                            columns={[
+                                {
+                                    title: t('MateEditor.keyword_no_brackets'),
+                                    render: (_, field) => (
                                         <Form.Item
                                             {...restField}
-                                            name={[fieldName, 'key']}
-                                            label={t('MateEditor.keyword_no_brackets')}
-                                            labelCol={{style: {width: '100px'}}}
+                                            name={[field.name, 'key']}
+                                            style={{margin: 0}}
                                         >
-                                            <Input
-                                                suffix={
-                                                    <Tooltip title={t('MateEditor.keyword_tip')}>
-                                                        <QuestionCircleOutlined/>
-                                                    </Tooltip>
-                                                }
-
+                                            <Input suffix={
+                                                <Tooltip title={t('MateEditor.keyword_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                        </Form.Item>
+                                    )
+                                },
+                                {
+                                    title: t('MateEditor.keyword_valve'),
+                                    width: 120,
+                                    render: (_, field) => (
+                                        <Form.Item
+                                            {...restField}
+                                            name={[field.name, 'value']}
+                                            valuePropName="checked"
+                                            style={{margin: 0}}
+                                        >
+                                            <Switch
+                                                checkedChildren="true"
+                                                unCheckedChildren="false"
+                                                size="small"
                                             />
                                         </Form.Item>
-                                        <Form.Item
-                                            {...restField}
-                                            name={[fieldName, 'value']}
-                                            valuePropName="checked"
-                                        >
-                                            <Switch checkedChildren="true" unCheckedChildren="false" size="default"/>
-                                        </Form.Item>
-                                        <Form.Item>
-                                            <Button type="text" onClick={() => remove(fieldName)} size='middle'>
-                                                <DeleteOutlined/>
-                                            </Button>
-                                        </Form.Item>
-                                    </Space>
-                                </Flex>
-                            ))}
-                            <Form.Item>
-                                <Button type="dashed" onClick={() => add()} block>
+                                    )
+                                },
+                                {
+                                    title: t('MateEditor.operate'),
+                                    width: 80,
+                                    render: (_, field) => (
+                                        <Button
+                                            danger
+                                            icon={<DeleteOutlined/>}
+                                            onClick={() => remove(field.name)}
+                                            size="small"
+                                        />
+                                    )
+                                }
+                            ]}
+                            footer={() => (
+                                <Button
+                                    type="dashed"
+                                    onClick={() => add()}
+                                    block
+                                    icon={<PlusOutlined/>}
+                                >
                                     {t('MateEditor.add_key_value')}
                                 </Button>
-                            </Form.Item>
-                        </div>
+                            )}
+                        />
                     )}
                 </Form.List>
             )}
