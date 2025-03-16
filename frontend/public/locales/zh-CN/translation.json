@@ -3,12 +3,7 @@
     "choose_file": "选择文件",
     "pls_select_a_file_to_edit": "请选择一个文件进行编辑",
     "choose_language": "选择语言",
-    "new_version_available": "\uD83D\uDD14 有新版本可用",
-    "current_version": "当前版本：{{currentVersion}}",
-    "latest_version": "最新版本：{{latestVersion}}",
-    "pls_get_update_form_github": "请前往 GitHub 下载更新~",
-    "new_version_button": "新版本可用🚀",
-    "go_github": "前往 GitHub"
+    "new_version_button": "新版本可用🚀"
   },
   "EditorNavBar": {
     "HomePage": "首页",
@@ -93,7 +88,6 @@
     "format_tree_tsv_use_tab": "树形缩进格式和 TSV 格式使用 `Tab` 键缩进，不是空格哦",
     "only_tree_indent_have_autocomplete": "只有树形缩进格式下才有自动补全和提示"
   },
-  "MenuEditorPage": {},
   "MateEditor": {
     "file_header": {
       "file_head": "文件头",
@@ -273,13 +267,13 @@
     "ExclusionsCount": "排除数量",
     "ExclusionsCount_tip": "排除数量（ExclusionsCount）；似乎是要排除的骨骼数量，但只有数量没有具体的骨骼名，疑似本功能已被弃用（2.42.1）",
     "FreezeAxis": "冻结轴",
-    "FreezeAxis_tip": "冻结轴（FreezeAxis）；冻结轴，使骨头只在指定的轴上移动，默认值 0",
+    "FreezeAxis_tip": "冻结轴（FreezeAxis）；冻结轴，使骨头只在指定的轴上移动，比如 X 轴冻结后骨骼就只能在 Y Z 平面上移动，优先级低于碰撞处理，默认值 0",
     "FreezeAxis_None": "无(0)",
     "PartialMode": "模式",
-    "PartialMode_tip": "模式（PartialMode）；0 静态或曲线：直接使用设置值，1 按部位：按骨骼单独设置值，2 按骨骼名，自动从旧版本骨头名称设置值",
-    "PartialMode_StaticOrCurve": "静态或曲线（0）",
-    "PartialMode_Partial": "按部位（1）",
-    "PartialMode_FromBoneName": "按骨骼名（2）",
+    "PartialMode_tip": "模式（PartialMode）；0 静态或曲线：使用设置的默认值或曲线，1 按骨骼名：手动按骨骼名单独为每个骨骼设置值，2 按旧骨骼名，自动按骨骼名匹配值，骨骼名中需要有关键词 _h_ 或 _h50_，根据有无关键词设置不同的值（旧版本，不推荐）",
+    "PartialMode_StaticOrCurve": "静态或曲线（0）(StaticOrCurve)",
+    "PartialMode_Partial": "按骨骼名（1）(Partial)",
+    "PartialMode_FromBoneName": "按旧骨骼名（2）(FromBoneName)",
     "default_value": "默认值",
     "default_value_tip": "默认值（DefaultValue）；仅模式 0 且不使用关键帧时，才使用此值",
     "BoneValue": "骨骼值",
@@ -288,6 +282,7 @@
     "Value": "值",
     "operate": "操作",
     "keyframe": "关键帧（曲线）",
+    "keyframe_tip": "关键帧（keyframe）；骨骼值的关键帧，可以让骨骼物理特性变为曲线，只有在模式 0 时才会使用此值，如果没有填写则使用默认值",
     "add_keyframe": "添加关键帧",
     "Time": "时间",
     "InTangent": "入切线",

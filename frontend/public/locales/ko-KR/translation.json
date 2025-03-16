@@ -2,18 +2,18 @@
   "HomePage": {
     "choose_file": "파일 선택",
     "pls_select_a_file_to_edit": "편집할 파일을 선택하세요",
-    "choose_language": "언어 선택",
-    "new_version_available": "\uD83D\uDD14 새 버전이 있습니다",
-    "current_version": "현재 버전: {{currentVersion}}",
-    "latest_version": "최신 버전: {{latestVersion}}",
-    "pls_get_update_form_github": "GitHub에서 업데이트를 다운로드해 주세요~",
-    "go_github": "GitHub 이동"
+    "choose_language": "언어 선택"
   },
   "EditorNavBar": {
     "HomePage": "홈",
-    "MenuEditor": "메뉴 편집기",
-    "MateEditor": "Mate 편집기",
-    "PMateEditor": "PMate 편집기",
+    "MenuEditor": "Menu",
+    "MateEditor": "Mate",
+    "PMateEditor": "PMate",
+    "ColEditor": "Col",
+    "PhyEditor": "Phy",
+    "AnmEditor": "Anm",
+    "ModelEditor": "Model",
+    "PskEditor": "Psk",
     "open_file": "파일 열기",
     "save_file": "파일 저장",
     "save_as_file": "다른 이름으로 저장"
@@ -87,7 +87,6 @@
     "format_tree_tsv_use_tab": "트리 들여쓰기 형식과 TSV 형식 모두에서 인덴트는 스페이스가 아닌 `Tab` 키를 사용합니다",
     "only_tree_indent_have_autocomplete": "자동완성과 힌트는 트리 들여쓰기 형식에서만 작동합니다"
   },
-  "MenuEditorPage": {},
   "MateEditor": {
     "file_header": {
       "file_head": "파일 헤더",
