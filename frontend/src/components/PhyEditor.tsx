@@ -25,6 +25,7 @@ import {useTranslation} from "react-i18next";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {ReadColFile} from "../../wailsjs/go/COM3D2/ColService";
+import KeyframeEditorWithTable from "./KeyframeEditorWithTable";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
@@ -140,12 +141,12 @@ function transformPhyToForm(phy: Phy): any {
         rootName: phy.RootName,
 
         // Damping
-        enablePartialDamping: phy.EnablePartialDamping,
+        enablePartialDamping: phy.EnablePartialDamping ?? PartialMode_StaticOrCurve,
         partialDamping: (phy.PartialDamping || []).map(bv => ({
             boneName: bv.BoneName,
             value: bv.Value
         })),
-        damping: phy.Damping,
+        damping: phy.Damping ?? 0.5,
         dampingDistribKeyframes: phy.DampingDistrib?.Keyframes?.map(kf => ({
             time: kf.Time,
             value: kf.Value,
@@ -154,12 +155,12 @@ function transformPhyToForm(phy: Phy): any {
         })) || [],
 
         // Elasticity
-        enablePartialElasticity: phy.EnablePartialElasticity,
+        enablePartialElasticity: phy.EnablePartialElasticity ?? PartialMode_StaticOrCurve,
         partialElasticity: (phy.PartialElasticity || []).map(bv => ({
             boneName: bv.BoneName,
             value: bv.Value
         })),
-        elasticity: phy.Elasticity,
+        elasticity: phy.Elasticity ?? 0.1,
         elasticityDistribKeyframes: phy.ElasticityDistrib?.Keyframes?.map(kf => ({
             time: kf.Time,
             value: kf.Value,
@@ -168,12 +169,12 @@ function transformPhyToForm(phy: Phy): any {
         })) || [],
 
         // Stiffness
-        enablePartialStiffness: phy.EnablePartialStiffness,
+        enablePartialStiffness: phy.EnablePartialStiffness ?? PartialMode_StaticOrCurve,
         partialStiffness: (phy.PartialStiffness || []).map(bv => ({
             boneName: bv.BoneName,
             value: bv.Value
         })),
-        stiffness: phy.Stiffness,
+        stiffness: phy.Stiffness ?? 0.1,
         stiffnessDistribKeyframes: phy.StiffnessDistrib?.Keyframes?.map(kf => ({
             time: kf.Time,
             value: kf.Value,
@@ -182,12 +183,12 @@ function transformPhyToForm(phy: Phy): any {
         })) || [],
 
         // Inert
-        enablePartialInert: phy.EnablePartialInert,
+        enablePartialInert: phy.EnablePartialInert ?? PartialMode_StaticOrCurve,
         partialInert: (phy.PartialInert || []).map(bv => ({
             boneName: bv.BoneName,
             value: bv.Value
         })),
-        inert: phy.Inert,
+        inert: phy.Inert ?? 0,
         inertDistribKeyframes: phy.InertDistrib?.Keyframes?.map(kf => ({
             time: kf.Time,
             value: kf.Value,
@@ -196,12 +197,12 @@ function transformPhyToForm(phy: Phy): any {
         })) || [],
 
         // Radius
-        enablePartialRadius: phy.EnablePartialRadius,
+        enablePartialRadius: phy.EnablePartialRadius ?? PartialMode_StaticOrCurve,
         partialRadius: (phy.PartialRadius || []).map(bv => ({
             boneName: bv.BoneName,
             value: bv.Value
         })),
-        radius: phy.Radius,
+        radius: phy.Radius ?? 0,
         radiusDistribKeyframes: phy.RadiusDistrib?.Keyframes?.map(kf => ({
             time: kf.Time,
             value: kf.Value,
@@ -210,7 +211,7 @@ function transformPhyToForm(phy: Phy): any {
         })) || [],
 
         // 其他 float
-        endLength: phy.EndLength,
+        endLength: phy.EndLength ?? 0,
         endOffsetX: phy.EndOffset?.[0] || 0,
         endOffsetY: phy.EndOffset?.[1] || 0,
         endOffsetZ: phy.EndOffset?.[2] || 0,
@@ -220,13 +221,13 @@ function transformPhyToForm(phy: Phy): any {
         gravityZ: phy.Gravity?.[2] || 0,
 
         forceX: phy.Force?.[0] || 0,
-        forceY: phy.Force?.[1] || 0,
+        forceY: phy.Force?.[1] || -0.01,
         forceZ: phy.Force?.[2] || 0,
 
-        colliderFileName: phy.ColliderFileName,
-        collidersCount: phy.CollidersCount,
-        exclusionsCount: phy.ExclusionsCount,
-        freezeAxis: phy.FreezeAxis
+        colliderFileName: phy.ColliderFileName ?? "",
+        collidersCount: phy.CollidersCount ?? 0,
+        exclusionsCount: phy.ExclusionsCount ?? 0,
+        freezeAxis: phy.FreezeAxis ?? 0
     };
 }
 
@@ -575,8 +576,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                     }}
                 >
                     <Flex gap="small">
-                        <Form.Item label={t('PhyEditor.PartialMode')} name={enablePartialName}
-                                   initialValue={PartialMode_StaticOrCurve}>
+                        <Form.Item label={t('PhyEditor.PartialMode')} name={enablePartialName}>
                             <Select
                                 dropdownStyle={{textAlign: 'left'}}
                                 options={[
@@ -597,7 +597,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
 
 
                 <Flex gap="small">
-                    <Form.Item label={t('PhyEditor.default_value')} name={floatFieldName}>
+                    <Form.Item label={t('PhyEditor.default_value')} name={floatFieldName} initialValue={0}>
                         <InputNumber style={{width: '100vh'}} max={1} min={0} step={0.01}/>
                     </Form.Item>
                     <Form.Item>
@@ -680,97 +680,11 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                 <br></br>
 
                 {/* 曲线 keyframes */}
-                <Form.List name={keyframesFieldName}>
-                    {(fields, {add, remove}) => (
-                        <>
-                            <Table
-                                dataSource={fields}
-                                rowKey="name"
-                                size="small"
-                                bordered
-                                pagination={false}
-                                footer={() =>
-                                    <Button
-                                        size="small"
-                                        onClick={() => add({time: 0, value: 0, inTangent: 0, outTangent: 0})}
-                                        style={{width: '100%'}}
-                                    >
-                                        {t('PhyEditor.add_keyframe')}
-                                    </Button>}
-                                columns={[
-                                    {
-                                        title: t('PhyEditor.keyframe'),
-                                        children: [
-                                            {
-                                                title: t('PhyEditor.Time'),
-                                                width: 100,
-                                                render: (_, field) => (
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'time']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
-                                                    </Form.Item>
-                                                )
-                                            },
-                                            {
-                                                title: t('PhyEditor.Value'),
-                                                width: 100,
-                                                render: (_, field) => (
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'value']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
-                                                    </Form.Item>
-                                                )
-                                            },
-                                            {
-                                                title: t('PhyEditor.InTangent'),
-                                                width: 100,
-                                                render: (_, field) => (
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'inTangent']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
-                                                    </Form.Item>
-                                                )
-                                            },
-                                            {
-                                                title: t('PhyEditor.OutTangent'),
-                                                width: 100,
-                                                render: (_, field) => (
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'outTangent']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
-                                                    </Form.Item>
-                                                )
-                                            },
-                                            {
-                                                title: t('PhyEditor.operate'),
-                                                width: 80,
-                                                render: (_, field) => (
-                                                    <Button
-                                                        icon={<DeleteOutlined/>}
-                                                        onClick={() => remove(field.name)}
-                                                        size="small"
-                                                    />
-                                                )
-                                            }
-                                        ]
-                                    }
-                                ]}
-                            />
-                        </>
-                    )}
-                </Form.List>
+                <KeyframeEditorWithTable
+                    keyframesFieldName={keyframesFieldName}
+                    t={t}
+                    form={form}
+                />
             </>
         );
     };
@@ -862,7 +776,14 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                         <Collapse
                             defaultActiveKey={['damping', 'elasticity', 'stiffness', 'inert', 'radius', 'others']}>
                             {/* damping */}
-                            <Collapse.Panel key="damping" header={t('PhyEditor.Damping')}>
+                            <Collapse.Panel key="damping" header={
+                                <>
+                                    {t('PhyEditor.Damping')}
+                                    <Tooltip title={t('PhyEditor.Damping_tip')}>
+                                        <QuestionCircleOutlined/>
+                                    </Tooltip>
+                                </>
+                            }>
                                 {renderPartialSection(
                                     "Damping",
                                     enablePartialDamping,
@@ -874,7 +795,14 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                             </Collapse.Panel>
 
                             {/* elasticity */}
-                            <Collapse.Panel key="elasticity" header={t('PhyEditor.Elasticity')}>
+                            <Collapse.Panel key="elasticity" header={
+                                <>
+                                    {t('PhyEditor.Elasticity')}
+                                    <Tooltip title={t('PhyEditor.Elasticity_tip')}>
+                                        <QuestionCircleOutlined/>
+                                    </Tooltip>
+                                </>
+                            }>
                                 {renderPartialSection(
                                     "Elasticity",
                                     enablePartialElasticity,
@@ -886,7 +814,14 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                             </Collapse.Panel>
 
                             {/* stiffness */}
-                            <Collapse.Panel key="stiffness" header={t('PhyEditor.Stiffness')}>
+                            <Collapse.Panel key="stiffness" header={
+                                <>
+                                    {t('PhyEditor.Stiffness')}
+                                    <Tooltip title={t('PhyEditor.Stiffness_tip')}>
+                                        <QuestionCircleOutlined/>
+                                    </Tooltip>
+                                </>
+                            }>
                                 {renderPartialSection(
                                     "Stiffness",
                                     enablePartialStiffness,
@@ -898,7 +833,14 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                             </Collapse.Panel>
 
                             {/* inert */}
-                            <Collapse.Panel key="inert" header={t('PhyEditor.Inert')}>
+                            <Collapse.Panel key="inert" header={
+                                <>
+                                    {t('PhyEditor.Inert')}
+                                    <Tooltip title={t('PhyEditor.Inert_tip')}>
+                                        <QuestionCircleOutlined/>
+                                    </Tooltip>
+                                </>
+                            }>
                                 {renderPartialSection(
                                     "Inert",
                                     enablePartialInert,
@@ -910,7 +852,14 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                             </Collapse.Panel>
 
                             {/* radius */}
-                            <Collapse.Panel key="radius" header={t('PhyEditor.Radius')}>
+                            <Collapse.Panel key="radius" header={
+                                <>
+                                    {t('PhyEditor.Radius')}
+                                    <Tooltip title={t('PhyEditor.Radius_tip')}>
+                                        <QuestionCircleOutlined/>
+                                    </Tooltip>
+                                </>
+                            }>
                                 {renderPartialSection(
                                     "Radius",
                                     enablePartialRadius,
