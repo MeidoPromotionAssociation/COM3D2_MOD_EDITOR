@@ -21,6 +21,8 @@ For now, it allows you to edit files in these formats
 - .menu
 - .mate
 - .pmat
+- .col
+- .phy
 
 ### Highlights
 
@@ -70,6 +72,8 @@ QQ 967954608 加群暗号 MOD
 - .menu
 - .mate
 - .pmat
+- .col
+- .phy
 
 ### 亮点
 
@@ -117,6 +121,8 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - .menu
 - .mate
 - .pmat
+- .col
+- .phy
 
 ### ハイライト
 
