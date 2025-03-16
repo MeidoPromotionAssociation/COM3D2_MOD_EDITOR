@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Form, FormInstance, InputNumber, Table} from 'antd';
-import {DeleteOutlined, EyeInvisibleOutlined, EyeOutlined} from '@ant-design/icons';
+import {Button, Form, FormInstance, InputNumber, Space, Table, Tooltip} from 'antd';
+import {DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, QuestionCircleOutlined} from '@ant-design/icons';
 
 // 定义关键帧类型
 type Keyframe = {
@@ -168,8 +168,10 @@ const KeyframeEditorWithTable = ({
         if (!svgRef.current) return;
 
         const rect = svgRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / width;
-        const y = 1 - (e.clientY - rect.top) / height;
+        const rawX = (e.clientX - rect.left) / dimensions.width;
+        const rawY = 1 - (e.clientY - rect.top) / dimensions.height;
+        const x = Math.max(0, Math.min(1, rawX));
+        const y = Math.max(0, Math.min(1, rawY));
 
         // 更新本地状态而不是直接更新表单
         const updatedKeyframes = [...localKeyframes];
@@ -185,7 +187,7 @@ const KeyframeEditorWithTable = ({
             updatedKeyframes[index].time = Math.max(updatedKeyframes[updatedKeyframes.length - 2]?.time || 0, x);
         }
 
-        // 设置值（可以根据需要调整范围）
+        // 设置值
         updatedKeyframes[index].value = Math.max(0, Math.min(1, y));
 
         // 更新本地状态
@@ -458,12 +460,17 @@ const KeyframeEditorWithTable = ({
     return (
         <>
             <div style={{marginBottom: 16, textAlign: 'left'}}>
-                <Button
-                    icon={showVisualEditor ? <EyeInvisibleOutlined/> : <EyeOutlined/>}
-                    onClick={() => setShowVisualEditor(!showVisualEditor)}
-                >
-                    {showVisualEditor ? t('PhyEditor.hide_visual_editor') : t('PhyEditor.show_visual_editor')}
-                </Button>
+                <Space>
+                    <Button
+                        icon={showVisualEditor ? <EyeInvisibleOutlined/> : <EyeOutlined/>}
+                        onClick={() => setShowVisualEditor(!showVisualEditor)}
+                    >
+                        {showVisualEditor ? t('PhyEditor.hide_visual_editor') : t('PhyEditor.show_visual_editor')}
+                    </Button>
+                    <Tooltip title={t('PhyEditor.keyframe_tip')}>
+                        <QuestionCircleOutlined/>
+                    </Tooltip>
+                </Space>
             </div>
 
             {showVisualEditor && (
@@ -571,6 +578,8 @@ const KeyframeEditorWithTable = ({
                                                 >
                                                     <InputNumber
                                                         style={{width: '100%'}}
+                                                        min={0}
+                                                        max={1}
                                                         step={0.01}
                                                         onChange={() => {
                                                             // 输入框值变化后更新本地状态

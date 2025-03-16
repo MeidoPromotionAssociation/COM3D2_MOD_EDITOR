@@ -607,84 +607,85 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                     </Form.Item>
                 </Flex>
 
-
-                <Form.List name={partialListName}>
-                    {(fields, {add, remove}) => {
-                        {/* 只有当 mode === PartialMode_StaticOrCurve 时，才显示骨骼列表 */
-                        }
-                        if (partialMode !== PartialMode_Partial) return null;
-
-                        return (
-                            <Table
-                                dataSource={fields}
-                                rowKey="name"
-                                size="small"
-                                bordered
-                                pagination={false}
-                                footer={() =>
-                                    <Button
-                                        size="small"
-                                        onClick={() => add({boneName: "", value: 0})}
-                                        style={{width: '100%'}}
-                                    >
-                                        {t('PhyEditor.add_BoneValue')}
-                                    </Button>
-                                }
-                                columns={[
-                                    {
-                                        title: t('PhyEditor.BoneValue'),
-                                        children: [
-                                            {
-                                                title: t('PhyEditor.BoneName'),
-                                                render: (_, field) => (
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'boneName']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <Input style={{width: '100%'}}/>
-                                                    </Form.Item>
-                                                )
-                                            },
-                                            {
-                                                title: t('PhyEditor.Value'),
-                                                render: (_, field) => (
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'value']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber style={{width: '100%'}} step={0.01}/>
-                                                    </Form.Item>
-                                                )
-                                            },
-                                            {
-                                                title: t('PhyEditor.operate'),
-                                                width: 80,
-                                                render: (_, field) => (
-                                                    <Button
-                                                        icon={<DeleteOutlined/>}
-                                                        onClick={() => remove(field.name)}
-                                                        size="small"
-                                                    />
-                                                )
-                                            }
-                                        ]
+                {/* 只有当 mode === PartialMode_Partial 时，才显示骨骼列表 */}
+                {partialMode === PartialMode_Partial && (
+                    <Form.List name={partialListName}>
+                        {(fields, {add, remove}) => {
+                            return (
+                                <Table
+                                    dataSource={fields}
+                                    rowKey="name"
+                                    size="small"
+                                    bordered
+                                    pagination={false}
+                                    footer={() =>
+                                        <Button
+                                            size="small"
+                                            onClick={() => add({boneName: "", value: 0})}
+                                            style={{width: '100%'}}
+                                        >
+                                            {t('PhyEditor.add_BoneValue')}
+                                        </Button>
                                     }
-                                ]}
-                            />
-                        );
-                    }}
-                </Form.List>
+                                    columns={[
+                                        {
+                                            title: t('PhyEditor.BoneValue'),
+                                            children: [
+                                                {
+                                                    title: t('PhyEditor.BoneName'),
+                                                    render: (_, field) => (
+                                                        <Form.Item
+                                                            {...field}
+                                                            name={[field.name, 'boneName']}
+                                                            style={{margin: 0}}
+                                                        >
+                                                            <Input style={{width: '100%'}}/>
+                                                        </Form.Item>
+                                                    )
+                                                },
+                                                {
+                                                    title: t('PhyEditor.Value'),
+                                                    render: (_, field) => (
+                                                        <Form.Item
+                                                            {...field}
+                                                            name={[field.name, 'value']}
+                                                            style={{margin: 0}}
+                                                        >
+                                                            <InputNumber style={{width: '100%'}} step={0.01}/>
+                                                        </Form.Item>
+                                                    )
+                                                },
+                                                {
+                                                    title: t('PhyEditor.operate'),
+                                                    width: 80,
+                                                    render: (_, field) => (
+                                                        <Button
+                                                            icon={<DeleteOutlined/>}
+                                                            onClick={() => remove(field.name)}
+                                                            size="small"
+                                                        />
+                                                    )
+                                                }
+                                            ]
+                                        }
+                                    ]}
+                                />
+                            );
+                        }}
+                    </Form.List>
+                )}
 
-                <br></br>
-
-                {/* 曲线 keyframes */}
-                <KeyframeEditorWithTable
-                    keyframesFieldName={keyframesFieldName}
-                    t={t}
-                    form={form}
-                />
+                {/*// 只有当 mode === PartialMode_StaticOrCurve 时，才显示曲线*/}
+                {partialMode === PartialMode_StaticOrCurve && (
+                    <>
+                        {/* 曲线 keyframes */}
+                        <KeyframeEditorWithTable
+                            keyframesFieldName={keyframesFieldName}
+                            t={t}
+                            form={form}
+                        />
+                    </>
+                )}
             </>
         );
     };

@@ -451,7 +451,6 @@ const MatePropertyItemType2 = ({
                             ]}
                             footer={() => (
                                 <Button
-                                    type="dashed"
                                     onClick={() => add()}
                                     block
                                     icon={<PlusOutlined/>}
