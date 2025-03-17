@@ -28,7 +28,7 @@ For now, it allows you to edit files in these formats
 
 - Fully open source, completely free, and completely free; say goodbye to non-open source non-free software.
 - With full i18n support, you can add your own language files in the `frontend/public/locales` folder. Some languages
-  ​​use AI translation. If you are not satisfied, please feel free to submit translations through PR or Issue.
+  ​​use AI translation. If you are not satisfied, please feel free to submit translations through PR or Issue (Translations should be based on simplified Chinese).
 - With complete entry help, don’t know what to fill in the box? You are in the right place!
 - With light mode and dark mode.
 - .menu editing syntax highlighting.
@@ -128,7 +128,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 - 完全にオープンソース、完全に無料、そして完全にフリー。オープンソースではない、フリーではないソフトウェアとはお別れです。
 - 完全な i18n サポートにより、`frontend/public/locales` フォルダーに独自の言語ファイルを追加できます。一部の言語は AI
-  を使用して翻訳されています。満足できない場合は、PR または Issue 経由でお気軽に翻訳を送信してください。
+  を使用して翻訳されています。満足できない場合は、PR または Issue 経由でお気軽に翻訳を送信してください。（翻訳は簡体字中国語に基づいて行う必要があります）
 - 完全な入力ヘルプがありますが、ボックスに何を入力すればよいかわかりませんか?あなたは正しい場所に来ました！
 - ファイルのドラッグとファイルとして開くことをサポート
 - ライトモードとダークモードがあります。
