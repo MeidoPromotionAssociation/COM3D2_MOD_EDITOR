@@ -9,12 +9,52 @@ import {
     UpdateCheckInterval
 } from "./consts";
 import {CheckLatestVersion} from "../../wailsjs/go/main/App";
+import {message} from "antd";
+import {t} from "i18next";
+
 
 /**
- * 检查是否需要更新
+ * 立刻检查更新并提示成功与否
+ */
+export async function checkForUpdatesWithMessage() {
+    try {
+        // 执行更新检查
+        const result = await CheckLatestVersion();
+
+        // 更新最后检查时间
+        updateLastCheckTime();
+
+        // 如果检测到新版本
+        if (result.IsNewer) {
+            // 保存最新版本信息
+            localStorage.setItem(LatestVersionKey, result.LatestVersion);
+            localStorage.setItem(NewVersionAvailableKey, 'true');
+            message.success(t('Infos.check_update_success_new_version_available'));
+            return true;
+        } else {
+            // 没有新版本，设置或更新最新版本号
+            localStorage.setItem(LatestVersionKey, result.LatestVersion);
+            localStorage.setItem(NewVersionAvailableKey, 'false');
+            message.success(t('Infos.check_update_success_no_new_version'));
+            return false;
+        }
+
+    } catch (error) {
+        message.error(t('Errors.fail_to_check_update') + error);
+        console.error('check update failed:', error);
+        // 设置重试间隔为1小时
+        setRetryInterval();
+        return false;
+    }
+}
+
+
+/**
+ * 检查更新
+ * @param force 是否立即检查
  * @returns {Promise<boolean>} 是否有新版本
  */
-export async function checkForUpdates(): Promise<boolean> {
+export async function checkForUpdates(force: boolean = false): Promise<boolean> {
     try {
         // 获取当前存储的版本信息
         const storedLatestVersion = localStorage.getItem(LatestVersionKey);
@@ -26,16 +66,19 @@ export async function checkForUpdates(): Promise<boolean> {
             return false;
         }
 
-        // 如果已经记录了新版本可用，直接返回
-        if (newVersionAvailable === 'true') {
-            return true;
-        } else if (newVersionAvailable === 'false') {
-            return false;
-        }
+        // 如果不是立即检查
+        if (!force) {
+            // 如果已经记录了新版本可用，直接返回
+            if (newVersionAvailable === 'true') {
+                return true;
+            } else if (newVersionAvailable === 'false') {
+                return false;
+            }
 
-        // 检查是否需要进行更新检查
-        if (!shouldCheckForUpdate()) {
-            return !!newVersionAvailable;
+            // 检查是否需要进行更新检查
+            if (!shouldCheckForUpdate()) {
+                return !!newVersionAvailable;
+            }
         }
 
         // 执行更新检查

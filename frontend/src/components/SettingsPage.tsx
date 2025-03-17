@@ -1,12 +1,13 @@
 // frontend/src/components/SettingsPage.tsx
 
-import {Button, Layout, Switch, Tooltip} from "antd";
+import {Button, Card, Col, Flex, Layout, message, Row, Space, Switch, Tooltip, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import NavBar from "./NavBar";
 import {Content} from "antd/es/layout/layout";
 import useFileHandlers from "../hooks/fileHanlder";
 import React, {useState} from "react";
-import {InfoCircleOutlined} from "@ant-design/icons";
+import {CloseCircleOutlined, InfoCircleOutlined, SyncOutlined} from "@ant-design/icons";
+import {checkForUpdates, checkForUpdatesWithMessage} from "../utils/CheckUpdate";
 
 const SettingsPage: React.FC = () => {
     const {t} = useTranslation();
@@ -28,64 +29,63 @@ const SettingsPage: React.FC = () => {
     };
 
     return (
-        <Layout style={{height: "100vh"}}>
-            <NavBar onOpenFile={() => handleSelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'))}
-                    onSaveFile={handleSaveFile}
-                    onSaveAsFile={handleSaveFile}/>
-            <Content
-                style={{
-                    padding: 20,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
-                }}
-            >
-
-                {/* 页面中部 */}
-                <div style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
-
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8
-                    }}>
-                        <span>{t('SettingsPage.is_check_update')}</span>
-                        <Switch
-                            checked={checkUpdates}
-                            onChange={handleUpdateCheck}
-                        />
-                        <Tooltip title={t('SettingsPage.is_check_update_tip')}>
-                            <InfoCircleOutlined/>
-                        </Tooltip>
-                    </div>
-
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8
-                    }}>
+        <Layout style={{ height: "100vh" }}>
+            <NavBar
+                onOpenFile={() => handleSelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'))}
+                onSaveFile={handleSaveFile}
+                onSaveAsFile={handleSaveFile}
+            />
+            <Content style={{ padding: 24, height: "100%" }}>
+                <Card
+                    style={{ maxWidth: 600, margin: "0 auto" }}
+                >
+                    <Space direction="vertical" size="large" style={{ width: "50%" }}>
                         <Button
                             type="primary"
-                            style={{marginTop: 16}}
-                            onClick={handleDismissUpdate}
+                            icon={<SyncOutlined />}
+                            onClick={() => checkForUpdatesWithMessage()}
+                            block
                         >
-                            {t('SettingsPage.dismiss_update_note')}
+                            {t('SettingsPage.check_update_now')}
                         </Button>
-                        <Tooltip title={t('SettingsPage.dismiss_update_note_tip')}>
-                            <InfoCircleOutlined/>
-                        </Tooltip>
-                    </div>
-                </div>
 
+                        <Row align="middle">
+                            <Col span={16}>
+                                <Space>
+                                    <span>{t('SettingsPage.is_check_update')}</span>
+                                    <Tooltip title={t('SettingsPage.is_check_update_tip')}>
+                                        <InfoCircleOutlined />
+                                    </Tooltip>
+                                </Space>
+                            </Col>
+                            <Col span={8} style={{ textAlign: "right" }}>
+                                <Switch
+                                    checked={checkUpdates}
+                                    onChange={handleUpdateCheck}
+                                />
+                            </Col>
+                        </Row>
 
+                        <Row>
+                            <Col span={24}>
+                                <Button
+                                    type="default"
+                                    onClick={handleDismissUpdate}
+                                    icon={<CloseCircleOutlined />}
+                                    block
+                                >
+                                    {t('SettingsPage.dismiss_update_note')}
+                                </Button>
+                                <div style={{ marginTop: 8 }}>
+                                    <Typography.Text type="secondary">
+                                        <InfoCircleOutlined style={{ marginRight: 8 }} />
+                                        {t('SettingsPage.dismiss_update_note_tip')}
+                                    </Typography.Text>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Space>
+                </Card>
             </Content>
         </Layout>
     );

@@ -270,7 +270,7 @@
     "FreezeAxis_tip": "軸固定（FreezeAxis）；指定軸方向の移動をロック（例：X軸固定でY/Z平面移動のみ）。衝突処理より優先度低，デフォルト値0",
     "FreezeAxis_None": "なし（0）",
     "PartialMode": "モード",
-    "PartialMode_tip": "モード（PartialMode）；0=静的/曲線：デフォルト値または曲線使用，1=骨名指定：手動で個別設定，2=旧骨名：骨名に_h_/_h50_を含むかで自動設定（非推奨）",
+    "PartialMode_tip": "モード（PartialMode）；0=静的/曲線：デフォルト値または曲線使用，1=骨名指定：手動で個別設定，2 古いボーン名で、_yure_hair_ と _skirt_ に限定 ボーン名で値を自動的に一致させます。ボーン名にはキーワード _h_ または _h50_ が含まれている必要があります。キーワードの有無に応じて異なる値を設定します。_skirt_ の場合は _h_ のみ使用可能です (旧バージョン、非推奨)",
     "PartialMode_StaticOrCurve": "静的/曲線（0）(StaticOrCurve)",
     "PartialMode_Partial": "骨名指定（1）(Partial)",
     "PartialMode_FromBoneName": "旧骨名（2）(FromBoneName)",
@@ -291,6 +291,13 @@
     "hide_visual_editor": "ビジュアルエディタ非表示",
     "visual_editor_tip": "ダブルクリック：新規キーフレーム追加 | 制御点ドラッグ：接線調整 | キーフレームドラッグ：位置調整"
   },
+  "SettingsPage": {
+    "check_update_now": "今すぐ更新を確認",
+    "is_check_update": "更新チェックの有効化",
+    "is_check_update_tip": "デフォルトはtrue。Github APIにアクセスして最新バージョン情報を取得します。24時間間隔でチェックを行い、前回のチェックに失敗した場合は1時間後に再試行します。ブラウザのキャッシュをクリアするとこの設定はリセットされます",
+    "dismiss_update_note": "更新通知の消去",
+    "dismiss_update_note_tip": "更新通知を消去します。新バージョンが存在する場合、手動でクリアしない限り通知が表示されます。更新チェックを無効にしない限り、次回のチェック時に再表示されます"
+  },
   "Infos": {
     "com3d2_menu_file": "COM3D2 メニューファイル",
     "com3d2_mate_file": "COM3D2 マテリアルファイル",
@@ -306,7 +313,9 @@
     "success_save_file": "ファイル保存成功",
     "success_save_as_file": "ファイル別名保存成功",
     "success_save_as_file_colon": "ファイル別名保存成功: ",
-    "auto_count_success": "自動計算成功"
+    "auto_count_success": "自動計算成功",
+    "check_update_success_new_version_available": "更新の確認に成功しました。新しいバージョンが利用可能です。更新するにはホームページにアクセスしてください",
+    "check_update_success_no_new_version": "更新の確認が成功しました。新しいバージョンはありません"
   },
   "Errors": {
     "fail_to_check_update": "更新チェック失敗",

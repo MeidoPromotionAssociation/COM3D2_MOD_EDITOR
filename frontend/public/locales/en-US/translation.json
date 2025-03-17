@@ -270,7 +270,7 @@
     "FreezeAxis_tip": "Freeze Axis (FreezeAxis); freezes the bone's movement to only the specified axis. For example, if the X axis is frozen, the bone can only move in the Y Z plane. This has a lower priority than collision handling. Default value is 0.",
     "FreezeAxis_None": "None (0)",
     "PartialMode": "Mode",
-    "PartialMode_tip": "Mode (PartialMode); 0 Static or Curve: uses the default value or curve, 1 By Bone Name: manually set values for each bone by name, 2 By Old Bone Name: automatically match values based on old bone names, bones names should contain _h_ or _h50_ keywords, setting different values based on the presence of these keywords (Deprecated version, not recommended).",
+    "PartialMode_tip": "Mode (PartialMode); 0 Static or Curve: uses the default value or curve, 1 By Bone Name: manually set values for each bone by name, 2 By old bone name, limited to _yure_hair_ and _skirt_ Automatically match the value by bone name. The bone name needs to contain the keyword _h_ or _h50_. Set different values \u200B\u200Baccording to whether there is a keyword. If it is _skirt_, only _h_ can be used (old version, not recommended).",
     "PartialMode_StaticOrCurve": "Static or Curve (0) (StaticOrCurve)",
     "PartialMode_Partial": "By Bone Name (1) (Partial)",
     "PartialMode_FromBoneName": "By Old Bone Name (2) (FromBoneName)",
@@ -292,6 +292,7 @@
     "visual_editor_tip": "Double-click the blank canvas to add a new keyframe | Drag control points to adjust tangents | Drag keyframe points to adjust position"
   },
   "SettingsPage": {
+    "check_update_now": "Check for updates Now",
     "is_check_update": "Check for updates",
     "is_check_update_tip": "Defaults to true, accessing the Github API to get the latest version information, checking once every 24 hours. If the last check failed, it will check again after 1 hour. If browser cache is cleared, this option will reset.",
     "dismiss_update_note": "Dismiss update notice",
@@ -312,7 +313,9 @@
     "success_save_file": "File saved successfully",
     "success_save_as_file": "File saved as successfully",
     "success_save_as_file_colon": "File saved as successfully: ",
-    "auto_count_success": "Auto count successful"
+    "auto_count_success": "Auto count successful",
+    "check_update_success_new_version_available": "Check update successfully, a new version is available, please go to the homepage to update",
+    "check_update_success_no_new_version": "Check update successfully, no new version is available"
   },
   "Errors": {
     "fail_to_check_update": "Failed to check updates",

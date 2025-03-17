@@ -270,7 +270,7 @@
     "FreezeAxis_tip": "冻结轴（FreezeAxis）；冻结轴，使骨头只在指定的轴上移动，比如 X 轴冻结后骨骼就只能在 Y Z 平面上移动，优先级低于碰撞处理，默认值 0",
     "FreezeAxis_None": "无(0)",
     "PartialMode": "模式",
-    "PartialMode_tip": "模式（PartialMode）；0 静态或曲线：使用设置的默认值或曲线，1 按骨骼名：手动按骨骼名单独为每个骨骼设置值，2 按旧骨骼名，自动按骨骼名匹配值，骨骼名中需要有关键词 _h_ 或 _h50_，根据有无关键词设置不同的值（旧版本，不推荐）",
+    "PartialMode_tip": "模式（PartialMode）；0 静态或曲线：使用设置的默认值或曲线，1 按骨骼名：手动按骨骼名单独为每个骨骼设置值，2 按旧骨骼名，仅限 _yure_hair_ 和 _skirt_ 自动按骨骼名匹配值，骨骼名中需要有关键词 _h_ 或 _h50_，根据有无关键词设置不同的值，如果是 _skirt_ 则只能使用 _h_（旧版本，不推荐）",
     "PartialMode_StaticOrCurve": "静态或曲线（0）(StaticOrCurve)",
     "PartialMode_Partial": "按骨骼名（1）(Partial)",
     "PartialMode_FromBoneName": "按旧骨骼名（2）(FromBoneName)",
@@ -292,6 +292,7 @@
     "visual_editor_tip": "双击画布空白处添加新关键帧 | 拖动控制点调整切线 | 拖动关键帧点调整位置"
   },
   "SettingsPage": {
+    "check_update_now": "立刻检查更新",
     "is_check_update": "是否检查更新",
     "is_check_update_tip": "默认为 true，访问 Github Api 获取最新版本信息，间隔 24 小时检查一次，如果上一次检查失败，则间隔 1 小时再检查一次。如果清除了浏览器缓存，此选项会重置",
     "dismiss_update_note": "清除更新提示",
@@ -312,7 +313,9 @@
     "success_save_file": "文件保存成功",
     "success_save_as_file": "文件另存为成功",
     "success_save_as_file_colon": "文件另存为成功: ",
-    "auto_count_success": "自动计算成功"
+    "auto_count_success": "自动计算成功",
+    "check_update_success_new_version_available": "检查更新成功，有新版本可用，请前往主页更新",
+    "check_update_success_no_new_version": "检查更新成功，没有新版本可用"
   },
   "Errors": {
     "fail_to_check_update": "检查更新失败",
