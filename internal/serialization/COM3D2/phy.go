@@ -12,61 +12,61 @@ import (
 
 type Phy struct {
 	// 1. 签名, 通常为 "CM3D21_PHY"
-	Signature string
+	Signature string `json:"Signature"`
 
 	// 2. 版本 (例如 24102)
-	Version int32
+	Version int32 `json:"Version"`
 
 	// 3. RootBone 名称
-	RootName string
+	RootName string `json:"RootName"`
 
 	// 4. Damping 阻尼相关参数
-	EnablePartialDamping int32 // PartialMode 枚举
-	PartialDamping       []BoneValue
-	Damping              float32
-	DampingDistrib       AnimationCurve
+	EnablePartialDamping int32          `json:"EnablePartialDamping"` // PartialMode 枚举
+	PartialDamping       []BoneValue    `json:"PartialDamping"`
+	Damping              float32        `json:"Damping"`
+	DampingDistrib       AnimationCurve `json:"DampingDistrib"`
 
 	// 5. Elasticity 弹性相关参数
-	EnablePartialElasticity int32
-	PartialElasticity       []BoneValue
-	Elasticity              float32
-	ElasticityDistrib       AnimationCurve
+	EnablePartialElasticity int32          `json:"EnablePartialElasticity"`
+	PartialElasticity       []BoneValue    `json:"PartialElasticity"`
+	Elasticity              float32        `json:"Elasticity"`
+	ElasticityDistrib       AnimationCurve `json:"ElasticityDistrib"`
 
 	// 6. Stiffness 刚度相关参数
-	EnablePartialStiffness int32
-	PartialStiffness       []BoneValue
-	Stiffness              float32
-	StiffnessDistrib       AnimationCurve
+	EnablePartialStiffness int32          `json:"EnablePartialStiffness"`
+	PartialStiffness       []BoneValue    `json:"PartialStiffness"`
+	Stiffness              float32        `json:"Stiffness"`
+	StiffnessDistrib       AnimationCurve `json:"StiffnessDistrib"`
 
 	// 7. Inert 惯性相关参数
-	EnablePartialInert int32
-	PartialInert       []BoneValue
-	Inert              float32
-	InertDistrib       AnimationCurve
+	EnablePartialInert int32          `json:"EnablePartialInert"`
+	PartialInert       []BoneValue    `json:"PartialInert"`
+	Inert              float32        `json:"Inert"`
+	InertDistrib       AnimationCurve `json:"InertDistrib"`
 
 	// 8. 碰撞半径相关参数
-	EnablePartialRadius int32
-	PartialRadius       []BoneValue
-	Radius              float32
-	RadiusDistrib       AnimationCurve
+	EnablePartialRadius int32          `json:"EnablePartialRadius"`
+	PartialRadius       []BoneValue    `json:"PartialRadius"`
+	Radius              float32        `json:"Radius"`
+	RadiusDistrib       AnimationCurve `json:"RadiusDistrib"`
 
 	// 9. 骨骼末端参数
-	EndLength float32
-	EndOffset [3]float32
+	EndLength float32    `json:"EndLength"`
+	EndOffset [3]float32 `json:"EndOffset"`
 
 	// 10. 外力参数
-	Gravity [3]float32
-	Force   [3]float32
+	Gravity [3]float32 `json:"Gravity"`
+	Force   [3]float32 `json:"Force"`
 
 	// 10. 碰撞器相关参数
-	ColliderFileName string // 碰撞器文件名
-	CollidersCount   int32  // 碰撞器数量
+	ColliderFileName string `json:"ColliderFileName"` // 碰撞器文件名
+	CollidersCount   int32  `json:"CollidersCount"`   // 碰撞器数量
 
 	// 11.  排除骨骼
-	ExclusionsCount int32 // 排除的骨骼数量
+	ExclusionsCount int32 `json:"ExclusionsCount"` // 排除的骨骼数量
 
 	// 12. 冻结轴向
-	FreezeAxis int32 // FreezeAxis 枚举
+	FreezeAxis int32 `json:"FreezeAxis"` // FreezeAxis 枚举
 }
 
 // PartialMode 枚举
@@ -86,13 +86,13 @@ const (
 
 // AnimationCurve 用于存储 Keyframe 数组
 type AnimationCurve struct {
-	Keyframes []Keyframe
+	Keyframes []Keyframe `json:"Keyframes"`
 }
 
 // BoneValue 存储一个骨骼名称与对应 float 值
 type BoneValue struct {
-	BoneName string
-	Value    float32
+	BoneName string  `json:"BoneName"`
+	Value    float32 `json:"Value"`
 }
 
 // ReadPhy 读取 "CM3D21_PHY" 格式
