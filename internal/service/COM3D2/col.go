@@ -18,7 +18,7 @@ func (m *ColService) ReadColFile(path string) (*COM3D2.Col, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReaderSize(f, 1024*1024*10)
+	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
 	colData, err := COM3D2.ReadCol(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .mate file failed: %w", err)
