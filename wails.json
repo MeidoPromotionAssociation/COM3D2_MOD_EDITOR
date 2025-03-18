@@ -10,5 +10,56 @@
   "author": {
     "name": "90135",
     "email": "101243352+90135@users.noreply.github.com"
+  },
+  "info": {
+    "productVersion": "1.1.1",
+    "companyName": "MEIDO Promotion Association",
+    "productName": "COM3D2 MOD EDITOR V2",
+    "copyright": "Copyright 90135 under BSD 3-Clause License",
+    "comments": "A MOD EDITOR FOR MEIDO https://github.com/90135/COM3D2_MOD_EDITOR",
+    "fileAssociations": [
+      {
+        "ext": "menu",
+        "name": "menu",
+        "description": "COM3D2 Menu File",
+        "iconName": "menuFileIcon",
+        "role": "Editor"
+      },
+      {
+        "ext": "mate",
+        "name": "mate",
+        "description": "COM3D2 Material File",
+        "iconName": "mateFileIcon",
+        "role": "Editor"
+      },
+      {
+        "ext": "pmate",
+        "name": "pmate",
+        "description": "COM3D2 Rendering Order File",
+        "iconName": "pmateFileIcon",
+        "role": "Editor"
+      },
+      {
+        "ext": "phy",
+        "name": "phy",
+        "description": "COM3D2 Physical Definition File",
+        "iconName": "phyFileIcon",
+        "role": "Editor"
+      },
+      {
+        "ext": "col",
+        "name": "col",
+        "description": "COM3D2 Collider File",
+        "iconName": "colFileIcon",
+        "role": "Editor"
+      },
+      {
+        "ext": "tex",
+        "name": "tex",
+        "description": "COM3D2 Texture File",
+        "iconName": "texFileIcon",
+        "role": "Editor"
+      }
+    ]
   }
 }
