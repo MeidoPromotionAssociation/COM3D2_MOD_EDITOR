@@ -18,7 +18,7 @@ func (s *PMatService) ReadPMatFile(path string) (*COM3D2.PMat, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReader(f)
+	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
 	PMatData, err := COM3D2.ReadPMat(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .pmat file failed: %w", err)

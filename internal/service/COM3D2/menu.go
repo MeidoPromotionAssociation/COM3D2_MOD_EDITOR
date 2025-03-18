@@ -18,7 +18,7 @@ func (s *MenuService) ReadMenuFile(path string) (*COM3D2.Menu, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReader(f)
+	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
 	menuData, err := COM3D2.ReadMenu(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .menu file failed: %w", err)

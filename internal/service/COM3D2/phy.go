@@ -18,7 +18,7 @@ func (m *PhyService) ReadPhyFile(path string) (*COM3D2.Phy, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReaderSize(f, 1024*1024*10)
+	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
 	phyData, err := COM3D2.ReadPhy(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .mate file failed: %w", err)
