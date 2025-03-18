@@ -551,6 +551,68 @@ export namespace COM3D2 {
 	        this.Number = source["Number"];
 	    }
 	}
+	export class TexRect {
+	    X: number;
+	    Y: number;
+	    W: number;
+	    H: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new TexRect(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.X = source["X"];
+	        this.Y = source["Y"];
+	        this.W = source["W"];
+	        this.H = source["H"];
+	    }
+	}
+	export class Tex {
+	    Signature: string;
+	    Version: number;
+	    TextureName: string;
+	    Rects: TexRect[];
+	    Width: number;
+	    Height: number;
+	    TextureFormat: number;
+	    Data: number[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Tex(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
+	        this.TextureName = source["TextureName"];
+	        this.Rects = this.convertValues(source["Rects"], TexRect);
+	        this.Width = source["Width"];
+	        this.Height = source["Height"];
+	        this.TextureFormat = source["TextureFormat"];
+	        this.Data = source["Data"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class Tex2DSubProperty {
 	    Name: string;
 	    Path: string;
@@ -639,6 +701,7 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	
 	
 	export class TexScaleProperty {
 	    TypeName: string;

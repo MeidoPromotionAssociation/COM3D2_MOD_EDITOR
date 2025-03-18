@@ -1,6 +1,7 @@
 package main
 
 import (
+	"COM3D2_MOD_EDITOR_V2/internal/tools"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -113,7 +114,7 @@ func (a *App) CheckLatestVersion() (VersionCheckResult, error) {
 		}, err
 	}
 
-	isNewer := compareVersions(CurrentVersion, latestVersion)
+	isNewer := a.CompareVersions(CurrentVersion, latestVersion)
 
 	return VersionCheckResult{
 		CurrentVersion: CurrentVersion,
@@ -153,9 +154,20 @@ func fetchLatestVersion() (version string, err error) {
 	return release.TagName, nil
 }
 
-// 版本号比较
-func compareVersions(localVersion, latestVersion string) bool {
+// CompareVersions 版本号比较
+// 比较两个版本号的大小，返回 true 表示 localVersion 小于 latestVersion
+func (a *App) CompareVersions(localVersion, latestVersion string) bool {
 	lv, _ := semver.NewVersion(localVersion)
 	lvRemote, _ := semver.NewVersion(latestVersion)
 	return lvRemote.GreaterThan(lv)
+}
+
+// IsSupportedImageType 是否是 ImageMagick 支持的图片格式
+// 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
+func (a *App) IsSupportedImageType(filePath string) bool {
+	err := tools.IsSupportedImageType(filePath)
+	if err != nil {
+		return false
+	}
+	return true
 }

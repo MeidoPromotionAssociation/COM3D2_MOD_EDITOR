@@ -8,7 +8,7 @@ import {DownOutlined, GithubOutlined, SettingOutlined, TranslationOutlined} from
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {AppVersion, ChineseMODGuideUrl, GitHubReleaseUrl, GitHubUrl} from "../utils/consts";
 import {useVersionCheck} from "../utils/CheckUpdate";
-import useFileHandlers from "../hooks/fileHanlder";
+import useFileHandlers, {AllSupportedFileTypes} from "../hooks/fileHanlder";
 
 const {Content} = Layout;
 
@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             {/* 统一的导航栏；首页只传入打开文件回调 */}
-            <NavBar onOpenFile={() => handleSelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'))}
+            <NavBar onOpenFile={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}
                     onSaveFile={handleSaveFile}
                     onSaveAsFile={handleSaveFile}/>
 
@@ -90,7 +90,7 @@ const HomePage: React.FC = () => {
                     alignItems: "center"
                 }}>
                     <Button type="primary"
-                            onClick={() => handleSelectFile("*.menu;*.mate;*.pmat;*.col;*.phy", t('Infos.com3d2_mod_files'))}>{t('HomePage.choose_file')}</Button>
+                            onClick={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}>{t('HomePage.choose_file')}</Button>
                     <p style={{marginTop: 20, color: "#666"}}>
                         {t('HomePage.pls_select_a_file_to_edit')}
                     </p>

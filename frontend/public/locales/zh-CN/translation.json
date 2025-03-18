@@ -15,6 +15,7 @@
     "AnmEditor": "Anm",
     "ModelEditor": "Model",
     "PskEditor": "Psk",
+    "TexEditor": "Tex",
     "open_file": "打开文件",
     "save_file": "保存文件",
     "save_as_file": "另存为"
@@ -307,6 +308,7 @@
     "com3d2_anm_file": "COM3D2 动画文件",
     "com3d2_model_file": "COM3D2 模型文件",
     "com3d2_psk_file": "COM3D2 裙子物理文件",
+    "com3d2_tex_file": "COM3D2 纹理文件",
     "com3d2_mod_files": "COM3D2 MOD 文件",
     "pls_open_file_first": "请先打开文件",
     "editing_colon": "正在编辑: ",

@@ -13,6 +13,8 @@ import {useDarkMode} from "./hooks/themeSwitch";
 import ColEditorPage from "./components/ColEditorPage";
 import PhyEditorPage from "./components/PhyEditorPage";
 import SettingsPage from "./components/SettingsPage";
+import TexEditorPage from "./components/TexEditorPage";
+import useFileHandlers from "./hooks/fileHanlder";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -40,6 +42,9 @@ const App: React.FC = () => {
                 case "phy":
                     navigate("/phy-editor", {state: {filePath}})
                     break
+                case 'tex':
+                    navigate("/tex-editor", {state: {filePath}})
+                    break
                 default:
                     message.error(t('Errors.file_type_not_supported'))
             }
@@ -52,6 +57,10 @@ const App: React.FC = () => {
     useEffect(() => {
         // 用户拖放文件
         OnFileDrop((x, y, paths) => {
+
+            useFileHandlers()
+
+
             const filePath = paths[0]
             const extension = getFileExtension(filePath)
             switch (extension) {
@@ -69,6 +78,9 @@ const App: React.FC = () => {
                     break
                 case "phy":
                     navigate("/phy-editor", {state: {filePath}})
+                    break
+                case 'tex':
+                    navigate("/tex-editor", {state: {filePath}})
                     break
                 default:
                     message.error(t('Errors.file_type_not_supported'))
@@ -117,6 +129,7 @@ const App: React.FC = () => {
                 <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
                 <Route path="/col-editor" element={<ColEditorPage/>}/>
                 <Route path="/phy-editor" element={<PhyEditorPage/>}/>
+                <Route path="/tex-editor" element={<TexEditorPage/>}/>
                 <Route path="/settings" element={<SettingsPage/>}/>
             </Routes>
         </ConfigProvider>

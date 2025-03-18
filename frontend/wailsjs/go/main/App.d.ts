@@ -4,7 +4,11 @@ import {main} from '../models';
 
 export function CheckLatestVersion():Promise<main.VersionCheckResult>;
 
+export function CompareVersions(arg1:string,arg2:string):Promise<boolean>;
+
 export function GetAppVersion():Promise<string>;
+
+export function IsSupportedImageType(arg1:string):Promise<boolean>;
 
 export function SaveFile(arg1:string,arg2:string):Promise<string>;
 

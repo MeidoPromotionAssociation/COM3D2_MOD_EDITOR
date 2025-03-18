@@ -26,6 +26,8 @@ import (
 // 1011 版本：
 // 新增矩形数组（用于纹理图集）
 // 每个矩形包含(x, y, width, height)
+//
+// 注意，TextureFormat 为 ARGB32、RGB24 时数据位是 PNG 或 JPG 格式，为 DXT5、DXT1 时数据位是 DDS 格式
 
 // From unity 5.6.4
 // COM3D2 supported only
@@ -37,23 +39,25 @@ const (
 )
 
 type TexRect struct {
-	X float32
-	Y float32
-	W float32
-	H float32
+	X float32 `json:"X"`
+	Y float32 `json:"Y"`
+	W float32 `json:"W"`
+	H float32 `json:"H"`
 }
 
 type Tex struct {
-	Signature     string // 一般是 "CM3D2_TEX"
-	Version       int32
-	TextureName   string
-	Rects         []TexRect // 如果版本 >= 1011 才会有
-	Width         int32     // 版本 >= 1010 才会有，否则可能需要从 data 解析
-	Height        int32
-	TextureFormat int32  // 读取到的原始格式枚举，Go 参考顶部常量
-	Data          []byte // DDS/Bitmap 原始二进制数据
+	Signature     string    `json:"Signature"`     // 一般是 "CM3D2_TEX"
+	Version       int32     `json:"Version"`       // 版本号
+	TextureName   string    `json:"TextureName"`   // 纹理文件名
+	Rects         []TexRect `json:"Rects"`         // 如果版本 >= 1011 才会有，纹理图集使用
+	Width         int32     `json:"Width"`         // 版本 >= 1010 才会有，否则可能需要从 data 解析
+	Height        int32     `json:"Height"`        // 版本 >= 1010 才会有，否则可能需要从 data 解析
+	TextureFormat int32     `json:"TextureFormat"` // 读取到的原始格式枚举，Go 参考顶部常量
+	Data          []byte    `json:"Data"`          // DDS/Bitmap 原始二进制数据
 }
 
+// ReadTex 从二进制流中读取 Tex 数据。
+// 需要数据流是 .tex 格式
 func ReadTex(r io.Reader) (*Tex, error) {
 	// 1. Signature
 	sig, err := utilities.ReadString(r)
@@ -160,7 +164,9 @@ func ReadTex(r io.Reader) (*Tex, error) {
 	return tex, nil
 }
 
-func (t *Tex) DumpTex(w io.Writer) error {
+// Dump 将 Tex 数据写入二进制流。
+// 输出的数据流是 .tex 格式
+func (t *Tex) Dump(w io.Writer) error {
 	// 1. Signature
 	if err := utilities.WriteString(w, t.Signature); err != nil {
 		return fmt.Errorf("write signature failed: %w", err)
@@ -175,7 +181,7 @@ func (t *Tex) DumpTex(w io.Writer) error {
 	}
 
 	if t.Version == 1000 {
-		return fmt.Errorf("dump version 1000 is not supported")
+		return fmt.Errorf("dump version 1000 is not supported, You should at least convert it to 1010 version")
 	}
 
 	// 4. 如果 version >= 1011, 写出 rects
@@ -226,8 +232,15 @@ func (t *Tex) DumpTex(w io.Writer) error {
 	return nil
 }
 
-// ConvertImageToTex 把输入图像转为 .tex 文件，使用 ImageMagick
-func ConvertImageToTex(inputPath, texName string, version int32, compress bool, forcePNG bool) (*Tex, error) {
+// ConvertImageToTex 将任意 ImageMagick 支持的文件格式转换为 tex 格式
+// 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
+// 如果 forcePNG 为 true，且 compress 为 false，则 tex 的数据位是原始 PNG 数据或转换为 PNG
+// 如果 forcePNG 为 false，且 compress 为 false，那么检查输入格式是否是 PNG 或 JPG，如果是则数据位直接使用原始图片，否则如果原始格式有损且无透明通道则转换为 JPG，否则转换为 PNG
+// 如果 forcePNG 为 true，且 compress 为 true，那么 compress 标识会被忽略，结果同 forcePNG 为 true，且 compress 为 false
+// 如果 forcePNG 为 false，且 compress 为 true，那么会对结果进行 DXT 压缩，数据位为 DDS 数据，根据有无透明通道选择 DXT1 或 DXT5
+// 如果要生成 1011 版本的 tex（纹理图集），需要在图片目录下有一个同名的 .uv.csv 文件（例如 foo.png 对应 foo.png.uv.csv），文件内容为矩形数组 x, y, w, h 一行一组
+// 否则生成 1010 版本的 tex
+func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG bool) (*Tex, error) {
 	// 1. 检查 ImageMagick 是否安装
 	err := tools.CheckMagick()
 	if err != nil {
@@ -237,7 +250,8 @@ func ConvertImageToTex(inputPath, texName string, version int32, compress bool, 
 	// 2.尝试读取 .uv.csv 文件（纹理图集）
 	var rects []TexRect
 	rectsPath := inputPath + ".uv.csv"
-	if file, err := os.Open(rectsPath); err == nil {
+	file, err := os.Open(rectsPath)
+	if err != nil {
 		defer file.Close()
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
@@ -274,6 +288,7 @@ func ConvertImageToTex(inputPath, texName string, version int32, compress bool, 
 		}
 	}
 
+	var version int32
 	// 如果有 rects 则设置版本为 1011
 	if len(rects) > 0 {
 		version = 1011
@@ -337,6 +352,7 @@ func ConvertImageToTex(inputPath, texName string, version int32, compress bool, 
 	var data []byte
 	var textureFormat int32
 
+	// 如果需要压缩，则转换为 DXT5 或 DXT1
 	if compress && !forcePNG {
 		// 使用内存管道
 		pr, pw := io.Pipe()
@@ -375,29 +391,47 @@ func ConvertImageToTex(inputPath, texName string, version int32, compress bool, 
 	} else {
 		// forcePNG 为 true 时，强制转换为 PNG
 		if forcePNG {
-			// 使用管道处理转换
-			pr, pw := io.Pipe()
+			// 检查是否可以直接使用原始文件
+			isDirectlyUsable := isPNG && useAlpha
 
-			go func() {
-				// 转换为PNG格式，保留alpha通道
-				cmd := exec.Command("magick", "convert", inputPath, "png:-")
-				cmd.Stdout = pw
-				err := cmd.Run()
+			if isDirectlyUsable {
+				// 直接读取原始文件
+				data, err = os.ReadFile(inputPath)
 				if err != nil {
-					pw.CloseWithError(fmt.Errorf("failed to convert image to PNG: %w", err))
-					return
+					return nil, fmt.Errorf("failed to read image file: %w", err)
 				}
-				pw.Close()
-			}()
 
-			// 从管道读取数据
-			data, err = io.ReadAll(pr)
-			if err != nil {
-				return nil, err
+				// 设置纹理格式
+				if isPNG {
+					textureFormat = ARGB32
+				} else {
+					textureFormat = RGB24
+				}
+			} else { // 需要转换
+				// 使用管道处理转换
+				pr, pw := io.Pipe()
+
+				go func() {
+					// 转换为PNG格式，保留alpha通道
+					cmd := exec.Command("magick", "convert", inputPath, "png:-")
+					cmd.Stdout = pw
+					err := cmd.Run()
+					if err != nil {
+						pw.CloseWithError(fmt.Errorf("failed to convert image to PNG: %w", err))
+						return
+					}
+					pw.Close()
+				}()
+
+				// 从管道读取数据
+				data, err = io.ReadAll(pr)
+				if err != nil {
+					return nil, err
+				}
+
+				// 设置纹理格式为ARGB32（PNG格式）
+				textureFormat = ARGB32
 			}
-
-			// 设置纹理格式为ARGB32（PNG格式）
-			textureFormat = ARGB32
 		} else {
 			// 检查是否可以直接使用原始文件
 			isDirectlyUsable := (isPNG && useAlpha) || (isJPEG && !useAlpha)
@@ -429,9 +463,9 @@ func ConvertImageToTex(inputPath, texName string, version int32, compress bool, 
 					} else {
 						// 转换为JPG
 						quality := "90"
-						if isLossyFormat {
-							quality = "85" // 对已经有损的图像使用稍低的质量
-						}
+						//if isLossyFormat {
+						//	quality = "85" // 对已经有损的图像使用稍低的质量
+						//}
 						cmd = exec.Command("magick", "convert", inputPath, "-quality", quality, "jpg:-")
 						textureFormat = RGB24
 					}
@@ -471,7 +505,10 @@ func ConvertImageToTex(inputPath, texName string, version int32, compress bool, 
 }
 
 // ConvertTexToImage 将 .tex 文件转换为图像文件
-// 如果图像是有损格式且没有透明通道，则保存为JPG，否则保存为PNG
+// 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
+// 如果 forcePNG 为 false 那么如果图像是有损格式且没有透明通道，则保存为 JPG，否则保存为 PNG
+// 如果 forcePNG 为 true 则强制保存为 PNG，不考虑图像格式和透明通道
+// 如果是 1011 版本的 tex（纹理图集），则还会生成一个 .uv.csv 文件（例如 foo.png 对应 foo.png.uv.csv），文件内容为矩形数组 x, y, w, h 一行一组
 func ConvertTexToImage(tex *Tex, outputPath string, forcePNG bool) error {
 	// 1. 检查 ImageMagick 是否安装
 	if err := tools.CheckMagick(); err != nil {
@@ -607,10 +644,10 @@ func isLossyCompression(format string) bool {
 		"JPS":   true, // 立体JPEG格式
 		"MPO":   true, // Multi Picture Object (使用JPEG压缩)
 		"JXL":   true, // image/jxl
-		"WEBP":  true, // image/webp
-		"AVIF":  true, // image/avif
-		"HEIC":  true, // image/heic
-		"HEIF":  true, // image/heif
+		//"WEBP":  true, // image/webp
+		"AVIF": true, // image/avif
+		"HEIC": true, // image/heic
+		"HEIF": true, // image/heif
 
 		// 特殊格式
 		"WDP": true, // JPEG XR
@@ -628,8 +665,8 @@ func isLossyCompression(format string) bool {
 		"PCD": true, // Kodak Photo CD
 	}
 
-	// 对于WebP，需要进一步检查是否是有损模式，但这需要更复杂的检测
-	// 所以这里简化处理，默认WebP为有损
+	// 对于 WebP，需要进一步检查是否是有损模式，但这需要更复杂的检测
+	// 所以这里简化处理，默认 WebP 为无损
 
 	return lossyFormats[format]
 }

@@ -6,8 +6,16 @@ export function CheckLatestVersion() {
   return window['go']['main']['App']['CheckLatestVersion']();
 }
 
+export function CompareVersions(arg1, arg2) {
+  return window['go']['main']['App']['CompareVersions'](arg1, arg2);
+}
+
 export function GetAppVersion() {
   return window['go']['main']['App']['GetAppVersion']();
+}
+
+export function IsSupportedImageType(arg1) {
+  return window['go']['main']['App']['IsSupportedImageType'](arg1);
 }
 
 export function SaveFile(arg1, arg2) {

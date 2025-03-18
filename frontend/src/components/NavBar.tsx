@@ -78,7 +78,9 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                         {key: "mate-editor", label: t('EditorNavBar.MateEditor')},
                         {key: "pmat-editor", label: t('EditorNavBar.PMateEditor')},
                         {key: "col-editor", label: t('EditorNavBar.ColEditor')},
-                        {key: "phy-editor", label: t('EditorNavBar.PhyEditor')},]}
+                        {key: "phy-editor", label: t('EditorNavBar.PhyEditor')},
+                        {key: "tex-editor", label: t('EditorNavBar.TexEditor')},
+                    ]}
                 />
             </div>
             <div

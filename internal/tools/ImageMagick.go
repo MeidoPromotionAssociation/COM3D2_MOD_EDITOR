@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"sync"
 )
 
 // too big, gave up
@@ -15,6 +16,9 @@ import (
 const tempMagickDir = "imagemagick_temp"
 const magickExeName = "magick.exe"
 const requiredMajorVersion = 7 // 需要的最低主版本号
+
+var ISImageMagickInstalled bool
+var magickMutex sync.Mutex
 
 // 获取 ImageMagick 版本号
 func getMagickVersion(magickPath string) (int, string, error) {
@@ -117,6 +121,13 @@ func findTempMagick() (string, bool) {
 
 // CheckMagick 检查是否已安装对应版本的 ImageMagick
 func CheckMagick() error {
+	magickMutex.Lock()
+	defer magickMutex.Unlock()
+
+	if ISImageMagickInstalled {
+		return nil
+	}
+
 	var magickPath string
 	var found bool
 
@@ -145,5 +156,18 @@ func CheckMagick() error {
 		return fmt.Errorf("execution of magic.exe failed: %v", err)
 	}
 
+	ISImageMagickInstalled = true
 	return nil
+}
+
+// IsSupportedImageType 是否是 ImageMagick 支持的图片格式
+func IsSupportedImageType(filepath string) error {
+	err := CheckMagick()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command("magick", "identify", filepath)
+	_, err = cmd.CombinedOutput()
+	return err
 }
