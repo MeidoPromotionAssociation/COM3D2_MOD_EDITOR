@@ -70,7 +70,7 @@ const useFileHandlers = () => {
         }
     }
 
-    return {handleSelectFile, handleSaveFile};
+    return {handleSelectFile, handleSaveFile, handleOpenedFile};
 };
 
 
