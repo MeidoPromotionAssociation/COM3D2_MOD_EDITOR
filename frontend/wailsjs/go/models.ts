@@ -108,6 +108,58 @@ export namespace COM3D2 {
 	        this.Args = source["Args"];
 	    }
 	}
+	export class TexRect {
+	    X: number;
+	    Y: number;
+	    W: number;
+	    H: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new TexRect(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.X = source["X"];
+	        this.Y = source["Y"];
+	        this.W = source["W"];
+	        this.H = source["H"];
+	    }
+	}
+	export class CovertTexToImageResult {
+	    ImageData: number[];
+	    Format: string;
+	    Rects: TexRect[];
+	
+	    static createFrom(source: any = {}) {
+	        return new CovertTexToImageResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ImageData = source["ImageData"];
+	        this.Format = source["Format"];
+	        this.Rects = this.convertValues(source["Rects"], TexRect);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class DynamicBoneColliderBase {
 	    TypeName: string;
 	    ParentName: string;
@@ -549,24 +601,6 @@ export namespace COM3D2 {
 	        this.TypeName = source["TypeName"];
 	        this.PropName = source["PropName"];
 	        this.Number = source["Number"];
-	    }
-	}
-	export class TexRect {
-	    X: number;
-	    Y: number;
-	    W: number;
-	    H: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new TexRect(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.X = source["X"];
-	        this.Y = source["Y"];
-	        this.W = source["W"];
-	        this.H = source["H"];
 	    }
 	}
 	export class Tex {

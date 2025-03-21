@@ -6,8 +6,16 @@ export function ConvertImageToTex(arg1, arg2, arg3, arg4) {
   return window['go']['COM3D2']['TexService']['ConvertImageToTex'](arg1, arg2, arg3, arg4);
 }
 
-export function ConvertTexToImage(arg1, arg2, arg3) {
-  return window['go']['COM3D2']['TexService']['ConvertTexToImage'](arg1, arg2, arg3);
+export function ConvertImageToTexAndWrite(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['COM3D2']['TexService']['ConvertImageToTexAndWrite'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function ConvertTexToImageAndWrite(arg1, arg2, arg3) {
+  return window['go']['COM3D2']['TexService']['ConvertTexToImageAndWrite'](arg1, arg2, arg3);
+}
+
+export function CovertTexToImage(arg1, arg2) {
+  return window['go']['COM3D2']['TexService']['CovertTexToImage'](arg1, arg2);
 }
 
 export function ReadTexFile(arg1) {

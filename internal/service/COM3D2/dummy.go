@@ -38,4 +38,4 @@ func (s *PhyModel) Dummy(COM3D2.Phy, COM3D2.AnimationCurve, COM3D2.Keyframe, COM
 type TexModel struct{}
 
 // Dummy 用于让 wails 识别 tex 对应结构体，需要在签名中使用所有结构体
-func (s *TexModel) Dummy(COM3D2.Tex, COM3D2.TexRect) {}
+func (s *TexModel) Dummy(COM3D2.Tex, COM3D2.TexRect, CovertTexToImageResult) {}

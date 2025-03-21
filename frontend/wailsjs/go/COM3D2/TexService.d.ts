@@ -4,7 +4,11 @@ import {COM3D2} from '../models';
 
 export function ConvertImageToTex(arg1:string,arg2:string,arg3:boolean,arg4:boolean):Promise<COM3D2.Tex>;
 
-export function ConvertTexToImage(arg1:COM3D2.Tex,arg2:string,arg3:boolean):Promise<void>;
+export function ConvertImageToTexAndWrite(arg1:string,arg2:string,arg3:boolean,arg4:boolean,arg5:string):Promise<void>;
+
+export function ConvertTexToImageAndWrite(arg1:COM3D2.Tex,arg2:string,arg3:boolean):Promise<void>;
+
+export function CovertTexToImage(arg1:string,arg2:boolean):Promise<COM3D2.CovertTexToImageResult>;
 
 export function ReadTexFile(arg1:string):Promise<COM3D2.Tex>;
 
