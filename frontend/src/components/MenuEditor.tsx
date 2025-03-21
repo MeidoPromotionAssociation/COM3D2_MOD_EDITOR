@@ -22,9 +22,9 @@ export interface MenuEditorProps {
 }
 
 export interface MenuEditorRef {
-    handleReadMenuFile: () => Promise<void>;
-    handleSaveMenuFile: () => Promise<void>;
-    handleSaveAsMenuFile: () => Promise<void>;
+    handleReadFile: () => Promise<void>;
+    handleSaveFile: () => Promise<void>;
+    handleSaveAsFile: () => Promise<void>;
 }
 
 
@@ -329,9 +329,9 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
         // 将文件操作方法暴露给父组件
         useImperativeHandle(ref, () => ({
-            handleReadMenuFile,
-            handleSaveMenuFile,
-            handleSaveAsMenuFile,
+            handleReadFile: handleReadMenuFile,
+            handleSaveFile: handleSaveMenuFile,
+            handleSaveAsFile: handleSaveAsMenuFile,
         }));
 
 

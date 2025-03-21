@@ -231,7 +231,7 @@
   },
   "PhyEditor": {
     "file_header": {
-      "file_head": "文件头",
+      "file_head": "文件头（通常无需修改）",
       "Signature": "文件签名",
       "Version": "文件版本",
       "RootName": "根节点名",

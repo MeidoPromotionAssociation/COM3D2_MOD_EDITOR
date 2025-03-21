@@ -11,13 +11,13 @@ import {useVersionCheck} from "../utils/CheckUpdate";
 const {Header} = Layout;
 
 interface EditorNavBarProps {
-    onOpenFile?: () => void;
+    onSelectFile?: () => void;
     onSaveFile?: () => void;
     onSaveAsFile?: () => void;
 }
 
 const NavBar: React.FC<EditorNavBarProps> = ({
-                                                 onOpenFile,
+                                                 onSelectFile,
                                                  onSaveFile,
                                                  onSaveAsFile,
                                              }) => {
@@ -89,7 +89,7 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                     whiteSpace: "nowrap", // 防止按钮换行
                     marginLeft: 16 // 添加左侧间距
                 }}>
-                <Button type="primary" onClick={onOpenFile}
+                <Button type="primary" onClick={onSelectFile}
                         style={{marginRight: 8}}>{t('EditorNavBar.open_file')}</Button>
                 <Button onClick={onSaveFile} style={{marginRight: 8}}>{t('EditorNavBar.save_file')}</Button>
                 <Button onClick={onSaveAsFile}>{t('EditorNavBar.save_as_file')}</Button>

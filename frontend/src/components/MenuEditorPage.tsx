@@ -6,13 +6,15 @@ import MenuEditor, {MenuEditorRef} from "./MenuEditor";
 import NavBar from "./NavBar";
 import {SelectFile} from "../../wailsjs/go/main/App";
 import {useTranslation} from "react-i18next";
+import useFileHandlers from "../hooks/fileHanlder";
 
 const {Content} = Layout;
 
 const MenuEditorPage: React.FC = () => {
     const {t} = useTranslation();
     const location = useLocation();
-    const navigate = useNavigate();
+    const {handleSelectFile, handleSaveFile, handleSaveAsFile} = useFileHandlers();
+
     // 从路由 state 中获取 filePath
     const state = location.state as { filePath: string } | undefined;
     const filePath = state?.filePath;
@@ -20,33 +22,12 @@ const MenuEditorPage: React.FC = () => {
     // 用 ref 获取 MenuEditor 实例
     const menuEditorRef = useRef<MenuEditorRef>(null);
 
-    // 导航栏按钮回调
-    const handleOpenFile = async () => {
-        try {
-            const result = await SelectFile("*.menu", t('Infos.com3d2_menu_file'));
-            if (result) {
-                navigate("/menu-editor", {state: {filePath: result}});
-            }
-        } catch (err) {
-            console.error(err);
-            message.error(t('Errors.file_selection_error_colon') + err);
-        }
-    };
-
-    const handleSaveFile = () => {
-        menuEditorRef.current?.handleSaveMenuFile();
-    };
-
-    const handleSaveAsFile = () => {
-        menuEditorRef.current?.handleSaveAsMenuFile();
-    };
-
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onOpenFile={handleOpenFile}
-                onSaveFile={handleSaveFile}
-                onSaveAsFile={handleSaveAsFile}
+                onSelectFile={() => handleSelectFile("*.menu", t('Infos.com3d2_menu_file'))}
+                onSaveFile={() => handleSaveFile(menuEditorRef)}
+                onSaveAsFile={() => handleSaveAsFile(menuEditorRef)}
             />
             <Content style={{padding: 0, overflow: "auto"}}>
                 <MenuEditor filePath={filePath} ref={menuEditorRef}/>

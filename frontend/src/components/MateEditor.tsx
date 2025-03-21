@@ -22,10 +22,10 @@ import {COM3D2} from '../../wailsjs/go/models';
 import {SaveFile} from '../../wailsjs/go/main/App';
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
-import MatePropertyItemType1 from "./MatePropertyItemType1";
-import MatePropertyItemType2 from "./MatePropertyItemType2";
+import MatePropertyItemType1 from "./mate/MatePropertyItemType1";
+import MatePropertyItemType2 from "./mate/MatePropertyItemType2";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
-import MatePropertyListType1Virtualized from "./MatePropertyListType1Virtualized";
+import MatePropertyListType1Virtualized from "./mate/MatePropertyListType1Virtualized";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
@@ -45,9 +45,9 @@ interface MateEditorProps {
 }
 
 export interface MateEditorRef {
-    handleReadMateFile: () => Promise<void>;
-    handleSaveMateFile: () => Promise<void>;
-    handleSaveAsMateFile: () => Promise<void>;
+    handleReadFile: () => Promise<void>;
+    handleSaveFile: () => Promise<void>;
+    handleSaveAsFile: () => Promise<void>;
 }
 
 
@@ -611,9 +611,9 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
     // 暴露方法给父组件
     useImperativeHandle(ref, () => ({
-        handleReadMateFile,
-        handleSaveMateFile,
-        handleSaveAsMateFile,
+        handleReadFile: handleReadMateFile,
+        handleSaveFile: handleSaveMateFile,
+        handleSaveAsFile: handleSaveAsMateFile,
     }));
 
     /**

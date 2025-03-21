@@ -47,9 +47,11 @@ const HomePage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             {/* 统一的导航栏；首页只传入打开文件回调 */}
-            <NavBar onOpenFile={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}
-                    onSaveFile={handleSaveFile}
-                    onSaveAsFile={handleSaveFile}/>
+            <NavBar
+                onSelectFile={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}
+                onSaveFile={() => handleSaveFile(undefined)}
+                onSaveAsFile={() => handleSaveFile(undefined)}
+            />
 
             <Content
                 style={{

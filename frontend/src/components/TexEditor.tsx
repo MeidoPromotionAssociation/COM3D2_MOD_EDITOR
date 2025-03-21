@@ -5,9 +5,9 @@ export interface TexEditorProps {
 }
 
 export interface TexEditorRef {
-    handleReadTexFile: () => Promise<void>;
-    handleSaveTexFile: () => Promise<void>;
-    handleSaveAsTexFile: () => Promise<void>;
+    handleReadFile: () => Promise<void>;
+    handleSaveFile: () => Promise<void>;
+    handleSaveAsFile: () => Promise<void>;
 }
 
 const TexEditor = forwardRef<TexEditorRef, TexEditorProps>(({filePath}, ref) => {

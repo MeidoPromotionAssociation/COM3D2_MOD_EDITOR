@@ -3,19 +3,18 @@ import {useNavigate} from "react-router-dom";
 import {IsSupportedImageType, SelectFile} from "../../wailsjs/go/main/App";
 import {getFileExtension} from "../utils/utils";
 import {message} from "antd";
+import React from "react";
 
-// 支持的文件类型，用分号分隔
+// 支持的所有文件类型，用分号分隔，不包含图片类型
 export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;.tex"
 
-// 1. handleSelectFile 选择文件，并转跳到对应页面
-// 2. handleSaveFile 保存文件，只是提示用户没有文件可以保存
-// 3. handleOpenedFile 处理已打开的文件，转跳到对应页面
-// fileTypes: 要选择的文件类型，例如 "*.menu;*.mate;*.pmat;*.col;*.phy"
-// description: 选择文件对话框的描述
 const useFileHandlers = () => {
     const {t} = useTranslation();
     const navigate = useNavigate();
 
+    // handleSelectFile 选择文件，并转跳到对应页面
+    // fileTypes: 要选择的文件类型，例如 "*.menu;*.mate;*.pmat;*.col;*.phy"
+    // description: 选择文件对话框的描述
     const handleSelectFile = async (fileTypes: string, description: string) => {
         try {
             const filePath = await SelectFile(fileTypes, description);
@@ -25,12 +24,36 @@ const useFileHandlers = () => {
         }
     };
 
-    const handleSaveFile = () => {
+    // handleOpenedFile 处理已打开的文件，转跳到对应页面
+    const handleOpenedFile = async (filePath: string) => {
+        await fileNavigateHandler(filePath)
+    }
+
+
+    // handleSaveFile 保存文件，如果有 ref，则调用 ref.current.handleSaveFile()，否则提示没有文件要保存
+    const handleSaveFile = (ref: React.RefObject<any> | undefined) => {
+        if (ref) {
+            try {
+                ref.current.handleSaveFile();
+            } catch (err) {
+                message.error(t('Errors.save_file_failed_colon') + err);
+            }
+            return;
+        }
         message.warning(t('Errors.no_file_to_save'));
     };
 
-    const handleOpenedFile = async (filePath: string) => {
-        await fileNavigateHandler(filePath)
+    // handleSaveAsFile 另存为文件，如果有 ref，则调用 ref.current.handleSaveAsFile()，否则提示没有文件要保存
+    const handleSaveAsFile = (ref: React.RefObject<any> | undefined) => {
+        if (ref) {
+            try {
+                ref.current.handleSaveAsFile();
+            } catch (err) {
+                message.error(t('Errors.save_as_file_failed_colon') + err);
+            }
+            return;
+        }
+        message.warning(t('Errors.no_file_to_save'));
     }
 
     const fileNavigateHandler = async (filePath: string) => {
@@ -70,7 +93,7 @@ const useFileHandlers = () => {
         }
     }
 
-    return {handleSelectFile, handleSaveFile, handleOpenedFile};
+    return {handleSelectFile, handleOpenedFile, handleSaveFile, handleSaveAsFile};
 };
 
 

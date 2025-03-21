@@ -15,9 +15,9 @@ export interface PMatEditorProps {
 }
 
 export interface PMatEditorRef {
-    handleReadPMatFile: () => Promise<void>;
-    handleSavePMatFile: () => Promise<void>;
-    handleSaveAsPMatFile: () => Promise<void>;
+    handleReadFile: () => Promise<void>;
+    handleSaveFile: () => Promise<void>;
+    handleSaveAsFile: () => Promise<void>;
 }
 
 const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) => {
@@ -184,9 +184,9 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
      * 将文件操作方法暴露给父组件
      */
     useImperativeHandle(ref, () => ({
-        handleReadPMatFile: handleReadPMatFile,
-        handleSavePMatFile: handleSavePMatFile,
-        handleSaveAsPMatFile: handleSaveAsPMatFile,
+        handleReadFile: handleReadPMatFile,
+        handleSaveFile: handleSavePMatFile,
+        handleSaveAsFile: handleSaveAsPMatFile,
     }));
 
     // 控制只读字段是否可编辑

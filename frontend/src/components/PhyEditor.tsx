@@ -25,7 +25,7 @@ import {useTranslation} from "react-i18next";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {ReadColFile} from "../../wailsjs/go/COM3D2/ColService";
-import KeyframeEditorWithTable from "./KeyframeEditorWithTable";
+import KeyframeEditorWithTable from "./phy/KeyframeEditorWithTable";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
@@ -36,9 +36,9 @@ export interface PhyEditorProps {
 }
 
 export interface PhyEditorRef {
-    handleReadPhyFile: () => Promise<void>;
-    handleSavePhyFile: () => Promise<void>;
-    handleSaveAsPhyFile: () => Promise<void>;
+    handleReadFile: () => Promise<void>;
+    handleSaveFile: () => Promise<void>;
+    handleSaveAsFile: () => Promise<void>;
 }
 
 // PartialMode 常量
@@ -524,11 +524,10 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
 
     // 向外暴露的方法
     useImperativeHandle(ref, () => ({
-        handleReadPhyFile,
-        handleSavePhyFile,
-        handleSaveAsPhyFile
+        handleReadFile: handleReadPhyFile,
+        handleSaveFile: handleSavePhyFile,
+        handleSaveAsFile: handleSaveAsPhyFile
     }));
-
 
     // 自动计算 col 文件中的碰撞器数量
     const handleAutoCalculateColliders = async () => {
