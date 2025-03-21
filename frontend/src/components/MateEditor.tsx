@@ -1,34 +1,16 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {
-    Button,
-    Checkbox,
-    Col,
-    Collapse,
-    ConfigProvider,
-    Divider,
-    Form,
-    FormListFieldData,
-    Input,
-    InputNumber,
-    message,
-    Radio,
-    Row,
-    Space,
-    Tooltip
-} from 'antd';
-import type {FormListOperation} from 'antd/es/form';
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import {Checkbox, Collapse, ConfigProvider, Form, Input, InputNumber, message, Radio, Space, Tooltip} from 'antd';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {COM3D2} from '../../wailsjs/go/models';
 import {SaveFile} from '../../wailsjs/go/main/App';
 import {useTranslation} from "react-i18next";
-import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
-import MatePropertyItemType1 from "./mate/MatePropertyItemType1";
-import MatePropertyItemType2 from "./mate/MatePropertyItemType2";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
-import MatePropertyListType1Virtualized from "./mate/MatePropertyListType1Virtualized";
-import {Editor} from "@monaco-editor/react";
-import {useDarkMode} from "../hooks/themeSwitch";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
+import Style3MateProperties from "./mate/Style3MateProperties";
+import Style2MateProperties from "./mate/Style2MateProperties";
+import Style1MateProperties from "./mate/Style1MateProperties";
+import Style1MatePropertiesVirtualized from "./mate/Style1MatePropertiesVirtualized";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 import TexProperty = COM3D2.TexProperty;
@@ -49,402 +31,6 @@ export interface MateEditorRef {
     handleSaveFile: () => Promise<void>;
     handleSaveAsFile: () => Promise<void>;
 }
-
-
-// ------------------- 样式1：简单的上下排列 -------------------
-const Style1Properties: React.FC<{
-    fields: FormListFieldData[];
-    add: FormListOperation['add'];
-    remove: FormListOperation['remove'];
-    form: any;
-}> = ({fields, add, remove, form}) => {
-    const {t} = useTranslation();
-
-    // 1. 先按 TypeName 进行分组
-    const groupedFields = fields.reduce((acc, field) => {
-        const typeName = form.getFieldValue(['properties', field.name, 'TypeName']) || "unknown"; // 获取 TypeName
-        if (!acc[typeName]) acc[typeName] = [];
-        acc[typeName].push(field);
-        return acc;
-    }, {} as Record<string, FormListFieldData[]>);
-
-    return (
-        <>
-            {/* 2. 遍历分组后的数据进行渲染 */}
-            {Object.entries(groupedFields).map(([typeName, groupFields], id) => (
-                <div key={`groupedFields-${id}`}>
-                    {/* 3. 在每个 typeName 组的开头加一个分割线 */}
-                    <Divider>{t(`MateEditor.${typeName}`)}</Divider>
-
-                    {/* 4. 渲染该 typeName 组内的所有属性 */}
-                    {groupFields.map(({key, name, ...restField}, id) => (
-                        <div key={`groupFields-item-${groupFields}-${id}-${typeName}-${name}`}
-                             style={{position: "relative", marginBottom: 16}}>
-                            <MatePropertyItemType1 name={name} restField={restField} form={form}/>
-                            <Button
-                                onClick={() => remove(name)}
-                                style={{position: "absolute", bottom: 0, right: 0}}
-                                icon={<DeleteOutlined/>}
-                            />
-                        </div>
-                    ))}
-                </div>
-            ))}
-
-            {/* 5. 添加新属性按钮 */}
-            <Form.Item>
-                <Button type="primary" onClick={() => add()} block icon={<PlusOutlined/>}>
-                    {t("MateEditor.add_new_property")}
-                </Button>
-            </Form.Item>
-        </>
-    );
-};
-
-// ------------------- 样式1.5：简单的上下排列，为大文件准备的虚拟渲染 -------------------
-const Style1PropertiesVirtualized: React.FC<{
-    fields: FormListFieldData[];
-    add: FormListOperation["add"];
-    remove: FormListOperation["remove"];
-    form: any;
-}> = ({fields, add, remove, form}) => {
-    const {t} = useTranslation();
-
-    return (
-        <>
-            <MatePropertyListType1Virtualized
-                fields={fields}
-                remove={remove}
-                form={form}
-            />
-
-            <Button
-                type="primary"
-                onClick={() => add()}
-                block
-                icon={<PlusOutlined/>}
-                style={{marginTop: 8}}
-            >
-                {t("MateEditor.add_new_property")}
-            </Button>
-        </>
-    );
-};
-
-
-// ======================= 样式2：按 typeName 分栏 + 左列表/右编辑区  =======================
-const Style2Properties: React.FC<{
-    fields: FormListFieldData[];
-    add: FormListOperation['add'];
-    remove: FormListOperation['remove'];
-    form: any;
-}> = ({fields, add, remove, form}) => {
-    const {t} = useTranslation();
-    // 引用左侧列表容器
-    const leftSidebarRef = useRef<HTMLDivElement>(null);
-
-    // 当前选中的属性下标（在 fields 数组里的 name）
-    const [selectedField, setSelectedField] = useState<number | null>(null);
-
-    // 用来筛选 typeName
-    const [filterTypeName, setFilterTypeName] = useState<string>('all');
-
-    // 搜索关键词状态
-    const [searchKeyword, setSearchKeyword] = useState('');
-
-    // 按筛选规则和搜索过滤
-    const filteredFields = fields.filter((f: FormListFieldData) => {
-        const pType = form.getFieldValue(['properties', f.name, 'TypeName']);
-        const pName = form.getFieldValue(['properties', f.name, 'propName']) || '';
-
-        // 组合过滤条件
-        const typeMatch = filterTypeName === 'all' || pType === filterTypeName;
-        const nameMatch = pName.toLowerCase().includes(searchKeyword.toLowerCase());
-
-        return typeMatch && nameMatch;
-    });
-
-
-    // 再按 TypeName 分组
-    const grouped: Record<string, { field: FormListFieldData; index: number; propName: string }[]> = {};
-    filteredFields.forEach((f: FormListFieldData) => {
-        const pType = form.getFieldValue(['properties', f.name, 'TypeName']);
-        const pName = form.getFieldValue(['properties', f.name, 'propName']) || t('MateEditor.no_name');
-        if (!grouped[pType]) {
-            grouped[pType] = [];
-        }
-        grouped[pType].push({
-            field: f,
-            index: f.name,
-            propName: pName,
-        });
-    });
-
-    const groupKeys = Object.keys(grouped);
-
-    useEffect(() => {
-        leftSidebarRef.current?.focus();  // 组件挂载后自动聚焦左侧列表
-    }, []);
-
-
-    // 键盘事件处理函数，用于根据方向键更新选中项
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        // 扁平化所有选项的索引数组
-        const flatIndices = groupKeys.reduce((acc: number[], TypeName) => {
-            const indices = grouped[TypeName].map(item => item.index);
-            return acc.concat(indices);
-        }, []);
-
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            if (flatIndices.length === 0) return;
-            if (selectedField === null) {
-                setSelectedField(flatIndices[0]);
-            } else {
-                const currentIndex = flatIndices.findIndex(val => val === selectedField);
-                const nextIndex = currentIndex < flatIndices.length - 1 ? flatIndices[currentIndex + 1] : flatIndices[currentIndex];
-                setSelectedField(nextIndex);
-            }
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            if (flatIndices.length === 0) return;
-            if (selectedField === null) {
-                setSelectedField(flatIndices[flatIndices.length - 1]);
-            } else {
-                const currentIndex = flatIndices.findIndex(val => val === selectedField);
-                const prevIndex = currentIndex > 0 ? flatIndices[currentIndex - 1] : flatIndices[currentIndex];
-                setSelectedField(prevIndex);
-            }
-        }
-    };
-
-    // 自动滚动选中项进入视图
-    useEffect(() => {
-        if (selectedField !== null) {
-            const el = document.getElementById(`sidebar-item-${selectedField}`);
-            el?.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-        }
-    }, [selectedField]);
-
-
-    // 找到当前选中的 field
-    const selectedFieldData = fields.find((f) => f.name === selectedField);
-
-    return (
-        <Row gutter={16}>
-            {/* 左侧列表：按分组 -> 组内列出可点击 */}
-            <Col span={8}
-                 ref={leftSidebarRef}        /* 引用左侧列表容器 */
-                 tabIndex={0}                /* 使 div 可聚焦 */
-                 onKeyDown={handleKeyDown}   /* 键盘事件监听 */
-                 style={{
-                     borderRight: '1px solid #ddd',
-                     height: 'calc(100vh - 230px)',
-                     overflowY: 'auto',
-                     display: 'flex',
-                     flexDirection: 'column',
-                 }}>
-                {/* TypeName 选择器 靠左 */}
-                <div style={{textAlign: 'left', marginBottom: 8}}>
-                    <Radio.Group
-                        value={filterTypeName}
-                        onChange={(e) => setFilterTypeName(e.target.value)}
-                        optionType="button"
-                    >
-                        <Radio.Button value="all">{t('MateEditor.all')}</Radio.Button>
-                        <Radio.Button value="tex">{t('MateEditor.tex_no_brackets')}</Radio.Button>
-                        <Radio.Button value="col">{t('MateEditor.col_no_brackets')}</Radio.Button>
-                        <Radio.Button value="vec">{t('MateEditor.vec_no_brackets')}</Radio.Button>
-                        <Radio.Button value="f">{t('MateEditor.f_no_brackets')}</Radio.Button>
-                        <Radio.Button value="range">{t('MateEditor.range_no_brackets')}</Radio.Button>
-                        <Radio.Button value="texOffset">{t('MateEditor.tex_offset_no_brackets')}</Radio.Button>
-                        <Radio.Button value="texScale">{t('MateEditor.tex_scale_no_brackets')}</Radio.Button>
-                        <Radio.Button value="keyword">{t('MateEditor.keyword_no_brackets')}</Radio.Button>
-                        <Radio.Button value="unknown">{t('MateEditor.unknown')}</Radio.Button>
-                    </Radio.Group>
-                    <Input.Search
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        style={{marginTop: 8}}
-                    />
-                </div>
-
-                {/* 左边栏，按 TypeName 分组 */}
-                {groupKeys.map((TypeName) => (
-                    <div style={{textAlign: 'left', marginBottom: 16}}>
-                        <Divider plain><b>{t(`MateEditor.${TypeName}`)}</b></Divider>
-                        {grouped[TypeName].map(({field, index, propName}) => (
-                            <div
-                                id={`sidebar-item-${index}`}
-                                key={`sidebar-item-${TypeName}-${field.key}`}
-                                onClick={() => setSelectedField(index)}
-                                style={{
-                                    padding: '4px 8px',
-                                    cursor: 'pointer',
-                                    borderRadius: 4,
-                                    backgroundColor: selectedField === index ? '#e6f7ff' : undefined,
-                                    marginBottom: 4,
-                                    position: 'relative',
-                                }}
-                            >
-                                {propName}
-                                {/* 添加删除按钮 */}
-                                <Button
-                                    type="text"
-                                    icon={<DeleteOutlined/>}
-                                    onClick={(e) => {
-                                        e.stopPropagation(); // 阻止点击事件冒泡
-                                        remove(index);       // 删除当前属性
-                                        if (selectedField === index) {
-                                            setSelectedField(null); // 如果删除的是当前选中项，清除选中状态
-                                        }
-                                    }}
-                                    style={{
-                                        position: 'absolute',
-                                        right: 4,
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        padding: '0 4px'
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                ))}
-                <Button
-                    type="primary"
-                    onClick={() => {
-                        const initialValue = filterTypeName !== 'all'
-                            ? {TypeName: filterTypeName}
-                            : {TypeName: 'unknown'}; // 当选择"全部"时默认 unknown 类型
-                        add(initialValue);
-                        setSelectedField(null);
-                    }}
-                    icon={<PlusOutlined/>}
-                    block
-                >
-                    {t('MateEditor.add_new_property')}
-                </Button>
-            </Col>
-
-            {/* 右侧编辑区：仅渲染选中的那一个 */}
-            <Col span={16}>
-                {selectedField !== null && selectedFieldData && (
-                    <div style={{
-                        height: 'calc(100vh - 270px)',
-                        overflowY: 'auto',
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}>
-                        <MatePropertyItemType2
-                            key={'property-item-' + selectedFieldData.key}
-                            name={selectedFieldData.name}
-                            restField={selectedFieldData}
-                            form={form}
-                        />
-                        <Button
-                            onClick={() => {
-                                remove(selectedFieldData.name);
-                                setSelectedField(null);
-                            }}
-                            danger
-                            style={{position: 'absolute', bottom: 0, right: 0}}
-                            icon={<DeleteOutlined/>}
-                        />
-                    </div>
-                )}
-            </Col>
-        </Row>
-    );
-};
-
-
-// ======================= 样式3：直接用 Monaco Editor 展示/编辑整个 mateData JSON =======================
-const Style3Properties: React.FC<{
-    mateData: Mate | null;
-    setMateData: (m: Mate | null) => void;
-}> = ({mateData, setMateData}) => {
-    const isDarkMode = useDarkMode();
-    const [jsonValue, setJsonValue] = useState("");
-    const editorRef = useRef<any>(null);
-    const isInternalUpdate = useRef(false);
-    const prevColDataRef = useRef<string | null>(null);
-
-    // 处理 ColData 的外部更新（如文件加载）
-    useEffect(() => {
-        if (mateData) {
-            const mateDataJson = JSON.stringify(mateData);
-            // Only update if this is an external change, not from our editor
-            if (!isInternalUpdate.current && mateDataJson !== prevColDataRef.current) {
-                setJsonValue(JSON.stringify(mateData, null, 2));
-                prevColDataRef.current = mateDataJson;
-            }
-        } else {
-            setJsonValue("");
-            prevColDataRef.current = null;
-        }
-    }, [mateData]);
-
-    // 初始化第一次渲染
-    useEffect(() => {
-        if (mateData) {
-            setJsonValue(JSON.stringify(mateData, null, 2));
-            prevColDataRef.current = JSON.stringify(mateData);
-        }
-    }, []);
-
-    // Handle the editor being mounted
-    const handleEditorDidMount = (editor: any) => {
-        editorRef.current = editor;
-    };
-
-    // When user edits in the editor
-    const handleEditorChange = (value?: string) => {
-        const newVal = value ?? "";
-
-        // Update local state without full re-render
-        if (newVal !== jsonValue) {
-            setJsonValue(newVal);
-        }
-
-        try {
-            const parsed = JSON.parse(newVal);
-
-            // Only update parent if actual content changed
-            if (JSON.stringify(parsed) !== JSON.stringify(mateData)) {
-                isInternalUpdate.current = true;
-                setMateData(parsed);
-                prevColDataRef.current = JSON.stringify(parsed);
-
-                // Reset the flag after a delay to allow React to process
-                setTimeout(() => {
-                    isInternalUpdate.current = false;
-                }, 0);
-            }
-        } catch (err) {
-            // JSON is not valid, don't update parent
-        }
-    };
-
-    return (
-        <div style={{
-            height: "calc(100vh - 165px)",
-            borderRadius: '8px',   // 添加圆角
-            overflow: 'hidden'     // 隐藏超出圆角范围的部分
-        }}>
-            <Editor
-                language="json"
-                theme={isDarkMode ? "vs-dark" : "vs"}
-                value={jsonValue}
-                onChange={handleEditorChange}
-                onMount={handleEditorDidMount}
-                options={{
-                    minimap: {enabled: true},
-                    tabSize: 2,
-                }}
-            />
-        </div>
-    );
-};
 
 
 /**
@@ -1014,14 +600,14 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     <Form.List name="properties">
                                         {(fields, {add, remove}) =>
                                             fields.length > 70 ? (
-                                                <Style1PropertiesVirtualized
+                                                <Style1MatePropertiesVirtualized
                                                     fields={fields}
                                                     add={add}
                                                     remove={remove}
                                                     form={form}
                                                 />
                                             ) : (
-                                                <Style1Properties
+                                                <Style1MateProperties
                                                     fields={fields}
                                                     add={add}
                                                     remove={remove}
@@ -1035,7 +621,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 {viewMode === 2 && (
                                     <Form.List name="properties">
                                         {(fields, {add, remove}) => (
-                                            <Style2Properties
+                                            <Style2MateProperties
                                                 fields={fields}
                                                 add={add}
                                                 remove={remove}
@@ -1049,7 +635,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     )}
 
                     {viewMode === 3 && (
-                        <Style3Properties
+                        <Style3MateProperties
                             mateData={mateData}
                             setMateData={(newVal) => setMateData(newVal)}
                         />
