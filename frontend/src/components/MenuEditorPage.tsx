@@ -1,10 +1,9 @@
 // frontend/src/components/MenuEditorPage.tsx
 import React, {useRef} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
-import {Layout, message} from "antd";
+import {useLocation} from "react-router-dom";
+import {Layout} from "antd";
 import MenuEditor, {MenuEditorRef} from "./MenuEditor";
 import NavBar from "./NavBar";
-import {SelectFile} from "../../wailsjs/go/main/App";
 import {useTranslation} from "react-i18next";
 import useFileHandlers from "../hooks/fileHanlder";
 

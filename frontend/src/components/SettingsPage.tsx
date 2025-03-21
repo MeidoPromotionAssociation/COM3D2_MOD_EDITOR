@@ -33,7 +33,7 @@ const SettingsPage: React.FC = () => {
             <NavBar
                 onSelectFile={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}
                 onSaveFile={() => handleSaveFile(undefined)}
-                onSaveAsFile={() =>handleSaveFile(undefined)}
+                onSaveAsFile={() => handleSaveFile(undefined)}
             />
             <Content style={{padding: 24, height: "100%"}}>
                 <Card

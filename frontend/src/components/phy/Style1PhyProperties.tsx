@@ -6,7 +6,9 @@ import KeyframeEditorWithTable from "./KeyframeEditorWithTable";
 import {COM3D2} from "../../../wailsjs/go/models";
 import {
     FreezeAxis_None,
-    FreezeAxis_X, FreezeAxis_Y, FreezeAxis_Z,
+    FreezeAxis_X,
+    FreezeAxis_Y,
+    FreezeAxis_Z,
     PartialMode_FromBoneName,
     PartialMode_Partial,
     PartialMode_StaticOrCurve

@@ -7,13 +7,13 @@ import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useTranslation} from "react-i18next";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Style1Colliders from "./col/Style1Colliders";
+import Style2Properties from "./col/Style2Properties";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
 import DynamicBoneMuneCollider = COM3D2.DynamicBoneMuneCollider;
 import MissingCollider = COM3D2.MissingCollider;
 import ColModel = COM3D2.Col;
-import Style2Properties from "./col/Style2Properties";
 
 
 /** ColEditorProps:
