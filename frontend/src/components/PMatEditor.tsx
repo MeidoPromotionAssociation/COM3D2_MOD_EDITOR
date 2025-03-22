@@ -198,7 +198,6 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
         <div style={{padding: 10}}>
             {pmatData && (
                 <div style={{height: "100%"}}>
-                    {/* 基于 MenuEditor 的风格，做一个折叠面板放只读区 */}
                     <Collapse
                         size="small"
                         items={[
@@ -250,73 +249,79 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
                         ]}
                     />
 
-                    {/* 其他可编辑字段 */}
-                    <div style={{marginTop: 10}}>
-                        <Space direction="vertical" style={{width: "100%"}}>
-                            <Input
-                                addonBefore={
-                                    <span
-                                        style={{
-                                            width: "15vw",
-                                            display: "inline-block",
-                                            textAlign: "left",
-                                        }}
-                                    >
+                    <br/>
+
+                    <Collapse size="small" defaultActiveKey='editor'>
+                        <Collapse.Panel key='editor' header={t('PMatEditor.file_body')}>
+                            {/* 其他可编辑字段 */}
+                            <div style={{marginTop: 10}}>
+                                <Space direction="vertical" style={{width: "100%"}}>
+                                    <Input
+                                        addonBefore={
+                                            <span
+                                                style={{
+                                                    width: "15vw",
+                                                    display: "inline-block",
+                                                    textAlign: "left",
+                                                }}
+                                            >
                                         {t("PMatEditor.materialName")}
                                     </span>
-                                }
-                                value={materialName}
-                                onChange={(e) => setMaterialName(e.target.value)}
-                                suffix={
-                                    <Tooltip title={t("PMatEditor.materialName_tip")}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }
-                            />
-                            <Input
-                                addonBefore={
-                                    <span
-                                        style={{
-                                            width: "15vw",
-                                            display: "inline-block",
-                                            textAlign: "left",
-                                        }}
-                                    >
+                                        }
+                                        value={materialName}
+                                        onChange={(e) => setMaterialName(e.target.value)}
+                                        suffix={
+                                            <Tooltip title={t("PMatEditor.materialName_tip")}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        }
+                                    />
+                                    <Input
+                                        addonBefore={
+                                            <span
+                                                style={{
+                                                    width: "15vw",
+                                                    display: "inline-block",
+                                                    textAlign: "left",
+                                                }}
+                                            >
                                         {t("PMatEditor.renderQueue")}
                                     </span>
-                                }
-                                type="number"
-                                min={0}
-                                value={renderQueue}
-                                onChange={(e) => setRenderQueue(parseFloat(e.target.value))}
-                                suffix={
-                                    <Tooltip title={t("PMatEditor.renderQueue_tip")}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }
-                            />
-                            <Input
-                                addonBefore={
-                                    <span
-                                        style={{
-                                            width: "15vw",
-                                            display: "inline-block",
-                                            textAlign: "left",
-                                        }}
-                                    >
+                                        }
+                                        type="number"
+                                        min={0}
+                                        value={renderQueue}
+                                        onChange={(e) => setRenderQueue(parseFloat(e.target.value))}
+                                        suffix={
+                                            <Tooltip title={t("PMatEditor.renderQueue_tip")}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        }
+                                    />
+                                    <Input
+                                        addonBefore={
+                                            <span
+                                                style={{
+                                                    width: "15vw",
+                                                    display: "inline-block",
+                                                    textAlign: "left",
+                                                }}
+                                            >
                                         {t("PMatEditor.shaderName")}
                                     </span>
-                                }
-                                value={shader}
-                                onChange={(e) => setShader(e.target.value)}
-                                suffix={
-                                    <Tooltip title={t("PMatEditor.shaderName_tip")}>
-                                        <QuestionCircleOutlined/>
-                                    </Tooltip>
-                                }
-                            />
-                        </Space>
-                    </div>
+                                        }
+                                        value={shader}
+                                        onChange={(e) => setShader(e.target.value)}
+                                        suffix={
+                                            <Tooltip title={t("PMatEditor.shaderName_tip")}>
+                                                <QuestionCircleOutlined/>
+                                            </Tooltip>
+                                        }
+                                    />
+                                </Space>
+                            </div>
+                        </Collapse.Panel>
+                    </Collapse>
                 </div>
             )}
         </div>
