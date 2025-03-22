@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {Checkbox, Collapse, Input, message, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {SaveFile} from "../../wailsjs/go/main/App";
@@ -41,40 +41,47 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
 
     // 当 filePath 变化时自动读取
     useEffect(() => {
-        if (!filePath) {
+        let isMounted = true;
+
+        if (filePath) {
+            const loadPMat = async () => {
+                try {
+                    if (filePath) {
+                        const result = await ReadPMatFile(filePath);
+                        setPMatData(result);
+
+                        setSignature(result.Signature);
+                        setVersion(result.Version);
+                        setHash(result.Hash);
+                        setMaterialName(result.MaterialName);
+                        setRenderQueue(result.RenderQueue);
+                        setShader(result.Shader);
+                    }
+                } catch (err: any) {
+                    console.error(err);
+                    message.error(t("Errors.read_pmate_file_failed_colon") + err.message);
+                }
+            }
+
+            if (!isMounted) return;
+            const fileName = filePath.split(/[\\/]/).pop();
+            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            loadPMat().then(() => {
+            });
+        } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有文件，则初始化为新文件
             const pmat = new (PMat);
             pmat.Signature = COM3D2HeaderConstants.PMatSignature;
             pmat.Version = COM3D2HeaderConstants.PMatVersion;
             setPMatData(pmat);
-            return;
         }
 
-        const fileName = filePath.split(/[\\/]/).pop();
-        WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+        return () => {
+            isMounted = false;
+        };
+    }, [filePath]);
 
-        async function loadPMat() {
-            try {
-                if (filePath) {
-                    const result = await ReadPMatFile(filePath);
-                    setPMatData(result);
-
-                    setSignature(result.Signature);
-                    setVersion(result.Version);
-                    setHash(result.Hash);
-                    setMaterialName(result.MaterialName);
-                    setRenderQueue(result.RenderQueue);
-                    setShader(result.Shader);
-                }
-            } catch (err: any) {
-                console.error(err);
-                message.error(t("Errors.read_pmate_file_failed_colon") + err.message);
-            }
-        }
-
-        loadPMat();
-    }, [filePath, t]);
 
     /**
      * 读取 .pmat 文件
@@ -168,17 +175,26 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     /**
      * 监听 Ctrl+S 快捷键，触发保存
      */
+    const saveHandlerRef = useRef(handleSavePMatFile);
+
+    // 如果改变，更新 saveHandlerRef
     useEffect(() => {
-        const handleKeyDown = (e: globalThis.KeyboardEvent) => {
+        saveHandlerRef.current = handleSavePMatFile;
+    }, [filePath, pmatData]); // 包含所有可能影响保存行为的状态
+
+    // 设置 keydown 事件监听器
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
             // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
             if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                 e.preventDefault();
-                handleSavePMatFile();
+                saveHandlerRef.current();
             }
         };
-        window.addEventListener("keydown", handleKeyDown as EventListener);
-        return () => window.removeEventListener("keydown", handleKeyDown as EventListener);
-    }, [handleSavePMatFile]);
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
 
     /**
      * 将文件操作方法暴露给父组件

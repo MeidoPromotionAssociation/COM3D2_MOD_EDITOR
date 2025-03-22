@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Checkbox, Collapse, ConfigProvider, Form, Input, InputNumber, message, Radio, Space, Tooltip} from 'antd';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {COM3D2} from '../../wailsjs/go/models';
@@ -65,22 +65,36 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
-        if (filePath) {
+        let isMounted = true;
 
+        if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
 
-            handleReadMateFile();
+            (async () => {
+                try {
+                    if (!isMounted) return;
+                    await handleReadMateFile();
+                } catch (error) {
+                    console.error("Error reading file:", error);
+                }
+            })();
         } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
-            // 如果没有文件，则初始化为新文件
+            if (!isMounted) return;
+            // 没有 filePath 时，可初始化一个新的 Col 对象
             const mate = new Mate();
             mate.Signature = COM3D2HeaderConstants.MateSignature;
             mate.Version = COM3D2HeaderConstants.MateVersion;
             setMateData(mate);
             form.resetFields();
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [filePath]);
+
 
     /**
      * 读取 .mate 文件
@@ -182,17 +196,25 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     /**
      * 监听 Ctrl+S 快捷键，触发保存
      */
+    const saveHandlerRef = useRef(handleSaveMateFile);
+
+    // 如果改变，更新 saveHandlerRef
+    useEffect(() => {
+        saveHandlerRef.current = handleSaveMateFile;
+    }, [filePath, mateData, viewMode, form]); // 包含所有可能影响保存行为的状态
+
+    // 设置 keydown 事件监听器
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
             if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                 e.preventDefault();
-                handleSaveMateFile();
+                saveHandlerRef.current();
             }
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [handleSaveMateFile]);
+    }, []);
 
 
     // 暴露方法给父组件

@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {Checkbox, Collapse, ConfigProvider, Form, Input, message, Radio, Space} from "antd";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
@@ -58,13 +58,23 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
     useEffect(() => {
+        let isMounted = true;
+
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
 
-            handleReadColFile();
+            (async () => {
+                try {
+                    if (!isMounted) return;
+                    await handleReadColFile();
+                } catch (error) {
+                    console.error("Error reading file:", error);
+                }
+            })();
         } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 Col 对象
             const empty = new ColModel();
             empty.Signature = COM3D2HeaderConstants.ColSignature;
@@ -73,11 +83,15 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             setColData(empty);
             form.resetFields();
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [filePath]);
 
 
     /** 读取 Col 文件 */
-    async function handleReadColFile() {
+    const handleReadColFile = async () => {
         if (!filePath) {
             message.error(t('Infos.pls_open_file_first'));
             return;
@@ -94,7 +108,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     }
 
     /** 保存 Col 文件（覆盖写回） */
-    async function handleSaveColFile() {
+    const handleSaveColFile = async () => {
         if (!filePath) {
             message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
@@ -124,7 +138,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     }
 
     /** 另存为 Col 文件 */
-    async function handleSaveAsColFile() {
+    const handleSaveAsColFile = async () => {
         if (!colData) {
             message.error(t('Errors.pls_load_file_first'));
             return;
@@ -162,16 +176,25 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     }
 
     /** 监听 Ctrl+S，进行保存 */
+    const saveHandlerRef = useRef(handleSaveColFile);
+
+    // 如果 handleSaveColFile 改变，更新 saveHandlerRef
     useEffect(() => {
+        saveHandlerRef.current = handleSaveColFile;
+    }, [filePath, colData, viewMode, form]); // 包含所有可能影响保存行为的状态
+
+    // 设置 keydown 事件监听器
+    useEffect(() => {
+        // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                 e.preventDefault();
-                handleSaveColFile();
+                saveHandlerRef.current();
             }
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [handleSaveColFile]);
+    }, []);
 
 
     /** 暴露给父组件的 Ref 方法：读取、保存、另存为 */

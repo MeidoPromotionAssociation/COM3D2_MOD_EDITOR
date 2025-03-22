@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../wailsjs/go/models";
 import {Button, Checkbox, CheckboxProps, Collapse, Flex, Input, message, Modal, Radio, Space, Tooltip} from "antd";
@@ -58,8 +58,6 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
         // 监听 Dark Mode
         const isDarkMode = useDarkMode();
-        // Monaco Editor 主题
-        const [editorTheme, setEditorTheme] = useState("vs-light");
         // Monaco Editor 编程语言
         const [language, setLanguage] = useState("plaintext");
 
@@ -88,44 +86,49 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
 
         // 当 filePath 变化或初始化时读取菜单数据
         useEffect(() => {
-            if (!filePath) {
+            let isMounted = true;
+
+            if (filePath) {
+                const loadMenu = async () => {
+                    try {
+                        if (filePath) {
+                            const result = await ReadMenuFile(filePath);
+
+                            setMenuData(result);
+                            setSignature(result.Signature);
+                            setBodySize(result.BodySize);
+                            setVersion(result.Version);
+                            setSrcFileName(result.SrcFileName);
+                            setItemName(result.ItemName);
+                            setCategory(result.Category);
+                            setInfoText(result.InfoText);
+
+                            updateCommandsText(result.Commands, displayFormat);
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        message.error(t('Errors.read_menu_file_failed_colon') + err);
+                    }
+                }
+
+                if (!isMounted) return;
+                const fileName = filePath.split(/[\\/]/).pop();
+                WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+                loadMenu().then(() => {
+                });
+            } else {
                 WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+                if (!isMounted) return;
                 setMenuData(new (Menu));
-                // default values
                 setSignature(COM3D2HeaderConstants.MenuSignature);
                 setVersion(COM3D2HeaderConstants.MenuVersion);
                 setBodySize(0);
                 updateCommandsText([], displayFormat);
-                return;
             }
 
-            // 设置窗口标题
-            const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
-
-            async function loadMenu() {
-                try {
-                    if (filePath) {
-                        const result = await ReadMenuFile(filePath);
-                        setMenuData(result);
-
-                        setSignature(result.Signature);
-                        setBodySize(result.BodySize);
-                        setVersion(result.Version);
-                        setSrcFileName(result.SrcFileName);
-                        setItemName(result.ItemName);
-                        setCategory(result.Category);
-                        setInfoText(result.InfoText);
-
-                        updateCommandsText(result.Commands, displayFormat);
-                    }
-                } catch (err) {
-                    console.error(err);
-                    message.error(t('Errors.read_menu_file_failed_colon') + err);
-                }
-            }
-
-            loadMenu();
+            return () => {
+                isMounted = false;
+            };
         }, [filePath]);
 
 
@@ -314,17 +317,25 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         /**
          * 监听 Ctrl+S 快捷键，触发保存
          */
+        const saveHandlerRef = useRef(handleSaveMenuFile);
+
+        // 如果改变，更新 saveHandlerRef
+        useEffect(() => {
+            saveHandlerRef.current = handleSaveMenuFile;
+        }, [filePath, menuData, displayFormat]); // 包含所有可能影响保存行为的状态
+
+        // 设置 keydown 事件监听器
         useEffect(() => {
             const handleKeyDown = (e: KeyboardEvent) => {
                 // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
                 if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                     e.preventDefault();
-                    handleSaveMenuFile();
+                    saveHandlerRef.current();
                 }
             };
             window.addEventListener("keydown", handleKeyDown);
             return () => window.removeEventListener("keydown", handleKeyDown);
-        }, [handleSaveMenuFile]);
+        }, []);
 
 
         // 将文件操作方法暴露给父组件
@@ -658,8 +669,8 @@ function parseTextAsColonSplit(text: string): Command[] {
 
         let args = [commandName];
         if (rest) {
-            const splitted = rest.split(",");
-            splitted.forEach((item) => {
+            const split = rest.split(",");
+            split.forEach((item) => {
                 args.push(item.trim());
             });
         }
@@ -684,22 +695,23 @@ function parseTextAsJSON(text: string): Command[] {
         // 空内容 => 空数组
         return [];
     }
+    let parsed;
     try {
-        const parsed = JSON.parse(trimmed);
-        if (!Array.isArray(parsed)) {
-            throw new Error(t('Errors.json_root_node_not_array'));
-        }
-        // 简单映射为 Command[]
-        return parsed.map((item: any) => {
-            return {
-                ArgCount: item.ArgCount ?? (item.Args ? item.Args.length : 0),
-                Args: item.Args ?? [],
-            } as Command;
-        });
+        parsed = JSON.parse(trimmed);
     } catch (err: any) {
         console.error("parseTextAsJSON error:", err);
         throw new Error(t('Errors.json_parse_failed') + err.message);
     }
+    if (!Array.isArray(parsed)) {
+        throw new Error(t('Errors.json_root_node_not_array'));
+    }
+    // 简单映射为 Command[]
+    return parsed.map((item: any) => {
+        return {
+            ArgCount: item.ArgCount ?? (item.Args ? item.Args.length : 0),
+            Args: item.Args ?? [],
+        } as Command;
+    });
 }
 
 

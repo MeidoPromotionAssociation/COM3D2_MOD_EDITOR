@@ -401,12 +401,7 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 					return nil, fmt.Errorf("failed to read image file: %w", err)
 				}
 
-				// 设置纹理格式
-				if isPNG {
-					textureFormat = ARGB32
-				} else {
-					textureFormat = RGB24
-				}
+				textureFormat = ARGB32
 			} else { // 需要转换
 				// 使用管道处理转换
 				pr, pw := io.Pipe()

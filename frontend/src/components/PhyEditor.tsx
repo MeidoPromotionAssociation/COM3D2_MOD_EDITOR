@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {Checkbox, Collapse, ConfigProvider, Form, Input, message, Radio, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {WindowSetTitle} from "../../wailsjs/runtime";
@@ -326,16 +326,25 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
         }
     }, [phyData, viewMode, form]);
 
-
-    // 当传入的 filePath 改变时，自动执行读取
+    // 当 filePath 变化或初始化时读取
     useEffect(() => {
+        let isMounted = true;
+
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
 
-            handleReadPhyFile();
+            (async () => {
+                try {
+                    if (!isMounted) return;
+                    await handleReadPhyFile();
+                } catch (error) {
+                    console.error("Error reading file:", error);
+                }
+            })();
         } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            if (!isMounted) return;
             // 如果没有 filePath，就新建一个空的
             const empty = COM3D2.Phy.createFrom({});
             empty.Signature = COM3D2HeaderConstants.PhySignature;
@@ -343,7 +352,12 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             setPhyData(empty);
             form.resetFields();
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [filePath]);
+
 
     /**
      * 读取 phy 文件
@@ -416,17 +430,29 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
         }
     };
 
-    // 监听 ctrl+s
+    /**
+     * 监听 Ctrl+S 快捷键，触发保存
+     */
+    const saveHandlerRef = useRef(handleSavePhyFile);
+
+    // 如果改变，更新 saveHandlerRef
     useEffect(() => {
-        const keydownHandler = (e: KeyboardEvent) => {
+        saveHandlerRef.current = handleSavePhyFile;
+    }, [filePath, phyData, viewMode, form]); // 包含所有可能影响保存行为的状态
+
+    // 设置 keydown 事件监听器
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
             if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                 e.preventDefault();
-                handleSavePhyFile();
+                saveHandlerRef.current();
             }
         };
-        window.addEventListener("keydown", keydownHandler);
-        return () => window.removeEventListener("keydown", keydownHandler);
-    }, [handleSavePhyFile]);
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
 
     // 向外暴露的方法
     useImperativeHandle(ref, () => ({
