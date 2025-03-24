@@ -10,6 +10,6 @@ export function GetAppVersion():Promise<string>;
 
 export function IsSupportedImageType(arg1:string):Promise<boolean>;
 
-export function SaveFile(arg1:string,arg2:string):Promise<string>;
-
 export function SelectFile(arg1:string,arg2:string):Promise<string>;
+
+export function SelectPathToSave(arg1:string,arg2:string):Promise<string>;

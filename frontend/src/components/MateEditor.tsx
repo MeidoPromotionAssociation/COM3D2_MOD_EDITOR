@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import {Checkbox, Collapse, ConfigProvider, Form, Input, InputNumber, message, Radio, Space, Tooltip} from 'antd';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {COM3D2} from '../../wailsjs/go/models';
-import {SaveFile} from '../../wailsjs/go/main/App';
+import {SelectPathToSave} from '../../wailsjs/go/main/App';
 import {useTranslation} from "react-i18next";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
@@ -161,7 +161,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             // 模式 3 JSON 编辑，直接保存
             if (viewMode === 3) {
                 // 询问保存路径
-                const newPath = await SaveFile("*.mate", t('Infos.com3d2_mate_file'));
+                const newPath = await SelectPathToSave("*.mate", t('Infos.com3d2_mate_file'));
                 if (!newPath) {
                     // 用户取消
                     return;
@@ -178,7 +178,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             const newMate = transformFormToMate(values, mateData);
 
             // 询问保存路径
-            const newPath = await SaveFile("*.mate", t('Infos.com3d2_mate_file'));
+            const newPath = await SelectPathToSave("*.mate", t('Infos.com3d2_mate_file'));
             if (!newPath) {
                 // 用户取消
                 return;

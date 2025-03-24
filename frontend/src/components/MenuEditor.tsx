@@ -6,7 +6,7 @@ import {CheckboxGroupProps} from "antd/es/checkbox";
 import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {t} from "i18next";
-import {SaveFile} from "../../wailsjs/go/main/App";
+import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {setupMonacoEditor} from "../utils/menuMonacoConfig";
@@ -257,7 +257,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                     Commands: parsedCommands
                 });
 
-                const path = await SaveFile("*.menu", t('Infos.com3d2_menu_file'));
+                const path = await SelectPathToSave("*.menu", t('Infos.com3d2_menu_file'));
                 if (!path) {
                     // 用户取消了保存
                     return;

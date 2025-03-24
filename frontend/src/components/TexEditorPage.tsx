@@ -21,7 +21,6 @@ const TexEditorPage: React.FC = () => {
     // 用 ref 获取 texEditorRef 实例
     const texEditorRef = useRef<TexEditorRef>(null);
 
-
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar

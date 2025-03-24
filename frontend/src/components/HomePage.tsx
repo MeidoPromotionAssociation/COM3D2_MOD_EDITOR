@@ -92,9 +92,9 @@ const HomePage: React.FC = () => {
                     alignItems: "center"
                 }}>
                     <Button type="primary"
-                            onClick={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}>{t('HomePage.choose_file')}</Button>
+                            onClick={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}>{t('Infos.choose_file')}</Button>
                     <p style={{marginTop: 20, color: "#666"}}>
-                        {t('HomePage.pls_select_a_file_to_edit')}
+                        {t('Infos.pls_select_a_file_to_edit')}
                     </p>
 
                     <Dropdown menu={languageMenu} placement="bottomRight">

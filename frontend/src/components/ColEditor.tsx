@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} fro
 import {Checkbox, Collapse, ConfigProvider, Form, Input, message, Radio, Space} from "antd";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
-import {SaveFile} from "../../wailsjs/go/main/App";
+import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useTranslation} from "react-i18next";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
@@ -148,7 +148,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             // 模式 2 JSON 编辑，直接保存
             if (viewMode === 2) {
 
-                const newPath = await SaveFile("*.col", t('Infos.com3d2_col_file'));
+                const newPath = await SelectPathToSave("*.col", t('Infos.com3d2_col_file'));
                 if (!newPath) {
                     // 用户取消
                     return;
@@ -162,7 +162,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             const newCol = transformFormToCol(values, colData);
 
             // 让用户选择一个保存路径
-            const newPath = await SaveFile("*.col", t('Infos.com3d2_col_file'));
+            const newPath = await SelectPathToSave("*.col", t('Infos.com3d2_col_file'));
             if (!newPath) {
                 // 用户取消
                 return;

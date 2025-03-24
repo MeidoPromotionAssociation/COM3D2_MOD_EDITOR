@@ -4,7 +4,7 @@ import {QuestionCircleOutlined} from "@ant-design/icons";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {ReadPhyFile, WritePhyFile} from "../../wailsjs/go/COM3D2/PhyService";
-import {SaveFile} from "../../wailsjs/go/main/App";
+import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import {useTranslation} from "react-i18next";
 import {ReadColFile} from "../../wailsjs/go/COM3D2/ColService";
@@ -414,7 +414,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
         }
         try {
             // 询问保存路径
-            const newPath = await SaveFile("*.phy", t('Infos.com3d2_phy_file'));
+            const newPath = await SelectPathToSave("*.phy", t('Infos.com3d2_phy_file'));
             if (!newPath) {
                 return; // 用户取消
             }

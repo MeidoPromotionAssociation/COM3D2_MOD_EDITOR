@@ -1,7 +1,5 @@
 {
   "HomePage": {
-    "choose_file": "选择文件",
-    "pls_select_a_file_to_edit": "请选择一个文件进行编辑",
     "choose_language": "选择语言",
     "new_version_button": "新版本可用🚀"
   },
@@ -293,6 +291,39 @@
     "hide_visual_editor": "隐藏可视化编辑器",
     "visual_editor_tip": "双击画布空白处添加新关键帧 | 拖动控制点调整切线 | 拖动关键帧点调整位置"
   },
+  "TexEditor": {
+    "file_header": {
+      "file_head": "文件头（通常无需修改）",
+      "Signature": "文件签名",
+      "Version": "文件版本",
+      "enable_edit_do_not_edit": "不要修改"
+    },
+    "pls_select_a_file_to_preview": "请选择一个文件进行预览，可以打开 .tex 或任意支持的图片格式",
+    "tex_tip": ".tex 文件，接受 4 种文件格式，ARGB32、RGB24 时数据位是 PNG 或 JPG 格式，为 DXT5、DXT1 时数据位是 DDS 格式，若追求最高质量请打开'强制 PNG'开关，追求最高效率请选择打开'压缩'开关 (2.43.0)",
+    "no_ImageMagick": "未安装 ImageMagick",
+    "ImageMagick_tip": "为了支持尽可能多的格式，使用此功能需要安装 ImageMagick，且系统上需要可以使用 magick 命令",
+    "ImageMagick_tip2": "安装后在终端中执行 `magick -version` 执行成功即为安装成功，重启本应用后即可使用",
+    "ImageMagick_download_tip": "在下载界面找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 的选项安装，安装时需要勾选 `Add application directory to your system path`。或者在终端中执行 `winget install ImageMagick.Q16-HDRI` 安装",
+    "download_ImageMagick": "下载 ImageMagick",
+    "force_png": "强制 PNG",
+    "auto_format": "自动格式",
+    "force_png_tip": "强制 PNG；如果勾选此选项，那么无论你选择的是什么格式，都会被强制转换为 PNG 格式，包括转换为 .tex 和转换为图片，否则转换为 .tex，如果源图片是有损格式且无透明通道则转换为 JPG，否则为 PNG",
+    "compress": "压缩",
+    "no_compress": "不压缩",
+    "compress_tip": "是否压缩；仅对转换为 .tex 有效，勾选后会将图片使用 DXT5 或 DXT1 压缩为 DDS 格式存储至 .tex，加载效率更高，更节省显存与内存，但缺点是有损压缩。否则根据 '强制 PNG' 开关决定转换为 PNG 还是 JPG",
+    "direct_convert": "直接转换",
+    "preview": "预览",
+    "direct_convert_tip": "开启后，从资源管理器中使用此应用打开 .tex 时会直接转换为图片，反之亦然，不显示编辑器界面（闪现），格式取决编辑器内选择的默认格式，以及另外 2 个开关",
+    "export_as_image": "导出为图片",
+    "export_as_image_tip": "导出为图片，根据你选择的后缀名自动转换格式，仅限 ImageMagick 支持的格式，也能转换为 .tex，如果勾选了'强制 PNG'，则无论选择什么后缀都会转换为 PNG 格式。如果输入输出都是 tex，则原样复制。未输入后缀则默认转换为 PNG",
+    "export_as_tex": "导出为 tex",
+    "export_as_tex_tip": "导出为 .tex 文件，和导出为图片一致，只不过只能选 .tex 后缀",
+    "no_preview_available": "预览不可用",
+    "quick_export": "快速导出",
+    "quick_export_tip": "快速导出，快速导出为同名文件，格式取决编辑器内设置的默认格式，打开的是普通图片则导出为 .tex，打开的是.tex 则导出为图片",
+    "default_format": "默认格式",
+    "default_format_tip": "用于快速导出和直接转换的默认格式，需要带 . 例如 .webp"
+  },
   "SettingsPage": {
     "check_update_now": "立刻检查更新",
     "is_check_update": "是否检查更新",
@@ -301,6 +332,11 @@
     "dismiss_update_note_tip": "清除更新提示，如果有新版本，就会显示新版本提示，除非你手动清除。需要关闭更新检查，否则下次检查更新还会出现"
   },
   "Infos": {
+    "choose_file": "选择文件",
+    "loading": "加载中...",
+    "pls_select_a_file_to_preview": "请选择一个文件进行预览",
+    "pls_select_a_file_to_edit": "请选择一个文件进行编辑",
+    "not_available_in_this_editor": "此功能在当前编辑器中不可用",
     "com3d2_menu_file": "COM3D2 菜单文件",
     "com3d2_mate_file": "COM3D2 材质文件",
     "com3d2_pmat_file": "COM3D2 渲染顺序文件",
@@ -311,11 +347,13 @@
     "com3d2_psk_file": "COM3D2 裙子物理文件",
     "com3d2_tex_file": "COM3D2 纹理文件",
     "com3d2_mod_files": "COM3D2 MOD 文件",
+    "image_file": "图片文件",
     "pls_open_file_first": "请先打开文件",
     "editing_colon": "正在编辑: ",
     "success_save_file": "文件保存成功",
     "success_save_as_file": "文件另存为成功",
     "success_save_as_file_colon": "文件另存为成功: ",
+    "success_export_file_colon": "文件导出成功：",
     "auto_count_success": "自动计算成功",
     "check_update_success_new_version_available": "检查更新成功，有新版本可用，请前往主页更新",
     "check_update_success_no_new_version": "检查更新成功，没有新版本可用"
@@ -323,6 +361,7 @@
   "Errors": {
     "fail_to_check_update": "检查更新失败",
     "file_selection_error_colon": "文件选择出错: ",
+    "read_file_failed_colon": "读取文件失败: ",
     "read_menu_file_failed_colon": "读取 .menu 文件失败：",
     "read_mate_file_failed_colon": "读取.mate 文件失败：",
     "read_pmate_file_failed_colon": "读取.pmat 文件失败：",

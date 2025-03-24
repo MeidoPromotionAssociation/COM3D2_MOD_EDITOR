@@ -27,6 +27,7 @@ For now, it allows you to edit files in these formats
 - .pmat
 - .col
 - .phy
+- .tex (preview & convert only)
 
 ### Highlights
 
@@ -42,8 +43,35 @@ For now, it allows you to edit files in these formats
 
 <br>
 
-Maybe also check out my MOD Making Tutorial (in
-Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+Maybe also check out my MOD Making Tutorial (in Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+
+<br>
+
+### Requirements
+
+This application requires the following software to run:
+- Microsoft Edge WebView2
+  - This app is built using the Wails framework which relies on Microsoft Edge WebView2 to render the UI.
+  - If you're using Windows 11, this is usually pre-installed on your system.
+  - For other systems without WebView2 installed，the application should prompt you to install it upon launch.
+  - Alternatively, you can install it from the official website: https://developer.microsoft.com/en-us/microsoft-edge/webview2/
+  - [What is Microsoft Edge WebView2?](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
+- ImageMagick
+  - Required for working with .tex files and image processing features to support various image formats. Optional if you don't need .tex editing.
+  - Install from the official website: https://imagemagick.org/script/download.php
+  - On the download page, look for `ImageMagick-version-Q16-HDRI-x64-dll.exe` and install it. During installation, check `Add application directory to your system path`.
+  - Or install via terminal command: `winget install ImageMagick.Q16-HDRI`
+  - After installation, verify by running `magick -version` in your terminal. A version number output indicates success.
+  - ImageMagick® is a free and open-source software suite for image editing and manipulation.
+
+### Privacy
+
+This application does not collect any personal information nor upload any data to servers.
+
+The only active network request is for update checks, which solely communicates with GitHub API. You can disable the update check feature.
+
+Code location: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+
 
 | ScreenShot                | ScreenShot                | ScreenShot                | ScreenShot                |
 |---------------------------|---------------------------|---------------------------|---------------------------|
@@ -82,6 +110,7 @@ QQ 967954608 加群暗号 MOD
 - .pmat
 - .col
 - .phy
+- .tex (仅支持预览和转换)
 
 ### 亮点
 
@@ -97,8 +126,34 @@ QQ 967954608 加群暗号 MOD
 
 <br>
 
-也许也可以看看我的 MOD
-制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+也许也可以看看我的 MOD 制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+
+<br>
+
+### 依赖
+
+该应用需要以下软件以运行：
+- Microsoft Edge WebView2
+  - 本应用使用 Wails 技术打造，它依赖于 Microsoft Edge WebView2 来渲染页面，因此需要安装 WebView2。
+  - 如果你使用 Windows 11，这通常已经安装在你的系统上了。
+  - 如果你使用其他系统，且没有安装 WebView2，启动应用程序时它应该会提示您安装。
+  - 或者您也可以从官方网站安装：https://developer.microsoft.com/zh-cn/microsoft-edge/webview2
+  - [Microsoft Edge WebView2 是什么？](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+- ImageMagick
+  - 使用 .tex 格式和图片处理相关功能需要安装 ImageMagick，这是为了支持尽可能多的图片格式。如果您不使用 .tex 编辑，您可以选择不安装。
+  - 请从官方网站安装：https://imagemagick.org/script/download.php
+  - 在下载页面上找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 下载并安装，安装时需要勾选 `Add application directory to your system path`
+  - 或者在您的终端执行 `winget install ImageMagick.Q16-HDRI` 命令安装。
+  - 安装完成后在终端执行 `magick -version` 命令查看版本号，如果显示版本号则说明安装成功。
+  - ImageMagick® 是一个自由的开源软件套件，用于编辑和操纵数字图像。
+
+### 隐私
+
+本应用不会收集任何个人信息，也不会上传任何信息到任何服务器。
+
+唯一的主动网络请求是用于检查更新，它只会请求 Github API，您也可以关闭更新检查功能。
+
+代码位于 https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 | 截图                        | 截图                        | 截图                        | 截图                        |
 |---------------------------|---------------------------|---------------------------|---------------------------|
@@ -137,6 +192,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - .pmat
 - .col
 - .phy
+- .tex (プレビューと変換のみサポート)
 
 ### ハイライト
 
@@ -153,8 +209,34 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 <br>
 
-また、私の MOD 制作チュートリアル（中国語）もぜひご覧ください：
-[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+また、私の MOD 制作チュートリアル（中国語）もぜひご覧ください：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+
+<br>
+
+### 必要なソフトウェア
+
+本アプリケーションの実行には以下のソフトウェアが必要です：
+- Microsoft Edge WebView2
+  - 本アプリはWailsフレームワークを使用しており、UIのレンダリングにMicrosoft Edge WebView2を必要とします
+  - Windows 11をご利用の場合、通常はプリインストールされています
+  - 他のOSを使用している場合、WebView2が未インストールの状態でアプリを起動するとインストールプロンプトが表示されます
+  - 公式サイトから手動でインストールすることも可能です：https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/
+  - [Microsoft Edge WebView2とは？](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
+- ImageMagick
+  - .texファイルの編集および画像処理機能を使用する場合に必要です。.tex編集が不要な場合はインストール不要です
+  - 公式サイトからインストールしてください：https://imagemagick.org/script/download.php
+  - ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時に`Add application directory to your system path（システムパスに追加）`にチェックを入れてください
+  - またはターミナルで次のコマンドを実行：`winget install ImageMagick.Q16-HDRI`
+  - インストール後、ターミナルで`magick -version`を実行し、バージョン番号が表示されれば成功です
+  - ImageMagick® は画像編集・加工用のオープンソースソフトウェアスイートです
+
+### プライバシー
+
+本アプリは個人情報を一切収集せず、いかなる情報もサーバーにアップロードすることはありません。
+
+唯一の能動的なネットワークリクエストは更新チェック用で、GitHub API のみにリクエストを送信します。更新チェック機能を無効にすることも可能です。
+
+該当コード: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 | SS                        | SS                        | SS                        | SS                        |
 |---------------------------|---------------------------|---------------------------|---------------------------|
@@ -191,7 +273,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 ※MODを利用するに当たり、問題が発生してもKISSは一切の責任を負いかねます。
 ※「カスタムメイド3D2」か「カスタムオーダーメイド3D2」か「CR EditSystem」を購入されている方のみが利用できます。
 ※「カスタムメイド3D2」か「カスタムオーダーメイド3D2」か「CR EditSystem」上で表示する目的以外の利用は禁止します。
-※これらの事項は http://kisskiss.tv/kiss/diary.php?no=558 を優先します。
+※これらの事項は https://kisskiss.tv/kiss/diary.php?no=558 を優先します。
 
 ・原作が「カスタムオーダーメイド3D2(GP01含む)」の内部データのみにある場合。
 ※MODはKISSサポート対象外です。
@@ -199,7 +281,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 ※「カスタムオーダーメイド3D2」か「CR EditSystem」をを購入されている方のみが利用できます。
 ※「カスタムオーダーメイド3D2」か「CR EditSystem」上で表示する目的以外の利用は禁止します。
 ※「カスタムメイド3D2」上では利用しないで下さい。
-※これらの事項は http://kisskiss.tv/kiss/diary.php?no=558 を優先します。
+※これらの事項は https://kisskiss.tv/kiss/diary.php?no=558 を優先します。
 
 ・原作が「CR EditSystem」の内部データのみにある場合。
 ※MODはKISSサポート対象外です。
@@ -207,7 +289,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 ※「CR EditSystem」を購入されている方のみが利用できます。
 ※「CR EditSystem」上で表示する目的以外の利用は禁止します。
 ※「カスタムメイド3D2」「カスタムオーダーメイド3D2」上では利用しないで下さい。
-※これらの事項は http://kisskiss.tv/kiss/diary.php?no=558 を優先します。
+※これらの事項は https://kisskiss.tv/kiss/diary.php?no=558 を優先します。
 ```
 
 # Credit

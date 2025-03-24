@@ -127,7 +127,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class CovertTexToImageResult {
-	    ImageData: number[];
+	    Base64EncodedImageData: string;
 	    Format: string;
 	    Rects: TexRect[];
 	
@@ -137,7 +137,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ImageData = source["ImageData"];
+	        this.Base64EncodedImageData = source["Base64EncodedImageData"];
 	        this.Format = source["Format"];
 	        this.Rects = this.convertValues(source["Rects"], TexRect);
 	    }

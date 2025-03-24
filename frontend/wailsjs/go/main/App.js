@@ -18,10 +18,10 @@ export function IsSupportedImageType(arg1) {
   return window['go']['main']['App']['IsSupportedImageType'](arg1);
 }
 
-export function SaveFile(arg1, arg2) {
-  return window['go']['main']['App']['SaveFile'](arg1, arg2);
-}
-
 export function SelectFile(arg1, arg2) {
   return window['go']['main']['App']['SelectFile'](arg1, arg2);
+}
+
+export function SelectPathToSave(arg1, arg2) {
+  return window['go']['main']['App']['SelectPathToSave'](arg1, arg2);
 }

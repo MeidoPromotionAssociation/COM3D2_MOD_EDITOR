@@ -56,8 +56,8 @@ func (a *App) Startup(ctx context.Context) {
 	})
 }
 
-// SelectFile 选择需要处理的文件，打开文件
-func (a *App) SelectFile(filetype string, fileDisplayName string) string {
+// SelectFile 选择需要处理的文件，返回用户选择的文件路径
+func (a *App) SelectFile(filetype string, fileDisplayName string) (path string) {
 	selection, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Choose a file",
 		Filters: []runtime.FileFilter{
@@ -74,8 +74,8 @@ func (a *App) SelectFile(filetype string, fileDisplayName string) string {
 	return selection
 }
 
-// SaveFile 保存文件，另存为
-func (a *App) SaveFile(filetype string, fileDisplayName string) string {
+// SelectPathToSave 选择一个路径保存文件，返回用户选择的路径
+func (a *App) SelectPathToSave(filetype string, fileDisplayName string) (path string) {
 	selection, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
 		Title: "Save file",
 		Filters: []runtime.FileFilter{

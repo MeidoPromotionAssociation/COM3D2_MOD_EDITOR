@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 // 1000 版本：
@@ -298,6 +299,8 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 	}
 
 	cmdIdentify := exec.Command("magick", "identify", "-format", "%wx%h %[channels] %[depth] %m", inputPath)
+	cmdIdentify.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
 	out, err := cmdIdentify.Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to identify image: %w", err)
@@ -368,15 +371,19 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 
 			// 使用stdout将输出直接写入管道
 			cmd := exec.Command(
-				"magick", "convert", inputPath,
+				"magick", inputPath,
 				"-define", fmt.Sprintf("dds:compression=%s", dxtType),
 				"dds:-", // 输出到stdout
 			)
+			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 			cmd.Stdout = pw
 
 			err := cmd.Run()
 			if err != nil {
-				pw.CloseWithError(fmt.Errorf("failed to convert image to DDS: %w", err))
+				err = pw.CloseWithError(fmt.Errorf("failed to convert image to DDS: %w", err))
+				if err != nil {
+					return
+				}
 				return
 			}
 
@@ -408,7 +415,8 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 
 				go func() {
 					// 转换为PNG格式，保留alpha通道
-					cmd := exec.Command("magick", "convert", inputPath, "png:-")
+					cmd := exec.Command("magick", inputPath, "png:-")
+					cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 					cmd.Stdout = pw
 					err := cmd.Run()
 					if err != nil {
@@ -453,7 +461,8 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 
 					if useAlpha || !isLossyFormat {
 						// 转换为PNG
-						cmd = exec.Command("magick", "convert", inputPath, "png:-")
+						cmd = exec.Command("magick", inputPath, "png:-")
+						cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 						textureFormat = ARGB32
 					} else {
 						// 转换为JPG
@@ -461,14 +470,18 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 						//if isLossyFormat {
 						//	quality = "85" // 对已经有损的图像使用稍低的质量
 						//}
-						cmd = exec.Command("magick", "convert", inputPath, "-quality", quality, "jpg:-")
+						cmd = exec.Command("magick", inputPath, "-quality", quality, "jpg:-")
+						cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 						textureFormat = RGB24
 					}
 
 					cmd.Stdout = pw
 					err := cmd.Run()
 					if err != nil {
-						pw.CloseWithError(fmt.Errorf("failed to convert image: %w", err))
+						err = pw.CloseWithError(fmt.Errorf("failed to convert image: %w", err))
+						if err != nil {
+							return
+						}
 						return
 					}
 
@@ -584,7 +597,8 @@ func ConvertTexToImage(tex *Tex, forcePNG bool) (imgData []byte, format string, 
 
 		if forcePNG {
 			// 输出肯定是 PNG
-			cmd := exec.Command("magick", "convert", inputFormat+":-", "png:-")
+			cmd := exec.Command("magick", inputFormat+":-", "png:-")
+			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 			cmd.Stdin = bytes.NewReader(tex.Data)
 
 			// 从 stdout 读取转换后的 PNG 数据
@@ -608,15 +622,16 @@ func ConvertTexToImage(tex *Tex, forcePNG bool) (imgData []byte, format string, 
 		} else {
 			var args []string
 			if hasAlpha {
-				args = []string{"convert", inputFormat + ":-", "png:-"}
+				args = []string{inputFormat + ":-", "png:-"}
 				format = "png"
 			} else {
-				args = []string{"convert", inputFormat + ":-", "jpg:-", "-quality", "90"}
+				args = []string{inputFormat + ":-", "jpg:-", "-quality", "90"}
 				format = "jpg"
 			}
 
 			// 输出 JPEG
 			cmd := exec.Command("magick", args...)
+			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 			cmd.Stdin = bytes.NewReader(tex.Data)
 
 			outPipe, err := cmd.StdoutPipe()
@@ -642,10 +657,27 @@ func ConvertTexToImage(tex *Tex, forcePNG bool) (imgData []byte, format string, 
 
 // ConvertTexToImageAndWrite 将 .tex 文件转换为图像文件，并写出
 // 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
-// 如果 forcePNG 为 false 那么如果图像是有损格式且没有透明通道，则保存为 JPG，否则保存为 PNG
+// 如果 forcePNG 为 false 那么根据输出路径的后缀名决定输出格式，如果输出路径没有后缀，则根据图像格式来判断，如果是有损格式且没有透明通道，则保存为 JPG，否则保存为 PNG
 // 如果 forcePNG 为 true 则强制保存为 PNG，不考虑图像格式和透明通道
 // 如果是 1011 版本的 tex（纹理图集），则还会生成一个 .uv.csv 文件（例如 foo.png 对应 foo.png.uv.csv），文件内容为矩形数组 x, y, w, h 一行一组
+// 如果输出是 .tex 则原样写出
 func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error {
+	// 如果输入是 tex，直接写出
+	if strings.HasSuffix(strings.ToLower(outputPath), ".tex") {
+		f, err := os.Create(outputPath)
+		if err != nil {
+			return fmt.Errorf("unable to create .tex file: %w", err)
+		}
+		defer f.Close()
+		bw := bufio.NewWriter(f)
+		if err := tex.Dump(bw); err != nil {
+			return fmt.Errorf("failed to write to.tex file: %w", err)
+		}
+		if err := bw.Flush(); err != nil {
+			return fmt.Errorf("an error occurred while flush bufio: %w", err)
+		}
+	}
+
 	// 1. 检查 ImageMagick 是否安装
 	if err := tools.CheckMagick(); err != nil {
 		return err
@@ -675,6 +707,11 @@ func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error
 	}
 
 	// 3. 如果用户没有指定后缀，则根据实际情况添加
+	// 如果强制 PNG，则把后缀改成 PNG
+	if forcePNG {
+		outputPath = strings.TrimSuffix(outputPath, filepath.Ext(outputPath)) + ".png"
+	}
+
 	ext := filepath.Ext(outputPath)
 	if ext == "" {
 		if forcePNG {
@@ -689,6 +726,23 @@ func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error
 		}
 	}
 
+	// 输入是 tex 输出也是 tex 则直接写出
+	if ext == ".tex" {
+		f, err := os.Create(outputPath)
+		if err != nil {
+			return fmt.Errorf("unable to create.tex file: %w", err)
+		}
+		defer f.Close()
+		bw := bufio.NewWriter(f)
+		if err := tex.Dump(bw); err != nil {
+			return fmt.Errorf("failed to write to.tex file: %w", err)
+		}
+		if err := bw.Flush(); err != nil {
+			return fmt.Errorf("an error occurred while flush bufio: %w", err)
+		}
+		return nil
+	}
+
 	// 4. 决定是否跳过转换，直接写出
 	//    - 当格式为 ARGB32 (PNG) 时直接返回原始数据
 	//    - 当格式为 RGB24 (JPG) 时，如果不强制 PNG，就直接返回原始数据
@@ -697,59 +751,39 @@ func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error
 		skipConversion = true
 	}
 
+	// 4.1 原始数据是 PNG 或 JPG 的情况
 	if skipConversion {
-		// 4.1 直接写出数据，避免质量损失
-		if err := os.WriteFile(outputPath, tex.Data, 0755); err != nil {
-			return fmt.Errorf("failed to write file directly: %w", err)
+		// 如果后缀是 .png 或 .jpg 直接写出数据，避免质量损失
+		if ext == ".png" || ext == ".jpg" {
+			if err := os.WriteFile(outputPath, tex.Data, 0755); err != nil {
+				return fmt.Errorf("failed to write file directly: %w", err)
+			}
+		}
+		// 否则使用 ImageMagick 进行转换成用户想要的格式
+		cmd := exec.Command("magick", inputFormat+":-", outputPath)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		cmd.Stdin = bytes.NewReader(tex.Data)
+
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("failed to convert image: %w, output: %s", err, string(output))
 		}
 	} else {
-		// 4.2 使用 ImageMagick 进行内存转换
-		//       - forcePNG：强制输出 PNG
-		// 		 - 如果有透明通道，那么输出一定是 PNG
-		// 		 - 如果没有透明通道，那么输出一定是 JPG
-
-		if forcePNG {
-			// 输出肯定是 PNG
-			cmd := exec.Command("magick", "convert", inputFormat+":-", "png:-")
-			cmd.Stdin = bytes.NewReader(tex.Data)
-
-			// 从 stdout 读取转换后的 PNG 数据
-			outPipe, err := cmd.StdoutPipe()
-			if err != nil {
-				return fmt.Errorf("failed to get stdout pipe: %w", err)
-			}
-			if err = cmd.Start(); err != nil {
-				return fmt.Errorf("failed to start magick command: %w", err)
-			}
-
-			convertedBytes, err := io.ReadAll(outPipe)
-			if err != nil {
-				return fmt.Errorf("failed to read converted data: %w", err)
-			}
-			if err = cmd.Wait(); err != nil {
-				return fmt.Errorf("magick command error: %w", err)
-			}
-
-			// 将内存中的 PNG 数据写出
-			if err = os.WriteFile(outputPath, convertedBytes, 0755); err != nil {
-				return fmt.Errorf("failed to write output PNG: %w", err)
-			}
+		// 4.2 使用 ImageMagick 进行转换并写出
+		var args []string
+		if strings.HasSuffix(strings.ToLower(outputPath), ".jpg") {
+			args = []string{inputFormat + ":-", "-quality", "90", outputPath}
 		} else {
-			var args []string
-			if hasAlpha || strings.HasSuffix(strings.ToLower(outputPath), ".png") {
-				// 输出路径中已包含后缀
-				args = []string{"convert", inputFormat + ":-", outputPath}
-			} else {
-				args = []string{"convert", inputFormat + ":-", "-quality", "90", outputPath}
-			}
+			args = []string{inputFormat + ":-", outputPath}
+		}
 
-			cmd := exec.Command("magick", args...)
-			cmd.Stdin = bytes.NewReader(tex.Data)
+		cmd := exec.Command("magick", args...)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		cmd.Stdin = bytes.NewReader(tex.Data)
 
-			output, err := cmd.CombinedOutput()
-			if err != nil {
-				return fmt.Errorf("failed to convert image: %w, output: %s", err, string(output))
-			}
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("failed to convert image: %w, output: %s", err, string(output))
 		}
 	}
 

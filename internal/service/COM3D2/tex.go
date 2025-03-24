@@ -2,9 +2,13 @@ package COM3D2
 
 import (
 	"COM3D2_MOD_EDITOR_V2/internal/serialization/COM3D2"
+	"COM3D2_MOD_EDITOR_V2/internal/tools"
 	"bufio"
 	"fmt"
+	"github.com/emmansun/base64" // use faster base64 implementation
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 // TexService 专门处理 .tex 文件的读写
@@ -47,9 +51,9 @@ func (t *TexService) WriteTexFile(path string, TexData *COM3D2.Tex) error {
 
 // CovertTexToImageResult 前端不接受多个返回值，因此使用结构体
 type CovertTexToImageResult struct {
-	ImageData []byte
-	Format    string
-	Rects     []COM3D2.TexRect
+	Base64EncodedImageData string
+	Format                 string
+	Rects                  []COM3D2.TexRect
 }
 
 // CovertTexToImage 将 .tex 文件转换为图像文件，但不写出
@@ -67,7 +71,9 @@ func (t *TexService) CovertTexToImage(inputPath string, forcePng bool) (covertTe
 	if err != nil {
 		return covertTexToImageResult, err
 	}
-	covertTexToImageResult.ImageData = imageData
+	fmt.Println("imageData", imageData)
+
+	covertTexToImageResult.Base64EncodedImageData = base64.StdEncoding.EncodeToString(imageData)
 	covertTexToImageResult.Format = format
 	covertTexToImageResult.Rects = rects
 	return covertTexToImageResult, nil
@@ -109,12 +115,89 @@ func (t *TexService) ConvertImageToTex(inputPath string, texName string, compres
 // 如果 forcePNG 为 false，且 compress 为 false，那么检查输入格式是否是 PNG 或 JPG，如果是则数据位直接使用原始图片，否则如果原始格式有损且无透明通道则转换为 JPG，否则转换为 PNG
 // 如果 forcePNG 为 true，且 compress 为 true，那么 compress 标识会被忽略，结果同 forcePNG 为 true，且 compress 为 false
 // 如果 forcePNG 为 false，且 compress 为 true，那么会对结果进行 DXT 压缩，数据位为 DDS 数据，根据有无透明通道选择 DXT1 或 DXT5
-// 如果要生成 1011 版本的 tex（纹理图集），需要在图片目录下有一个同名的 .uv.csv 文件（例如 foo.png 对应 foo.png.uv.csv），文件内容为矩形数组 x, y, w, h 一行一组
-// 否则生成 1010 版本的 tex
+// 如果要生成 1011 版本的 tex（纹理图集），需要在图片目录下有一个同名的 .uv.csv 文件（例如 foo.png 对应 foo.png.uv.csv），文件内容为矩形数组 x, y, w, h 一行一组，否则生成 1010 版本的 tex
+// 如果输入输出都是 .tex，则原样复制
 func (t *TexService) ConvertImageToTexAndWrite(inputPath string, texName string, compress bool, forcePNG bool, outputPath string) error {
 	err := COM3D2.ConvertImageToTexAndWrite(inputPath, texName, compress, forcePNG, outputPath)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+// ConvertAnyToPng 任意 ImageMagick 支持的格式转换为 PNG，包括 .tex
+// 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
+// 输出为 base64 编码的 PNG 数据
+func (t *TexService) ConvertAnyToPng(inputPath string) (Base64EncodedPngData string, err error) {
+	if strings.HasSuffix(strings.ToLower(inputPath), ".tex") {
+		covertTexToImageResult, err := t.CovertTexToImage(inputPath, true)
+		if err != nil {
+			return "", err
+		}
+		return covertTexToImageResult.Base64EncodedImageData, nil
+	} else {
+		err = tools.IsSupportedImageType(inputPath)
+		if err != nil {
+			return "", err
+		}
+
+		imageData, err := tools.ConvertImageToPng(inputPath)
+		if err != nil {
+			return "", err
+		}
+		return base64.StdEncoding.EncodeToString(imageData), nil
+	}
+}
+
+// ConvertAnyToAnyAndWrite 任意 ImageMagick 支持的格式和 .tex 转换为任意 ImageMagick 支持的格式，并写出
+// 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
+// 转换为图片时：
+// 输出格式根据输出路径后缀决定，如果 forcePng 为 true 则强制输出为 PNG，但是如果输出格式为 .tex 则输出为.tex
+// 转换为 .tex 时：
+// 如果 forcePNG 为 true，且 compress 为 false，则 tex 的数据位是原始 PNG 数据或转换为 PNG
+// 如果 forcePNG 为 false，且 compress 为 false，那么检查输入格式是否是 PNG 或 JPG，如果是则数据位直接使用原始图片，否则如果原始格式有损且无透明通道则转换为 JPG，否则转换为 PNG
+// 如果 forcePNG 为 true，且 compress 为 true，那么 compress 标识会被忽略，结果同 forcePNG 为 true，且 compress 为 false
+// 如果 forcePNG 为 false，且 compress 为 true，那么会对结果进行 DXT 压缩，数据位为 DDS 数据，根据有无透明通道选择 DXT1 或 DXT5
+// 如果输入输出都是 .tex，则原样复制，只不过是先读取再写出
+func (t *TexService) ConvertAnyToAnyAndWrite(inputPath string, texName string, compress bool, forcePNG bool, outputPath string) error {
+	if strings.HasSuffix(strings.ToLower(inputPath), ".tex") {
+		tex, err := t.ReadTexFile(inputPath)
+		if err != nil {
+			return err
+		}
+		return t.ConvertTexToImageAndWrite(tex, outputPath, forcePNG)
+	} else {
+		if strings.HasSuffix(strings.ToLower(outputPath), ".tex") {
+			err := t.ConvertImageToTexAndWrite(inputPath, texName, compress, forcePNG, outputPath)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+
+		err := tools.IsSupportedImageType(inputPath)
+		if err != nil {
+			return err
+		}
+
+		if forcePNG || filepath.Ext(outputPath) == "" {
+			outputPath = strings.TrimSuffix(outputPath, filepath.Ext(outputPath)) + ".png"
+		}
+
+		err = tools.ConvertImageToImageAndWrite(inputPath, outputPath)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+}
+
+// CheckImageMagick 检查是否安装了 ImageMagick
+func (t *TexService) CheckImageMagick() bool {
+	err := tools.CheckMagick()
+	if err != nil {
+		return false
+	}
+	return true
 }

@@ -1,7 +1,7 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {Checkbox, Collapse, Input, message, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
-import {SaveFile} from "../../wailsjs/go/main/App";
+import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {useTranslation} from "react-i18next";
@@ -158,7 +158,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
             };
 
             // 让用户选择要保存的位置
-            const path = await SaveFile("*.pmat", t("Infos.com3d2_pmat_file"));
+            const path = await SelectPathToSave("*.pmat", t("Infos.com3d2_pmat_file"));
             if (!path) {
                 // 用户取消了保存
                 return;

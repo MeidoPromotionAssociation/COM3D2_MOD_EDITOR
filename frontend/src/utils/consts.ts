@@ -19,3 +19,5 @@ export const GitHubUrl = "https://github.com/90135/COM3D2_MOD_EDITOR"; // GitHub
 export const GitHubReleaseUrl = "https://github.com/90135/COM3D2_MOD_EDITOR/releases"; // GitHub 仓库的发布页面地址
 
 export const ChineseMODGuideUrl = "https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese" // 中文 MOD 教程，简明 MOD 教程
+
+export const ImageMagickUrl = "https://imagemagick.org/script/download.php"

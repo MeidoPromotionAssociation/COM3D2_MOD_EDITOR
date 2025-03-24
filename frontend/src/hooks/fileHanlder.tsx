@@ -3,14 +3,35 @@ import {useNavigate} from "react-router-dom";
 import {IsSupportedImageType, SelectFile} from "../../wailsjs/go/main/App";
 import {getFileExtension} from "../utils/utils";
 import {message} from "antd";
-import React from "react";
+import React, {useState} from "react";
+import {ConvertAnyToAnyAndWrite} from "../../wailsjs/go/COM3D2/TexService";
+import {Quit} from "../../wailsjs/runtime";
 
 // 支持的所有文件类型，用分号分隔，不包含图片类型
-export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;.tex"
+export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.tex"
 
 const useFileHandlers = () => {
     const {t} = useTranslation();
     const navigate = useNavigate();
+
+    // TexEditor 相关持久化选项
+    const [forcePng] = useState<boolean>(() => {
+        const saved = localStorage.getItem("TexEditorForcePng");
+        return saved ? JSON.parse(saved) : true;
+    });
+    const [directConvert] = useState<boolean>(() => {
+        const saved = localStorage.getItem("TexEditorDirectConvert");
+        return saved ? JSON.parse(saved) : false;
+    });
+    const [compress] = useState<boolean>(() => {
+        const saved = localStorage.getItem("TexEditorCompress");
+        return saved ? JSON.parse(saved) : false;
+    });
+    const [defaultFormat] = useState<string>(() => {
+        const saved = localStorage.getItem("TexEditorDefaultFormat");
+        return saved ? JSON.parse(saved) : ".png";
+    })
+
 
     // handleSelectFile 选择文件，并转跳到对应页面
     // fileTypes: 要选择的文件类型，例如 "*.menu;*.mate;*.pmat;*.col;*.phy"
@@ -75,8 +96,15 @@ const useFileHandlers = () => {
                 navigate("/phy-editor", {state: {filePath}});
                 break;
             case "tex":
-                navigate("/tex-editor", {state: {filePath}});
-                break;
+                // 直接转换
+                if (directConvert) {
+                    await exportTexOrImageAsAny(filePath, filePath.replace(".tex", defaultFormat));
+                    Quit(); // 退出程序
+                    break;
+                } else {
+                    navigate("/tex-editor", {state: {filePath}});
+                    break;
+                }
             default:
                 let isSupportedImage = false;
                 try {
@@ -86,14 +114,33 @@ const useFileHandlers = () => {
                 }
 
                 if (isSupportedImage) {
-                    navigate("/tex-editor", {state: {filePath}});
+                    if (directConvert) {
+                        await exportTexOrImageAsAny(filePath, filePath.replace(/\.[^.]+$/, ".tex"));
+                        Quit(); // 退出程序
+                    } else {
+                        navigate("/tex-editor", {state: {filePath}});
+                    }
                 } else {
                     message.error(t('Errors.file_type_not_supported'));
                 }
         }
     }
 
-    return {handleSelectFile, handleOpenedFile, handleSaveFile, handleSaveAsFile};
+    // exportTexOrImageAsAny 导出 tex 或图片为任意格式
+    const exportTexOrImageAsAny = async (filePath: string, outputPath: string) => {
+        if (!outputPath) return;
+
+        try {
+            await ConvertAnyToAnyAndWrite(filePath, "", compress, forcePng, outputPath)
+            message.success(t('Infos.success_export_file_colon') + outputPath);
+        } catch (error) {
+            console.error("Error exporting file:", error);
+            message.error(t("Errors.save_file_failed_colon") + error);
+        }
+    }
+
+
+    return {handleSelectFile, handleOpenedFile, handleSaveFile, handleSaveAsFile, exportTexOrImageAsAny};
 };
 
 
