@@ -282,7 +282,7 @@
     "Value": "值",
     "operate": "操作",
     "keyframe": "关键帧（曲线）",
-    "keyframe_tip": "关键帧（keyframe）；骨骼值的关键帧，可以让骨骼物理特性变为曲线，只有在模式 0 时才会使用此值，如果没有填写则使用默认值",
+    "keyframe_tip": "关键帧（keyframe）；骨骼值的关键帧，可以让骨骼物理特性变为曲线，只有在模式 0 时才会使用此值，如果没有填写则使用默认值，Unity 标准关键帧格式",
     "add_keyframe": "添加关键帧",
     "Time": "时间",
     "InTangent": "入切线",
@@ -323,6 +323,21 @@
     "quick_export_tip": "快速导出，快速导出为同名文件，格式取决编辑器内设置的默认格式，打开的是普通图片则导出为 .tex，打开的是.tex 则导出为图片",
     "default_format": "默认格式",
     "default_format_tip": "用于快速导出和直接转换的默认格式，需要带 . 例如 .webp"
+  },
+  "AnmEditor": {
+    "file_header": {
+      "Signature": "文件签名",
+      "Version": "文件版本"
+    },
+    "BoneCurves": "骨骼曲线列表",
+    "PropertyIndex": "表示接下来的关键帧应用到骨骼的哪个属性上，0 为 本地旋转（LocalRotation） X，1 为 本地旋转 Y, 2 为 本地旋转 Z, 3 为 本地旋转 W, 4 为本地位置（localPosition） X, 5 为本地位置 Y, 6 为本地位置 Z",
+    "Keyframes": "关键帧/曲线，Unity 标准关键帧格式",
+    "Time": "时间",
+    "Value": "值",
+    "InTangent": "入切线",
+    "OutTangent": "出切线",
+    "BustKeyLeft": "是否启用左胸动画",
+    "BustKeyRight": "是否启用右胸动画"
   },
   "SettingsPage": {
     "check_update_now": "立刻检查更新",

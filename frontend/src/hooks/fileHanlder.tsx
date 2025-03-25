@@ -8,7 +8,7 @@ import {ConvertAnyToAnyAndWrite} from "../../wailsjs/go/COM3D2/TexService";
 import {Quit} from "../../wailsjs/runtime";
 
 // 支持的所有文件类型，用分号分隔，不包含图片类型
-export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.tex"
+export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.tex;*.anm"
 
 const useFileHandlers = () => {
     const {t} = useTranslation();
@@ -95,6 +95,9 @@ const useFileHandlers = () => {
             case "phy":
                 navigate("/phy-editor", {state: {filePath}});
                 break;
+            case "anm":
+                navigate("/anm-editor", {state: {filePath}});
+                break;
             case "tex":
                 // 直接转换
                 if (directConvert) {
@@ -135,7 +138,7 @@ const useFileHandlers = () => {
             message.success(t('Infos.success_export_file_colon') + outputPath);
         } catch (error) {
             console.error("Error exporting file:", error);
-            message.error(t("Errors.save_file_failed_colon") + error);
+            message.error(t('Errors.save_file_failed_colon') + error);
         }
     }
 

@@ -5,7 +5,7 @@ import {COM3D2} from "../../../wailsjs/go/models";
 import ColModel = COM3D2.Col;
 
 /** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
-const Style2Properties: React.FC<{
+const Style2Colliders: React.FC<{
     colData: ColModel | null;
     setColData: (m: ColModel | null) => void;
 }> = ({colData, setColData}) => {
@@ -32,7 +32,6 @@ const Style2Properties: React.FC<{
 
     // 初始化第一次渲染
     useEffect(() => {
-        console.log(colData)
         if (colData) {
             setJsonValue(JSON.stringify(colData, null, 2));
             prevColDataRef.current = JSON.stringify(colData);
@@ -94,4 +93,4 @@ const Style2Properties: React.FC<{
 };
 
 
-export default Style2Properties;
+export default Style2Colliders;

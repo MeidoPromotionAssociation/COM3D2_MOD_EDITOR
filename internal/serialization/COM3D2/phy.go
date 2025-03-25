@@ -11,20 +11,16 @@ import (
 // -------------------------------------------------------
 
 type Phy struct {
-	// 1. 签名, 通常为 "CM3D21_PHY"
-	Signature string `json:"Signature"`
-
-	// 2. 版本 (例如 24102)
-	Version int32 `json:"Version"`
-
-	// 3. RootBone 名称
-	RootName string `json:"RootName"`
+	// 头部信息
+	Signature string `json:"Signature"` // 1. 签名, 通常为 "CM3D21_PHY"
+	Version   int32  `json:"Version"`   // 2. 版本 (例如 24102) 这个版本每次更新都会更改，但无结构更改
+	RootName  string `json:"RootName"`  // 3. RootBone 名称
 
 	// 4. Damping 阻尼相关参数
-	EnablePartialDamping int32          `json:"EnablePartialDamping"` // PartialMode 枚举
-	PartialDamping       []BoneValue    `json:"PartialDamping"`
-	Damping              float32        `json:"Damping"`
-	DampingDistrib       AnimationCurve `json:"DampingDistrib"`
+	EnablePartialDamping int32          `json:"EnablePartialDamping"` // PartialMode 枚举，模式
+	PartialDamping       []BoneValue    `json:"PartialDamping"`       // 按骨骼设置的阻尼值
+	Damping              float32        `json:"Damping"`              // 静态或曲线模式下的阻尼值
+	DampingDistrib       AnimationCurve `json:"DampingDistrib"`       // 曲线
 
 	// 5. Elasticity 弹性相关参数
 	EnablePartialElasticity int32          `json:"EnablePartialElasticity"`
@@ -72,8 +68,8 @@ type Phy struct {
 // PartialMode 枚举
 const (
 	PartialMode_StaticOrCurve int32 = 0 // C#里的 StaticOrCurve，静态或曲线模式
-	PartialMode_Partial       int32 = 1 // C#里的 Partial，部位模式
-	PartialMode_FromBoneName  int32 = 2 // C#里的 FromBoneName，骨骼名模式
+	PartialMode_Partial       int32 = 1 // C#里的 Partial，按骨骼设置模式
+	PartialMode_FromBoneName  int32 = 2 // C#里的 FromBoneName，旧自动按骨骼名设置模式
 )
 
 // FreezeAxis 枚举

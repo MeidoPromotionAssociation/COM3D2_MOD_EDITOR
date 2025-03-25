@@ -7,7 +7,7 @@ import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useTranslation} from "react-i18next";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Style1Colliders from "./col/Style1Colliders";
-import Style2Properties from "./col/Style2Properties";
+import Style2Colliders from "./col/Style2Colliders";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
@@ -425,7 +425,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     )}
 
                     {viewMode === 2 && (
-                        <Style2Properties
+                        <Style2Colliders
                             colData={colData}
                             setColData={(newVal) => setColData(newVal)}
                         />

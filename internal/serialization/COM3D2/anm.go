@@ -6,25 +6,37 @@ import (
 	"io"
 )
 
+// PropertyIndex 表示属性索引，用于标识属性的类型。
+// 最高位为 6，含义如下：
+const (
+	LocalRotationX = 0
+	LocalRotationY = 1
+	LocalRotationZ = 2
+	LocalRotationW = 3
+	localPositionX = 4
+	localPositionY = 5
+	localPositionZ = 6
+)
+
 // Anm 整体描述一个 .anm 文件的结构
 type Anm struct {
-	Signature    string
-	Version      int32 // 1001
-	BoneCurves   []BoneCurveData
-	BustKeyLeft  bool
-	BustKeyRight bool
+	Signature    string          `json:"Signature"`    // CM3D2_ANIM
+	Version      int32           `json:"Version"`      // 1001
+	BoneCurves   []BoneCurveData `json:"BoneCurves"`   // 所有骨骼的动画曲线数据
+	BustKeyLeft  bool            `json:"BustKeyLeft"`  // 左胸部动画开关
+	BustKeyRight bool            `json:"BustKeyRight"` // 右胸部动画开关
 }
 
 // PropertyCurve 存储单一属性（例如 localRotation.x）的一整条 AnimationCurve
 type PropertyCurve struct {
-	PropertyIndex int // b=100 => index=0
-	Keyframes     []Keyframe
+	PropertyIndex int        `json:"PropertyIndex"` // 属性索引 b=100 => index=0, b=101 => index=1, 最高位为 6，含义查看上方枚举
+	Keyframes     []Keyframe `json:"Keyframes"`     // 该属性的所有关键帧数据
 }
 
 // BoneCurveData 存储某个骨骼(或节点)对应的一组曲线信息
 type BoneCurveData struct {
-	BonePath       string
-	PropertyCurves []PropertyCurve
+	BonePath       string          `json:"BonePath"`       // 骨骼路径（如"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1"）
+	PropertyCurves []PropertyCurve `json:"PropertyCurves"` // 该骨骼的所有属性动画曲线
 }
 
 // ReadAnm 读取并解析一个 .anm 文件，返回 Anm 结构。
@@ -168,8 +180,10 @@ func (a Anm) Dump(w io.Writer) error {
 			return fmt.Errorf("write bone path failed: %w", err)
 		}
 
-		// 写所有 PropertyCurve
+		// 写所有 PropertyCurve（旋转和位置数据）
 		for _, pc := range boneData.PropertyCurves {
+			// 属性标记 = 100 + PropertyIndex
+			// PropertyIndex 含义参考顶部枚举
 			b := byte(100 + pc.PropertyIndex)
 			if err := utilities.WriteByte(w, b); err != nil {
 				return fmt.Errorf("write property mark failed: %w", err)
@@ -197,7 +211,7 @@ func (a Anm) Dump(w io.Writer) error {
 		}
 	}
 
-	// 4. 写一个 b=0 标记骨骼曲线段结束
+	// 4. 写一个 0 标记骨骼曲线段结束
 	if err := utilities.WriteByte(w, 0); err != nil {
 		return fmt.Errorf("write end-of-bonedata mark failed: %w", err)
 	}

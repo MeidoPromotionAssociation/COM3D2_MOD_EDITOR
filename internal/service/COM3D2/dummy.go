@@ -39,3 +39,9 @@ type TexModel struct{}
 
 // Dummy 用于让 wails 识别 tex 对应结构体，需要在签名中使用所有结构体
 func (s *TexModel) Dummy(COM3D2.Tex, COM3D2.TexRect, CovertTexToImageResult) {}
+
+// AnmModel 用于让 wails 识别 anm 对应结构体
+type AnmModel struct{}
+
+// Dummy 用于让 wails 识别 anm 对应结构体，需要在签名中使用所有结构体
+func (s *AnmModel) Dummy(COM3D2.Anm, COM3D2.PropertyCurve, COM3D2.BoneCurveData, COM3D2.Keyframe) {}

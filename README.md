@@ -28,6 +28,7 @@ For now, it allows you to edit files in these formats
 - .col
 - .phy
 - .tex (preview & convert only)
+- .anm (JSON only)
 
 ### Highlights
 
@@ -111,6 +112,7 @@ QQ 967954608 加群暗号 MOD
 - .col
 - .phy
 - .tex (仅支持预览和转换)
+- .anm (仅 JSON 格式)
 
 ### 亮点
 
@@ -193,6 +195,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - .col
 - .phy
 - .tex (プレビューと変換のみサポート)
+- .anm (JSONフォーマットのみ)
 
 ### ハイライト
 
@@ -256,6 +259,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 4. install Pnpm `npm install -g pnpm@latest-10`
 5. run `wails dev` in project root to run in dev mode
 6. run `wails build` in project root to build project
+7. press `Ctrl + Shift + F12` Open Browser console
 
 # KISS 規約
 

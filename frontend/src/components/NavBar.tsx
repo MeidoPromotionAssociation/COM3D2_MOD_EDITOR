@@ -80,6 +80,7 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                         {key: "col-editor", label: t('EditorNavBar.ColEditor')},
                         {key: "phy-editor", label: t('EditorNavBar.PhyEditor')},
                         {key: "tex-editor", label: t('EditorNavBar.TexEditor')},
+                        {key: "anm-editor", label: t('EditorNavBar.AnmEditor')},
                     ]}
                 />
             </div>

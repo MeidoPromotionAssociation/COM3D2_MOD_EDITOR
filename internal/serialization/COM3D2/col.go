@@ -13,8 +13,8 @@ import (
 
 type Col struct {
 	Signature string      `json:"Signature"` // "CM3D21_COL"
-	Version   int32       `json:"Version"`   // 24201 this update ever version, but nothing change
-	Colliders []ICollider `json:"Colliders"`
+	Version   int32       `json:"Version"`   // 24201 这个版本每次更新都会更改，但无结构更改
+	Colliders []ICollider `json:"Colliders"` // 碰撞器列表
 }
 
 // -------------------------------------------------------
@@ -127,16 +127,16 @@ type ICollider interface {
 
 // DynamicBoneColliderBase 基类
 type DynamicBoneColliderBase struct {
-	TypeName      string     `json:"TypeName"  default:"base"` // "base"
-	ParentName    string     `json:"ParentName"`               // base.transform.parent.name
-	SelfName      string     `json:"SelfName"`                 // base.transform.name
-	LocalPosition [3]float32 `json:"LocalPosition"`
-	LocalRotation [4]float32 `json:"LocalRotation"`
-	LocalScale    [3]float32 `json:"LocalScale"`
+	TypeName      string     `json:"TypeName"  default:"base"` // 碰撞器类型，仅标记，不序列化 "base"
+	ParentName    string     `json:"ParentName"`               // 父级 Transform （骨骼）名称
+	SelfName      string     `json:"SelfName"`                 // 当前 Transform 名称
+	LocalPosition [3]float32 `json:"LocalPosition"`            // 局部坐标系中的位置 (x,y,z)
+	LocalRotation [4]float32 `json:"LocalRotation"`            // 局部坐标系中的旋转 (四元数)
+	LocalScale    [3]float32 `json:"LocalScale"`               // 局部坐标系中的缩放 (x,y,z)
 
-	Direction int32      `json:"Direction"` // (int)this.m_Direction
-	Center    [3]float32 `json:"Center"`    // m_Center.x,y,z
-	Bound     int32      `json:"Bound"`     // (int)this.m_Bound
+	Direction int32      `json:"Direction"` // 碰撞体方向，指定哪一个轴是胶囊碰撞器的高(0=x, 1=y, 2=z)
+	Center    [3]float32 `json:"Center"`    // 碰撞体中心偏移
+	Bound     int32      `json:"Bound"`     // 碰撞约束边界类型 (0=Outside, 1=Inside)
 }
 
 func (base *DynamicBoneColliderBase) GetTypeName() string {
@@ -260,11 +260,11 @@ func (base *DynamicBoneColliderBase) Write(w io.Writer, version int32) error {
 
 // DynamicBoneCollider 对应 "dbc"
 type DynamicBoneCollider struct {
-	TypeName string                   `json:"TypeName" default:"dbc"` // "dbc"
-	Base     *DynamicBoneColliderBase `json:"Base"`
+	TypeName string                   `json:"TypeName" default:"dbc"` // 碰撞器类型，仅标记，不序列化 "dbc"
+	Base     *DynamicBoneColliderBase `json:"Base"`                   // 基类
 
-	Radius float32 `json:"Radius"`
-	Height float32 `json:"Height"`
+	Radius float32 `json:"Radius"` // 碰撞器半径
+	Height float32 `json:"Height"` // 碰撞器高度
 }
 
 func (dbc *DynamicBoneCollider) GetTypeName() string {
@@ -318,8 +318,8 @@ func (dbc *DynamicBoneCollider) Write(w io.Writer, version int32) error {
 // DynamicBonePlaneCollider 对应 "dpc"
 // 在 C# 中并无其它独立字段，只继承基类。
 type DynamicBonePlaneCollider struct {
-	TypeName string                   `json:"TypeName" default:"dpc"` // "dpc"
-	Base     *DynamicBoneColliderBase `json:"Base"`
+	TypeName string                   `json:"TypeName" default:"dpc"` // 碰撞器类型，仅标记，不序列化 "dpc"
+	Base     *DynamicBoneColliderBase `json:"Base"`                   // 基类
 }
 
 func (dpc *DynamicBonePlaneCollider) GetTypeName() string {
@@ -351,16 +351,13 @@ func (dpc *DynamicBonePlaneCollider) Write(w io.Writer, version int32) error {
 
 // DynamicBoneMuneCollider 对应 "dbm"
 type DynamicBoneMuneCollider struct {
-	TypeName string                   `json:"TypeName" default:"dbm"` // "dbm"
-	Base     *DynamicBoneColliderBase `json:"Base"`
+	TypeName string                   `json:"TypeName" default:"dbm"` // 碰撞器类型，仅标记，不序列化 "dbm"
+	Base     *DynamicBoneColliderBase `json:"Base"`                   // 基类
 
-	Radius          float32    `json:"Radius"`          // m_Radius
-	Height          float32    `json:"Height"`          // m_Height
-	ScaleRateMulMax float32    `json:"ScaleRateMulMax"` // m_fScaleRateMulMax
-	CenterRateMax   [3]float32 `json:"CenterRateMax"`   // m_CenterRateMax.x,y,z
-
-	// C# 里有 public Maid m_maid; 但是它并没有被 Write/Read
-	// 所以这里就不做二进制存储了。
+	Radius          float32    `json:"Radius"`          // 碰撞器半径
+	Height          float32    `json:"Height"`          // 碰撞器高度
+	ScaleRateMulMax float32    `json:"ScaleRateMulMax"` // 最大缩放倍率
+	CenterRateMax   [3]float32 `json:"CenterRateMax"`   // 最大中心偏移(x,y,z)
 }
 
 func (c *DynamicBoneMuneCollider) GetTypeName() string {
@@ -439,7 +436,7 @@ func (c *DynamicBoneMuneCollider) Write(w io.Writer, version int32) error {
 
 // MissingCollider 对应 "missing"
 type MissingCollider struct {
-	TypeName string `json:"TypeName" default:"missing"` // "missing"
+	TypeName string `json:"TypeName" default:"missing"` // 碰撞器类型，仅标记，不序列化 "missing"
 }
 
 func (m *MissingCollider) GetTypeName() string {
