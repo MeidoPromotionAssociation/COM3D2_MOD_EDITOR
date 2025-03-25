@@ -41,12 +41,6 @@ For now, it allows you to edit files in these formats
 - All-in-one.
 - More benefits are waiting for you to discover.
 
-<br>
-
-Maybe also check out my MOD Making Tutorial (in Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
-
-<br>
-
 ### Requirements
 
 This application requires the following software to run:
@@ -72,6 +66,12 @@ The only active network request is for update checks, which solely communicates 
 
 Code location: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
+
+<br>
+
+Maybe also check out my MOD Making Tutorial (in Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+
+<br>
 
 | ScreenShot                | ScreenShot                | ScreenShot                | ScreenShot                |
 |---------------------------|---------------------------|---------------------------|---------------------------|
@@ -124,12 +124,6 @@ QQ 967954608 加群暗号 MOD
 - 多合一。
 - 更多好处等你来发现！
 
-<br>
-
-也许也可以看看我的 MOD 制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
-
-<br>
-
 ### 依赖
 
 该应用需要以下软件以运行：
@@ -154,6 +148,12 @@ QQ 967954608 加群暗号 MOD
 唯一的主动网络请求是用于检查更新，它只会请求 Github API，您也可以关闭更新检查功能。
 
 代码位于 https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+
+<br>
+
+也许也可以看看我的 MOD 制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+
+<br>
 
 | 截图                        | 截图                        | 截图                        | 截图                        |
 |---------------------------|---------------------------|---------------------------|---------------------------|
@@ -207,12 +207,6 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - オールインワン。
 - さらに多くのメリットがあなたを待っています
 
-<br>
-
-また、私の MOD 制作チュートリアル（中国語）もぜひご覧ください：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
-
-<br>
-
 ### 必要なソフトウェア
 
 本アプリケーションの実行には以下のソフトウェアが必要です：
@@ -237,6 +231,12 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 唯一の能動的なネットワークリクエストは更新チェック用で、GitHub API のみにリクエストを送信します。更新チェック機能を無効にすることも可能です。
 
 該当コード: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+
+<br>
+
+また、私の MOD 制作チュートリアル（中国語）もぜひご覧ください：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+
+<br>
 
 | SS                        | SS                        | SS                        | SS                        |
 |---------------------------|---------------------------|---------------------------|---------------------------|
