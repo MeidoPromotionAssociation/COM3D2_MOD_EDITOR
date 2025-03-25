@@ -14,14 +14,14 @@ type PhyService struct{}
 func (m *PhyService) ReadPhyFile(path string) (*COM3D2.Phy, error) {
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open .mate file: %w", err)
+		return nil, fmt.Errorf("cannot open .phy file: %w", err)
 	}
 	defer f.Close()
 
 	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
 	phyData, err := COM3D2.ReadPhy(br)
 	if err != nil {
-		return nil, fmt.Errorf("parsing the .mate file failed: %w", err)
+		return nil, fmt.Errorf("parsing the .phy file failed: %w", err)
 	}
 
 	return phyData, nil
@@ -31,13 +31,13 @@ func (m *PhyService) ReadPhyFile(path string) (*COM3D2.Phy, error) {
 func (m *PhyService) WritePhyFile(path string, phyData *COM3D2.Phy) error {
 	f, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("unable to create .menu file: %w", err)
+		return fmt.Errorf("unable to create .phy file: %w", err)
 	}
 	defer f.Close()
 
 	bw := bufio.NewWriter(f)
 	if err := phyData.Dump(bw); err != nil {
-		return fmt.Errorf("failed to write to .menu file: %w", err)
+		return fmt.Errorf("failed to write to .phy file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)

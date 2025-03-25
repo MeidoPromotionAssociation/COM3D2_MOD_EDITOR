@@ -31,13 +31,13 @@ func (m *MateService) ReadMateFile(path string) (*COM3D2.Mate, error) {
 func (m *MateService) WriteMateFile(path string, mateData *COM3D2.Mate) error {
 	f, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("unable to create .menu file: %w", err)
+		return fmt.Errorf("unable to create .mate file: %w", err)
 	}
 	defer f.Close()
 
 	bw := bufio.NewWriter(f)
 	if err := mateData.Dump(bw); err != nil {
-		return fmt.Errorf("failed to write to .menu file: %w", err)
+		return fmt.Errorf("failed to write to .mate file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
