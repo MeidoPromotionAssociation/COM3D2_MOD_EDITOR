@@ -195,7 +195,7 @@ func ConvertImageToPng(filepath string) (imageData []byte, err error) {
 	pr, pw := io.Pipe()
 	defer pr.Close()
 
-	cmd := exec.Command("magick", "convert", filepath, "png:-")
+	cmd := exec.Command("magick", filepath, "png:-")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	cmd.Stdout = pw
 
@@ -219,35 +219,75 @@ func ConvertImageToPng(filepath string) (imageData []byte, err error) {
 
 // ConvertImageToImage 将任意 ImageMagick 支持的文件格式转换为任意 ImageMagick 支持的格式
 // 依赖外部库 ImageMagick，且有 Path 环境变量可以直接调用 magick 命令
-func ConvertImageToImage(inputPath string, outputFormat string) (imageData []byte, err error) {
-	err = CheckMagick()
-	if err != nil {
+// ConvertImageToImage 大文件友好的图像格式转换，支持流式处理
+func ConvertImageToImage(inputPath string, outputFormat string) ([]byte, error) {
+	if err := CheckMagick(); err != nil {
 		return nil, err
 	}
 
-	pr, pw := io.Pipe()
-	defer pr.Close()
-
 	cmd := exec.Command("magick", inputPath, fmt.Sprintf("%s:-", outputFormat))
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	cmd.Stdout = pw
 
+	// 创建 stdout/stderr 管道
+	stdoutPipe, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, fmt.Errorf("stdout pipe failed: %v", err)
+	}
+	stderrPipe, err := cmd.StderrPipe()
+	if err != nil {
+		return nil, fmt.Errorf("stderr pipe failed: %v", err)
+	}
+
+	// 启动命令
+	if err := cmd.Start(); err != nil {
+		return nil, fmt.Errorf("command start failed: %v", err)
+	}
+
+	// 并行处理 stdout/stderr
+	var (
+		wg         sync.WaitGroup
+		stdoutData []byte
+		stderrData []byte
+		readErr    error
+	)
+
+	// 捕获 stdout
+	wg.Add(1)
 	go func() {
-		defer pw.Close()
-		if err = cmd.Run(); err != nil {
-			err = pw.CloseWithError(err)
-			if err != nil {
-				return
-			}
+		defer wg.Done()
+		stdoutData, readErr = io.ReadAll(stdoutPipe)
+		if readErr != nil {
+			readErr = fmt.Errorf("stdout read failed: %w", readErr)
 		}
 	}()
 
-	imageData, err = io.ReadAll(pr)
-	if err != nil {
-		return nil, fmt.Errorf("conversion failed: %v", err)
+	// 捕获 stderr
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		stderrData, _ = io.ReadAll(stderrPipe) // 错误通过 cmd.Wait() 处理
+	}()
+
+	// 等待数据读取完成
+	wg.Wait()
+
+	// 检查命令执行结果
+	waitErr := cmd.Wait()
+
+	// 错误处理优先级：
+	// 1. 命令执行错误（包括非零退出码）
+	// 2. stdout 读取错误
+	// 3. stderr 内容（即使命令成功但输出警告）
+	switch {
+	case waitErr != nil:
+		return nil, fmt.Errorf("conversion failed: %w\nstderr: %q", waitErr, stderrData)
+	case readErr != nil:
+		return nil, readErr
+	case len(stderrData) > 0:
+		return stdoutData, fmt.Errorf("conversion succeeded with warnings: %q", stderrData)
 	}
 
-	return imageData, nil
+	return stdoutData, nil
 }
 
 // ConvertImageToImageAndWrite 将任意 ImageMagick 支持的文件格式转换为任意 ImageMagick 支持的格式，并写出

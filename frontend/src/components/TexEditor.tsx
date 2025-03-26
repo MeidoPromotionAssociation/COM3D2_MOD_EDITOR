@@ -1,4 +1,4 @@
-import {forwardRef, useEffect, useImperativeHandle, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {useTranslation} from "react-i18next";
 import {Button, Card, Image, Input, message, Space, Spin, Switch, Tooltip} from "antd";
@@ -165,6 +165,30 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
         };
     }, [filePath]);
 
+
+
+    /**
+     * 监听 Ctrl+S 快捷键，触发快速导出
+     */
+    const saveHandlerRef = useRef(handleQuickExport);
+
+    // 如果改变，更新 saveHandlerRef
+    useEffect(() => {
+        saveHandlerRef.current = handleQuickExport;
+    }, [filePath]); // 包含所有可能影响保存行为的状态
+
+    // 设置 keydown 事件监听器
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
+            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+                e.preventDefault();
+                saveHandlerRef.current();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     // 暴露至外部的方法
     useImperativeHandle(ref, () => ({

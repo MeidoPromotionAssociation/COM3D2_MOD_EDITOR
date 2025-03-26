@@ -41,31 +41,57 @@ const AnmMonacoEditor: React.FC<{
                         },
                         BoneCurves: {
                             type: "array",
-                            description: t('AnmEditor.BoneCurves')
-                        },
-                        PropertyIndex: {
-                            type: "number",
-                            description: t('AnmEditor.PropertyIndex')
-                        },
-                        Keyframes: {
-                            type: "array",
-                            description: t('AnmEditor.Keyframes')
-                        },
-                        Time: {
-                            type: "number",
-                            description: t('AnmEditor.Time')
-                        },
-                        Value: {
-                            type: "number",
-                            description: t('AnmEditor.Value')
-                        },
-                        InTangent: {
-                            type: "number",
-                            description: t('AnmEditor.InTangent')
-                        }      ,
-                        OutTangent: {
-                            type: "number",
-                            description: t('AnmEditor.OutTangent')
+                            description: t('AnmEditor.BoneCurves'),
+                            items: {
+                                type: "object",
+                                properties: {
+                                    BonePath: {
+                                        type: "string",
+                                        description: t('AnmEditor.BonePath')
+                                    },
+                                    PropertyCurves: {
+                                        type: "array",
+                                        description: t('AnmEditor.PropertyCurves'),
+                                        items: {
+                                            type: "object",
+                                            properties: {
+                                                PropertyIndex: {
+                                                    type: "number",
+                                                    description: t('AnmEditor.PropertyIndex')
+                                                },
+                                                Keyframes: {
+                                                    type: "array",
+                                                    description: t('AnmEditor.Keyframes'),
+                                                    items: {
+                                                        type: "object",
+                                                        properties: {
+                                                            Time: {
+                                                                type: "number",
+                                                                description: t('AnmEditor.Time')
+                                                            },
+                                                            Value: {
+                                                                type: "number",
+                                                                description: t('AnmEditor.Value')
+                                                            },
+                                                            InTangent: {
+                                                                type: "number",
+                                                                description: t('AnmEditor.InTangent')
+                                                            },
+                                                            OutTangent: {
+                                                                type: "number",
+                                                                description: t('AnmEditor.OutTangent')
+                                                            }
+                                                        },
+                                                        required: ["Time", "Value", "InTangent", "OutTangent"]
+                                                    }
+                                                }
+                                            },
+                                            required: ["PropertyIndex", "Keyframes"]
+                                        }
+                                    }
+                                },
+                                required: ["BonePath", "PropertyCurves"]
+                            }
                         },
                         BustKeyLeft: {
                             type: "boolean",
@@ -76,9 +102,8 @@ const AnmMonacoEditor: React.FC<{
                             description: t('AnmEditor.BustKeyRight')
                         }
                     },
-                    //TODO 提示位置不对，需要是子属性
                     additionalProperties: true, // Allow additional properties
-                    required: ["Signature", "Version"] // Specify required fields
+                    required: ["Signature", "Version", "BustKeyLeft", "BustKeyRight"] // Specify required fields
                 }
             }]
         });
