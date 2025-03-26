@@ -104,9 +104,9 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 <br>
 
-这是 [CUSTOM ORDER MAID 3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2) 的 MOD 制作工具
+这是 [カスタムオーダーメイド3D2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2) 的 MOD 制作工具
 
-但它也可以用于 [Custom Maid 3D 2](https://www.kisskiss.tv/kiss/) (CUSTOM MAID 3D2 / CM3D2)
+但它也可以用于 [カスタムメイド3D 2](https://www.kisskiss.tv/kiss/) (CUSTOM MAID 3D2 / CM3D2)
 
 <br>
 
@@ -200,7 +200,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 <br>
 
-【カスタムオーダーメイド3D2】(https://com3d2.jp/)(CUSTOM ORDER MAID 3D2 / COM3D2)用のMOD作成ツールです。
+[カスタムオーダーメイド3D2](https://com3d2.jp/)(CUSTOM ORDER MAID 3D2 / COM3D2)用のMOD作成ツールです。
 
 ただし、[カスタムメイド3D 2](https://www.kisskiss.tv/kiss/)(CUSTOM MAID 3D2 / CM3D2)でも使用できます。
 
