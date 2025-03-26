@@ -103,7 +103,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             form.setFieldsValue(transformColToForm(data));
         } catch (error: any) {
             console.error(error);
-            message.error(t('Errors.read_col_file_failed_colon') + error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.col'}) + error);
         }
     }
 

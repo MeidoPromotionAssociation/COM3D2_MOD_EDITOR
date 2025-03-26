@@ -59,7 +59,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
                     }
                 } catch (err: any) {
                     console.error(err);
-                    message.error(t("Errors.read_pmate_file_failed_colon") + err.message);
+                    message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.pmate'}) + err);
                 }
             }
 
@@ -104,7 +104,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
 
         } catch (err: any) {
             console.error(err);
-            message.error(t("Errors.read_pmate_file_failed_colon") + err.message);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.pmate'}) + err);
         }
     };
 

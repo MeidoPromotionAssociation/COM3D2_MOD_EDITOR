@@ -111,7 +111,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             form.setFieldsValue(transformMateToForm(data));
         } catch (error: any) {
             console.error(error);
-            message.error(t('Errors.read_mate_file_failed_colon') + error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.mate'}) + error);
         }
     };
 

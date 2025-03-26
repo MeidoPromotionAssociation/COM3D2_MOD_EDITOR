@@ -107,7 +107,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                         }
                     } catch (err) {
                         console.error(err);
-                        message.error(t('Errors.read_menu_file_failed_colon') + err);
+                        message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.menu'}) + err);
                     }
                 }
 
@@ -163,7 +163,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                 }
             } catch (err) {
                 console.error(err);
-                message.error(t('Errors.read_menu_file_failed_colon') + err);
+                message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.menu'}) + err);
             }
         };
 

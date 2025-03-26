@@ -375,7 +375,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             form.setFieldsValue(transformPhyToForm(data));
         } catch (error: any) {
             console.error(error);
-            message.error(t('Errors.read_phy_file_failed_colon') + error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.phy'}) + error);
         }
     };
 
