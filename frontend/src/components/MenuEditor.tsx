@@ -489,9 +489,9 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                     {/*TODO*/}
                                 </Modal>
                                 <Editor
-                                    beforeMount={(monacoInstance) => setupMonacoEditor(monacoInstance, isDarkMode)}
+                                    beforeMount={(monacoInstance) => setupMonacoEditor(monacoInstance)}
                                     language={language}
-                                    theme="menuTheme"
+                                    theme={isDarkMode ? "menuTheme-dark" : "menuTheme"}
                                     value={commandsText}
                                     onChange={(value) => setCommandsText(value ?? "")}
                                     options={{

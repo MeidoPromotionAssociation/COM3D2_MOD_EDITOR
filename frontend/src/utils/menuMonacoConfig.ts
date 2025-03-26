@@ -74,18 +74,32 @@ const defineHoverProviders = (monacoInstance: any) => {
 };
 
 // 定义编辑器主题 "menuTheme"
-const defineTheme = (monacoInstance: any, isDarkMode: boolean) => {
+const defineTheme = (monacoInstance: any) => {
     monacoInstance.editor.defineTheme("menuTheme", {
-        base: isDarkMode ? "vs-dark" : "vs",
+        base: "vs",
         inherit: true,
         colors: {
-            "editor.foreground": isDarkMode ? "#D4D4D4" : "#000000",
-            "editor.background": isDarkMode ? "#1E1E1E" : "#FFFFFF",
+            "editor.foreground": "#000000",
+            "editor.background": "#FFFFFF",
         },
         rules: [
-            {token: "command", foreground: isDarkMode ? "#CE9178" : "#A31515", fontStyle: "bold"},
-            {token: "parameter", foreground: isDarkMode ? "#9CDCFE" : "#0451A5"},
-            {token: "delimiter", foreground: isDarkMode ? "#F8F8F8" : "#7B3814"},
+            {token: "command", foreground: "#A31515", fontStyle: "bold"},
+            {token: "parameter", foreground: "#0451A5"},
+            {token: "delimiter", foreground: "#7B3814"},
+        ],
+    });
+
+    monacoInstance.editor.defineTheme("menuTheme-dark", {
+        base: "vs-dark",
+        inherit: true,
+        colors: {
+            "editor.foreground": "#D4D4D4",
+            "editor.background": "#1E1E1E",
+        },
+        rules: [
+            {token: "command", foreground: "#CE9178", fontStyle: "bold"},
+            {token: "parameter", foreground: "#9CDCFE"},
+            {token: "delimiter", foreground: "#F8F8F8"},
         ],
     });
 };
@@ -235,7 +249,7 @@ function createSnippetForCommand(cmdName: string): string {
 
 
 // 初始化 Monaco 编辑器，接受 beforeMount 调用
-export const setupMonacoEditor = (monacoInstance: any, isDarkMode: boolean) => {
+export const setupMonacoEditor = (monacoInstance: any) => {
     // 只初始化一次，否则切换编辑器时会重复初始化，自动补全会出现多个选项
     if (initializedMonacoInstances.has(monacoInstance)) {
         return;
@@ -243,7 +257,7 @@ export const setupMonacoEditor = (monacoInstance: any, isDarkMode: boolean) => {
 
     defineLanguages(monacoInstance);
     defineHoverProviders(monacoInstance);
-    defineTheme(monacoInstance, isDarkMode);
+    defineTheme(monacoInstance);
     customShortcut(monacoInstance);
     Autocomplete(monacoInstance);
 

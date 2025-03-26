@@ -7,6 +7,7 @@ import {ExportOutlined} from "@ant-design/icons";
 import {ImageMagickUrl} from "../utils/consts";
 import useFileHandlers from "../hooks/fileHanlder";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
+import {useDarkMode} from "../hooks/themeSwitch";
 
 export interface TexEditorProps {
     filePath?: string;
@@ -22,6 +23,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
     const {t} = useTranslation();
     const {filePath} = props;
     const {handleSelectFile, exportTexOrImageAsAny} = useFileHandlers();
+    const isDarkMode = useDarkMode();
 
     // 预览数据
     const [imageData, setImageData] = useState<string | null>(null);
@@ -294,7 +296,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
                                 style={{
                                     height: "82vh",
                                     width: "100%",
-                                    backgroundColor: "#f1f1f1",
+                                    backgroundColor: isDarkMode ? "#1f1f1f" : "#f1f1f1",
                                 }}>
                                 <Image
                                     src={imageData}
@@ -320,7 +322,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
                                     alignItems: "center",
                                     height: "82vh",
                                     width: "100%",
-                                    backgroundColor: "#f1f1f1",
+                                    backgroundColor: isDarkMode ? "#1f1f1f" : "#f1f1f1",
                                 }}>
 
                                 {!isImageMagickInstalled ? (
