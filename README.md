@@ -33,7 +33,7 @@ For now, it allows you to edit files in these formats
 ### Highlights
 
 - Fully open source, completely free, and completely free; say goodbye to non-open source non-free software.
-- With full multilingual support, please contribute to us through Crowdin!
+- With full multilingual support, please contribute to us through [Crowdin](https://crowdin.com/project/com3d2modeditorv2)!
 - With complete entry help, don’t know what to fill in the box? You are in the right place!
 - Ability to create files from scratch, no need to copy files from elsewhere.
 - With light mode and dark mode.
@@ -129,7 +129,7 @@ QQ 967954608 加群暗号 MOD
 ### 亮点
 
 - 完全开源，完全免费，完全自由；和非开源的非自由软件说再见。
-- 拥有完整的多国语言支持，请通过 Crowdin 为我们贡献翻译！
+- 拥有完整的多国语言支持，请通过 [Crowdin](https://crowdin.com/project/com3d2modeditorv2) 为我们贡献翻译！
 - 拥有完整的条目帮助，不知道框内该填什么？你来对地方了！
 - 有能力从 0 创建文件，告别需要从别处复制文件。
 - 拥有浅色模式和暗黑模式。
@@ -253,7 +253,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 [![Crowdin](https://badges.crowdin.net/com3d2modeditorv2/localized.svg)](https://crowdin.com/project/com3d2modeditorv2)
 
-私たちはCrowdinを使用してローカライゼーションを行っており、各バージョンのリリース時にCrowdinから翻訳を同期します。
+私たちはCrowdinを使用してローカライゼーションを行っており、各バージョンのリリース時に[Crowdin](https://crowdin.com/project/com3d2modeditorv2)から翻訳を同期します。
 
 ローカライゼーションに参加したい場合は、[https://crowdin.com/project/com3d2modeditorv2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/) をご覧ください。
 
@@ -304,7 +304,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 <br>
 <br>
 
-# KISS 規約
+# KISS Rule
 
 *This Project is not owned or endorsed by KISS.
 
@@ -314,7 +314,10 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 *If any problem occurs, please do not contact KISS.
 
+
 ```
+KISS 規約
+
 ・原作がMOD作成者にある場合、又は、原作が「カスタムメイド3D2」のみに存在する内部データの場合、又は、原作が「カスタムメイド3D2」と「カスタムオーダーメイド3D2」の両方に存在する内部データの場合。
 ※MODはKISSサポート対象外です。
 ※MODを利用するに当たり、問題が発生してもKISSは一切の責任を負いかねます。
