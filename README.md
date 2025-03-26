@@ -33,8 +33,7 @@ For now, it allows you to edit files in these formats
 ### Highlights
 
 - Fully open source, completely free, and completely free; say goodbye to non-open source non-free software.
-- With full i18n support, you can add your own language files in the `frontend/public/locales` folder. Some languages
-  ​​use AI translation. If you are not satisfied, please feel free to submit translations through PR or Issue (Translations should be based on simplified Chinese).
+- With full multilingual support, please contribute to us through Crowdin!
 - With complete entry help, don’t know what to fill in the box? You are in the right place!
 - Ability to create files from scratch, no need to copy files from elsewhere.
 - With light mode and dark mode.
@@ -50,14 +49,27 @@ This application requires the following software to run:
   - If you're using Windows 11, this is usually pre-installed on your system.
   - For other systems without WebView2 installed，the application should prompt you to install it upon launch.
   - Alternatively, you can install it from the official website: https://developer.microsoft.com/en-us/microsoft-edge/webview2/
-  - [What is Microsoft Edge WebView2?](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
+  - What is Microsoft Edge WebView2? [https://learn.microsoft.com/en-us/microsoft-edge/webview2/](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
 - ImageMagick
   - Required for working with .tex files and image processing features to support various image formats. Optional if you don't need .tex editing.
-  - Install from the official website: https://imagemagick.org/script/download.php
+  - Install from the official website: [https://imagemagick.org/script/download.php](https://crowdin.com/project/com3d2modeditorv2)
   - On the download page, look for `ImageMagick-version-Q16-HDRI-x64-dll.exe` and install it. During installation, check `Add application directory to your system path`.
   - Or install via terminal command: `winget install ImageMagick.Q16-HDRI`
   - After installation, verify by running `magick -version` in your terminal. A version number output indicates success.
   - ImageMagick® is a free and open-source software suite for image editing and manipulation.
+
+### Localization
+
+[![Crowdin](https://badges.crowdin.net/com3d2modeditorv2/localized.svg)](https://crowdin.com/project/com3d2modeditorv2)
+
+We use Crowdin for localization, and we will synchronize translations with Crowdin at each release.
+
+If you want to participate in localization, please check [https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2)
+
+register a free account and you can contribute translations on Crowdin.
+
+Currently, some languages use AI translation. If you are not satisfied with the existing translations, please feel free to contribute translations through Crowdin.
+
 
 ### Privacy
 
@@ -117,8 +129,7 @@ QQ 967954608 加群暗号 MOD
 ### 亮点
 
 - 完全开源，完全免费，完全自由；和非开源的非自由软件说再见。
-- 拥有完整的 i18n 支持，您可以在 `frontend/public/locales` 文件夹中添加自己的语言文件，部分语言使用 AI 翻译，如果您不满意，请随时通过
-  PR 或 Issue 提交翻译。
+- 拥有完整的多国语言支持，请通过 Crowdin 为我们贡献翻译！
 - 拥有完整的条目帮助，不知道框内该填什么？你来对地方了！
 - 有能力从 0 创建文件，告别需要从别处复制文件。
 - 拥有浅色模式和暗黑模式。
@@ -133,15 +144,27 @@ QQ 967954608 加群暗号 MOD
   - 本应用使用 Wails 技术打造，它依赖于 Microsoft Edge WebView2 来渲染页面，因此需要安装 WebView2。
   - 如果你使用 Windows 11，这通常已经安装在你的系统上了。
   - 如果你使用其他系统，且没有安装 WebView2，启动应用程序时它应该会提示您安装。
-  - 或者您也可以从官方网站安装：https://developer.microsoft.com/zh-cn/microsoft-edge/webview2
-  - [Microsoft Edge WebView2 是什么？](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+  - 或者您也可以从官方网站安装：[https://developer.microsoft.com/zh-cn/microsoft-edge/webview2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
+  - Microsoft Edge WebView2 是什么？[https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
 - ImageMagick
   - 使用 .tex 格式和图片处理相关功能需要安装 ImageMagick，这是为了支持尽可能多的图片格式。如果您不使用 .tex 编辑，您可以选择不安装。
-  - 请从官方网站安装：https://imagemagick.org/script/download.php
+  - 请从官方网站安装：[https://imagemagick.org/script/download.php](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
   - 在下载页面上找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 下载并安装，安装时需要勾选 `Add application directory to your system path`
   - 或者在您的终端执行 `winget install ImageMagick.Q16-HDRI` 命令安装。
   - 安装完成后在终端执行 `magick -version` 命令查看版本号，如果显示版本号则说明安装成功。
   - ImageMagick® 是一个自由的开源软件套件，用于编辑和操纵数字图像。
+
+### 本地化
+
+[![Crowdin](https://badges.crowdin.net/com3d2modeditorv2/localized.svg)](https://crowdin.com/project/com3d2modeditorv2)
+
+我们使用 Crowdin 进行本地化，在每个版本发布时我们会从 Crowdin 同步翻译。
+
+如果您想参与本地化，请访问 [https://crowdin.com/project/com3d2modeditorv2](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+
+注册一个免费账户后，您就可以在 Crowdin 上为我们贡献翻译。
+
+目前部分语言使用 AI 翻译，如果您对现有翻译不满意，请随时贡献翻译。
 
 ### 隐私
 
@@ -200,8 +223,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 ### ハイライト
 
 - 完全にオープンソース、完全に無料、そして完全にフリー。オープンソースではない、フリーではないソフトウェアとはお別れです。
-- 完全な i18n サポートにより、`frontend/public/locales` フォルダーに独自の言語ファイルを追加できます。一部の言語は AI
-  を使用して翻訳されています。満足できない場合は、PR または Issue 経由でお気軽に翻訳を送信してください。（翻訳は簡体字中国語に基づいて行う必要があります）
+- 完全な多言語サポートを備えており、Crowdinを通じて翻訳にご協力ください！
 - 完全な入力ヘルプがありますが、ボックスに何を入力すればよいかわかりませんか?あなたは正しい場所に来ました！
 - 最初からファイルを作成する機能。他の場所からファイルをコピーする必要はありません。
 - ファイルのドラッグとファイルとして開くことをサポート
@@ -217,15 +239,27 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
   - 本アプリはWailsフレームワークを使用しており、UIのレンダリングにMicrosoft Edge WebView2を必要とします
   - Windows 11をご利用の場合、通常はプリインストールされています
   - 他のOSを使用している場合、WebView2が未インストールの状態でアプリを起動するとインストールプロンプトが表示されます
-  - 公式サイトから手動でインストールすることも可能です：https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/
-  - [Microsoft Edge WebView2とは？](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
+  - 公式サイトから手動でインストールすることも可能です：[https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+  - Microsoft Edge WebView2とは？[https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
 - ImageMagick
   - .texファイルの編集および画像処理機能を使用する場合に必要です。.tex編集が不要な場合はインストール不要です
-  - 公式サイトからインストールしてください：https://imagemagick.org/script/download.php
+  - 公式サイトからインストールしてください：[https://imagemagick.org/script/download.php](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
   - ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時に`Add application directory to your system path（システムパスに追加）`にチェックを入れてください
   - またはターミナルで次のコマンドを実行：`winget install ImageMagick.Q16-HDRI`
   - インストール後、ターミナルで`magick -version`を実行し、バージョン番号が表示されれば成功です
   - ImageMagick® は画像編集・加工用のオープンソースソフトウェアスイートです
+
+### ローカライゼーション
+
+[![Crowdin](https://badges.crowdin.net/com3d2modeditorv2/localized.svg)](https://crowdin.com/project/com3d2modeditorv2)
+
+私たちはCrowdinを使用してローカライゼーションを行っており、各バージョンのリリース時にCrowdinから翻訳を同期します。
+
+ローカライゼーションに参加したい場合は、[https://crowdin.com/project/com3d2modeditorv2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/) をご覧ください。
+
+無料アカウントを登録すれば、Crowdin上で翻訳に貢献することができます。
+
+現在、一部の言語ではAI翻訳を使用しています。既存の翻訳に満足できない場合は、いつでも翻訳を提供してください。
 
 ### プライバシー
 
@@ -250,16 +284,25 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 <br>
 <br>
 <br>
+<br>
+<br>
+<br>
+<br>
 
 # How to Dev
 
-1. install [Golang](https://go.dev/)  1.24+
-2. run `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
-3. install [Nodejs](https://nodejs.org/) v22
-4. install Pnpm `npm install -g pnpm@latest-10`
-5. run `wails dev` in project root to run in dev mode
-6. run `wails build` in project root to build project
-7. press `Ctrl + Shift + F12` Open Browser console
+1. clone this repo
+2. install [Golang](https://go.dev/)  1.24+
+3. run `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
+4. install [Nodejs](https://nodejs.org/) v22
+5. install Pnpm `npm install -g pnpm@latest-10`
+
+- run `wails dev` in project root to run in dev mode
+- run `wails build` in project root to build project
+- press `Ctrl + Shift + F12` Open Browser console
+
+<br>
+<br>
 
 # KISS 規約
 
@@ -295,6 +338,8 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 ※「カスタムメイド3D2」「カスタムオーダーメイド3D2」上では利用しないで下さい。
 ※これらの事項は https://kisskiss.tv/kiss/diary.php?no=558 を優先します。
 ```
+<br>
+<br>
 
 # Credit
 
