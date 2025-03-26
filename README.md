@@ -22,13 +22,13 @@ If you like it, please light up the Star~
 
 For now, it allows you to edit files in these formats
 
-- .menu
-- .mate
-- .pmat
-- .col
-- .phy
-- .tex (preview & convert only)
-- .anm (JSON only)
+- `.menu`
+- `.mate`
+- `.pmat`
+- `.col`
+- `.phy`
+- `.tex` (preview & convert only)
+- `.anm` (JSON only)
 
 ### Highlights
 
@@ -118,13 +118,13 @@ QQ 967954608 加群暗号 MOD
 
 目前，它允许您编辑以下格式的文件
 
-- .menu
-- .mate
-- .pmat
-- .col
-- .phy
-- .tex (仅支持预览和转换)
-- .anm (仅 JSON 格式)
+- `.menu`
+- `.mate`
+- `.pmat`
+- `.col`
+- `.phy`
+- `.tex` (仅支持预览和转换)
+- `.anm` (仅 JSON 格式)
 
 ### 亮点
 
@@ -212,13 +212,13 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 現在、以下の形式のファイルを編集することができます。
 
-- .menu
-- .mate
-- .pmat
-- .col
-- .phy
-- .tex (プレビューと変換のみサポート)
-- .anm (JSONフォーマットのみ)
+- `.menu`
+- `.mate`
+- `.pmat`
+- `.col`
+- `.phy`
+- `.tex` (プレビューと変換のみサポート)
+- `.anm` (JSONフォーマットのみ)
 
 ### ハイライト
 
