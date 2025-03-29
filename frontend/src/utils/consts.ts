@@ -20,4 +20,6 @@ export const GitHubReleaseUrl = "https://github.com/90135/COM3D2_MOD_EDITOR/rele
 
 export const ChineseMODGuideUrl = "https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese" // 中文 MOD 教程，简明 MOD 教程
 
+export const CrowdinUrl = "https://crowdin.com/project/com3d2modeditorv2"
+
 export const ImageMagickUrl = "https://imagemagick.org/script/download.php"

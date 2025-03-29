@@ -225,7 +225,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
                             defaultValue=".png"
                             value={defaultFormat}
                             onChange={e => setDefaultFormat(e.target.value.replace(/[^a-zA-Z.0-9]/g, '').toLowerCase())}
-                            style={{width: '150px'}}
+                            style={{width: '180px'}}
                         />
                     </Tooltip>
 

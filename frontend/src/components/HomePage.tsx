@@ -6,7 +6,7 @@ import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
 import {DownOutlined, GithubOutlined, SettingOutlined, TranslationOutlined} from "@ant-design/icons";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
-import {AppVersion, ChineseMODGuideUrl, GitHubReleaseUrl, GitHubUrl} from "../utils/consts";
+import {AppVersion, ChineseMODGuideUrl, CrowdinUrl, GitHubReleaseUrl, GitHubUrl} from "../utils/consts";
 import {useVersionCheck} from "../utils/CheckUpdate";
 import useFileHandlers, {AllSupportedFileTypes} from "../hooks/fileHanlder";
 
@@ -24,12 +24,12 @@ const HomePage: React.FC = () => {
         const setTitle = async () => {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
         }
-        setTitle();
+        setTitle().then(() => {});
     });
 
 
     const handleLanguageChange: MenuProps['onClick'] = (e) => {
-        i18n.changeLanguage(e.key);
+        i18n.changeLanguage(e.key).then(() => {});
         setLanguage(e.key);
     };
 
@@ -136,6 +136,10 @@ const HomePage: React.FC = () => {
                         </Button>
                     )}
 
+                    <Button type='text'
+                            onClick={() => BrowserOpenURL(CrowdinUrl)}>
+                        <p>{t('HomePage.help_us_translate_editor')}</p>
+                    </Button>
 
                     <Button type="text" size="large" style={{color: "#666"}}
                             onClick={() => BrowserOpenURL(GitHubUrl)}>
