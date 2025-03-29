@@ -27,7 +27,7 @@ For now, it allows you to edit files in these formats
 - `.pmat`
 - `.col`
 - `.phy`
-- `.tex` (preview & convert only)
+- `.tex` (preview & convert only & requires external dependencies)
 - `.anm` (JSON only)
 
 ### Highlights
@@ -123,7 +123,7 @@ QQ 967954608 加群暗号 MOD
 - `.pmat`
 - `.col`
 - `.phy`
-- `.tex` (仅支持预览和转换)
+- `.tex` (仅支持预览和转换、需要外部依赖)
 - `.anm` (仅 JSON 格式)
 
 ### 亮点
@@ -160,7 +160,7 @@ QQ 967954608 加群暗号 MOD
 
 我们使用 Crowdin 进行本地化，在每个版本发布时我们会从 Crowdin 同步翻译。
 
-如果您想参与本地化，请访问 [https://crowdin.com/project/com3d2modeditorv2](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+如果您想参与本地化，请访问 [https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2)
 
 注册一个免费账户后，您就可以在 Crowdin 上为我们贡献翻译。
 
@@ -217,7 +217,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - `.pmat`
 - `.col`
 - `.phy`
-- `.tex` (プレビューと変換のみサポート)
+- `.tex` (プレビューと変換のみサポート、外部依存関係が必要)
 - `.anm` (JSONフォーマットのみ)
 
 ### ハイライト
@@ -255,7 +255,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 私たちはCrowdinを使用してローカライゼーションを行っており、各バージョンのリリース時に[Crowdin](https://crowdin.com/project/com3d2modeditorv2)から翻訳を同期します。
 
-ローカライゼーションに参加したい場合は、[https://crowdin.com/project/com3d2modeditorv2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/) をご覧ください。
+ローカライゼーションに参加したい場合は、[https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2) をご覧ください。
 
 無料アカウントを登録すれば、Crowdin上で翻訳に貢献することができます。
 
