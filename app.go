@@ -18,7 +18,7 @@ const (
 	// GitHubApiURL GitHub API 版本检查 URL
 	GitHubApiURL = "https://api.github.com/repos/90135/COM3D2_MOD_EDITOR/releases/latest"
 	// CurrentVersion 当前应用版本
-	CurrentVersion = "v1.1.1"
+	CurrentVersion = "v1.2.0"
 )
 
 // App struct
