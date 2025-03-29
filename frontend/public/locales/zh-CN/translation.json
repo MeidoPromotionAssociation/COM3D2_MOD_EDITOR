@@ -1,7 +1,8 @@
 {
   "HomePage": {
     "choose_language": "选择语言",
-    "new_version_button": "新版本可用🚀"
+    "new_version_button": "新版本可用🚀",
+    "help_us_translate_editor": "帮助我们翻译编辑器"
   },
   "EditorNavBar": {
     "HomePage": "首页",
