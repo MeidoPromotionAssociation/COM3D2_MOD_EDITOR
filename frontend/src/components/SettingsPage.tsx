@@ -8,6 +8,8 @@ import useFileHandlers, {AllSupportedFileTypes} from "../hooks/fileHanlder";
 import React, {useState} from "react";
 import {CloseCircleOutlined, InfoCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import {checkForUpdatesWithMessage} from "../utils/CheckUpdate";
+import {SettingCheckUpdateKey} from "../utils/consts";
+import {NewVersionAvailableKey} from "../utils/LocalStorageKeys";
 
 const SettingsPage: React.FC = () => {
     const {t} = useTranslation();
@@ -15,17 +17,17 @@ const SettingsPage: React.FC = () => {
 
 
     const [checkUpdates, setCheckUpdates] = useState(() => {
-        const saved = localStorage.getItem('SettingCheckUpdateKey');
+        const saved = localStorage.getItem(SettingCheckUpdateKey);
         return saved ? JSON.parse(saved) : true;
     });
 
     const handleUpdateCheck = (checked: boolean) => {
         setCheckUpdates(checked);
-        localStorage.setItem('SettingCheckUpdateKey', JSON.stringify(checked));
+        localStorage.setItem(SettingCheckUpdateKey, JSON.stringify(checked));
     };
 
     const handleDismissUpdate = () => {
-        localStorage.setItem('NewVersionAvailableKey', 'false');
+        localStorage.setItem(NewVersionAvailableKey, 'false');
     };
 
     return (

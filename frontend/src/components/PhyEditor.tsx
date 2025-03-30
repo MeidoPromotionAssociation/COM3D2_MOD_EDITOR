@@ -10,6 +10,7 @@ import {useTranslation} from "react-i18next";
 import {ReadColFile} from "../../wailsjs/go/COM3D2/ColService";
 import Style2PhyProperties from "./phy/Style2PhyProperties";
 import Style1PhyProperties from "./phy/Style1PhyProperties";
+import {PhyEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
@@ -315,7 +316,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
 
     //  viewMode，1=表单模式，2=JSON模式
     const [viewMode, setViewMode] = useState<1 | 2>(() => {
-        const saved = localStorage.getItem("phyEditorViewMode");
+        const saved = localStorage.getItem(PhyEditorViewModeKey);
         return saved ? (Number(saved) as 1 | 2) : 1;
     });
 
@@ -561,7 +562,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                                     setPhyData(updatedPhy);
                                 }
                                 setViewMode(e.target.value);
-                                localStorage.setItem("phyEditorViewMode", e.target.value.toString());
+                                localStorage.setItem(PhyEditorViewModeKey, e.target.value.toString());
                             }}
                             options={[
                                 {label: t('PhyEditor.style1'), value: 1},

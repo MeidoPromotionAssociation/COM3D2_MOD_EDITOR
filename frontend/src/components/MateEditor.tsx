@@ -11,6 +11,7 @@ import Style3MateProperties from "./mate/Style3MateProperties";
 import Style2MateProperties from "./mate/Style2MateProperties";
 import Style1MateProperties from "./mate/Style1MateProperties";
 import Style1MatePropertiesVirtualized from "./mate/Style1MatePropertiesVirtualized";
+import {MateEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 import TexProperty = COM3D2.TexProperty;
@@ -58,7 +59,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
     // 用来切换样式模式：1 or 2 or 3
     const [viewMode, setViewMode] = useState<1 | 2 | 3>(() => {
-        const saved = localStorage.getItem('mateEditorViewMode');
+        const saved = localStorage.getItem(MateEditorViewModeKey);
         return saved ? Number(saved) as 1 | 2 | 3 : 1;
     });
 
@@ -603,7 +604,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 }
 
                                 setViewMode(e.target.value);
-                                localStorage.setItem('mateEditorViewMode', e.target.value.toString());
+                                localStorage.setItem(MateEditorViewModeKey, e.target.value.toString());
                             }}
                             options={[
                                 {label: t('MateEditor.style1'), value: 1},

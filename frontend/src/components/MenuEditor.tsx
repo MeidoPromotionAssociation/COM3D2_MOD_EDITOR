@@ -12,6 +12,7 @@ import {useDarkMode} from "../hooks/themeSwitch";
 import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 import {ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
+import {MenuEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
 
@@ -49,7 +50,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         // 切换显示格式
         const [displayFormat, setDisplayFormat] = useState<FormatType>(
             // 从 localStorage 读取上次保存的格式，默认使用 treeIndent
-            () => (localStorage.getItem('lastMenuDisplayFormat') as FormatType) || "treeIndent"
+            () => (localStorage.getItem(MenuEditorViewModeKey) as FormatType) || "treeIndent"
         );
 
         // 只读字段是否可编辑
@@ -458,7 +459,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
                                         value={displayFormat}
                                         onChange={(e) => {
                                             setDisplayFormat(e.target.value);
-                                            localStorage.setItem('lastMenuDisplayFormat', e.target.value);
+                                            localStorage.setItem(MenuEditorViewModeKey, e.target.value);
                                         }}
                                     />
                                 </Flex>

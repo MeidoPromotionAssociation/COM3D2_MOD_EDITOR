@@ -8,6 +8,7 @@ import {useTranslation} from "react-i18next";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Style1Colliders from "./col/Style1Colliders";
 import Style2Colliders from "./col/Style2Colliders";
+import {colEditorViewModeKey} from "../utils/LocalStorageKeys";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
@@ -52,7 +53,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
     // 用来切换视图模式
     const [viewMode, setViewMode] = useState<1 | 2>(() => {
-        const saved = localStorage.getItem("colEditorViewMode");
+        const saved = localStorage.getItem(colEditorViewModeKey);
         return saved ? Number(saved) as 1 | 2 : 1;
     });
 
@@ -396,7 +397,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                 }
 
                                 setViewMode(e.target.value);
-                                localStorage.setItem('colEditorViewMode', e.target.value.toString());
+                                localStorage.setItem(colEditorViewModeKey, e.target.value.toString());
                             }}
                             options={[
                                 {label: t('ColEditor.style1'), value: 1},

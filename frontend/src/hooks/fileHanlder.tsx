@@ -6,6 +6,12 @@ import {message} from "antd";
 import React, {useState} from "react";
 import {ConvertAnyToAnyAndWrite} from "../../wailsjs/go/COM3D2/TexService";
 import {Quit} from "../../wailsjs/runtime";
+import {
+    TexEditorCompressKey,
+    TexEditorDefaultFormatKey,
+    TexEditorDirectConvertKey,
+    TexEditorForcePngKey
+} from "../utils/LocalStorageKeys";
 
 // 支持的所有文件类型，用分号分隔，不包含图片类型
 export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.tex;*.anm"
@@ -16,19 +22,19 @@ const useFileHandlers = () => {
 
     // TexEditor 相关持久化选项
     const [forcePng] = useState<boolean>(() => {
-        const saved = localStorage.getItem("TexEditorForcePng");
+        const saved = localStorage.getItem(TexEditorForcePngKey);
         return saved ? JSON.parse(saved) : true;
     });
     const [directConvert] = useState<boolean>(() => {
-        const saved = localStorage.getItem("TexEditorDirectConvert");
+        const saved = localStorage.getItem(TexEditorDirectConvertKey);
         return saved ? JSON.parse(saved) : false;
     });
     const [compress] = useState<boolean>(() => {
-        const saved = localStorage.getItem("TexEditorCompress");
+        const saved = localStorage.getItem(TexEditorCompressKey);
         return saved ? JSON.parse(saved) : false;
     });
     const [defaultFormat] = useState<string>(() => {
-        const saved = localStorage.getItem("TexEditorDefaultFormat");
+        const saved = localStorage.getItem(TexEditorDefaultFormatKey);
         return saved ? JSON.parse(saved) : ".png";
     })
 

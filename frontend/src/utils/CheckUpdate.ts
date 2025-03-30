@@ -1,16 +1,9 @@
 import {useEffect, useState} from 'react';
-import {
-    AppVersion,
-    LastUpdateCheckTimeKey,
-    LatestVersionKey,
-    NewVersionAvailableKey,
-    RetryInterval,
-    SettingCheckUpdateKey,
-    UpdateCheckInterval
-} from "./consts";
+import {AppVersion, RetryInterval, SettingCheckUpdateKey, UpdateCheckInterval} from "./consts";
 import {CheckLatestVersion} from "../../wailsjs/go/main/App";
 import {message} from "antd";
 import {t} from "i18next";
+import {LastUpdateCheckTimeKey, LatestVersionKey, NewVersionAvailableKey, UpdateRetryKey} from "./LocalStorageKeys";
 
 
 /**
@@ -131,7 +124,7 @@ function shouldCheckForUpdate(): boolean {
     const lastCheck = parseInt(lastCheckTime, 10);
 
     // 获取当前设置的检查间隔
-    const interval = localStorage.getItem('UpdateRetry') === 'true'
+    const interval = localStorage.getItem(UpdateRetryKey) === 'true'
         ? RetryInterval
         : UpdateCheckInterval;
 
@@ -146,8 +139,8 @@ function updateLastCheckTime(): void {
     localStorage.setItem(LastUpdateCheckTimeKey, currentTime.toString());
 
     // 检查成功后，如果是重试状态，重置为正常间隔
-    if (localStorage.getItem('UpdateRetry') === 'true') {
-        localStorage.removeItem('UpdateRetry');
+    if (localStorage.getItem(UpdateRetryKey) === 'true') {
+        localStorage.removeItem(UpdateRetryKey);
     }
 }
 
@@ -155,7 +148,7 @@ function updateLastCheckTime(): void {
  * 设置重试间隔
  */
 function setRetryInterval(): void {
-    localStorage.setItem('UpdateRetry', 'true');
+    localStorage.setItem(UpdateRetryKey, 'true');
 }
 
 /**
@@ -205,7 +198,8 @@ export function useVersionCheck(): boolean {
             setHasUpdate(result);
         };
 
-        checkUpdate();
+        checkUpdate().then(() => {
+        });
     }, []);
 
     return hasUpdate;

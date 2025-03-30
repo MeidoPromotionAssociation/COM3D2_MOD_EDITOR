@@ -8,6 +8,12 @@ import {ImageMagickUrl} from "../utils/consts";
 import useFileHandlers from "../hooks/fileHanlder";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {useDarkMode} from "../hooks/themeSwitch";
+import {
+    TexEditorCompressKey,
+    TexEditorDefaultFormatKey,
+    TexEditorDirectConvertKey,
+    TexEditorForcePngKey
+} from "../utils/LocalStorageKeys";
 
 export interface TexEditorProps {
     filePath?: string;
@@ -30,19 +36,19 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
 
     // 持久化选项
     const [forcePng, setForcePng] = useState<boolean>(() => {
-        const saved = localStorage.getItem("TexEditorForcePng");
+        const saved = localStorage.getItem(TexEditorForcePngKey);
         return saved ? JSON.parse(saved) : true;
     });
     const [directConvert, setDirectConvert] = useState<boolean>(() => {
-        const saved = localStorage.getItem("TexEditorDirectConvert");
+        const saved = localStorage.getItem(TexEditorDirectConvertKey);
         return saved ? JSON.parse(saved) : false;
     });
     const [compress, setCompress] = useState<boolean>(() => {
-        const saved = localStorage.getItem("TexEditorCompress");
+        const saved = localStorage.getItem(TexEditorCompressKey);
         return saved ? JSON.parse(saved) : false;
     });
     const [defaultFormat, setDefaultFormat] = useState<string>(() => {
-        const saved = localStorage.getItem("TexEditorDefaultFormat");
+        const saved = localStorage.getItem(TexEditorDefaultFormatKey);
         return saved ? JSON.parse(saved) : ".png";
     })
 
@@ -64,17 +70,17 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
     /** 切换选项 */
     const toggleForcePng = (value: boolean) => {
         setForcePng(value);
-        localStorage.setItem("TexEditorForcePng", JSON.stringify(value));
+        localStorage.setItem(TexEditorForcePngKey, JSON.stringify(value));
     };
 
     const toggleCompress = (value: boolean) => {
         setCompress(value);
-        localStorage.setItem("TexEditorCompress", JSON.stringify(value));
+        localStorage.setItem(TexEditorCompressKey, JSON.stringify(value));
     };
 
     const toggleDirectConvert = (value: boolean) => {
         setDirectConvert(value);
-        localStorage.setItem("TexEditorDirectConvert", JSON.stringify(value));
+        localStorage.setItem(TexEditorDirectConvertKey, JSON.stringify(value));
     }
 
     /** 读取任意文件并转换为 png 以供预览 */
@@ -166,7 +172,6 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
             isMounted = false;
         };
     }, [filePath]);
-
 
 
     /**
