@@ -18,13 +18,13 @@ const PMatEditorPage: React.FC = () => {
     const state = location.state as { filePath: string } | undefined;
     const filePath = state?.filePath;
 
-    // 用 ref 获取 pmatEditorRef 实例
+    // 用 ref 获取 phyEditorRef 实例
     const phyEditorRef = useRef<PhyEditorRef>(null);
 
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.phy", t('Infos.com3d2_pmat_file'))}
+                onSelectFile={() => handleSelectFile("*.phy", t('Infos.com3d2_phy_file'))}
                 onSaveFile={() => handleSaveFile(phyEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(phyEditorRef)}
             />

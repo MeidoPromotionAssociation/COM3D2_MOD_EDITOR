@@ -111,7 +111,7 @@ const AnmMonacoEditor: React.FC<{
         initializedMonacoInstances.set(monacoInstance, true);
     };
 
-    // 处理 ColData 的外部更新（如文件加载）
+    // 处理 AnmData 的外部更新（如文件加载）
     useEffect(() => {
         if (anmData) {
             const anmDataJson = JSON.stringify(anmData);

@@ -18,7 +18,7 @@ const MateEditorPage: React.FC = () => {
     const state = location.state as { filePath: string } | undefined;
     const filePath = state?.filePath;
 
-    // 用 ref 获取 MateEditor 实例
+    // 用 ref 获取 mateEditorRef 实例
     const mateEditorRef = useRef<MateEditorRef>(null);
 
     return (

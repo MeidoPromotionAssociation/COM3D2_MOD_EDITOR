@@ -18,7 +18,7 @@ const MenuEditorPage: React.FC = () => {
     const state = location.state as { filePath: string } | undefined;
     const filePath = state?.filePath;
 
-    // 用 ref 获取 MenuEditor 实例
+    // 用 ref 获取 menuEditorRef 实例
     const menuEditorRef = useRef<MenuEditorRef>(null);
 
     return (

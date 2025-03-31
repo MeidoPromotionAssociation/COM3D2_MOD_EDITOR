@@ -18,7 +18,7 @@ const AnmEditorPage: React.FC = () => {
     const state = location.state as { filePath: string } | undefined;
     const filePath = state?.filePath;
 
-    // 用 ref 获取 texEditorRef 实例
+    // 用 ref 获取 anmEditorRef 实例
     const anmEditorRef = useRef<AnmEditorRef>(null);
 
     return (
