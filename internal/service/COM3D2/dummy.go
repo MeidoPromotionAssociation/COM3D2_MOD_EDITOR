@@ -34,6 +34,13 @@ type PhyModel struct{}
 // Dummy 用于让 wails 识别 phy 对应结构体，需要在签名中使用所有结构体
 func (s *PhyModel) Dummy(COM3D2.Phy, COM3D2.AnimationCurve, COM3D2.Keyframe, COM3D2.BoneValue) {}
 
+// PskModel 用于让 wails 识别 psk 对应结构体
+type PskModel struct{}
+
+// Dummy 用于让 wails 识别 psk 对应结构体，需要在签名中使用所有结构体
+func (s *PskModel) Dummy(COM3D2.Psk, COM3D2.PanierRadiusGroup, COM3D2.AnimationCurve, COM3D2.Vector3) {
+}
+
 // TexModel 用于让 wails 识别 tex 对应结构体
 type TexModel struct{}
 

@@ -14,6 +14,7 @@ import SettingsPage from "./components/SettingsPage";
 import TexEditorPage from "./components/TexEditorPage";
 import useFileHandlers from "./hooks/fileHanlder";
 import AnmEditorPage from "./components/AnmEditorPage";
+import PskEditorPage from "./components/PskEditorPage";
 
 const App: React.FC = () => {
     const isDarkMode = useDarkMode();
@@ -82,6 +83,7 @@ const App: React.FC = () => {
                 <Route path="/pmat-editor" element={<PMatEditorPage/>}/>
                 <Route path="/col-editor" element={<ColEditorPage/>}/>
                 <Route path="/phy-editor" element={<PhyEditorPage/>}/>
+                <Route path="/psk-editor" element={<PskEditorPage/>}/>
                 <Route path="/tex-editor" element={<TexEditorPage/>}/>
                 <Route path="/anm-editor" element={<AnmEditorPage/>}/>
                 <Route path="/settings" element={<SettingsPage/>}/>

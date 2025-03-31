@@ -80,11 +80,6 @@ const (
 	FreezeAxis_Z    int32 = 3
 )
 
-// AnimationCurve 用于存储 Keyframe 数组
-type AnimationCurve struct {
-	Keyframes []Keyframe `json:"Keyframes"`
-}
-
 // BoneValue 存储一个骨骼名称与对应 float 值
 type BoneValue struct {
 	BoneName string  `json:"BoneName"`
@@ -128,7 +123,7 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read Damping failed: %w", err)
 	}
-	p.DampingDistrib, err = readAnimationCurve(r)
+	p.DampingDistrib, err = ReadAnimationCurve(r)
 	if err != nil {
 		return nil, fmt.Errorf("read DampingDistrib failed: %w", err)
 	}
@@ -142,7 +137,7 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read Elasticity failed: %w", err)
 	}
-	p.ElasticityDistrib, err = readAnimationCurve(r)
+	p.ElasticityDistrib, err = ReadAnimationCurve(r)
 	if err != nil {
 		return nil, fmt.Errorf("read ElasticityDistrib failed: %w", err)
 	}
@@ -156,7 +151,7 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read Stiffness failed: %w", err)
 	}
-	p.StiffnessDistrib, err = readAnimationCurve(r)
+	p.StiffnessDistrib, err = ReadAnimationCurve(r)
 	if err != nil {
 		return nil, fmt.Errorf("read StiffnessDistrib failed: %w", err)
 	}
@@ -170,7 +165,7 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read Inert failed: %w", err)
 	}
-	p.InertDistrib, err = readAnimationCurve(r)
+	p.InertDistrib, err = ReadAnimationCurve(r)
 	if err != nil {
 		return nil, fmt.Errorf("read InertDistrib failed: %w", err)
 	}
@@ -184,7 +179,7 @@ func ReadPhy(r io.Reader) (*Phy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read Radius failed: %w", err)
 	}
-	p.RadiusDistrib, err = readAnimationCurve(r)
+	p.RadiusDistrib, err = ReadAnimationCurve(r)
 	if err != nil {
 		return nil, fmt.Errorf("read RadiusDistrib failed: %w", err)
 	}
@@ -277,7 +272,7 @@ func (p *Phy) Dump(w io.Writer) error {
 	if err := utilities.WriteFloat32(w, p.Damping); err != nil {
 		return fmt.Errorf("write Damping failed: %w", err)
 	}
-	if err := writeAnimationCurve(w, p.DampingDistrib); err != nil {
+	if err := WriteAnimationCurve(w, p.DampingDistrib); err != nil {
 		return fmt.Errorf("write DampingDistrib failed: %w", err)
 	}
 
@@ -288,7 +283,7 @@ func (p *Phy) Dump(w io.Writer) error {
 	if err := utilities.WriteFloat32(w, p.Elasticity); err != nil {
 		return fmt.Errorf("write Elasticity failed: %w", err)
 	}
-	if err := writeAnimationCurve(w, p.ElasticityDistrib); err != nil {
+	if err := WriteAnimationCurve(w, p.ElasticityDistrib); err != nil {
 		return fmt.Errorf("write ElasticityDistrib failed: %w", err)
 	}
 
@@ -299,7 +294,7 @@ func (p *Phy) Dump(w io.Writer) error {
 	if err := utilities.WriteFloat32(w, p.Stiffness); err != nil {
 		return fmt.Errorf("write Stiffness failed: %w", err)
 	}
-	if err := writeAnimationCurve(w, p.StiffnessDistrib); err != nil {
+	if err := WriteAnimationCurve(w, p.StiffnessDistrib); err != nil {
 		return fmt.Errorf("write StiffnessDistrib failed: %w", err)
 	}
 
@@ -310,7 +305,7 @@ func (p *Phy) Dump(w io.Writer) error {
 	if err := utilities.WriteFloat32(w, p.Inert); err != nil {
 		return fmt.Errorf("write Inert failed: %w", err)
 	}
-	if err := writeAnimationCurve(w, p.InertDistrib); err != nil {
+	if err := WriteAnimationCurve(w, p.InertDistrib); err != nil {
 		return fmt.Errorf("write InertDistrib failed: %w", err)
 	}
 
@@ -321,7 +316,7 @@ func (p *Phy) Dump(w io.Writer) error {
 	if err := utilities.WriteFloat32(w, p.Radius); err != nil {
 		return fmt.Errorf("write Radius failed: %w", err)
 	}
-	if err := writeAnimationCurve(w, p.RadiusDistrib); err != nil {
+	if err := WriteAnimationCurve(w, p.RadiusDistrib); err != nil {
 		return fmt.Errorf("write RadiusDistrib failed: %w", err)
 	}
 
@@ -433,61 +428,6 @@ func writePartial(w io.Writer, mode int32, values []BoneValue) error {
 		}
 		if err := utilities.WriteFloat32(w, bv.Value); err != nil {
 			return fmt.Errorf("write boneValue failed: %w", err)
-		}
-	}
-	return nil
-}
-
-// 读取 AnimationCurve：先读 int(个数)，若为 0 则返回空
-func readAnimationCurve(r io.Reader) (AnimationCurve, error) {
-	n, err := utilities.ReadInt32(r) // 读取 Keyframe 数量
-	if err != nil {
-		return AnimationCurve{}, fmt.Errorf("read curve keyCount failed: %w", err)
-	}
-	if n == 0 {
-		return AnimationCurve{}, nil
-	}
-	arr := make([]Keyframe, n)
-	for i := 0; i < int(n); i++ {
-		t, err := utilities.ReadFloat32(r) // 读取关键帧时间
-		if err != nil {
-			return AnimationCurve{}, fmt.Errorf("read time failed: %w", err)
-		}
-		v, err := utilities.ReadFloat32(r) // 读取关键帧值
-		if err != nil {
-			return AnimationCurve{}, fmt.Errorf("read value failed: %w", err)
-		}
-		inT, err := utilities.ReadFloat32(r) // 读取关键字入切线
-		if err != nil {
-			return AnimationCurve{}, fmt.Errorf("read inTangent failed: %w", err)
-		}
-		outT, err := utilities.ReadFloat32(r) // 读取关键字出切线
-		if err != nil {
-			return AnimationCurve{}, fmt.Errorf("read outTangent failed: %w", err)
-		}
-		arr[i] = Keyframe{Time: t, Value: v, InTangent: inT, OutTangent: outT}
-	}
-	return AnimationCurve{Keyframes: arr}, nil
-}
-
-// 写出 AnimationCurve：先写 int(个数)，然后依次写 time,value,inTangent,outTangent
-func writeAnimationCurve(w io.Writer, ac AnimationCurve) error {
-	n := int32(len(ac.Keyframes))
-	if err := utilities.WriteInt32(w, n); err != nil {
-		return fmt.Errorf("write curve keyCount failed: %w", err)
-	}
-	for _, k := range ac.Keyframes {
-		if err := utilities.WriteFloat32(w, k.Time); err != nil {
-			return fmt.Errorf("write time failed: %w", err)
-		}
-		if err := utilities.WriteFloat32(w, k.Value); err != nil {
-			return fmt.Errorf("write value failed: %w", err)
-		}
-		if err := utilities.WriteFloat32(w, k.InTangent); err != nil {
-			return fmt.Errorf("write inTangent failed: %w", err)
-		}
-		if err := utilities.WriteFloat32(w, k.OutTangent); err != nil {
-			return fmt.Errorf("write outTangent failed: %w", err)
 		}
 	}
 	return nil

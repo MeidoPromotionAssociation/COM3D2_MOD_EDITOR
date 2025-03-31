@@ -600,6 +600,40 @@ export namespace COM3D2 {
 	        this.Shader = source["Shader"];
 	    }
 	}
+	export class PanierRadiusGroup {
+	    BoneName: string;
+	    Radius: number;
+	    Curve: AnimationCurve;
+	
+	    static createFrom(source: any = {}) {
+	        return new PanierRadiusGroup(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BoneName = source["BoneName"];
+	        this.Radius = source["Radius"];
+	        this.Curve = this.convertValues(source["Curve"], AnimationCurve);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class Phy {
 	    Signature: string;
 	    Version: number;
@@ -691,6 +725,88 @@ export namespace COM3D2 {
 		}
 	}
 	
+	export class Vector3 {
+	    X: number;
+	    Y: number;
+	    Z: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Vector3(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.X = source["X"];
+	        this.Y = source["Y"];
+	        this.Z = source["Z"];
+	    }
+	}
+	export class Psk {
+	    Signature: string;
+	    Version: number;
+	    PanierRadius: number;
+	    PanierRadiusDistrib: AnimationCurve;
+	    PanierRadiusDistribGroups: PanierRadiusGroup[];
+	    PanierForce: number;
+	    PanierForceDistrib: AnimationCurve;
+	    PanierStressForce: number;
+	    StressDegreeMin: number;
+	    StressDegreeMax: number;
+	    StressMinScale: number;
+	    ScaleEaseSpeed: number;
+	    PanierForceDistanceThreshold: number;
+	    CalcTime: number;
+	    VelocityForceRate: number;
+	    VelocityForceRateDistrib: AnimationCurve;
+	    Gravity: Vector3;
+	    GravityDistrib: AnimationCurve;
+	    HardValues: number[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Psk(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
+	        this.PanierRadius = source["PanierRadius"];
+	        this.PanierRadiusDistrib = this.convertValues(source["PanierRadiusDistrib"], AnimationCurve);
+	        this.PanierRadiusDistribGroups = this.convertValues(source["PanierRadiusDistribGroups"], PanierRadiusGroup);
+	        this.PanierForce = source["PanierForce"];
+	        this.PanierForceDistrib = this.convertValues(source["PanierForceDistrib"], AnimationCurve);
+	        this.PanierStressForce = source["PanierStressForce"];
+	        this.StressDegreeMin = source["StressDegreeMin"];
+	        this.StressDegreeMax = source["StressDegreeMax"];
+	        this.StressMinScale = source["StressMinScale"];
+	        this.ScaleEaseSpeed = source["ScaleEaseSpeed"];
+	        this.PanierForceDistanceThreshold = source["PanierForceDistanceThreshold"];
+	        this.CalcTime = source["CalcTime"];
+	        this.VelocityForceRate = source["VelocityForceRate"];
+	        this.VelocityForceRateDistrib = this.convertValues(source["VelocityForceRateDistrib"], AnimationCurve);
+	        this.Gravity = this.convertValues(source["Gravity"], Vector3);
+	        this.GravityDistrib = this.convertValues(source["GravityDistrib"], AnimationCurve);
+	        this.HardValues = source["HardValues"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class RangeProperty {
 	    TypeName: string;
 	    PropName: string;

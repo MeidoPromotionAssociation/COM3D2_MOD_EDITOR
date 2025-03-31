@@ -135,6 +135,8 @@ export const COM3D2HeaderConstants = {
     ColVersion: 24201,
     PhySignature: "CM3D21_PHY",
     PhyVersion: 24201,
+    PskSignature: "CM3D21_PSK",
+    PskVersion: 24201,
     TexSignature: "CM3D2_TEX",
     TexVersion: 1010,
     AnmSignature: "CM3D2_ANIM",

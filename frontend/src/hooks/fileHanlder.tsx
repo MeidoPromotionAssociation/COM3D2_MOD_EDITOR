@@ -101,6 +101,9 @@ const useFileHandlers = () => {
             case "phy":
                 navigate("/phy-editor", {state: {filePath}});
                 break;
+            case "psk":
+                navigate("/psk-editor", {state: {filePath}});
+                break;
             case "anm":
                 navigate("/anm-editor", {state: {filePath}});
                 break;

@@ -20,6 +20,7 @@ func main() {
 	PMatService := &COM3D2.PMatService{}
 	ColService := &COM3D2.ColService{}
 	PhyService := &COM3D2.PhyService{}
+	PskService := &COM3D2.PskService{}
 	TexService := &COM3D2.TexService{}
 	AnmService := &COM3D2.AnmService{}
 
@@ -28,6 +29,7 @@ func main() {
 	PMatModel := &COM3D2.PMatModel{}
 	ColModel := &COM3D2.ColModel{}
 	PhyModel := &COM3D2.PhyModel{}
+	PskModel := &COM3D2.PskModel{}
 	TexModel := &COM3D2.TexModel{}
 	AnmModel := &COM3D2.AnmModel{}
 
@@ -54,6 +56,7 @@ func main() {
 			PMatService,
 			ColService,
 			PhyService,
+			PskService,
 			TexService,
 			AnmService,
 			MenuModel,
@@ -61,6 +64,7 @@ func main() {
 			PMatModel,
 			ColModel,
 			PhyModel,
+			PskModel,
 			TexModel,
 			AnmModel,
 		},
