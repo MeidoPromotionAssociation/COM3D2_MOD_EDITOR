@@ -1,7 +1,8 @@
 import React from "react";
-import {Flex, Form, Input, InputNumber, Select, Tooltip} from "antd";
+import {Flex, Form, Input, InputNumber, Radio, Select, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
+import {FreezeAxis_None, FreezeAxis_X, FreezeAxis_Y, FreezeAxis_Z} from "../PhyEditor";
 
 
 /**
@@ -147,7 +148,14 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
 
                     <Flex gap="small">
                         <Form.Item label={t('ColEditor.Direction')} name={[name, "direction"]} initialValue={1}>
-                            <InputNumber style={{width: "93.5%"}} max={2} min={0} step={1}/>
+                            {/*<InputNumber style={{width: "93.5%"}} max={2} min={0} step={1}/>*/}
+                            <Radio.Group
+                                options={[
+                                    {value: 0, label: t('ColEditor.Direction_X')},
+                                    {value: 1, label: t('ColEditor.Direction_Y')},
+                                    {value: 2, label: t('ColEditor.Direction_Z')},
+                                ]}
+                            />
                         </Form.Item>
                         <Form.Item>
                             <Tooltip title={t('ColEditor.Direction_tip')}>
@@ -183,7 +191,13 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: an
 
                     <Flex gap="small">
                         <Form.Item label={t('ColEditor.Bound')} name={[name, "bound"]}>
-                            <InputNumber style={{width: "93.5%"}}/>
+                            {/*<InputNumber style={{width: "93.5%"}} max={1} min={0} step={1}/>*/}
+                            <Radio.Group
+                                options={[
+                                    {value: 0, label: t('ColEditor.Bound_Outside')},
+                                    {value: 1, label: t('ColEditor.Bound_Inside')},
+                                ]}
+                            />
                         </Form.Item>
                         <Form.Item>
                             <Tooltip title={t('ColEditor.Bound_tip')}>
