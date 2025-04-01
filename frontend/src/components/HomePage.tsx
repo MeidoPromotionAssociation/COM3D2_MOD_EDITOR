@@ -24,12 +24,14 @@ const HomePage: React.FC = () => {
         const setTitle = async () => {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
         }
-        setTitle().then(() => {});
+        setTitle().then(() => {
+        });
     });
 
 
     const handleLanguageChange: MenuProps['onClick'] = (e) => {
-        i18n.changeLanguage(e.key).then(() => {});
+        i18n.changeLanguage(e.key).then(() => {
+        });
         setLanguage(e.key);
     };
 

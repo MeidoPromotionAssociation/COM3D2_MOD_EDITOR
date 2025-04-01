@@ -1,4 +1,4 @@
-import {Button, Flex, Form, Input, InputNumber, Select, Space, Switch, Table, Tooltip} from "antd";
+import {Button, Flex, Form, FormInstance, Input, InputNumber, Select, Space, Switch, Table, Tooltip} from "antd";
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import React from "react";
@@ -15,7 +15,7 @@ const MatePropertyItemType1 = ({
                                }: {
     name: number;
     restField: any;
-    form: any;
+    form: FormInstance;
 }) => {
     const currentTypeName = Form.useWatch(['properties', name, 'TypeName'], form);
     const currentSubTag = Form.useWatch(['properties', name, 'subTag'], form);

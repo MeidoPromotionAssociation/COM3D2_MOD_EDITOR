@@ -1,12 +1,12 @@
 // ColorPickerSync.tsx
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {ColorPicker, Form, Space} from 'antd';
+import {ColorPicker, Form, FormInstance, Space} from 'antd';
 import debounce from 'lodash/debounce';
 import {AggregationColor} from "antd/es/color-picker/color";
 
 
 interface ColorPickerSyncProps {
-    form: any;
+    form: FormInstance;
     name: number; // 当前 properties 数组的索引
 }
 

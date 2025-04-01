@@ -77,11 +77,11 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 Col 对象
-            const empty = new ColModel();
-            empty.Signature = COM3D2HeaderConstants.ColSignature;
-            empty.Version = COM3D2HeaderConstants.ColVersion;
-            empty.Colliders = [];
-            setColData(empty);
+            const newCol = new ColModel();
+            newCol.Signature = COM3D2HeaderConstants.ColSignature;
+            newCol.Version = COM3D2HeaderConstants.ColVersion;
+            newCol.Colliders = [];
+            setColData(newCol);
             form.resetFields();
         }
 

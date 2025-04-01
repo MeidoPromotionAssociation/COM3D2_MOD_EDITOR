@@ -2,7 +2,7 @@
 import React, {FC, useEffect, useLayoutEffect, useMemo, useRef} from "react";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import {Button, Divider} from "antd";
+import {Button, Divider, FormInstance} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
 
 import MatePropertyItemType1 from "./MatePropertyItemType1";
@@ -22,7 +22,7 @@ type MyListItem =
 interface VirtualizedPropertyListProps {
     fields: any[];
     remove: (index: number) => void;
-    form: any;
+    form: FormInstance;
 }
 
 /**

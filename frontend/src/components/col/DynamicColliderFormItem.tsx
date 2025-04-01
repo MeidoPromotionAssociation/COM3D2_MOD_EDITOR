@@ -1,18 +1,17 @@
 import React from "react";
-import {Flex, Form, Input, InputNumber, Radio, Select, Tooltip} from "antd";
+import {Flex, Form, FormInstance, Input, InputNumber, Radio, Select, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
-import {FreezeAxis_None, FreezeAxis_X, FreezeAxis_Y, FreezeAxis_Z} from "../PhyEditor";
 
 
 /**
  * 用于渲染单个 Collider 的表单区域，根据 typeName 动态切换要展示的字段
  */
-const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: any }> = ({
-                                                                                            name,
-                                                                                            restField,
-                                                                                            form
-                                                                                        }) => {
+const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: FormInstance; }> = ({
+                                                                                                      name,
+                                                                                                      restField,
+                                                                                                      form
+                                                                                                  }) => {
     const {t} = useTranslation();
     // 其中 position/rotation/scale/center 都是 array
     const typeName = Form.useWatch(["colliders", name, "TypeName"], form);

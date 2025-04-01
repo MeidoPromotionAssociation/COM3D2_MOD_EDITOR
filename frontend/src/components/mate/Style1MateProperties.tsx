@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Divider, Form, FormListFieldData} from 'antd';
+import {Button, Divider, Form, FormInstance, FormListFieldData} from 'antd';
 import type {FormListOperation} from 'antd/es/form';
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
@@ -10,7 +10,7 @@ const Style1MateProperties: React.FC<{
     fields: FormListFieldData[];
     add: FormListOperation['add'];
     remove: FormListOperation['remove'];
-    form: any;
+    form: FormInstance;
 }> = ({fields, add, remove, form}) => {
     const {t} = useTranslation();
 

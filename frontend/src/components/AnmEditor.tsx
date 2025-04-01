@@ -51,7 +51,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
             newAnm.Signature = COM3D2HeaderConstants.AnmSignature;
             newAnm.Version = COM3D2HeaderConstants.AnmVersion;
             newAnm.BoneCurves = [
-                {
+                new BoneCurveData({
                     BonePath: "Bip01/Bip01 Pelvis/Bip01 R Thigh",
                     PropertyCurves: [
                         {
@@ -69,7 +69,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
                                     InTangent: 0,
                                     OutTangent: 0,
                                 }
-                            ],
+                            ] as COM3D2.Keyframe[],
                         },
                         {
                             PropertyIndex: 1,
@@ -86,10 +86,10 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
                                     InTangent: 0,
                                     OutTangent: 0,
                                 }
-                            ],
+                            ] as COM3D2.Keyframe[],
                         }
                     ],
-                } as unknown as BoneCurveData
+                })
             ];
             newAnm.BustKeyLeft = false
             newAnm.BustKeyRight = false

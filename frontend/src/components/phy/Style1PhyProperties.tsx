@@ -1,6 +1,6 @@
 // 新建文件
 import React from "react";
-import {Button, Collapse, Flex, Form, Input, InputNumber, Radio, Select, Table, Tooltip} from "antd";
+import {Button, Collapse, Flex, Form, FormInstance, Input, InputNumber, Radio, Select, Table, Tooltip} from "antd";
 import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import KeyframeEditorWithTable from "./KeyframeEditorWithTable";
 import {COM3D2} from "../../../wailsjs/go/models";
@@ -16,7 +16,7 @@ import {
 
 interface Style1PhyPropertiesProps {
     phyData: COM3D2.Phy | null;
-    form: any;
+    form: FormInstance;
     t: (key: string) => string;
     handleAutoCalculateColliders: () => void;
     enablePartialDamping: number;
