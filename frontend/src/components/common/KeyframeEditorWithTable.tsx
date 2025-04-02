@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Form, FormInstance, InputNumber, Space, Table, Tooltip} from 'antd';
 import {DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, QuestionCircleOutlined} from '@ant-design/icons';
+import {useTranslation} from "react-i18next";
 
 // 定义关键帧类型
 type Keyframe = {
@@ -37,13 +38,12 @@ const calculateControlPoints = (kf1: Keyframe, kf2: Keyframe, width: number, hei
 // 主组件
 const KeyframeEditorWithTable = ({
                                      keyframesFieldName,
-                                     t,
                                      form
                                  }: {
     keyframesFieldName: string;
-    t: (key: string) => string;
     form: FormInstance;
 }) => {
+    const {t} = useTranslation();
     const [showVisualEditor, setShowVisualEditor] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [editMode, setEditMode] = useState<'time' | 'value' | 'inTangent' | 'outTangent' | null>(null);
@@ -474,7 +474,7 @@ const KeyframeEditorWithTable = ({
             </div>
 
             {showVisualEditor && (
-                <div className="border border-gray-200 rounded bg-white mb-4">
+                <div className="border border-gray-200 rounded bg-white mb-4" style={{textAlign:'center'}}>
                     <svg
                         ref={svgRef}
                         width={dimensions.width}

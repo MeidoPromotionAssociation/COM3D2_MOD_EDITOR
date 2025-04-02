@@ -6,8 +6,8 @@ import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useTranslation} from "react-i18next";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
-import Style1Colliders from "./col/Style1Colliders";
-import Style2Colliders from "./col/Style2Colliders";
+import Style1ColProperties from "./col/Style1ColProperties";
+import Style2ColProperties from "./col/Style2ColProperties";
 import {colEditorViewModeKey} from "../utils/LocalStorageKeys";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
@@ -413,7 +413,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                             <Collapse.Panel header={t('ColEditor.Colliders')} key="colliders">
                                 <Form.List name="colliders">
                                     {(fields, {add, remove}) =>
-                                        <Style1Colliders
+                                        <Style1ColProperties
                                             fields={fields}
                                             add={add}
                                             remove={remove}
@@ -426,7 +426,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     )}
 
                     {viewMode === 2 && (
-                        <Style2Colliders
+                        <Style2ColProperties
                             colData={colData}
                             setColData={(newVal) => setColData(newVal)}
                         />

@@ -2,11 +2,10 @@ import React, {useEffect, useRef, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
-import {useTranslation} from "react-i18next";
 import Psk = COM3D2.Psk;
 
 /** 直接用 Monaco Editor 展示/编辑整个 JSON */
-const PskMonacoEditor: React.FC<{
+const Style2PskProperties: React.FC<{
     pskData: Psk | null;
     setPskData: (a: Psk | null) => void;
 }> = ({pskData, setPskData}) => {
@@ -94,4 +93,4 @@ const PskMonacoEditor: React.FC<{
 };
 
 
-export default PskMonacoEditor;
+export default Style2PskProperties;

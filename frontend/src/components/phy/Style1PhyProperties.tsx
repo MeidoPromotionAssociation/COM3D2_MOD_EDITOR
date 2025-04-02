@@ -2,7 +2,7 @@
 import React from "react";
 import {Button, Collapse, Flex, Form, FormInstance, Input, InputNumber, Radio, Select, Table, Tooltip} from "antd";
 import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
-import KeyframeEditorWithTable from "./KeyframeEditorWithTable";
+import KeyframeEditorWithTable from "../common/KeyframeEditorWithTable";
 import {COM3D2} from "../../../wailsjs/go/models";
 import {
     FreezeAxis_None,
@@ -159,7 +159,6 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                         {/* 曲线 keyframes */}
                         <KeyframeEditorWithTable
                             keyframesFieldName={keyframesFieldName}
-                            t={t}
                             form={form}
                         />
                     </>

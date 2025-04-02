@@ -6,7 +6,7 @@ import {useTranslation} from "react-i18next";
 import DynamicColliderFormItem from "./DynamicColliderFormItem";
 
 /** 样式1：所有 Collider 顺序排布 */
-const Style1Colliders: React.FC<{
+const Style1ColProperties: React.FC<{
     fields: FormListFieldData[];
     add: FormListOperation["add"];
     remove: FormListOperation["remove"];
@@ -45,4 +45,4 @@ const Style1Colliders: React.FC<{
     );
 };
 
-export default Style1Colliders;
+export default Style1ColProperties;
