@@ -65,17 +65,17 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     {/* LocalPosition (3个数) */}
                     <Form.Item label={t('ColEditor.LocalPosition')}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "localPosition", 0]} noStyle>
+                            <Form.Item name={[name, "localPosition", 0]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="X"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localPosition", 1]} noStyle>
+                            <Form.Item name={[name, "localPosition", 1]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="Y"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localPosition", 2]} noStyle>
+                            <Form.Item name={[name, "localPosition", 2]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="Z"
                                     style={{width: "20%"}}/>
@@ -91,22 +91,22 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     {/* LocalRotation (4个数) */}
                     <Form.Item label={t('ColEditor.LocalRotation')}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "localRotation", 0]} noStyle>
+                            <Form.Item name={[name, "localRotation", 0]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="X"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localRotation", 1]} noStyle>
+                            <Form.Item name={[name, "localRotation", 1]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="Y"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localRotation", 2]} noStyle>
+                            <Form.Item name={[name, "localRotation", 2]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="Z"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localRotation", 3]} noStyle>
+                            <Form.Item name={[name, "localRotation", 3]} noStyle initialValue={0}>
                                 <InputNumber
                                     addonBefore="W"
                                     style={{width: "20%"}}/>
@@ -122,17 +122,17 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     {/* LocalScale (3个数) */}
                     <Form.Item label={t('ColEditor.LocalScale')}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "localScale", 0]} noStyle>
+                            <Form.Item name={[name, "localScale", 0]} noStyle initialValue={1}>
                                 <InputNumber
                                     addonBefore="SX"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localScale", 1]} noStyle>
+                            <Form.Item name={[name, "localScale", 1]} noStyle initialValue={1}>
                                 <InputNumber
                                     addonBefore="SY"
                                     style={{width: "20%"}}/>
                             </Form.Item>
-                            <Form.Item name={[name, "localScale", 2]} noStyle>
+                            <Form.Item name={[name, "localScale", 2]} noStyle initialValue={1}>
                                 <InputNumber
                                     addonBefore="SZ"
                                     style={{width: "20%"}}/>
@@ -189,7 +189,7 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     </Form.Item>
 
                     <Flex gap="small">
-                        <Form.Item label={t('ColEditor.Bound')} name={[name, "bound"]}>
+                        <Form.Item label={t('ColEditor.Bound')} name={[name, "bound"]} initialValue={0}>
                             {/*<InputNumber style={{width: "93.5%"}} max={1} min={0} step={1}/>*/}
                             <Radio.Group
                                 options={[
@@ -222,7 +222,7 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     </Flex>
 
                     <Flex gap="small">
-                        <Form.Item label={t('ColEditor.Height')} name={[name, "height"]}>
+                        <Form.Item label={t('ColEditor.Height')} name={[name, "height"]}  initialValue={0}>
                             <InputNumber style={{width: "93.5%"}}/>
                         </Form.Item>
                         <Form.Item>
