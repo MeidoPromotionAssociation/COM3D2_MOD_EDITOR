@@ -182,7 +182,8 @@ func (t *Tex) Dump(w io.Writer) error {
 	}
 
 	if t.Version == 1000 {
-		return fmt.Errorf("dump version 1000 is not supported, You should at least convert it to 1010 version")
+		return fmt.Errorf("dump version 1000 is not supported, You should at least convert it to 1010 version, " +
+			"maybe you can convert it to image and convert back to .tex")
 	}
 
 	// 4. 如果 version >= 1011, 写出 rects
@@ -576,6 +577,10 @@ func ConvertTexToImage(tex *Tex, forcePNG bool) (imgData []byte, format string, 
 		// 内部数据已经是 JPG
 		inputFormat = "jpg"
 		hasAlpha = false
+	case 0:
+		// 1000 版本的 tex 没有 TextureFormat，所以 go 会默认赋值为 0
+		inputFormat = "png"
+		hasAlpha = true
 	default:
 		return nil, inputFormat, nil, fmt.Errorf("unsupported texture format: %d", tex.TextureFormat)
 	}
@@ -702,6 +707,10 @@ func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error
 		// 内部数据已经是 JPG
 		inputFormat = "jpg"
 		hasAlpha = false
+	case 0:
+		// 1000 版本的 tex 没有 TextureFormat，所以 go 会默认赋值为 0
+		inputFormat = "png"
+		hasAlpha = true
 	default:
 		return fmt.Errorf("unsupported texture format: %d", tex.TextureFormat)
 	}
