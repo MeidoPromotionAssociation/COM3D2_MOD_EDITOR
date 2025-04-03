@@ -182,7 +182,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
     // 如果改变，更新 saveHandlerRef
     useEffect(() => {
         saveHandlerRef.current = handleQuickExport;
-    }, [filePath]); // 包含所有可能影响保存行为的状态
+    }, [filePath, defaultFormat, forcePng, compress, directConvert]); // 包含所有可能影响保存行为的状态
 
     // 设置 keydown 事件监听器
     useEffect(() => {

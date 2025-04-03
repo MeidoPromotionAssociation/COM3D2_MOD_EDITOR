@@ -323,7 +323,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) 
         // 如果改变，更新 saveHandlerRef
         useEffect(() => {
             saveHandlerRef.current = handleSaveMenuFile;
-        }, [filePath, menuData, displayFormat]); // 包含所有可能影响保存行为的状态
+        }, [filePath, menuData, displayFormat, commandsText, signature, bodySize, version, srcFileName, itemName, category, infoText]); // 包含所有可能影响保存行为的状态
 
         // 设置 keydown 事件监听器
         useEffect(() => {
@@ -670,8 +670,8 @@ function parseTextAsColonSplit(text: string): Command[] {
 
         let args = [commandName];
         if (rest) {
-            const split = rest.split(",");
-            split.forEach((item) => {
+            const split_ed = rest.split(",");
+            split_ed.forEach((item) => {
                 args.push(item.trim());
             });
         }
@@ -696,23 +696,24 @@ function parseTextAsJSON(text: string): Command[] {
         // 空内容 => 空数组
         return [];
     }
-    let parsed;
+
     try {
-        parsed = JSON.parse(trimmed);
+        const parsed = JSON.parse(trimmed);
+        if (!Array.isArray(parsed)) {
+            message.error(t('Errors.json_root_node_not_array')).then(() => {
+            });
+        }
+        // 简单映射为 Command[]
+        return parsed.map((item: any) => {
+            return {
+                ArgCount: item.ArgCount ?? (item.Args ? item.Args.length : 0),
+                Args: item.Args ?? [],
+            } as Command;
+        });
     } catch (err: any) {
         console.error("parseTextAsJSON error:", err);
         throw new Error(t('Errors.json_parse_failed') + err.message);
     }
-    if (!Array.isArray(parsed)) {
-        throw new Error(t('Errors.json_root_node_not_array'));
-    }
-    // 简单映射为 Command[]
-    return parsed.map((item: any) => {
-        return {
-            ArgCount: item.ArgCount ?? (item.Args ? item.Args.length : 0),
-            Args: item.Args ?? [],
-        } as Command;
-    });
 }
 
 

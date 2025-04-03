@@ -263,10 +263,8 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         // 复制一份
         const newCol = COM3D2.Col.createFrom(oldCol);
 
-        if (headerEditable) {
-            newCol.Signature = values.signature;
-            newCol.Version = parseInt(values.version, 10);
-        }
+        newCol.Signature = values.signature;
+        newCol.Version = parseInt(values.version, 10);
 
         // 处理 colliders
         const newColliders: any[] = [];

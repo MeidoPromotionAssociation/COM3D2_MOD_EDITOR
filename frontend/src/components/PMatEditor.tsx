@@ -180,7 +180,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     // 如果改变，更新 saveHandlerRef
     useEffect(() => {
         saveHandlerRef.current = handleSavePMatFile;
-    }, [filePath, pmatData]); // 包含所有可能影响保存行为的状态
+    }, [filePath, pmatData, signature, version, hash, materialName, renderQueue, shader]); // 包含所有可能影响保存行为的状态
 
     // 设置 keydown 事件监听器
     useEffect(() => {

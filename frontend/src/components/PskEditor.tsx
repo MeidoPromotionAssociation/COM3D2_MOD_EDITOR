@@ -252,10 +252,8 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
         // 复制一份
         const newPsk = COM3D2.Psk.createFrom(oldPsk);
 
-        if (headerEditable) {
-            newPsk.Signature = values.signature;
-            newPsk.Version = parseInt(values.version, 10);
-        }
+        newPsk.Signature = values.signature;
+        newPsk.Version = parseInt(values.version, 10);
 
         // 基本属性
         newPsk.PanierRadius = parseFloat(values.panierRadius);
