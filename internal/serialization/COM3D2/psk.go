@@ -9,7 +9,7 @@ import (
 // Psk 整体描述一个 .psk 文件的结构
 type Psk struct {
 	Signature                    string              `json:"Signature"`                    // CM3D21_PSK
-	Version                      int32               `json:"Version"`                      // 24201
+	Version                      int32               `json:"Version"`                      // 24301 这个版本每次更新都会更改，但无结构更改
 	PanierRadius                 float32             `json:"PanierRadius"`                 // 裙撑半径
 	PanierRadiusDistrib          AnimationCurve      `json:"PanierRadiusDistrib"`          // 裙撑半径分布曲线
 	PanierRadiusDistribGroups    []PanierRadiusGroup `json:"PanierRadiusDistribGroups"`    // 裙撑半径分布组
@@ -240,7 +240,7 @@ func (p Psk) Dump(w io.Writer) error {
 
 	// 5. 写裙撑半径分布组
 	groupCount := int32(len(p.PanierRadiusDistribGroups))
-	if err := utilities.WriteInt32(w, groupCount); err != nil {
+	if err := utilities.WriteInt32(w, groupCount); err != nil { //先写裙撑半径分布组数量
 		return fmt.Errorf("write panier radius group count failed: %w", err)
 	}
 
