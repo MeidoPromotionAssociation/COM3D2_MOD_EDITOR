@@ -222,11 +222,11 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     TypeName: collider.TypeName,
                     parentName: base.ParentName,
                     selfName: base.SelfName,
-                    localPosition: base.LocalPosition || [0, 0, 0],
-                    localRotation: base.LocalRotation || [0, 0, 0, 0],
-                    localScale: base.LocalScale || [1, 1, 1],
+                    localPosition: base.LocalPosition ?? [0, 0, 0],
+                    localRotation: base.LocalRotation ?? [0, 0, 0, 0],
+                    localScale: base.LocalScale ?? [1, 1, 1],
                     direction: base.Direction,
-                    center: base.Center || [0, 0, 0],
+                    center: base.Center ?? [0, 0, 0],
                     bound: base.Bound
                 };
 
@@ -239,7 +239,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                         item.radius = collider.Radius;
                         item.height = collider.Height;
                         item.scaleRateMulMax = collider.ScaleRateMulMax;
-                        item.centerRateMax = collider.CenterRateMax || [0, 0, 0];
+                        item.centerRateMax = collider.CenterRateMax ?? [0, 0, 0];
                         break;
                     case "dpc":
                         // DynamicBonePlaneCollider 没有额外字段
@@ -275,11 +275,11 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 const baseData = new DynamicBoneColliderBase({
                     ParentName: item.parentName || "",
                     SelfName: item.selfName || "",
-                    LocalPosition: item.localPosition || [0, 0, 0],
-                    LocalRotation: item.localRotation || [0, 0, 0, 0],
-                    LocalScale: item.localScale || [1, 1, 1],
+                    LocalPosition: item.localPosition ?? [0, 0, 0],
+                    LocalRotation: item.localRotation ?? [0, 0, 0, 0],
+                    LocalScale: item.localScale ?? [1, 1, 1],
                     Direction: Number(item.direction),
-                    Center: item.center || [0, 0, 0],
+                    Center: item.center ?? [0, 0, 0],
                     Bound: Number(item.bound)
                 });
 
@@ -288,18 +288,18 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     case "dbc": {
                         collider = new DynamicBoneCollider({
                             Base: baseData,
-                            Radius: parseFloat(item.radius) || 0,
-                            Height: parseFloat(item.height) || 0
+                            Radius: parseFloat(item.radius) ?? 0,
+                            Height: parseFloat(item.height) ?? 0
                         });
                         break;
                     }
                     case "dbm": {
                         collider = new DynamicBoneMuneCollider({
                             Base: baseData,
-                            Radius: parseFloat(item.radius) || 0,
-                            Height: parseFloat(item.height) || 0,
-                            ScaleRateMulMax: parseFloat(item.scaleRateMulMax) || 0,
-                            CenterRateMax: item.centerRateMax || [0, 0, 0]
+                            Radius: parseFloat(item.radius) ?? 0,
+                            Height: parseFloat(item.height) ?? 0,
+                            ScaleRateMulMax: parseFloat(item.scaleRateMulMax) ?? 0,
+                            CenterRateMax: item.centerRateMax ?? [0, 0, 0]
                         });
                         break;
                     }

@@ -395,10 +395,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             TypeName: item.TypeName,
                             PropName: item.propName,
                             Color: [
-                                parseFloat(item.colorR) || 0,
-                                parseFloat(item.colorG) || 0,
-                                parseFloat(item.colorB) || 0,
-                                parseFloat(item.colorA) || 0,
+                                parseFloat(item.colorR) ?? 0,
+                                parseFloat(item.colorG) ?? 0,
+                                parseFloat(item.colorB) ?? 0,
+                                parseFloat(item.colorA) ?? 0,
                             ],
                         });
                         break;
@@ -407,10 +407,10 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             TypeName: item.TypeName,
                             PropName: item.propName,
                             Vector: [
-                                parseFloat(item.vec0) || 0,
-                                parseFloat(item.vec1) || 0,
-                                parseFloat(item.vec2) || 0,
-                                parseFloat(item.vec3) || 0,
+                                parseFloat(item.vec0) ?? 0,
+                                parseFloat(item.vec1) ?? 0,
+                                parseFloat(item.vec2) ?? 0,
+                                parseFloat(item.vec3) ?? 0,
                             ],
                         });
                         break;
@@ -418,35 +418,35 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         newProps.push({
                             TypeName: item.TypeName,
                             PropName: item.propName,
-                            Number: parseFloat(item.number) || 0,
+                            Number: parseFloat(item.number) ?? 0,
                         });
                         break;
                     case 'range':
                         newProps.push({
                             TypeName: item.TypeName,
                             PropName: item.propName,
-                            Number: parseFloat(item.number) || 0,
+                            Number: parseFloat(item.number) ?? 0,
                         });
                         break;
                     case 'tex_offset':
                         newProps.push({
                             TypeName: item.TypeName,
                             PropName: item.propName,
-                            OffsetX: parseFloat(item.offsetX) || 0,
-                            OffsetY: parseFloat(item.offsetY) || 0,
+                            OffsetX: parseFloat(item.offsetX) ?? 0,
+                            OffsetY: parseFloat(item.offsetY) ?? 0,
                         });
                         break;
                     case 'tex_scale':
                         newProps.push({
                             TypeName: item.TypeName,
                             PropName: item.propName,
-                            ScaleX: parseFloat(item.scaleX) || 0,
-                            ScaleY: parseFloat(item.scaleY) || 0,
+                            ScaleX: parseFloat(item.scaleX) ?? 0,
+                            ScaleY: parseFloat(item.scaleY) ?? 0,
                         });
                         break;
                     case 'keyword':
                         const keywords = item.keywords?.map((k: any) => ({
-                            Key: k?.key || '',
+                            Key: k?.key ?? '',
                             Value: typeof k?.value === 'boolean' ? k.value : false
                         })) || [];
 

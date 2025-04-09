@@ -195,11 +195,11 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
             calcTime: psk.CalcTime,
             velocityForceRate: psk.VelocityForceRate,
             gravity: [
-                psk.Gravity?.X || 0,
-                psk.Gravity?.Y || 0,
-                psk.Gravity?.Z || 0
+                psk.Gravity?.X ?? 0,
+                psk.Gravity?.Y ?? 0,
+                psk.Gravity?.Z ?? 0
             ],
-            hardValues: psk.HardValues || [0, 0, 0, 0],
+            hardValues: psk.HardValues ?? [0, 0, 0, 0],
 
             // 曲线数据
             // 注意：为了 keyframe 编辑器编辑方便，这里取消嵌套 keyframe 数组，直接展开

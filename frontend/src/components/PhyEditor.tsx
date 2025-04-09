@@ -119,17 +119,17 @@ function transformPhyToForm(phy: Phy): any {
 
         // 其他 float
         endLength: phy.EndLength ?? 0,
-        endOffsetX: phy.EndOffset?.[0] || 0,
-        endOffsetY: phy.EndOffset?.[1] || 0,
-        endOffsetZ: phy.EndOffset?.[2] || 0,
+        endOffsetX: phy.EndOffset?.[0] ?? 0,
+        endOffsetY: phy.EndOffset?.[1] ?? 0,
+        endOffsetZ: phy.EndOffset?.[2] ?? 0,
 
-        gravityX: phy.Gravity?.[0] || 0,
-        gravityY: phy.Gravity?.[1] || 0,
-        gravityZ: phy.Gravity?.[2] || 0,
+        gravityX: phy.Gravity?.[0] ?? 0,
+        gravityY: phy.Gravity?.[1] ?? 0,
+        gravityZ: phy.Gravity?.[2] ?? 0,
 
-        forceX: phy.Force?.[0] || 0,
-        forceY: phy.Force?.[1] || -0.01,
-        forceZ: phy.Force?.[2] || 0,
+        forceX: phy.Force?.[0] ?? 0,
+        forceY: phy.Force?.[1] ?? -0.01,
+        forceZ: phy.Force?.[2] ?? 0,
 
         colliderFileName: phy.ColliderFileName ?? "",
         collidersCount: phy.CollidersCount ?? 0,
@@ -265,27 +265,27 @@ function transformFormToPhy(values: any, oldPhy: Phy): Phy {
     });
 
     // 其他 float
-    newPhy.EndLength = parseFloat(values.endLength) || 0;
+    newPhy.EndLength = parseFloat(values.endLength) ?? 0;
     newPhy.EndOffset = [
-        parseFloat(values.endOffsetX) || 0,
-        parseFloat(values.endOffsetY) || 0,
-        parseFloat(values.endOffsetZ) || 0
+        parseFloat(values.endOffsetX) ?? 0,
+        parseFloat(values.endOffsetY) ?? 0,
+        parseFloat(values.endOffsetZ) ?? 0
     ];
     newPhy.Gravity = [
-        parseFloat(values.gravityX) || 0,
-        parseFloat(values.gravityY) || 0,
-        parseFloat(values.gravityZ) || 0
+        parseFloat(values.gravityX) ?? 0,
+        parseFloat(values.gravityY) ?? 0,
+        parseFloat(values.gravityZ) ?? 0
     ];
     newPhy.Force = [
-        parseFloat(values.forceX) || 0,
-        parseFloat(values.forceY) || 0,
-        parseFloat(values.forceZ) || 0
+        parseFloat(values.forceX) ?? 0,
+        parseFloat(values.forceY) ?? 0,
+        parseFloat(values.forceZ) ?? 0
     ];
 
-    newPhy.ColliderFileName = values.colliderFileName || "";
-    newPhy.CollidersCount = parseInt(values.collidersCount, 10) || 0;
-    newPhy.ExclusionsCount = parseInt(values.exclusionsCount, 10) || 0;
-    newPhy.FreezeAxis = parseInt(values.freezeAxis, 10) || 0;
+    newPhy.ColliderFileName = values.colliderFileName ?? "";
+    newPhy.CollidersCount = parseInt(values.collidersCount, 10) ?? 0;
+    newPhy.ExclusionsCount = parseInt(values.exclusionsCount, 10) ?? 0;
+    newPhy.FreezeAxis = parseInt(values.freezeAxis, 10) ?? 0;
 
     return newPhy;
 }

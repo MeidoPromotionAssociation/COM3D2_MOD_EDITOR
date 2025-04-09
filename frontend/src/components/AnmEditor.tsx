@@ -46,7 +46,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
         } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             if (!isMounted) return;
-            // 没有 filePath 时，可初始化一个新的 anm 对象
+            // 没有 filePath 时，可初始化一个新的 anm 对象示例
             const newAnm = new Anm();
             newAnm.Signature = COM3D2HeaderConstants.AnmSignature;
             newAnm.Version = COM3D2HeaderConstants.AnmVersion;
