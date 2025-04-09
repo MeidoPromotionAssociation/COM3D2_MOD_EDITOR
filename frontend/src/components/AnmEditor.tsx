@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
@@ -157,30 +157,6 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
             console.error(error);
         }
     }
-
-    /**
-     * 监听 Ctrl+S 快捷键，触发保存
-     */
-    const saveHandlerRef = useRef(handleSaveAnmFile);
-
-    // 如果改变，更新 saveHandlerRef
-    useEffect(() => {
-        saveHandlerRef.current = handleSaveAnmFile;
-    }, [filePath, anmData]); // 包含所有可能影响保存行为的状态
-
-    // 设置 keydown 事件监听器
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-                e.preventDefault();
-                saveHandlerRef.current();
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
-
 
     /** 暴露给父组件的 Ref 方法：读取、保存、另存为 */
     useImperativeHandle(ref, () => ({

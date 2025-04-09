@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {Checkbox, Collapse, ConfigProvider, Form, Input, message, Radio, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {WindowSetTitle} from "../../wailsjs/runtime";
@@ -430,29 +430,6 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             console.error(error);
         }
     };
-
-    /**
-     * 监听 Ctrl+S 快捷键，触发保存
-     */
-    const saveHandlerRef = useRef(handleSavePhyFile);
-
-    // 如果改变，更新 saveHandlerRef
-    useEffect(() => {
-        saveHandlerRef.current = handleSavePhyFile;
-    }, [filePath, phyData, viewMode, form]); // 包含所有可能影响保存行为的状态
-
-    // 设置 keydown 事件监听器
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-                e.preventDefault();
-                saveHandlerRef.current();
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
 
 
     // 向外暴露的方法

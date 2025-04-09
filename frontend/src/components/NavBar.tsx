@@ -1,5 +1,5 @@
 // frontend/src/components/NavBar.tsx
-import React from "react";
+import React, {useEffect} from "react";
 import {Button, Layout, Menu} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
@@ -33,6 +33,27 @@ const NavBar: React.FC<EditorNavBarProps> = ({
     const handleMenuClick = (e: any) => {
         navigate(`/${e.key}`);
     };
+
+    // 监听快捷键
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'o':  // ctrl + o 打开文件
+                        e.preventDefault();
+                        onSelectFile?.();
+                        break;
+                    case 's': // ctrl + s 保存文件
+                        e.preventDefault();
+                        onSaveFile?.();
+                        break;
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onSaveFile, onSaveAsFile, onSelectFile]);
 
     return (
         <Header

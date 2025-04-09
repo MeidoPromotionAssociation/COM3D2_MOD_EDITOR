@@ -173,30 +173,6 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) 
     };
 
     /**
-     * 监听 Ctrl+S 快捷键，触发保存
-     */
-    const saveHandlerRef = useRef(handleSavePMatFile);
-
-    // 如果改变，更新 saveHandlerRef
-    useEffect(() => {
-        saveHandlerRef.current = handleSavePMatFile;
-    }, [filePath, pmatData, signature, version, hash, materialName, renderQueue, shader]); // 包含所有可能影响保存行为的状态
-
-    // 设置 keydown 事件监听器
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-                e.preventDefault();
-                saveHandlerRef.current();
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
-
-
-    /**
      * 将文件操作方法暴露给父组件
      */
     useImperativeHandle(ref, () => ({

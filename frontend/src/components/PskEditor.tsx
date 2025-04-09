@@ -146,30 +146,6 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
         }
     }
 
-    /**
-     * 监听 Ctrl+S 快捷键，触发保存
-     */
-    const saveHandlerRef = useRef(handleSavePskFile);
-
-    // 如果改变，更新 saveHandlerRef
-    useEffect(() => {
-        saveHandlerRef.current = handleSavePskFile;
-    }, [filePath, pskData, viewMode, form]); // 包含所有可能影响保存行为的状态
-
-    // 设置 keydown 事件监听器
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Windows/Linux: Ctrl+S, macOS: Cmd+S => e.metaKey
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-                e.preventDefault();
-                saveHandlerRef.current();
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
-
-
     /** 暴露给父组件的 Ref 方法：读取、保存、另存为 */
     useImperativeHandle(ref, () => ({
         handleReadFile: handleReadPskFile,
