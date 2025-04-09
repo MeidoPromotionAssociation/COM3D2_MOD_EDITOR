@@ -80,6 +80,8 @@
       "tex_filename": "纹理文件名（foo.tex）",
       "blend_mode": "混合模式"
     },
+    "ArgCount": "参数和命令的计数",
+    "Args": "命令及其参数，第一个为命令，后面的为命令的参数",
     "menu_editor_help": "Menu 编辑器帮助",
     "shortcut": "快捷键",
     "ctrl_space": "树形缩进格式下按 `Ctrl + 空格` 显示补全选项",
@@ -396,7 +398,7 @@
     "BonePath": "骨骼路径，从根节点开始，以斜杠 / 分隔，表示接下来的 PropertyCurves 应用到哪个骨骼上",
     "PropertyCurves": "属性曲线列表",
     "BoneCurves": "骨骼曲线列表",
-    "PropertyIndex": "表示接下来的关键帧 Keyframes 到骨骼的哪个属性上，0 为 本地旋转 X（LocalRotation X），1 为 本地旋转 Y, 2 为 本地旋转 Z, 3 为 本地旋转 W, 4 为本地位置 X（localPosition X）, 5 为本地位置 Y, 6 为本地位置 Z",
+    "PropertyIndex": "表示接下来的关键帧 Keyframes 应用到骨骼的哪个属性上，0 为 本地旋转 X（LocalRotation X），1 为 本地旋转 Y, 2 为 本地旋转 Z, 3 为 本地旋转 W, 4 为本地位置 X（localPosition X）, 5 为本地位置 Y, 6 为本地位置 Z",
     "Keyframes": "关键帧/曲线，Unity 标准关键帧格式",
     "Time": "时间",
     "Value": "值",
@@ -412,12 +414,16 @@
     "dismiss_update_note": "清除更新提示",
     "dismiss_update_note_tip": "清除更新提示，如果有新版本，就会显示新版本提示，除非你手动清除。需要关闭更新检查，否则下次检查更新还会出现"
   },
+  "Common": {
+    "open_file_shortcut": "Ctrl/⌘ + O",
+    "save_file_shortcut": "Ctrl/⌘ + S",
+    "save_as_file_shortcut": "Ctrl/⌘ + Alt + S"
+  },
   "Infos": {
     "choose_file": "选择文件",
     "loading": "加载中...",
     "pls_select_a_file_to_preview": "请选择一个文件进行预览",
     "pls_select_a_file_to_edit": "请选择一个文件进行编辑",
-    "not_available_in_this_editor": "此功能在当前编辑器中不可用",
     "com3d2_menu_file": "COM3D2 菜单文件",
     "com3d2_mate_file": "COM3D2 材质文件",
     "com3d2_pmat_file": "COM3D2 渲染顺序文件",
