@@ -39,13 +39,16 @@ const NavBar: React.FC<EditorNavBarProps> = ({
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key.toLowerCase()) {
-                    case 'o':  // ctrl + o 打开文件
+                    case 'o':  // Ctrl + O 打开文件
                         e.preventDefault();
                         onSelectFile?.();
                         break;
-                    case 's': // ctrl + s 保存文件
-                        e.preventDefault();
-                        onSaveFile?.();
+                    case 's': // Ctrl + S 保存文件
+                        if (e.altKey) {  // Ctrl + Alt + S 另存为，因为浏览器中 Ctrl + Shift + S 是截屏
+                            onSaveAsFile?.();
+                        } else {
+                            onSaveFile?.();
+                        }
                         break;
                 }
             }
