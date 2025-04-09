@@ -1,6 +1,6 @@
 // frontend/src/components/NavBar.tsx
 import React, {useEffect} from "react";
-import {Button, Layout, Menu} from "antd";
+import {Button, Layout, Menu, Tooltip} from "antd";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {HomeOutlined} from "@ant-design/icons";
@@ -115,10 +115,16 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                     whiteSpace: "nowrap", // 防止按钮换行
                     marginLeft: 16 // 添加左侧间距
                 }}>
-                <Button type="primary" onClick={onSelectFile}
-                        style={{marginRight: 8}}>{t('EditorNavBar.open_file')}</Button>
-                <Button onClick={onSaveFile} style={{marginRight: 8}}>{t('EditorNavBar.save_file')}</Button>
-                <Button onClick={onSaveAsFile}>{t('EditorNavBar.save_as_file')}</Button>
+                <Tooltip title={t('Common.open_file_shortcut')}>
+                    <Button type="primary" onClick={onSelectFile}
+                            style={{marginRight: 8}}>{t('EditorNavBar.open_file')}</Button>
+                </Tooltip>
+                <Tooltip title={t('Common.save_file_shortcut')}>
+                    <Button onClick={onSaveFile} style={{marginRight: 8}}>{t('EditorNavBar.save_file')}</Button>
+                </Tooltip>
+                <Tooltip title={t('Common.save_as_file_shortcut')}>
+                    <Button onClick={onSaveAsFile}>{t('EditorNavBar.save_as_file')}</Button>
+                </Tooltip>
             </div>
         </Header>
     );
