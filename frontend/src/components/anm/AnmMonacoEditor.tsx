@@ -20,9 +20,9 @@ const AnmMonacoEditor: React.FC<{
 
     // Define JSON schema for Anm type
     const defineAnmSchema = (monacoInstance: any) => {
-        if (initializedMonacoInstances.has(monacoInstance)) {
-            return;
-        }
+        // if (initializedMonacoInstances.has(monacoInstance)) {
+        //     return;
+        // }
 
         monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,

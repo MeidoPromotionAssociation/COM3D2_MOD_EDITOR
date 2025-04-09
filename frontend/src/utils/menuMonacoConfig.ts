@@ -34,6 +34,23 @@ const defineLanguages = (monacoInstance: any) => {
 
     // 自定义语言 menuJSON（JSON）
     // 无需额外定义，Monaco 自带 JSON 语法高亮
+
+
+    // 自定义语言 menuTSV（TSV）
+    monacoInstance.languages.register({id: "menuTSV"});
+    monacoInstance.languages.setMonarchTokensProvider("menuTSV", {
+        tokenizer: {
+            root: [
+                [/^[^\t]+(?=\t)/, "command"],
+                [/\t/, "delimiter"],
+                [/[^\t]+/, "parameter"],
+                [/\s+/, "white"],
+            ],
+        },
+    });
+};
+
+const defineMenuJsonSchema = (monacoInstance: any) => {
     monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
         schemas: [
@@ -58,20 +75,8 @@ const defineLanguages = (monacoInstance: any) => {
             }
         ]
     })
+}
 
-    // 自定义语言 menuTSV（TSV）
-    monacoInstance.languages.register({id: "menuTSV"});
-    monacoInstance.languages.setMonarchTokensProvider("menuTSV", {
-        tokenizer: {
-            root: [
-                [/^[^\t]+(?=\t)/, "command"],
-                [/\t/, "delimiter"],
-                [/[^\t]+/, "parameter"],
-                [/\s+/, "white"],
-            ],
-        },
-    });
-};
 
 //注册 Hover 提示
 const defineHoverProviders = (monacoInstance: any) => {
@@ -274,6 +279,9 @@ function createSnippetForCommand(cmdName: string): string {
 
 // 初始化 Monaco 编辑器，接受 beforeMount 调用
 export const setupMonacoEditor = (monacoInstance: any) => {
+    // 每次都注册，因为会被其他编辑器覆盖
+    defineMenuJsonSchema(monacoInstance);
+
     // 只初始化一次，否则切换编辑器时会重复初始化，自动补全会出现多个选项
     if (initializedMonacoInstances.has(monacoInstance)) {
         return;

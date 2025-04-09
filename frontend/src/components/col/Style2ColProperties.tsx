@@ -3,6 +3,7 @@ import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
 import ColModel = COM3D2.Col;
+import {cancelJsonSchemaValidation} from "../../utils/utils";
 
 /** 样式2：直接用 Monaco Editor 展示/编辑整个 JSON */
 const Style2ColProperties: React.FC<{
@@ -39,8 +40,9 @@ const Style2ColProperties: React.FC<{
     }, []);
 
     // Handle the editor being mounted
-    const handleEditorDidMount = (editor: any) => {
+    const handleEditorDidMount = (editor: any, monacoInstance: any) => {
         editorRef.current = editor;
+        cancelJsonSchemaValidation(monacoInstance);
     };
 
     // When user edits in the editor

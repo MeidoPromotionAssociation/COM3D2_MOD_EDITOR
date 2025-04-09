@@ -3,6 +3,7 @@ import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../../wailsjs/go/models";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import Mate = COM3D2.Mate;
+import {cancelJsonSchemaValidation} from "../../utils/utils";
 
 
 // ======================= 样式3：直接用 Monaco Editor 展示/编辑整个 mateData JSON =======================
@@ -40,8 +41,9 @@ const Style3MateProperties: React.FC<{
     }, []);
 
     // Handle the editor being mounted
-    const handleEditorDidMount = (editor: any) => {
+    const handleEditorDidMount = (editor: any, monacoInstance: any) => {
         editorRef.current = editor;
+        cancelJsonSchemaValidation(monacoInstance);
     };
 
     // When user edits in the editor

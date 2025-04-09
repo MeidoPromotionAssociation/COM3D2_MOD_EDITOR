@@ -3,6 +3,7 @@ import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
 import Phy = COM3D2.Phy;
+import {cancelJsonSchemaValidation} from "../../utils/utils";
 
 
 interface Style2PhyProps {
@@ -59,8 +60,9 @@ const Style2PhyProperties: React.FC<Style2PhyProps> = ({phyData, setPhyData}) =>
         }
     };
 
-    const handleEditorDidMount = (editor: any) => {
+    const handleEditorDidMount = (editor: any, monacoInstance: any) => {
         editorRef.current = editor;
+        cancelJsonSchemaValidation(monacoInstance);
     };
 
     return (

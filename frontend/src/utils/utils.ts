@@ -5,3 +5,11 @@ export function getFileExtension(filePath: string): string {
     }
     return filePath.slice(lastDotIndex + 1);
 }
+
+
+export function cancelJsonSchemaValidation(monacoInstance: any): void {
+    monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemas: [],
+    });
+}

@@ -3,6 +3,7 @@ import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
 import Psk = COM3D2.Psk;
+import {cancelJsonSchemaValidation} from "../../utils/utils";
 
 /** 直接用 Monaco Editor 展示/编辑整个 JSON */
 const Style2PskProperties: React.FC<{
@@ -41,6 +42,7 @@ const Style2PskProperties: React.FC<{
     // Handle the editor being mounted
     const handleEditorDidMount = (editor: any, monacoInstance: any) => {
         editorRef.current = editor;
+        cancelJsonSchemaValidation(monacoInstance);
     };
 
     // When user edits in the editor
