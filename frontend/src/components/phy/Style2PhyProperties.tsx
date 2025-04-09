@@ -2,8 +2,8 @@ import React, {useEffect, useRef, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
-import Phy = COM3D2.Phy;
 import {cancelJsonSchemaValidation} from "../../utils/utils";
+import Phy = COM3D2.Phy;
 
 
 interface Style2PhyProps {

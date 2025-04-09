@@ -1,4 +1,4 @@
-import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {useTranslation} from "react-i18next";
 import {Button, Card, Image, Input, message, Space, Spin, Switch, Tooltip} from "antd";

@@ -474,7 +474,7 @@ const KeyframeEditorWithTable = ({
             </div>
 
             {showVisualEditor && (
-                <div className="border border-gray-200 rounded bg-white mb-4" style={{textAlign:'center'}}>
+                <div className="border border-gray-200 rounded bg-white mb-4" style={{textAlign: 'center'}}>
                     <svg
                         ref={svgRef}
                         width={dimensions.width}

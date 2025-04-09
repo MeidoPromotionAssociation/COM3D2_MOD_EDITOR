@@ -222,7 +222,7 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     </Flex>
 
                     <Flex gap="small">
-                        <Form.Item label={t('ColEditor.Height')} name={[name, "height"]}  initialValue={0}>
+                        <Form.Item label={t('ColEditor.Height')} name={[name, "height"]} initialValue={0}>
                             <InputNumber style={{width: "93.5%"}}/>
                         </Form.Item>
                         <Form.Item>

@@ -2,8 +2,8 @@ import React, {useEffect, useRef, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
-import Psk = COM3D2.Psk;
 import {cancelJsonSchemaValidation} from "../../utils/utils";
+import Psk = COM3D2.Psk;
 
 /** 直接用 Monaco Editor 展示/编辑整个 JSON */
 const Style2PskProperties: React.FC<{

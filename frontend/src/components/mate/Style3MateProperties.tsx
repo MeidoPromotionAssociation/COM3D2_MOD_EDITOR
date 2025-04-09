@@ -2,8 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../../wailsjs/go/models";
 import {useDarkMode} from "../../hooks/themeSwitch";
-import Mate = COM3D2.Mate;
 import {cancelJsonSchemaValidation} from "../../utils/utils";
+import Mate = COM3D2.Mate;
 
 
 // ======================= 样式3：直接用 Monaco Editor 展示/编辑整个 mateData JSON =======================
