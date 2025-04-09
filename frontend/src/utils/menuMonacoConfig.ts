@@ -34,6 +34,30 @@ const defineLanguages = (monacoInstance: any) => {
 
     // 自定义语言 menuJSON（JSON）
     // 无需额外定义，Monaco 自带 JSON 语法高亮
+    monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemas: [
+            {
+                fileMatch: ["*"],
+                schema: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            ArgCount: {
+                                type: "number",
+                                description: t('MenuEditor.ArgCount')
+                            },
+                            Args: {
+                                type: "array",
+                                description: t('MenuEditor.Args'),
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    })
 
     // 自定义语言 menuTSV（TSV）
     monacoInstance.languages.register({id: "menuTSV"});
