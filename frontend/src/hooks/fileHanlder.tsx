@@ -63,7 +63,7 @@ const useFileHandlers = () => {
             try {
                 ref.current.handleSaveFile();
             } catch (err) {
-                message.error(t('Errors.save_file_failed_colon') + err);
+                message.error(t('Errors.save_file_failed_colon') + err).then(() => {});
             }
             return;
         }
@@ -76,7 +76,7 @@ const useFileHandlers = () => {
             try {
                 ref.current.handleSaveAsFile();
             } catch (err) {
-                message.error(t('Errors.save_as_file_failed_colon') + err);
+                message.error(t('Errors.save_as_file_failed_colon') + err).then(() => {});
             }
             return;
         }
