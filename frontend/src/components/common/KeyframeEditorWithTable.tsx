@@ -581,7 +581,19 @@ const KeyframeEditorWithTable = ({
                                     <Button
                                         size="small"
                                         onClick={() => {
-                                            add({time: 0, value: 0, inTangent: 0, outTangent: 0});
+                                            const currentKeyframes = form.getFieldValue(keyframesFieldName) || [];
+                                            // 计算当前最大时间和对应的值
+                                            const maxTime = currentKeyframes.length > 0
+                                                ? Math.max(...currentKeyframes.map((kf: {
+                                                    time: number;
+                                                }) => kf.time)) : 0;
+
+                                            add({
+                                                time: Math.min(maxTime + 0.1, 1),
+                                                value: 0,
+                                                inTangent: 0,
+                                                outTangent: 0
+                                            });
                                             // 添加完后同步一次表单数据
                                             setTimeout(syncFromForm, 0);
                                         }}
