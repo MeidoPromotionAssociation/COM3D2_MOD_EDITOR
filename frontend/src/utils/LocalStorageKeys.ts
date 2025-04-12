@@ -7,19 +7,23 @@ export const LatestVersionKey = "LatestVersion" // 存储最新版本号的键
 
 export const UpdateRetryKey = "UpdateRetry" // 存储是否重试的键
 
-//MenuEditor
+// Common
+
+export const KeyframeEditorCanvasSizeKey = "KeyframeEditorCanvasSize"; // 存储画布大小的键
+
+// MenuEditor
 export const MenuEditorViewModeKey = "MenuEditorViewMode"; // 存储默认显示格式的键
 
-//MateEditor
+// MateEditor
 export const MateEditorViewModeKey = "MateEditorViewMode"; // 存储默认显示格式的键
 
-//ColEditor
+// ColEditor
 export const colEditorViewModeKey = "colEditorViewMode"; // 存储默认显示格式的键
 
-//PhyEditor
+// PhyEditor
 export const PhyEditorViewModeKey = "PhyEditorViewMode"; // 存储默认显示格式的键
 
-//PskEditor
+// PskEditor
 export const PskEditorViewModeKey = "PskEditorViewMode"; // 存储默认显示格式的键
 
 // TexEditor

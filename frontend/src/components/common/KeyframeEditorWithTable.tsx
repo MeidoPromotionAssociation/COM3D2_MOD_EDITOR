@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, Form, FormInstance, InputNumber, Space, Table, Tooltip} from 'antd';
 import {DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, QuestionCircleOutlined} from '@ant-design/icons';
 import {useTranslation} from "react-i18next";
+import {KeyframeEditorCanvasSizeKey} from "../../utils/LocalStorageKeys";
 
 // 定义关键帧类型
 type Keyframe = {
@@ -9,30 +10,6 @@ type Keyframe = {
     value: number;
     inTangent: number;
     outTangent: number;
-};
-
-// 辅助函数：计算贝塞尔曲线控制点
-const calculateControlPoints = (kf1: Keyframe, kf2: Keyframe, width: number, height: number): [number, number, number, number] => {
-    // 时间范围映射到宽度
-    const x1 = kf1.time * width;
-    const x2 = kf2.time * width;
-
-    // 值范围映射到高度（反转Y轴）
-    const y1 = height - kf1.value * height;
-    const y2 = height - kf2.value * height;
-
-    // 计算控制点距离
-    const dx = x2 - x1;
-
-    // 控制点1：基于第一个关键帧的出切线
-    const cp1x = x1 + dx / 3;
-    const cp1y = y1 - kf1.outTangent * dx / 3;
-
-    // 控制点2：基于第二个关键帧的入切线
-    const cp2x = x2 - dx / 3;
-    const cp2y = y2 + kf2.inTangent * dx / 3;
-
-    return [cp1x, cp1y, cp2x, cp2y];
 };
 
 // 主组件
@@ -46,187 +23,216 @@ const KeyframeEditorWithTable = ({
     const {t} = useTranslation();
     const [showVisualEditor, setShowVisualEditor] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-    const [editMode, setEditMode] = useState<'time' | 'value' | 'inTangent' | 'outTangent' | null>(null);
-    const svgRef = useRef<SVGSVGElement>(null);
 
-    // 添加一个本地状态用于拖拽过程中
-    const [localKeyframes, setLocalKeyframes] = useState<Keyframe[]>([]);
-    const isDraggingRef = useRef(false);
-    const formKeyframesRef = useRef<Keyframe[]>([]);
+    // 本地关键帧状态 - 用于视觉编辑器的流畅拖拽
+    const [keyframes, setKeyframes] = useState<Keyframe[]>([]);
 
     // 画布大小
-    const [dimensions, setDimensions] = useState({width: 600, height: 300});
+    const [dimensions, setDimensions] = useState(() => {
+        const saved = localStorage.getItem(KeyframeEditorCanvasSizeKey);
+        return saved ? JSON.parse(saved) : { width: 600, height: 300 };
+    });
+
+    const svgRef = useRef<SVGSVGElement>(null);
     const resizeRef = useRef<SVGRectElement>(null);
-    const isResizing = useRef(false);
+
+    // 拖拽状态追踪
+    const [dragState, setDragState] = useState<{
+        isDragging: boolean;
+        mode: 'point' | 'inTangent' | 'outTangent' | null;
+        index: number | null;
+    }>({
+        isDragging: false,
+        mode: null,
+        index: null
+    });
 
     // 常量
-    const width = dimensions.width;
-    const height = dimensions.height;
-    const pointRadius = 6;
-    const handleLength = 50;
+    const {width, height} = dimensions; // 画布尺寸
+    const pointRadius = 6; // 关键帧点半径
+    const handleLength = width * 0.1; // 控制点手柄长度
 
-
-    // 处理画布大小调整
-    const handleResizeMouseDown = () => {
-        isResizing.current = true;
-        document.addEventListener('mousemove', handleResizeMouseMove);
-        document.addEventListener('mouseup', handleResizeMouseUp);
+    // 从表单同步到本地状态
+    const syncFromForm = () => {
+        const formKeyframes = form.getFieldValue(keyframesFieldName) || [];
+        setKeyframes([...formKeyframes]);
     };
 
-    const handleResizeMouseMove = (e: MouseEvent) => {
-        if (!isResizing.current || !svgRef.current) return;
-
-        const minSize = 100;
-        const maxSize = 5000;
-        // 计算相对于 SVG 画布的实际边界
-        const svgRect = svgRef.current.getBoundingClientRect();
-        const newWidth = Math.max(minSize, Math.min(e.clientX - svgRect.left + 12, maxSize)); // +12 补偿手柄宽度
-        const newHeight = Math.max(minSize, Math.min(e.clientY - svgRect.top + 12, maxSize));
-
-        setDimensions({
-            width: newWidth,
-            height: newHeight
-        });
+    // 更新表单数据
+    const updateFormKeyframes = (updatedKeyframes: Keyframe[]) => {
+        const sortedKeyframes = [...updatedKeyframes].sort((a, b) => a.time - b.time);
+        form.setFieldValue(keyframesFieldName, sortedKeyframes);
+        setKeyframes(sortedKeyframes);
     };
 
-    const handleResizeMouseUp = () => {
-        isResizing.current = false;
-        document.removeEventListener('mousemove', handleResizeMouseMove);
-        document.removeEventListener('mouseup', handleResizeMouseUp);
-    };
-
-
-    // 监听画布大小调整
+    // 初始化并监听表单变化
     useEffect(() => {
-        return () => {
-            document.removeEventListener('mousemove', handleResizeMouseMove);
-            document.removeEventListener('mouseup', handleResizeMouseUp);
-        };
-    }, []);
+        // 初始加载表单数据到本地状态
+        syncFromForm();
 
-    // 获取当前表单中的关键帧数据
-    const getKeyframesFormData = () => {
-        const formValues = form.getFieldValue(keyframesFieldName) || [];
-        return formValues.map((kf: Keyframe) => ({
-            time: kf.time,
-            value: kf.value,
-            inTangent: kf.inTangent,
-            outTangent: kf.outTangent
-        }));
-    };
-
-    // 监听表单值变化
-    useEffect(() => {
-        // 添加表单值变化监听器
+        // 监听表单字段变化
         const unsubscribe = form.getFieldInstance(keyframesFieldName)?.props?.onChange?.subscribe(() => {
-            if (!isDraggingRef.current) {
-                const currentFormData = getKeyframesFormData();
-                formKeyframesRef.current = currentFormData;
-                setLocalKeyframes(currentFormData);
+            // 只有当不在拖拽状态时，才从表单同步数据
+            if (!dragState.isDragging) {
+                syncFromForm();
             }
         });
 
-        // 初始化本地状态
-        const initialData = getKeyframesFormData();
-        formKeyframesRef.current = initialData;
-        setLocalKeyframes(initialData);
-
         return () => {
-            // 清理监听器
             if (unsubscribe) {
                 unsubscribe();
             }
         };
-    }, []);
+    }, [keyframesFieldName, dragState.isDragging]);
 
-    // 添加对表单数据的监听
-    useEffect(() => {
-        const valueChangeHandler = () => {
-            if (!isDraggingRef.current) {
-                const newFormData = getKeyframesFormData();
-                // 判断数据是否真的变化了
-                const formDataString = JSON.stringify(newFormData);
-                const localDataString = JSON.stringify(formKeyframesRef.current);
+    // 处理画布大小调整开始
+    const handleResizeMouseDown = (e: React.MouseEvent) => {
+        e.stopPropagation();
 
-                if (formDataString !== localDataString) {
-                    formKeyframesRef.current = newFormData;
-                    setLocalKeyframes(newFormData);
-                }
-            }
+        const handleMouseMove = (moveEvent: MouseEvent) => {
+            if (!svgRef.current) return;
+
+            const svgRect = svgRef.current.getBoundingClientRect();
+            const minSize = 100;
+            const maxSize = 5000;
+
+            const newWidth = Math.max(minSize, Math.min(moveEvent.clientX - svgRect.left + 12, maxSize));
+            const newHeight = Math.max(minSize, Math.min(moveEvent.clientY - svgRect.top + 12, maxSize));
+
+            setDimensions({
+                width: newWidth,
+                height: newHeight
+            });
         };
 
-        // 监听表单变化
-        const interval = setInterval(valueChangeHandler, 100);
-
-        return () => {
-            clearInterval(interval);
+        const handleMouseUp = () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [form, keyframesFieldName]);
 
-    // 处理拖动关键帧点
-    const handlePointDrag = (e: React.MouseEvent | MouseEvent, index: number) => {
-        if (!svgRef.current) return;
-
-        const rect = svgRef.current.getBoundingClientRect();
-        const rawX = (e.clientX - rect.left) / dimensions.width;
-        const rawY = 1 - (e.clientY - rect.top) / dimensions.height;
-        const x = Math.max(0, Math.min(1, rawX));
-        const y = Math.max(0, Math.min(1, rawY));
-
-        // 更新本地状态而不是直接更新表单
-        const updatedKeyframes = [...localKeyframes];
-
-        // 确保时间值在合理范围内且不会超过相邻关键帧
-        if (index > 0 && index < updatedKeyframes.length - 1) {
-            const minTime = updatedKeyframes[index - 1].time;
-            const maxTime = updatedKeyframes[index + 1].time;
-            updatedKeyframes[index].time = Math.max(minTime, Math.min(maxTime, x));
-        } else if (index === 0) {
-            updatedKeyframes[index].time = Math.min(updatedKeyframes[1]?.time || 1, x);
-        } else if (index === updatedKeyframes.length - 1) {
-            updatedKeyframes[index].time = Math.max(updatedKeyframes[updatedKeyframes.length - 2]?.time || 0, x);
-        }
-
-        // 设置值
-        updatedKeyframes[index].value = Math.max(0, Math.min(1, y));
-
-        // 更新本地状态
-        setLocalKeyframes(updatedKeyframes);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
     };
 
-    // 处理拖动切线控制点
-    const handleTangentDrag = (e: React.MouseEvent | MouseEvent, index: number, isOutTangent: boolean) => {
-        if (!svgRef.current) return;
+    // 处理关键帧点开始拖拽
+    const handlePointMouseDown = (e: React.MouseEvent, index: number) => {
+        e.stopPropagation();
+        setSelectedIndex(index);
+        setDragState({
+            isDragging: true,
+            mode: 'point',
+            index
+        });
 
-        const rect = svgRef.current.getBoundingClientRect();
-        const keyframe = localKeyframes[index];
-        const x = keyframe.time * width;
-        const y = height - keyframe.value * height;
+        const handleMouseMove = (moveEvent: MouseEvent) => {
+            if (!svgRef.current) return;
 
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+            const rect = svgRef.current.getBoundingClientRect();
+            const rawX = (moveEvent.clientX - rect.left) / dimensions.width;
+            const rawY = 1 - (moveEvent.clientY - rect.top) / dimensions.height;
+            const x = Math.max(0, Math.min(1, rawX));
+            const y = Math.max(0, Math.min(1, rawY));
 
-        // 计算切线角度
-        const dx = mouseX - x;
-        const dy = mouseY - y;
+            // 更新本地状态而不是表单
+            const updatedKeyframes = [...keyframes];
 
-        // 避免除以零的情况
-        if (Math.abs(dx) < 0.001) return;
+            // 确保时间值在合理范围内且不会超过相邻关键帧
+            if (index > 0 && index < updatedKeyframes.length - 1) {
+                const minTime = updatedKeyframes[index - 1].time;
+                const maxTime = updatedKeyframes[index + 1].time;
+                updatedKeyframes[index].time = Math.max(minTime, Math.min(maxTime, x));
+            } else if (index === 0 && updatedKeyframes.length > 1) {
+                updatedKeyframes[index].time = Math.min(updatedKeyframes[1].time, x);
+            } else if (index === updatedKeyframes.length - 1 && index > 0) {
+                updatedKeyframes[index].time = Math.max(updatedKeyframes[index - 1].time, x);
+            } else {
+                updatedKeyframes[index].time = x;
+            }
 
-        const tangentValue = -dy / dx; // 注意Y轴是反的
+            // 更新值
+            updatedKeyframes[index].value = y;
 
-        // 更新本地状态
-        const updatedKeyframes = [...localKeyframes];
+            // 只更新本地状态，不更新表单
+            setKeyframes(updatedKeyframes);
+        };
 
-        // 更新切线值
-        if (isOutTangent) {
-            updatedKeyframes[index].outTangent = tangentValue;
-        } else {
-            updatedKeyframes[index].inTangent = tangentValue;
-        }
+        const handleMouseUp = () => {
+            // 拖拽结束时，将本地状态同步到表单
+            updateFormKeyframes(keyframes);
 
-        // 更新本地状态
-        setLocalKeyframes(updatedKeyframes);
+            setDragState({
+                isDragging: false,
+                mode: null,
+                index: null
+            });
+
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    // 处理切线控制点开始拖拽
+    const handleTangentMouseDown = (e: React.MouseEvent, index: number, isOutTangent: boolean) => {
+        e.stopPropagation();
+        setSelectedIndex(index);
+        setDragState({
+            isDragging: true,
+            mode: isOutTangent ? 'outTangent' : 'inTangent',
+            index
+        });
+
+        const handleMouseMove = (moveEvent: MouseEvent) => {
+            if (!svgRef.current) return;
+
+            const rect = svgRef.current.getBoundingClientRect();
+            const updatedKeyframes = [...keyframes];
+            const keyframe = updatedKeyframes[index];
+
+            const x = keyframe.time * width;
+            const y = height - keyframe.value * height;
+
+            const mouseX = moveEvent.clientX - rect.left;
+            const mouseY = moveEvent.clientY - rect.top;
+
+            // 计算切线角度
+            const dx = mouseX - x;
+            const dy = mouseY - y;
+
+            // 避免除以零的情况
+            if (Math.abs(dx) < 0.001) return;
+
+            const tangentValue = -dy / dx; // 注意Y轴是反的
+
+            // 更新切线值
+            if (isOutTangent) {
+                updatedKeyframes[index].outTangent = tangentValue;
+            } else {
+                updatedKeyframes[index].inTangent = tangentValue;
+            }
+
+            // 只更新本地状态，不更新表单
+            setKeyframes(updatedKeyframes);
+        };
+
+        const handleMouseUp = () => {
+            // 拖拽结束时，将本地状态同步到表单
+            updateFormKeyframes(keyframes);
+
+            setDragState({
+                isDragging: false,
+                mode: null,
+                index: null
+            });
+
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
     };
 
     // 添加新关键帧
@@ -237,9 +243,6 @@ const KeyframeEditorWithTable = ({
         const x = (e.clientX - rect.left) / width;
         const y = 1 - (e.clientY - rect.top) / height;
 
-        // 获取当前表单数据
-        const formData = form.getFieldValue(keyframesFieldName) || [];
-
         // 创建新的关键帧
         const newKeyframe = {
             time: x,
@@ -249,42 +252,20 @@ const KeyframeEditorWithTable = ({
         };
 
         // 获取所有关键帧并按时间排序
-        const allKeyframes = [...formData, newKeyframe].sort((a, b) => a.time - b.time);
+        const allKeyframes = [...keyframes, newKeyframe].sort((a, b) => a.time - b.time);
 
-        // 更新表单数据
-        form.setFieldsValue({
-            [keyframesFieldName]: allKeyframes
-        });
-
-        // 手动更新本地状态
-        formKeyframesRef.current = allKeyframes;
-        setLocalKeyframes(allKeyframes);
+        // 更新表单数据和本地状态
+        updateFormKeyframes(allKeyframes);
 
         // 选中新添加的关键帧
         setSelectedIndex(allKeyframes.findIndex(kf => kf === newKeyframe));
     };
 
-    // 提交拖拽结果到表单
-    const commitChangesToForm = () => {
-        // 保存当前表单状态以便比较
-        const beforeFormData = form.getFieldValue(keyframesFieldName);
-        const beforeFormJSON = JSON.stringify(beforeFormData);
-        const localKeyframesJSON = JSON.stringify(localKeyframes);
-
-        // 只有当数据确实发生变化时才更新表单
-        if (beforeFormJSON !== localKeyframesJSON) {
-            form.setFieldsValue({
-                [keyframesFieldName]: localKeyframes
-            });
-            formKeyframesRef.current = [...localKeyframes];
-        }
-    };
-
     // 渲染关键帧曲线
     const renderCurve = () => {
-        if (localKeyframes.length < 2) return null;
+        if (keyframes.length < 2) return null;
 
-        const sortedKeyframes = [...localKeyframes].sort((a, b) => a.time - b.time);
+        const sortedKeyframes = [...keyframes].sort((a, b) => a.time - b.time);
         const paths = [];
 
         for (let i = 0; i < sortedKeyframes.length - 1; i++) {
@@ -314,16 +295,24 @@ const KeyframeEditorWithTable = ({
 
     // 渲染关键帧点和控制点
     const renderKeyframePoints = () => {
-        return localKeyframes.map((kf: Keyframe, index: number) => {
+        return keyframes.map((kf: Keyframe, index: number) => {
             const x = kf.time * width;
             const y = height - kf.value * height;
             const isSelected = index === selectedIndex;
 
-            // 计算控制点位置
-            const outControlX = x + handleLength;
-            const outControlY = y - kf.outTangent * handleLength;
-            const inControlX = x - handleLength;
-            const inControlY = y + kf.inTangent * handleLength;
+            // 计算控制点位置，使用单位向量来保持恒定距离
+            const calculateControlPoint = (tangent: number, isOut: boolean) => {
+                const magnitude = Math.sqrt(1 + tangent * tangent);
+                const dirX = 1 / magnitude * (isOut ? 1 : -1);
+                const dirY = tangent / magnitude * (isOut ? -1 : 1);
+                return {
+                    x: x + dirX * handleLength,
+                    y: y + dirY * handleLength
+                };
+            };
+
+            const outControl = calculateControlPoint(kf.outTangent, true);
+            const inControl = calculateControlPoint(kf.inTangent, false);
 
             return (
                 <g key={index}>
@@ -334,8 +323,8 @@ const KeyframeEditorWithTable = ({
                             <line
                                 x1={x}
                                 y1={y}
-                                x2={inControlX}
-                                y2={inControlY}
+                                x2={inControl.x}
+                                y2={inControl.y}
                                 stroke="#aaa"
                                 strokeWidth="1"
                                 strokeDasharray="3,3"
@@ -344,42 +333,32 @@ const KeyframeEditorWithTable = ({
                             <line
                                 x1={x}
                                 y1={y}
-                                x2={outControlX}
-                                y2={outControlY}
+                                x2={outControl.x}
+                                y2={outControl.y}
                                 stroke="#aaa"
                                 strokeWidth="1"
                                 strokeDasharray="3,3"
                             />
                             {/* 入切线控制点 */}
                             <circle
-                                cx={inControlX}
-                                cy={inControlY}
+                                cx={inControl.x}
+                                cy={inControl.y}
                                 r={4}
                                 fill="#ff7875"
                                 stroke="#333"
                                 strokeWidth="1"
-                                onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedIndex(index);
-                                    setEditMode('inTangent');
-                                    isDraggingRef.current = true;
-                                }}
+                                onMouseDown={(e) => handleTangentMouseDown(e, index, false)}
                                 style={{cursor: 'pointer'}}
                             />
                             {/* 出切线控制点 */}
                             <circle
-                                cx={outControlX}
-                                cy={outControlY}
+                                cx={outControl.x}
+                                cy={outControl.y}
                                 r={4}
                                 fill="#ff7875"
                                 stroke="#333"
                                 strokeWidth="1"
-                                onMouseDown={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedIndex(index);
-                                    setEditMode('outTangent');
-                                    isDraggingRef.current = true;
-                                }}
+                                onMouseDown={(e) => handleTangentMouseDown(e, index, true)}
                                 style={{cursor: 'pointer'}}
                             />
                         </>
@@ -393,12 +372,7 @@ const KeyframeEditorWithTable = ({
                         fill={isSelected ? "#52c41a" : "#1890ff"}
                         stroke="#333"
                         strokeWidth="1"
-                        onMouseDown={(e) => {
-                            e.stopPropagation();
-                            setSelectedIndex(index);
-                            setEditMode('value');
-                            isDraggingRef.current = true;
-                        }}
+                        onMouseDown={(e) => handlePointMouseDown(e, index)}
                         style={{cursor: 'pointer'}}
                     />
                 </g>
@@ -406,56 +380,13 @@ const KeyframeEditorWithTable = ({
         });
     };
 
-    // 使用 requestAnimationFrame 来优化拖动性能
-    useEffect(() => {
-        let animationFrameId: number;
-
-        const updateDrag = () => {
-            if (editMode !== null && selectedIndex !== null) {
-                animationFrameId = requestAnimationFrame(updateDrag);
-            }
-        };
-
-        if (editMode !== null && selectedIndex !== null) {
-            animationFrameId = requestAnimationFrame(updateDrag);
+    // 处理表单字段值变化
+    const handleFormItemChange = () => {
+        // 当不在拖拽时，同步表单数据到本地状态
+        if (!dragState.isDragging) {
+            syncFromForm();
         }
-
-        return () => {
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-        };
-    }, [editMode, selectedIndex]);
-
-    // 处理鼠标移动
-    useEffect(() => {
-        if (editMode === null || selectedIndex === null) return;
-
-        const handleMouseMove = (e: MouseEvent) => {
-            if (editMode === 'value' || editMode === 'time') {
-                handlePointDrag(e, selectedIndex);
-            } else if (editMode === 'inTangent') {
-                handleTangentDrag(e, selectedIndex, false);
-            } else if (editMode === 'outTangent') {
-                handleTangentDrag(e, selectedIndex, true);
-            }
-        };
-
-        const handleMouseUp = () => {
-            setEditMode(null);
-            isDraggingRef.current = false;
-            // 在鼠标释放时提交更改到表单
-            commitChangesToForm();
-        };
-
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-
-        return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [editMode, selectedIndex, localKeyframes]);
+    };
 
     return (
         <>
@@ -509,12 +440,49 @@ const KeyframeEditorWithTable = ({
                             ))}
                         </g>
 
+                        {/* 绘制坐标轴刻度 */}
+                        <g className="axis-labels">
+                            {/* 横向时间轴刻度 */}
+                            {Array.from({length: 11}).map((_, i) => {
+                                const xPos = width * i/10;
+                                return (
+                                    <text
+                                        key={`time-label-${i}`}
+                                        x={i === 0 ? xPos + 2 : i === 10 ? xPos - 12 : xPos}
+                                        y={height - 4}
+                                        fill="#666"
+                                        fontSize="10"
+                                        textAnchor={i === 0 ? 'start' : i === 10 ? 'end' : 'middle'}
+                                    >
+                                        {i/10}
+                                    </text>
+                                );
+                            })}
+
+                            {/* 纵向数值轴刻度 */}
+                            {Array.from({length: 11}).map((_, i) => {
+                                const yPos = height - height * i/10;
+                                return (
+                                    <text
+                                        key={`value-label-${i}`}
+                                        x={8}
+                                        y={i === 0 ? yPos - 2 : i === 10 ? yPos + 2 : yPos + 3}
+                                        fill="#666"
+                                        fontSize="10"
+                                        textAnchor="start"
+                                        dominantBaseline={i === 10 ? 'text-before-edge' : 'auto'}
+                                    >
+                                        {i/10}
+                                    </text>
+                                );
+                            })}
+                        </g>
+
                         {/* 绘制曲线 */}
                         {renderCurve()}
 
                         {/* 绘制关键帧点 */}
                         {renderKeyframePoints()}
-
 
                         {/* 调整画布大小手柄 */}
                         <rect
@@ -537,7 +505,7 @@ const KeyframeEditorWithTable = ({
                 </div>
             )}
 
-            {/* 原有的 Table 编辑器 */}
+            {/* Table 编辑器 */}
             <Form.List name={keyframesFieldName}>
                 {(fields, {add, remove}) => (
                     <>
@@ -547,22 +515,19 @@ const KeyframeEditorWithTable = ({
                             size="small"
                             bordered
                             pagination={false}
-                            footer={() =>
+                            footer={() => (
                                 <Button
                                     size="small"
                                     onClick={() => {
                                         add({time: 0, value: 0, inTangent: 0, outTangent: 0});
-                                        // 强制更新本地状态
-                                        setTimeout(() => {
-                                            const newData = getKeyframesFormData();
-                                            formKeyframesRef.current = newData;
-                                            setLocalKeyframes(newData);
-                                        }, 0);
+                                        // 添加完后同步一次表单数据
+                                        setTimeout(syncFromForm, 0);
                                     }}
                                     style={{width: '100%'}}
                                 >
                                     {t('PhyEditor.add_keyframe')}
-                                </Button>}
+                                </Button>
+                            )}
                             columns={[
                                 {
                                     title: t('PhyEditor.keyframe'),
@@ -570,97 +535,88 @@ const KeyframeEditorWithTable = ({
                                         {
                                             title: t('PhyEditor.Time'),
                                             width: 100,
-                                            render: (_, field) => (
-                                                <Form.Item
-                                                    {...field}
-                                                    name={[field.name, 'time']}
-                                                    style={{margin: 0}}
-                                                >
-                                                    <InputNumber
-                                                        style={{width: '100%'}}
-                                                        min={0}
-                                                        max={1}
-                                                        step={0.01}
-                                                        onChange={() => {
-                                                            // 输入框值变化后更新本地状态
-                                                            setTimeout(() => {
-                                                                const newData = getKeyframesFormData();
-                                                                formKeyframesRef.current = newData;
-                                                                setLocalKeyframes(newData);
-                                                            }, 0);
-                                                        }}
-                                                    />
-                                                </Form.Item>
-                                            )
+                                            render: (_, field) => {
+                                                const {key, ...restField} = field;
+                                                return (
+                                                    <Form.Item
+                                                        key={key}
+                                                        {...restField}
+                                                        name={[field.name, 'time']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber
+                                                            style={{width: '100%'}}
+                                                            min={0}
+                                                            max={1}
+                                                            step={0.01}
+                                                            onChange={handleFormItemChange}
+                                                        />
+                                                    </Form.Item>
+                                                );
+                                            }
                                         },
                                         {
                                             title: t('PhyEditor.Value'),
                                             width: 100,
-                                            render: (_, field) => (
-                                                <Form.Item
-                                                    {...field}
-                                                    name={[field.name, 'value']}
-                                                    style={{margin: 0}}
-                                                >
-                                                    <InputNumber
-                                                        style={{width: '100%'}}
-                                                        step={0.01}
-                                                        onChange={() => {
-                                                            setTimeout(() => {
-                                                                const newData = getKeyframesFormData();
-                                                                formKeyframesRef.current = newData;
-                                                                setLocalKeyframes(newData);
-                                                            }, 0);
-                                                        }}
-                                                    />
-                                                </Form.Item>
-                                            )
+                                            render: (_, field) => {
+                                                const {key, ...restField} = field;
+                                                return (
+                                                    <Form.Item
+                                                        key={key}
+                                                        {...restField}
+                                                        name={[field.name, 'value']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber
+                                                            style={{width: '100%'}}
+                                                            step={0.01}
+                                                            onChange={handleFormItemChange}
+                                                        />
+                                                    </Form.Item>
+                                                );
+                                            }
                                         },
                                         {
                                             title: t('PhyEditor.InTangent'),
                                             width: 100,
-                                            render: (_, field) => (
-                                                <Form.Item
-                                                    {...field}
-                                                    name={[field.name, 'inTangent']}
-                                                    style={{margin: 0}}
-                                                >
-                                                    <InputNumber
-                                                        style={{width: '100%'}}
-                                                        step={0.01}
-                                                        onChange={() => {
-                                                            setTimeout(() => {
-                                                                const newData = getKeyframesFormData();
-                                                                formKeyframesRef.current = newData;
-                                                                setLocalKeyframes(newData);
-                                                            }, 0);
-                                                        }}
-                                                    />
-                                                </Form.Item>
-                                            )
+                                            render: (_, field) => {
+                                                const {key, ...restField} = field;
+                                                return (
+                                                    <Form.Item
+                                                        key={key}
+                                                        {...restField}
+                                                        name={[field.name, 'inTangent']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber
+                                                            style={{width: '100%'}}
+                                                            step={0.01}
+                                                            onChange={handleFormItemChange}
+                                                        />
+                                                    </Form.Item>
+                                                );
+                                            }
                                         },
                                         {
                                             title: t('PhyEditor.OutTangent'),
                                             width: 100,
-                                            render: (_, field) => (
-                                                <Form.Item
-                                                    {...field}
-                                                    name={[field.name, 'outTangent']}
-                                                    style={{margin: 0}}
-                                                >
-                                                    <InputNumber
-                                                        style={{width: '100%'}}
-                                                        step={0.01}
-                                                        onChange={() => {
-                                                            setTimeout(() => {
-                                                                const newData = getKeyframesFormData();
-                                                                formKeyframesRef.current = newData;
-                                                                setLocalKeyframes(newData);
-                                                            }, 0);
-                                                        }}
-                                                    />
-                                                </Form.Item>
-                                            )
+                                            render: (_, field) => {
+                                                const {key, ...restField} = field;
+                                                return (
+                                                    <Form.Item
+                                                        key={key}
+                                                        {...restField}
+                                                        name={[field.name, 'outTangent']}
+                                                        style={{margin: 0}}
+                                                    >
+                                                        <InputNumber
+                                                            style={{width: '100%'}}
+                                                            step={0.01}
+                                                            onChange={handleFormItemChange}
+                                                        />
+                                                    </Form.Item>
+                                                );
+                                            }
                                         },
                                         {
                                             title: t('PhyEditor.operate'),
@@ -670,12 +626,8 @@ const KeyframeEditorWithTable = ({
                                                     icon={<DeleteOutlined/>}
                                                     onClick={() => {
                                                         remove(field.name);
-                                                        // 删除后更新本地状态
-                                                        setTimeout(() => {
-                                                            const newData = getKeyframesFormData();
-                                                            formKeyframesRef.current = newData;
-                                                            setLocalKeyframes(newData);
-                                                        }, 0);
+                                                        // 删除后同步一次表单数据
+                                                        setTimeout(syncFromForm, 0);
                                                     }}
                                                     size="small"
                                                 />
@@ -690,6 +642,30 @@ const KeyframeEditorWithTable = ({
             </Form.List>
         </>
     );
+};
+
+// 辅助函数：计算贝塞尔曲线控制点
+const calculateControlPoints = (kf1: Keyframe, kf2: Keyframe, width: number, height: number): [number, number, number, number] => {
+    // 时间范围映射到宽度
+    const x1 = kf1.time * width;
+    const x2 = kf2.time * width;
+
+    // 值范围映射到高度（反转Y轴）
+    const y1 = height - kf1.value * height;
+    const y2 = height - kf2.value * height;
+
+    // 计算控制点距离
+    const dx = x2 - x1;
+
+    // 控制点1：基于第一个关键帧的出切线
+    const cp1x = x1 + dx / 3;
+    const cp1y = y1 - kf1.outTangent * dx / 3;
+
+    // 控制点2：基于第二个关键帧的入切线
+    const cp2x = x2 - dx / 3;
+    const cp2y = y2 + kf2.inTangent * dx / 3;
+
+    return [cp1x, cp1y, cp2x, cp2y];
 };
 
 export default KeyframeEditorWithTable;
