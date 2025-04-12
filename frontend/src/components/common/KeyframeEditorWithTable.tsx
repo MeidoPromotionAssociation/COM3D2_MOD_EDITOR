@@ -401,9 +401,9 @@ const KeyframeEditorWithTable = ({
                         icon={showVisualEditor ? <EyeInvisibleOutlined/> : <EyeOutlined/>}
                         onClick={() => setShowVisualEditor(!showVisualEditor)}
                     >
-                        {showVisualEditor ? t('PhyEditor.hide_visual_editor') : t('PhyEditor.show_visual_editor')}
+                        {showVisualEditor ? t('Common.KeyFrameEditor.hide_visual_editor') : t('Common.KeyFrameEditor.show_visual_editor')}
                     </Button>
-                    <Tooltip title={t('PhyEditor.keyframe_tip')}>
+                    <Tooltip title={t('Common.KeyFrameEditor.keyframe_tip')}>
                         <QuestionCircleOutlined/>
                     </Tooltip>
                 </Space>
@@ -525,7 +525,7 @@ const KeyframeEditorWithTable = ({
                             left: '50%',
                             transform: 'translateX(-50%)'
                         }}>
-                            {t('PhyEditor.visual_editor_tip')}
+                            {t('Common.KeyFrameEditor.visual_editor_tip')}
                         </span>
                         <div style={{
                             display: 'flex',
@@ -586,15 +586,15 @@ const KeyframeEditorWithTable = ({
                                     }}
                                     style={{width: '100%'}}
                                 >
-                                    {t('PhyEditor.add_keyframe')}
+                                    {t('Common.KeyFrameEditor.add_keyframe')}
                                 </Button>
                             )}
                             columns={[
                                 {
-                                    title: t('PhyEditor.keyframe'),
+                                    title: t('Common.KeyFrameEditor.keyframe'),
                                     children: [
                                         {
-                                            title: t('PhyEditor.Time'),
+                                            title: t('Common.KeyFrameEditor.Time'),
                                             width: 100,
                                             render: (_, field) => {
                                                 const {key, ...restField} = field;
@@ -617,7 +617,7 @@ const KeyframeEditorWithTable = ({
                                             }
                                         },
                                         {
-                                            title: t('PhyEditor.Value'),
+                                            title: t('Common.KeyFrameEditor.Value'),
                                             width: 100,
                                             render: (_, field) => {
                                                 const {key, ...restField} = field;
@@ -638,7 +638,7 @@ const KeyframeEditorWithTable = ({
                                             }
                                         },
                                         {
-                                            title: t('PhyEditor.InTangent'),
+                                            title: t('Common.KeyFrameEditor.InTangent'),
                                             width: 100,
                                             render: (_, field) => {
                                                 const {key, ...restField} = field;
@@ -659,7 +659,7 @@ const KeyframeEditorWithTable = ({
                                             }
                                         },
                                         {
-                                            title: t('PhyEditor.OutTangent'),
+                                            title: t('Common.KeyFrameEditor.OutTangent'),
                                             width: 100,
                                             render: (_, field) => {
                                                 const {key, ...restField} = field;
@@ -680,7 +680,7 @@ const KeyframeEditorWithTable = ({
                                             }
                                         },
                                         {
-                                            title: t('PhyEditor.operate'),
+                                            title: t('Common.KeyFrameEditor.operate'),
                                             width: 80,
                                             render: (_, field) => (
                                                 <Button

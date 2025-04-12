@@ -286,18 +286,7 @@
     "default_value_tip": "默认值（DefaultValue）；仅模式 0 且不使用关键帧时，才使用此值",
     "BoneValue": "骨骼值",
     "add_BoneValue": "添加骨骼值",
-    "BoneName": "骨骼名",
-    "Value": "值",
-    "operate": "操作",
-    "keyframe": "关键帧（曲线）",
-    "keyframe_tip": "关键帧（keyframe）；骨骼值的关键帧，可以让特性变为曲线，Unity 标准关键帧格式",
-    "add_keyframe": "添加关键帧",
-    "Time": "时间",
-    "InTangent": "入切线",
-    "OutTangent": "出切线",
-    "show_visual_editor": "显示可视化编辑器",
-    "hide_visual_editor": "隐藏可视化编辑器",
-    "visual_editor_tip": "双击画布空白处添加新关键帧 | 拖动控制点调整切线 | 拖动关键帧点调整位置"
+    "BoneName": "骨骼名"
   },
   "PskEditor": {
     "file_header": {
@@ -419,7 +408,20 @@
     "save_file_shortcut": "Ctrl/⌘ + S",
     "save_as_file_shortcut": "Ctrl/⌘ + Alt + S",
     "width": "宽度",
-    "height": "高度"
+    "height": "高度",
+    "KeyFrameEditor": {
+      "add_keyframe": "添加关键帧",
+      "operate": "操作",
+      "Time": "时间",
+      "Value": "值",
+      "InTangent": "入切线",
+      "OutTangent": "出切线",
+      "show_visual_editor": "显示可视化编辑器",
+      "hide_visual_editor": "隐藏可视化编辑器",
+      "visual_editor_tip": "双击画布空白处添加新关键帧 | 拖动控制点调整切线 | 拖动关键帧点调整位置",
+      "keyframe": "关键帧（曲线）",
+      "keyframe_tip": "关键帧（keyframe）；可以让特性变为曲线，Unity 标准关键帧格式"
+    }
   },
   "Infos": {
     "choose_file": "选择文件",
