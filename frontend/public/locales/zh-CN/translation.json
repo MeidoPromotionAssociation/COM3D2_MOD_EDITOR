@@ -417,7 +417,9 @@
   "Common": {
     "open_file_shortcut": "Ctrl/⌘ + O",
     "save_file_shortcut": "Ctrl/⌘ + S",
-    "save_as_file_shortcut": "Ctrl/⌘ + Alt + S"
+    "save_as_file_shortcut": "Ctrl/⌘ + Alt + S",
+    "width": "宽度",
+    "height": "高度"
   },
   "Infos": {
     "choose_file": "选择文件",

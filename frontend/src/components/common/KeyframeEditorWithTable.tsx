@@ -30,7 +30,7 @@ const KeyframeEditorWithTable = ({
     // 画布大小
     const [dimensions, setDimensions] = useState(() => {
         const saved = localStorage.getItem(KeyframeEditorCanvasSizeKey);
-        return saved ? JSON.parse(saved) : { width: 600, height: 300 };
+        return saved ? JSON.parse(saved) : {width: 600, height: 300};
     });
 
     const svgRef = useRef<SVGSVGElement>(null);
@@ -85,7 +85,7 @@ const KeyframeEditorWithTable = ({
         };
     }, [keyframesFieldName, dragState.isDragging]);
 
-    // 处理画布大小调整开始
+    // 处理画布大小调整
     const handleResizeMouseDown = (e: React.MouseEvent) => {
         e.stopPropagation();
 
@@ -103,6 +103,11 @@ const KeyframeEditorWithTable = ({
                 width: newWidth,
                 height: newHeight
             });
+
+            localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
+                width: newWidth,
+                height: newHeight
+            }))
         };
 
         const handleMouseUp = () => {
@@ -441,10 +446,16 @@ const KeyframeEditorWithTable = ({
                         </g>
 
                         {/* 绘制坐标轴刻度 */}
-                        <g className="axis-labels">
+                        <g className="axis-labels" style={{
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none',
+                            MozUserSelect: 'none',
+                            msUserSelect: 'none',
+                            pointerEvents: 'none'
+                        }}>
                             {/* 横向时间轴刻度 */}
                             {Array.from({length: 11}).map((_, i) => {
-                                const xPos = width * i/10;
+                                const xPos = width * i / 10;
                                 return (
                                     <text
                                         key={`time-label-${i}`}
@@ -454,14 +465,14 @@ const KeyframeEditorWithTable = ({
                                         fontSize="10"
                                         textAnchor={i === 0 ? 'start' : i === 10 ? 'end' : 'middle'}
                                     >
-                                        {i/10}
+                                        {i / 10}
                                     </text>
                                 );
                             })}
 
                             {/* 纵向数值轴刻度 */}
                             {Array.from({length: 11}).map((_, i) => {
-                                const yPos = height - height * i/10;
+                                const yPos = height - height * i / 10;
                                 return (
                                     <text
                                         key={`value-label-${i}`}
@@ -472,7 +483,7 @@ const KeyframeEditorWithTable = ({
                                         textAnchor="start"
                                         dominantBaseline={i === 10 ? 'text-before-edge' : 'auto'}
                                     >
-                                        {i/10}
+                                        {i / 10}
                                     </text>
                                 );
                             })}
@@ -499,9 +510,59 @@ const KeyframeEditorWithTable = ({
                         />
                     </svg>
 
-                    <div style={{padding: 8, borderTop: '1px solid #f0f0f0', fontSize: 12, color: '#888'}}>
-                        {t('PhyEditor.visual_editor_tip')}
+                    <div style={{
+                        padding: 8,
+                        borderTop: '1px solid #f0f0f0',
+                        fontSize: 12,
+                        color: '#888',
+                        display: 'flex',
+                        position: 'relative',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <span style={{
+                            position: 'absolute',
+                            left: '50%',
+                            transform: 'translateX(-50%)'
+                        }}>
+                            {t('PhyEditor.visual_editor_tip')}
+                        </span>
+                        <div style={{
+                            display: 'flex',
+                            gap: 8,
+                            marginLeft: 'auto' // 输入框容器右对齐
+                        }}>
+                            <InputNumber
+                                size='small'
+                                style={{width: '100px'}}
+                                value={dimensions.width}
+                                onChange={(value) => {
+                                    const newWidth = Number(value) || 600;
+                                    setDimensions((prev: any) => ({...prev, width: newWidth}));
+                                    localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
+                                        ...dimensions,
+                                        width: newWidth
+                                    }));
+                                }}
+                                addonBefore={t('Common.width')}
+                            />
+                            <InputNumber
+                                size='small'
+                                style={{width: '100px'}}
+                                value={dimensions.height}
+                                onChange={(value) => {
+                                    const newHeight = Number(value) || 300;
+                                    setDimensions((prev: any) => ({...prev, height: newHeight}));
+                                    localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
+                                        ...dimensions,
+                                        height: newHeight
+                                    }));
+                                }}
+                                addonBefore={t('Common.height')}
+                            />
+                        </div>
                     </div>
+
                 </div>
             )}
 
