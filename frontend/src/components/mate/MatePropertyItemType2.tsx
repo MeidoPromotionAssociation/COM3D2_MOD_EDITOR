@@ -53,7 +53,6 @@ const MatePropertyItemType2 = ({
             style={{
                 marginBottom: 8,
                 padding: 8,
-                border: '1px solid #000',
                 borderRadius: 4,
                 height: '100%',
                 textAlign: 'left',
