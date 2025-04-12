@@ -567,140 +567,142 @@ const KeyframeEditorWithTable = ({
             )}
 
             {/* Table 编辑器 */}
-            <Form.List name={keyframesFieldName}>
-                {(fields, {add, remove}) => (
-                    <>
-                        <Table
-                            dataSource={fields}
-                            rowKey="name"
-                            size="small"
-                            bordered
-                            pagination={false}
-                            footer={() => (
-                                <Button
-                                    size="small"
-                                    onClick={() => {
-                                        add({time: 0, value: 0, inTangent: 0, outTangent: 0});
-                                        // 添加完后同步一次表单数据
-                                        setTimeout(syncFromForm, 0);
-                                    }}
-                                    style={{width: '100%'}}
-                                >
-                                    {t('Common.KeyFrameEditor.add_keyframe')}
-                                </Button>
-                            )}
-                            columns={[
-                                {
-                                    title: t('Common.KeyFrameEditor.keyframe'),
-                                    children: [
-                                        {
-                                            title: t('Common.KeyFrameEditor.Time'),
-                                            width: 100,
-                                            render: (_, field) => {
-                                                const {key, ...restField} = field;
-                                                return (
-                                                    <Form.Item
-                                                        key={key}
-                                                        {...restField}
-                                                        name={[field.name, 'time']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber
-                                                            style={{width: '100%'}}
-                                                            min={0}
-                                                            max={1}
-                                                            step={0.01}
-                                                            onChange={handleFormItemChange}
-                                                        />
-                                                    </Form.Item>
-                                                );
+            <Form form={form}>{/* 必须，否则 Form.List 无法找到动态数据列 */}
+                <Form.List name={keyframesFieldName}>
+                    {(fields, {add, remove}) => (
+                        <>
+                            <Table
+                                dataSource={fields}
+                                rowKey="name"
+                                size="small"
+                                bordered
+                                pagination={false}
+                                footer={() => (
+                                    <Button
+                                        size="small"
+                                        onClick={() => {
+                                            add({time: 0, value: 0, inTangent: 0, outTangent: 0});
+                                            // 添加完后同步一次表单数据
+                                            setTimeout(syncFromForm, 0);
+                                        }}
+                                        style={{width: '100%'}}
+                                    >
+                                        {t('Common.KeyFrameEditor.add_keyframe')}
+                                    </Button>
+                                )}
+                                columns={[
+                                    {
+                                        title: t('Common.KeyFrameEditor.keyframe'),
+                                        children: [
+                                            {
+                                                title: t('Common.KeyFrameEditor.Time'),
+                                                width: 100,
+                                                render: (_, field) => {
+                                                    const {key, ...restField} = field;
+                                                    return (
+                                                        <Form.Item
+                                                            key={key}
+                                                            {...restField}
+                                                            name={[field.name, 'time']}
+                                                            style={{margin: 0}}
+                                                        >
+                                                            <InputNumber
+                                                                style={{width: '100%'}}
+                                                                min={0}
+                                                                max={1}
+                                                                step={0.01}
+                                                                onChange={handleFormItemChange}
+                                                            />
+                                                        </Form.Item>
+                                                    );
+                                                }
+                                            },
+                                            {
+                                                title: t('Common.KeyFrameEditor.Value'),
+                                                width: 100,
+                                                render: (_, field) => {
+                                                    const {key, ...restField} = field;
+                                                    return (
+                                                        <Form.Item
+                                                            key={key}
+                                                            {...restField}
+                                                            name={[field.name, 'value']}
+                                                            style={{margin: 0}}
+                                                        >
+                                                            <InputNumber
+                                                                style={{width: '100%'}}
+                                                                step={0.01}
+                                                                onChange={handleFormItemChange}
+                                                            />
+                                                        </Form.Item>
+                                                    );
+                                                }
+                                            },
+                                            {
+                                                title: t('Common.KeyFrameEditor.InTangent'),
+                                                width: 100,
+                                                render: (_, field) => {
+                                                    const {key, ...restField} = field;
+                                                    return (
+                                                        <Form.Item
+                                                            key={key}
+                                                            {...restField}
+                                                            name={[field.name, 'inTangent']}
+                                                            style={{margin: 0}}
+                                                        >
+                                                            <InputNumber
+                                                                style={{width: '100%'}}
+                                                                step={0.01}
+                                                                onChange={handleFormItemChange}
+                                                            />
+                                                        </Form.Item>
+                                                    );
+                                                }
+                                            },
+                                            {
+                                                title: t('Common.KeyFrameEditor.OutTangent'),
+                                                width: 100,
+                                                render: (_, field) => {
+                                                    const {key, ...restField} = field;
+                                                    return (
+                                                        <Form.Item
+                                                            key={key}
+                                                            {...restField}
+                                                            name={[field.name, 'outTangent']}
+                                                            style={{margin: 0}}
+                                                        >
+                                                            <InputNumber
+                                                                style={{width: '100%'}}
+                                                                step={0.01}
+                                                                onChange={handleFormItemChange}
+                                                            />
+                                                        </Form.Item>
+                                                    );
+                                                }
+                                            },
+                                            {
+                                                title: t('Common.KeyFrameEditor.operate'),
+                                                width: 80,
+                                                render: (_, field) => (
+                                                    <Button
+                                                        icon={<DeleteOutlined/>}
+                                                        onClick={() => {
+                                                            remove(field.name);
+                                                            // 删除后同步一次表单数据
+                                                            setTimeout(syncFromForm, 0);
+                                                        }}
+                                                        size="small"
+                                                    />
+                                                )
                                             }
-                                        },
-                                        {
-                                            title: t('Common.KeyFrameEditor.Value'),
-                                            width: 100,
-                                            render: (_, field) => {
-                                                const {key, ...restField} = field;
-                                                return (
-                                                    <Form.Item
-                                                        key={key}
-                                                        {...restField}
-                                                        name={[field.name, 'value']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber
-                                                            style={{width: '100%'}}
-                                                            step={0.01}
-                                                            onChange={handleFormItemChange}
-                                                        />
-                                                    </Form.Item>
-                                                );
-                                            }
-                                        },
-                                        {
-                                            title: t('Common.KeyFrameEditor.InTangent'),
-                                            width: 100,
-                                            render: (_, field) => {
-                                                const {key, ...restField} = field;
-                                                return (
-                                                    <Form.Item
-                                                        key={key}
-                                                        {...restField}
-                                                        name={[field.name, 'inTangent']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber
-                                                            style={{width: '100%'}}
-                                                            step={0.01}
-                                                            onChange={handleFormItemChange}
-                                                        />
-                                                    </Form.Item>
-                                                );
-                                            }
-                                        },
-                                        {
-                                            title: t('Common.KeyFrameEditor.OutTangent'),
-                                            width: 100,
-                                            render: (_, field) => {
-                                                const {key, ...restField} = field;
-                                                return (
-                                                    <Form.Item
-                                                        key={key}
-                                                        {...restField}
-                                                        name={[field.name, 'outTangent']}
-                                                        style={{margin: 0}}
-                                                    >
-                                                        <InputNumber
-                                                            style={{width: '100%'}}
-                                                            step={0.01}
-                                                            onChange={handleFormItemChange}
-                                                        />
-                                                    </Form.Item>
-                                                );
-                                            }
-                                        },
-                                        {
-                                            title: t('Common.KeyFrameEditor.operate'),
-                                            width: 80,
-                                            render: (_, field) => (
-                                                <Button
-                                                    icon={<DeleteOutlined/>}
-                                                    onClick={() => {
-                                                        remove(field.name);
-                                                        // 删除后同步一次表单数据
-                                                        setTimeout(syncFromForm, 0);
-                                                    }}
-                                                    size="small"
-                                                />
-                                            )
-                                        }
-                                    ]
-                                }
-                            ]}
-                        />
-                    </>
-                )}
-            </Form.List>
+                                        ]
+                                    }
+                                ]}
+                            />
+                        </>
+                    )}
+                </Form.List>
+            </Form>
         </>
     );
 };
