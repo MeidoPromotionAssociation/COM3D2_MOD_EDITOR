@@ -86,7 +86,9 @@
     "other_shortcuts": "For other shortcuts, refer to Monaco Editor's default shortcuts",
     "note": "Note",
     "format_tree_tsv_use_tab": "Use Tab key for tree indentation and TSV formats, not spaces.",
-    "only_tree_indent_have_autocomplete": "Autocomplete and hints are only available in Tree Indentation format."
+    "only_tree_indent_have_autocomplete": "Autocomplete and hints are only available in Tree Indentation format.",
+    "ArgCount": "Count of parameters and commands",
+    "Args": "Command and its parameters, first is command and next is command parameter"
   },
   "MateEditor": {
     "file_header": {
@@ -227,7 +229,12 @@
     "ScaleRateMulMax_tip": "Max Scale Multiplier (ScaleRateMulMax); controls the maximum scale factor for the collider's radius, which works together with the BlendValue of the MuneL bone. When BlendValue=1.3, the maximum scaling multiplier is reached, and the final radius = base radius * (1 + scale multiplier limit * BlendValue/1.3f), default value is 1.",
     "CenterRateMax": "Max Center Offset",
     "CenterRateMax_tip": "Max Center Offset (CenterRateMax); defines the maximum offset of the center when deformation is at its maximum. It mixes with the base center point (Center) through linear interpolation, and the final center = Vector3.Lerp(center, max center offset, BlendValue/1.3f), default value is 0,0,0.",
-    "dbm_tip": "When the character performs deep breathing or chest movement actions, adjusting these two parameters can achieve: the collider's radius increases as the chest expands (max scale multiplier), and the collider's center moves with the action (max center offset), thus maintaining consistency between physical collisions and visual models."
+    "dbm_tip": "When the character performs deep breathing or chest movement actions, adjusting these two parameters can achieve: the collider's radius increases as the chest expands (max scale multiplier), and the collider's center moves with the action (max center offset), thus maintaining consistency between physical collisions and visual models.",
+    "Direction_X": "X axis (0)",
+    "Direction_Y": "Y-axis (1)",
+    "Direction_Z": "Z-axis (2)",
+    "Bound_Outside": "Outside (0)",
+    "Bound_Inside": "Inside (1)"
   },
   "PhyEditor": {
     "file_header": {
@@ -279,17 +286,6 @@
     "BoneValue": "Bone Value",
     "add_BoneValue": "Add Bone Value",
     "BoneName": "Bone Name",
-    "Value": "Value",
-    "operate": "Operate",
-    "keyframe": "Keyframe (Curve)",
-    "keyframe_tip": "Keyframe (keyframe); keyframe for bone values, which can turn the bone's physical characteristics into a curve. This is used only when Mode 0 is selected, and if no keyframe is entered, the default value will be used.",
-    "add_keyframe": "Add Keyframe",
-    "Time": "Time",
-    "InTangent": "In Tangent",
-    "OutTangent": "Out Tangent",
-    "show_visual_editor": "Show Visual Editor",
-    "hide_visual_editor": "Hide Visual Editor",
-    "visual_editor_tip": "Double-click the blank canvas to add a new keyframe | Drag control points to adjust tangents | Drag keyframe points to adjust position",
     "ExclusionsCount_tip": "Exclusions Count (ExclusionsCount); seems to be the number of bones to be excluded, but only the count is provided without specific bone names. This feature might have been deprecated (2.43.0)."
   },
   "TexEditor": {
@@ -354,7 +350,6 @@
     "loading": "Loading...",
     "pls_select_a_file_to_preview": "Please select a file to preview",
     "pls_select_a_file_to_edit": "Please select a file to edit",
-    "not_available_in_this_editor": "This feature is not available in the current editor",
     "com3d2_menu_file": "COM3D2 Menu File",
     "com3d2_mate_file": "COM3D2 Material File",
     "com3d2_pmat_file": "COM3D2 Render Queue File",
@@ -394,5 +389,83 @@
       "read_file_filed": "Failed to read corresponding col file"
     },
     "read_foo_file_failed_colon": "Read {{file_type}} file failed: "
+  },
+  "PskEditor": {
+    "file_header": {
+      "file_head": "File Header (usually no need to modify)",
+      "Signature": "File Signature",
+      "Version": "File Version",
+      "enable_edit_do_not_edit": "Do not modify"
+    },
+    "style1": "Form Edit",
+    "style2": "JSON Edit",
+    "basic_parameters": "Basic parameters",
+    "panier_parameters": "Pannier argument",
+    "panier_parameters_tip": "Pannier, the skeleton of the skirt. In-game, 'pannier' metaphorically refers to the skirt's framework. Adjusting pannier parameters allows control over the skirt's shape and behavior.",
+    "panierStressForce": "Panier Stress Force",
+    "panierStressForce_tip": "Pannier Stress Force (PanierStressForce): The intensity of the additional force applied when pannier nodes collide with the legs. Default value: 0.4. Higher values increase the rebound force when the skirt is pushed away by the legs",
+    "stressDegreeMin": "Minimum stress angle",
+    "stressDegreeMin_tip": "Minimum Stress Angle (StressDegreeMin): The minimum angle threshold to trigger scaling. Default: 45 (degrees). When the bone angle exceeds this threshold, linear scaling begins. Maximum scaling is applied once the angle reaches the Maximum Stress Angle. This range reflects the degree of stress-induced deformation on the skirt fabric.",
+    "stressDegreeMax": "Maximum stress angle",
+    "stressDegreeMax_tip": "Maximum Stress Angle (StressDegreeMax): The maximum angle threshold for full scaling effectiveness. Default: 90 (degrees). When the bone angle exceeds the Minimum Stress Angle, linear scaling begins. Full scaling is applied at the Maximum Stress Angle. This range corresponds to the skirt fabric's deformation under stress.",
+    "stressMinScale": "Minimum stress scale",
+    "stressMinScale_tip": "Minimum Stress Scaling (StressMinScale): The scale factor applied to skirt bones at the Maximum Stress Angle, relative to their original size. Default: 0.75 (75%). For example, during intense character movement, reducing bone scale prevents clipping or excessive horizontal stretching.",
+    "scaleEaseSpeed": "Scaling Ease Speed",
+    "scaleEaseSpeed_tip": "Scaling Ease Speed (ScaleEaseSpeed): Controls the smoothing speed of scaling transitions. Default: 5. Lower values result in slower transitions between current and target scales.",
+    "panierForceDistanceThreshold": "Pannier Force Distance Threshold",
+    "panierForceDistanceThreshold_tip": "Pannier Force Distance Threshold (PanierForceDistanceThreshold): The distance threshold, Default: 0.1 (meters) for activating panier forces. When panier nodes approach legs or collision nodes, physical forces gradually intensify within this range. Example: At 0.1m (10cm), effects start and strengthen as distance decreases",
+    "panierRadius": "Pannier Radius",
+    "panierRadius_tip": "Pannier Radius (PanierRadius): The size of individual pannier nodes. Default: 0.025 (meters). Affects collision detection range between nodes and the character/environment",
+    "panierRadius_order_tip": "If a 'Pannier Radius Distribution Curve Group' exists, it takes priority. Otherwise, use 'Pannier Radius Distribution Curve + Pannier Radius' (final value = base value * curve value). If neither exists, use 'Pannier Radius'",
+    "panierRadiusDistrib": "Pannier Radius Distribution Curve",
+    "panierRadiusDistrib_tip": "Pannier Radius Distribution Curve (PanierRadiusDistrib): The distribution curve of the skirt radius controls the distribution ratio of the radius at different positions of the skirt through the curve",
+    "panierRadiusDistribGroups": "Pannier Radius Distribution Curve Group",
+    "panierRadiusDistribGroups_tip": "Pannier Radius Distribution Curve Group (PanierRadiusDistribGroups); you can set the value or curve for each bone individually, Unity standard curve format",
+    "panierRadiusDistribGroups_boneName": "Bone Name",
+    "panierRadiusDistribGroups_boneName_tip": "Bone Name (BoneName); Bone Name",
+    "panierRadiusDistribGroups_radius": "Default Radius",
+    "panierRadiusDistribGroups_radius_tip": "Radius (Radius); Default Radius",
+    "panier_radius_group": "Pannier Radius Group",
+    "add_panier_radius_group": "Add Pannier Radius Group",
+    "panierForce": "Pannier Force",
+    "panierForce_tip": "Pannier Force (PanierForce): Base strength of physical forces in simulations. Default: 0.134. Used as a base value in formulas. If a distribution curve is applied, final value = base value * curve value",
+    "panierForceDistrib": "Pannier Force Distribution Curve",
+    "panierForceDistrib_tip": "Pannier Force Distribution Curve (PanierForceDistrib); This allows you to convert pannier force into a curve, Unity standard curve format",
+    "calcTime": "Calculation times",
+    "calcTime_tip": "Calculation times (CalcTime): The number of iterations of the physical simulation. The larger the value, the higher the accuracy of the physical simulation, but the greater the performance consumption. The default value is 16",
+    "hardValues": "Connection strength",
+    "hardValues_tip": "ardness Values Array (HardValues): Bone connection strength parameters, dependent on calculation iterations. Horizontal Contraction: Resistance to lateral compression (higher values = stiffer). Default: 0. Horizontal Stretch: Constraint against lateral over-expansion. Default: 0.01. Vertical Contraction: Resistance to vertical compression. Default: 0. Vertical Stretch: Constraint to prevent excessive vertical elongation (maintains skirt length). Default: 0.7",
+    "horizontal_contraction": "Horizontal Shrink",
+    "horizontal_extension": "Horizontal extension",
+    "vertical_contraction": "Vertically Shrink",
+    "vertical_extension": "Vertical extension",
+    "velocityForceRate": "Velocity Inertia Retention Rate",
+    "velocityForceRate_tip": "Velocity Inertia Retention Rate (VelocityForceRate): Controls how strongly bones retain their original velocity during movement. Default: 0.8. If a distribution curve is applied, final value = base value * curve value",
+    "velocityForceRateDistrib": "Velocity Inertia Retention Curve",
+    "velocityForceRateDistrib_tip": "Velocity Inertia Retention Curve (VelocityForceRateDistrib): Modulates inertia retention (e.g., lower inertia at the root, higher at the skirt edge) using a Unity-standard curve format",
+    "gravity": "Gravity",
+    "gravity_tip": "Gravity (Gravity): Apply an initial force on each axis to simulate gravity. The default value is 0, -0.005, 0. If there is a gravity distribution curve, this value is used as the base value. The final parameter = base value * curve value",
+    "gravityDistrib": "Gravity distribution curve",
+    "gravityDistrib_tip": "Gravity distribution curve (GravityDistrib); gravity distribution curve, Unity standard curve format"
+  },
+  "Common": {
+    "open_file_shortcut": "Ctrl/⌘ + O",
+    "save_file_shortcut": "Ctrl/⌘ + S",
+    "save_as_file_shortcut": "Ctrl/⌘ + Alt + S",
+    "width": "Width",
+    "height": "Height",
+    "KeyFrameEditor": {
+      "add_keyframe": "Add Keyframe",
+      "operate": "Operate",
+      "Time": "Time",
+      "Value": "Value",
+      "InTangent": "In Tangent",
+      "OutTangent": "Out Tangent",
+      "show_visual_editor": "Show Visual Editor",
+      "hide_visual_editor": "Hide Visual Editor",
+      "visual_editor_tip": "Double-click the blank canvas to add a new key frame | Drag control points to adjust tangents | Drag key frame points to adjust position",
+      "keyframe": "Keyframe (Curve)",
+      "keyframe_tip": "Key frame (keyframe): It can turn features into curves. Unity standard keyframe format. Note that the precision is only Float32"
+    }
   }
 }

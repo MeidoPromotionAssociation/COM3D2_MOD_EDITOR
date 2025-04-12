@@ -243,17 +243,7 @@
     "default_value_tip": "デフォルト値（DefaultValue）；モード0且つキーフレーム未使用時のみ有効",
     "BoneValue": "骨設定値",
     "add_BoneValue": "骨設定値追加",
-    "BoneName": "骨名称",
-    "Value": "値",
-    "keyframe": "キーフレーム（曲線）",
-    "keyframe_tip": "キーフレーム（keyframe）；骨特性の変化曲線。モード0時のみ有効（未設定時はデフォルト値使用）",
-    "add_keyframe": "キーフレーム追加",
-    "Time": "時間",
-    "InTangent": "入接線",
-    "OutTangent": "出接線",
-    "show_visual_editor": "ビジュアルエディタ表示",
-    "hide_visual_editor": "ビジュアルエディタ非表示",
-    "visual_editor_tip": "ダブルクリック：新規キーフレーム追加 | 制御点ドラッグ：接線調整 | キーフレームドラッグ：位置調整"
+    "BoneName": "骨名称"
   },
   "SettingsPage": {
     "check_update_now": "今すぐ更新を確認",
