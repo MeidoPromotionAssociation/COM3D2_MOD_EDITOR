@@ -347,10 +347,10 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             if (!isMounted) return;
             // 如果没有 filePath，就新建一个空的
-            const empty = COM3D2.Phy.createFrom({});
-            empty.Signature = COM3D2HeaderConstants.PhySignature;
-            empty.Version = COM3D2HeaderConstants.PhyVersion;
-            setPhyData(empty);
+            const newPhy = COM3D2.Phy.createFrom({});
+            newPhy.Signature = COM3D2HeaderConstants.PhySignature;
+            newPhy.Version = COM3D2HeaderConstants.PhyVersion;
+            setPhyData(newPhy);
             form.resetFields();
         }
 
