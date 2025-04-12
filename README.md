@@ -31,6 +31,7 @@ For now, it allows you to edit files in these formats
 - `.pmat`
 - `.col`
 - `.phy`
+- `.psk`
 - `.tex` (preview & convert only & requires external dependencies)
 - `.anm` (JSON only)
 
@@ -133,6 +134,7 @@ Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
 - `.pmat`
 - `.col`
 - `.phy`
+- `.psk`
 - `.tex` (仅支持预览和转换、需要外部依赖)
 - `.anm` (仅 JSON 格式)
 
@@ -231,6 +233,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - `.pmat`
 - `.col`
 - `.phy`
+- `.psk`
 - `.tex` (プレビューと変換のみサポート、外部依存関係が必要)
 - `.anm` (JSONフォーマットのみ)
 
