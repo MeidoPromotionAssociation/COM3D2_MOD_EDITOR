@@ -14,11 +14,11 @@ const (
 	PMatSignature = "CM3D2_PMATERIAL"
 	PMatVersion   = 1000
 	ColSignature  = "CM3D21_COL"
-	ColVersion    = 24201
+	ColVersion    = 24301
 	PhySignature  = "CM3D21_PHY"
-	PhyVersion    = 24201
+	PhyVersion    = 24301
 	PskSignature  = "CM3D21_PSK"
-	PskVersion    = 24201
+	PskVersion    = 24301
 	TexSignature  = "CM3D2_TEX"
 	TexVersion    = 1010
 	AnmSignature  = "CM3D2_ANIM"

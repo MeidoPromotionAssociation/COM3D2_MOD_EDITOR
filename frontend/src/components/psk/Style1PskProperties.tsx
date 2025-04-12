@@ -3,7 +3,6 @@ import {useTranslation} from "react-i18next";
 import {Button, Collapse, Divider, Flex, Form, FormInstance, Input, InputNumber, Tooltip} from "antd";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import KeyframeEditorWithTable from "../common/KeyframeEditorWithTable";
-import KeyframeEditorWrapper from "../common/KeyframeEditorWrapper";
 
 /** 样式1：所有 Properties 顺序排布 */
 const Style1PskProperties: React.FC<{
@@ -121,7 +120,14 @@ const Style1PskProperties: React.FC<{
 
 
                     <Collapse>
-                        <Collapse.Panel header={t('PskEditor.panierRadiusDistrib')} key="panierRadiusDistrib">
+                        <Collapse.Panel header={
+                            <>
+                                {t('PskEditor.panierRadiusDistrib') + ' '}
+                                <Tooltip title={t('PskEditor.panierRadiusDistrib_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </>
+                        } key="panierRadiusDistrib">
                             <div style={{marginBottom: 16}}>
                                 <KeyframeEditorWithTable
                                     keyframesFieldName="panierRadiusDistribKeyframes"
@@ -131,35 +137,30 @@ const Style1PskProperties: React.FC<{
                         </Collapse.Panel>
 
 
-                        <Collapse.Panel header={t('PskEditor.panierRadiusDistribGroups')}
+                        <Collapse.Panel header={
+                            <>
+                                {t('PskEditor.panierRadiusDistribGroups') + ' '}
+                                <Tooltip title={t('PskEditor.panierRadiusDistribGroups_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </>
+                        }
                                         key="panierRadiusDistribGroups">
                             <Form.List name="panierRadiusDistribGroups">
                                 {(fields, {add, remove}) => (
                                     <>
                                         {fields.map(field => (
                                             <div key={field.key} style={{
-                                                border: '1px solid #f0f0f0',
+                                                border: '1px solid #a0a6b0',
                                                 padding: 16,
                                                 marginBottom: 16,
                                                 borderRadius: 4
                                             }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16
-                                                }}>
-                                                    <h4>{t('PskEditor.panier_radius_group', {index: field.name + 1})}</h4>
-                                                    <Button
-                                                        danger
-                                                        icon={<DeleteOutlined/>}
-                                                        onClick={() => remove(field.name)}
-                                                        size="small"
-                                                    />
-                                                </div>
 
                                                 <Form.Item
                                                     label={t('PskEditor.panierRadiusDistribGroups_boneName')}
                                                     name={[field.name, 'boneName']}
+                                                    initialValue={""}
                                                 >
                                                     <Input/>
                                                 </Form.Item>
@@ -167,15 +168,31 @@ const Style1PskProperties: React.FC<{
                                                 <Form.Item
                                                     label={t('PskEditor.panierRadiusDistribGroups_radius')}
                                                     name={[field.name, 'radius']}
+                                                    initialValue={0}
                                                 >
                                                     <InputNumber style={{width: '100%'}} step={0.1}/>
                                                 </Form.Item>
 
                                                 <div style={{marginBottom: 16}}>
-                                                    {/*TODO THIS NOT WORKING*/}
-                                                    <KeyframeEditorWrapper
+                                                    {/* 直接使用基于索引生成的扁平字段名 */}
+                                                    <KeyframeEditorWithTable
+                                                        keyframesFieldName={`panierRadiusDistribGroups_${field.name}_keyframes`}
                                                         form={form}
-                                                        nestedPath={[field.name, 'curveKeyframes']}
+                                                    />
+                                                </div>
+
+                                                <div style={{
+                                                    position: 'relative', // 添加相对定位
+                                                }}>
+                                                    <Button
+                                                        icon={<DeleteOutlined/>}
+                                                        onClick={() => remove(field.name)}
+                                                        size="small"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            right: -12,
+                                                            bottom: -12
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -211,7 +228,14 @@ const Style1PskProperties: React.FC<{
                     </Flex>
 
                     <Collapse>
-                        <Collapse.Panel header={t('PskEditor.panierForceDistrib')} key="panierForceDistrib">
+                        <Collapse.Panel header={
+                            <>
+                                {t('PskEditor.panierForceDistrib') + ' '}
+                                <Tooltip title={t('PskEditor.panierForceDistrib_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </>
+                        } key="panierForceDistrib">
 
                             <div style={{marginBottom: 16}}>
                                 <KeyframeEditorWithTable
@@ -290,7 +314,12 @@ const Style1PskProperties: React.FC<{
 
 
                     <Collapse>
-                        <Collapse.Panel header={t('PskEditor.velocityForceRateDistrib')} key="velocityForceRateDistrib">
+                        <Collapse.Panel header={<>
+                            {t('PskEditor.velocityForceRateDistrib') + ' '}
+                            <Tooltip title={t('PskEditor.velocityForceRateDistrib_tip')}>
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </>} key="velocityForceRateDistrib">
                             <div style={{marginBottom: 16}}>
                                 <KeyframeEditorWithTable
                                     keyframesFieldName="velocityForceRateDistribKeyframes"
@@ -333,7 +362,14 @@ const Style1PskProperties: React.FC<{
                     </Form.Item>
 
                     <Collapse>
-                        <Collapse.Panel header={t('PskEditor.gravityDistrib')} key="gravityDistrib">
+                        <Collapse.Panel header={
+                            <>
+                                {t('PskEditor.gravityDistrib') + ' '}
+                                <Tooltip title={t('PskEditor.gravityDistrib_tip')}>
+                                    <QuestionCircleOutlined/>
+                                </Tooltip>
+                            </>
+                        } key="gravityDistrib">
                             <div style={{marginBottom: 16}}>
                                 <KeyframeEditorWithTable
                                     keyframesFieldName="gravityDistribKeyframes"

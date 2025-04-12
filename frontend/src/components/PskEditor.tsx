@@ -61,21 +61,9 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 anm 对象
-            const newPsk = new Psk();
+            const newPsk = COM3D2.Psk.createFrom({});
             newPsk.Signature = COM3D2HeaderConstants.PskSignature;
             newPsk.Version = COM3D2HeaderConstants.PskVersion;
-            newPsk.PanierRadius = 1.0;
-            newPsk.PanierForce = 1.0;
-            newPsk.PanierStressForce = 1.0;
-            newPsk.StressDegreeMin = 0.0;
-            newPsk.StressDegreeMax = 1.0;
-            newPsk.StressMinScale = 1.0;
-            newPsk.ScaleEaseSpeed = 1.0;
-            newPsk.PanierForceDistanceThreshold = 0.1;
-            newPsk.CalcTime = 60;
-            newPsk.VelocityForceRate = 1.0;
-            newPsk.Gravity = {X: 0, Y: -0.1, Z: 0};
-            newPsk.HardValues = [0, 0, 0, 0];
             newPsk.PanierRadiusDistrib = new COM3D2.AnimationCurve({Keyframes: []});
             newPsk.PanierForceDistrib = new COM3D2.AnimationCurve({Keyframes: []});
             newPsk.VelocityForceRateDistrib = new COM3D2.AnimationCurve({Keyframes: []});
@@ -157,28 +145,28 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
      * 将后端的 Psk 对象 -> 前端表单字段
      */
     function transformPskToForm(psk: Psk) {
-        return {
-            signature: psk.Signature,
-            version: psk.Version,
-            panierRadius: psk.PanierRadius,
-            panierForce: psk.PanierForce,
-            panierStressForce: psk.PanierStressForce,
-            stressDegreeMin: psk.StressDegreeMin,
-            stressDegreeMax: psk.StressDegreeMax,
-            stressMinScale: psk.StressMinScale,
-            scaleEaseSpeed: psk.ScaleEaseSpeed,
-            panierForceDistanceThreshold: psk.PanierForceDistanceThreshold,
-            calcTime: psk.CalcTime,
-            velocityForceRate: psk.VelocityForceRate,
+        // 创建一个结果对象
+        const result: any = {
+            signature: psk.Signature ?? COM3D2HeaderConstants.PskSignature,
+            version: psk.Version ?? COM3D2HeaderConstants.PskVersion,
+            panierRadius: psk.PanierRadius ?? 0.025,
+            panierForce: psk.PanierForce ?? 0.134,
+            panierStressForce: psk.PanierStressForce ?? 0.4,
+            stressDegreeMin: psk.StressDegreeMin ?? 45,
+            stressDegreeMax: psk.StressDegreeMax ?? 90,
+            stressMinScale: psk.StressMinScale ?? 0.75,
+            scaleEaseSpeed: psk.ScaleEaseSpeed ?? 5,
+            panierForceDistanceThreshold: psk.PanierForceDistanceThreshold ?? 0.1,
+            calcTime: psk.CalcTime ?? 16,
+            velocityForceRate: psk.VelocityForceRate ?? 0.8,
             gravity: [
                 psk.Gravity?.X ?? 0,
-                psk.Gravity?.Y ?? 0,
+                psk.Gravity?.Y ?? -0.005,
                 psk.Gravity?.Z ?? 0
             ],
-            hardValues: psk.HardValues ?? [0, 0, 0, 0],
+            hardValues: psk.HardValues ?? [0, 0.01, 0, 0.7],
 
             // 曲线数据
-            // 注意：为了 keyframe 编辑器编辑方便，这里取消嵌套 keyframe 数组，直接展开
             panierRadiusDistribKeyframes: psk.PanierRadiusDistrib?.Keyframes?.map(kf => ({
                 time: kf.Time,
                 value: kf.Value,
@@ -206,19 +194,30 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
                 inTangent: kf.InTangent,
                 outTangent: kf.OutTangent
             })) || [],
+        };
 
-            // 裙撑半径分布组
-            panierRadiusDistribGroups: psk.PanierRadiusDistribGroups?.map(group => ({
+        // 处理裙撑半径分布组 - 只取基本属性
+        result.panierRadiusDistribGroups = psk.PanierRadiusDistribGroups?.map((group, index) => {
+            return {
                 boneName: group.BoneName,
-                radius: group.Radius,
-                curveKeyframes: group.Curve?.Keyframes?.map(kf => ({
+                radius: group.Radius
+            };
+        }) || [];
+
+        // 为每个组单独创建扁平化的关键帧数组
+        if (psk.PanierRadiusDistribGroups) {
+            psk.PanierRadiusDistribGroups.forEach((group, index) => {
+                const keyframesFieldName = `panierRadiusDistribGroups_${index}_keyframes`;
+                result[keyframesFieldName] = group.Curve?.Keyframes?.map(kf => ({
                     time: kf.Time,
                     value: kf.Value,
                     inTangent: kf.InTangent,
                     outTangent: kf.OutTangent
-                })) || []
-            })) || []
-        };
+                })) || [];
+            });
+        }
+
+        return result;
     }
 
     /**
@@ -228,30 +227,30 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
         // 复制一份
         const newPsk = COM3D2.Psk.createFrom(oldPsk);
 
-        newPsk.Signature = values.signature;
-        newPsk.Version = parseInt(values.version, 10);
+        newPsk.Signature = values.signature ?? COM3D2HeaderConstants.PskSignature;
+        newPsk.Version = parseInt(values.version, 10) ?? COM3D2HeaderConstants.PskVersion;
 
         // 基本属性
-        newPsk.PanierRadius = parseFloat(values.panierRadius);
-        newPsk.PanierForce = parseFloat(values.panierForce);
-        newPsk.PanierStressForce = parseFloat(values.panierStressForce);
-        newPsk.StressDegreeMin = parseFloat(values.stressDegreeMin);
-        newPsk.StressDegreeMax = parseFloat(values.stressDegreeMax);
-        newPsk.StressMinScale = parseFloat(values.stressMinScale);
-        newPsk.ScaleEaseSpeed = parseFloat(values.scaleEaseSpeed);
-        newPsk.PanierForceDistanceThreshold = parseFloat(values.panierForceDistanceThreshold);
-        newPsk.CalcTime = parseInt(values.calcTime, 10);
-        newPsk.VelocityForceRate = parseFloat(values.velocityForceRate);
+        newPsk.PanierRadius = parseFloat(values.panierRadius) ?? 0.025;
+        newPsk.PanierForce = parseFloat(values.panierForce) ?? 0.134;
+        newPsk.PanierStressForce = parseFloat(values.panierStressForce) ?? 0.4;
+        newPsk.StressDegreeMin = parseFloat(values.stressDegreeMin) ?? 45;
+        newPsk.StressDegreeMax = parseFloat(values.stressDegreeMax) ?? 90;
+        newPsk.StressMinScale = parseFloat(values.stressMinScale) ?? 0.75;
+        newPsk.ScaleEaseSpeed = parseFloat(values.scaleEaseSpeed) ?? 5;
+        newPsk.PanierForceDistanceThreshold = parseFloat(values.panierForceDistanceThreshold) ?? 0.1;
+        newPsk.CalcTime = parseInt(values.calcTime, 10) ?? 16;
+        newPsk.VelocityForceRate = parseFloat(values.velocityForceRate) ?? 0.8;
 
         // 向量类型
         newPsk.Gravity = {
-            X: parseFloat(values.gravity[0]),
-            Y: parseFloat(values.gravity[1]),
-            Z: parseFloat(values.gravity[2])
+            X: parseFloat(values.gravity[0]) ?? 0,
+            Y: parseFloat(values.gravity[1]) ?? -0.005,
+            Z: parseFloat(values.gravity[2]) ?? 0
         };
 
         // 硬度值数组
-        newPsk.HardValues = values.hardValues.map((val: any) => parseFloat(val));
+        newPsk.HardValues = values.hardValues.map((val: any) => parseFloat(val)) ?? [0, 0.01, 0, 0.7];
 
         // 处理曲线数据
         // 注意：之前转换时，直接转换成了 keyframes 数组，没有嵌套
@@ -301,18 +300,24 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
 
         // 处理裙撑半径分布组
         if (Array.isArray(values.panierRadiusDistribGroups)) {
-            newPsk.PanierRadiusDistribGroups = values.panierRadiusDistribGroups.map((group: any) => ({
-                BoneName: group.boneName,
-                Radius: parseFloat(group.radius),
-                Curve: {
-                    Keyframes: (group.curveKeyframes || []).map((kf: any) => ({
-                        Time: parseFloat(kf.time),
-                        Value: parseFloat(kf.value),
-                        InTangent: parseFloat(kf.inTangent),
-                        OutTangent: parseFloat(kf.outTangent)
-                    }))
-                }
-            }));
+            newPsk.PanierRadiusDistribGroups = values.panierRadiusDistribGroups.map((group: any, index: number) => {
+                // 获取存储在扁平字段中的关键帧数据
+                const keyframesFieldName = `panierRadiusDistribGroups_${index}_keyframes`;
+                const keyframes = values[keyframesFieldName] || [];
+
+                return {
+                    BoneName: group?.boneName ?? "",
+                    Radius: Number(group?.radius ?? 0) || 0,
+                    Curve: {
+                        Keyframes: keyframes.map((kf: any) => ({
+                            Time: parseFloat(kf.time),
+                            Value: parseFloat(kf.value),
+                            InTangent: parseFloat(kf.inTangent),
+                            OutTangent: parseFloat(kf.outTangent)
+                        }))
+                    }
+                };
+            });
         }
 
         return newPsk;
@@ -325,17 +330,6 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
             form.setFieldsValue(formValues);
         }
     }, [pskData, form]);
-
-    // return (
-    //     <div style={{padding: 10}}>
-    //         <Style2PskProperties
-    //             pskData={pskData}
-    //             setPskData={(newVal) => setPskData(newVal)}
-    //         >
-    //         </Style2PskProperties>
-    //
-    //     </div>
-    // );
 
     return (
         <div style={{padding: 10}}>
