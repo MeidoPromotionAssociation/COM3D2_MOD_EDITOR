@@ -75,6 +75,7 @@ register a free account and you can contribute translations on Crowdin.
 
 Currently, some languages use AI translation. If you are not satisfied with the existing translations, please feel free to contribute translations through Crowdin.
 
+If your language is not available, you can request to add a new language in Crowdin or Issue.
 
 ### Privacy
 
@@ -178,6 +179,8 @@ Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
 
 目前部分语言使用 AI 翻译，如果您对现有翻译不满意，请随时贡献翻译。
 
+如果没有您的语言，您可以在 Crowdin 或 Issue 中请求新增语言。
+
 ### 隐私
 
 本应用不会收集任何个人信息，也不会上传任何信息到任何服务器。
@@ -277,6 +280,8 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 無料アカウントを登録すれば、Crowdin上で翻訳に貢献することができます。
 
 現在、一部の言語ではAI翻訳を使用しています。既存の翻訳に満足できない場合は、いつでも翻訳を提供してください。
+
+ご希望の言語が利用できない場合は、CrowdinまたはIssueで新しい言語の追加をリクエストできます。
 
 ### プライバシー
 
