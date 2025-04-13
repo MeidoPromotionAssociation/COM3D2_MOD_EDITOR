@@ -14,7 +14,7 @@ import {
 } from "../utils/LocalStorageKeys";
 
 // 支持的所有文件类型，用分号分隔，不包含图片类型
-export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.tex;*.anm"
+export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.psk;*.tex;*.anm"
 
 const useFileHandlers = () => {
     const {t} = useTranslation();
