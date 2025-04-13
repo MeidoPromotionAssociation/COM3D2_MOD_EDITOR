@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"sync"
-	"syscall"
 )
 
 // too big, gave up
@@ -25,7 +24,7 @@ var magickMutex sync.Mutex
 // 获取 ImageMagick 版本号
 func getMagickVersion(magickPath string) (int, string, error) {
 	cmd := exec.Command(magickPath, "-version")
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	SetHideWindow(cmd)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -158,7 +157,7 @@ func CheckMagick() error {
 	// 测试运行 magick.exe
 	//cmd := exec.Command(magickPath, "-version")
 	cmd := exec.Command("magick", "-version")
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	SetHideWindow(cmd)
 
 	_, err := cmd.CombinedOutput()
 	if err != nil {
@@ -178,7 +177,7 @@ func IsSupportedImageType(filepath string) error {
 	}
 
 	cmd := exec.Command("magick", "identify", filepath)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	SetHideWindow(cmd)
 
 	_, err = cmd.CombinedOutput()
 	return err
@@ -196,7 +195,7 @@ func ConvertImageToPng(filepath string) (imageData []byte, err error) {
 	defer pr.Close()
 
 	cmd := exec.Command("magick", filepath, "png:-")
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	SetHideWindow(cmd)
 	cmd.Stdout = pw
 
 	go func() {
@@ -226,7 +225,7 @@ func ConvertImageToImage(inputPath string, outputFormat string) ([]byte, error) 
 	}
 
 	cmd := exec.Command("magick", inputPath, fmt.Sprintf("%s:-", outputFormat))
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	SetHideWindow(cmd)
 
 	// 创建 stdout/stderr 管道
 	stdoutPipe, err := cmd.StdoutPipe()
@@ -298,7 +297,7 @@ func ConvertImageToImageAndWrite(inputPath string, outputPath string) error {
 		return err
 	}
 	cmd := exec.Command("magick", inputPath, outputPath)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	SetHideWindow(cmd)
 	_, err = cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("conversion failed: %v", err)

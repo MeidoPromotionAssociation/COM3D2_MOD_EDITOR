@@ -13,7 +13,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"syscall"
 )
 
 // 1000 版本：
@@ -300,7 +299,7 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 	}
 
 	cmdIdentify := exec.Command("magick", "identify", "-format", "%wx%h %[channels] %[depth] %m", inputPath)
-	cmdIdentify.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	tools.SetHideWindow(cmdIdentify)
 
 	out, err := cmdIdentify.Output()
 	if err != nil {
@@ -376,7 +375,7 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 				"-define", fmt.Sprintf("dds:compression=%s", dxtType),
 				"dds:-", // 输出到stdout
 			)
-			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+			tools.SetHideWindow(cmd)
 			cmd.Stdout = pw
 
 			err := cmd.Run()
@@ -417,7 +416,7 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 				go func() {
 					// 转换为PNG格式，保留alpha通道
 					cmd := exec.Command("magick", inputPath, "png:-")
-					cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+					tools.SetHideWindow(cmd)
 					cmd.Stdout = pw
 					err := cmd.Run()
 					if err != nil {
@@ -463,7 +462,7 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 					if useAlpha || !isLossyFormat {
 						// 转换为PNG
 						cmd = exec.Command("magick", inputPath, "png:-")
-						cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+						tools.SetHideWindow(cmd)
 						textureFormat = ARGB32
 					} else {
 						// 转换为JPG
@@ -472,7 +471,7 @@ func ConvertImageToTex(inputPath string, texName string, compress bool, forcePNG
 						//	quality = "85" // 对已经有损的图像使用稍低的质量
 						//}
 						cmd = exec.Command("magick", inputPath, "-quality", quality, "jpg:-")
-						cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+						tools.SetHideWindow(cmd)
 						textureFormat = RGB24
 					}
 
@@ -603,7 +602,7 @@ func ConvertTexToImage(tex *Tex, forcePNG bool) (imgData []byte, format string, 
 		if forcePNG {
 			// 输出肯定是 PNG
 			cmd := exec.Command("magick", inputFormat+":-", "png:-")
-			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+			tools.SetHideWindow(cmd)
 			cmd.Stdin = bytes.NewReader(tex.Data)
 
 			// 从 stdout 读取转换后的 PNG 数据
@@ -636,7 +635,7 @@ func ConvertTexToImage(tex *Tex, forcePNG bool) (imgData []byte, format string, 
 
 			// 输出 JPEG
 			cmd := exec.Command("magick", args...)
-			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+			tools.SetHideWindow(cmd)
 			cmd.Stdin = bytes.NewReader(tex.Data)
 
 			outPipe, err := cmd.StdoutPipe()
@@ -770,7 +769,7 @@ func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error
 		}
 		// 否则使用 ImageMagick 进行转换成用户想要的格式
 		cmd := exec.Command("magick", inputFormat+":-", outputPath)
-		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		tools.SetHideWindow(cmd)
 		cmd.Stdin = bytes.NewReader(tex.Data)
 
 		output, err := cmd.CombinedOutput()
@@ -787,7 +786,7 @@ func ConvertTexToImageAndWrite(tex *Tex, outputPath string, forcePNG bool) error
 		}
 
 		cmd := exec.Command("magick", args...)
-		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		tools.SetHideWindow(cmd)
 		cmd.Stdin = bytes.NewReader(tex.Data)
 
 		output, err := cmd.CombinedOutput()
