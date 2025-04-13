@@ -53,11 +53,11 @@ This application requires the following software to run:
   - This app is built using the Wails framework which relies on Microsoft Edge WebView2 to render the UI.
   - If you're using Windows 11, this is usually pre-installed on your system.
   - For other systems without WebView2 installed，the application should prompt you to install it upon launch.
-  - Alternatively, you can install it from the official website: https://developer.microsoft.com/en-us/microsoft-edge/webview2/
+  - Alternatively, you can install it from the official website: [https://developer.microsoft.com/en-us/microsoft-edge/webview2/](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
   - What is Microsoft Edge WebView2? [https://learn.microsoft.com/en-us/microsoft-edge/webview2/](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
 - ImageMagick
   - Required for working with .tex files and image processing features to support various image formats. Optional if you don't need .tex editing.
-  - Install from the official website: [https://imagemagick.org/script/download.php](https://crowdin.com/project/com3d2modeditorv2)
+  - Install from the official website: [https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
   - On the download page, look for `ImageMagick-version-Q16-HDRI-x64-dll.exe` and install it. During installation, check `Add application directory to your system path`.
   - Or install via terminal command: `winget install ImageMagick.Q16-HDRI`
   - After installation, verify by running `magick -version` in your terminal. A version number output indicates success.
@@ -157,11 +157,11 @@ Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
   - 本应用使用 Wails 技术打造，它依赖于 Microsoft Edge WebView2 来渲染页面，因此需要安装 WebView2。
   - 如果你使用 Windows 11，这通常已经安装在你的系统上了。
   - 如果你使用其他系统，且没有安装 WebView2，启动应用程序时它应该会提示您安装。
-  - 或者您也可以从官方网站安装：[https://developer.microsoft.com/zh-cn/microsoft-edge/webview2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
+  - 或者您也可以从官方网站安装：[https://developer.microsoft.com/zh-cn/microsoft-edge/webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2)
   - Microsoft Edge WebView2 是什么？[https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
 - ImageMagick
   - 使用 .tex 格式和图片处理相关功能需要安装 ImageMagick，这是为了支持尽可能多的图片格式。如果您不使用 .tex 编辑，您可以选择不安装。
-  - 请从官方网站安装：[https://imagemagick.org/script/download.php](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+  - 请从官方网站安装：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
   - 在下载页面上找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 下载并安装，安装时需要勾选 `Add application directory to your system path`
   - 或者在您的终端执行 `winget install ImageMagick.Q16-HDRI` 命令安装。
   - 安装完成后在终端执行 `magick -version` 命令查看版本号，如果显示版本号则说明安装成功。
@@ -259,11 +259,11 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
   - 本アプリはWailsフレームワークを使用しており、UIのレンダリングにMicrosoft Edge WebView2を必要とします
   - Windows 11をご利用の場合、通常はプリインストールされています
   - 他のOSを使用している場合、WebView2が未インストールの状態でアプリを起動するとインストールプロンプトが表示されます
-  - 公式サイトから手動でインストールすることも可能です：[https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+  - 公式サイトから手動でインストールすることも可能です：[https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/](https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/)
   - Microsoft Edge WebView2とは？[https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
 - ImageMagick
   - .texファイルの編集および画像処理機能を使用する場合に必要です。.tex編集が不要な場合はインストール不要です
-  - 公式サイトからインストールしてください：[https://imagemagick.org/script/download.php](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
+  - 公式サイトからインストールしてください：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
   - ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時に`Add application directory to your system path（システムパスに追加）`にチェックを入れてください
   - またはターミナルで次のコマンドを実行：`winget install ImageMagick.Q16-HDRI`
   - インストール後、ターミナルで`magick -version`を実行し、バージョン番号が表示されれば成功です
