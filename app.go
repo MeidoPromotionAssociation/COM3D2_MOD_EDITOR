@@ -114,7 +114,14 @@ func (a *App) CheckLatestVersion() (VersionCheckResult, error) {
 		}, err
 	}
 
-	isNewer := a.CompareVersions(CurrentVersion, latestVersion)
+	isNewer, err := a.CompareVersions(CurrentVersion, latestVersion)
+	if err != nil {
+		return VersionCheckResult{
+			CurrentVersion: CurrentVersion,
+			LatestVersion:  latestVersion,
+			IsNewer:        false,
+		}, err
+	}
 
 	return VersionCheckResult{
 		CurrentVersion: CurrentVersion,
@@ -156,10 +163,26 @@ func fetchLatestVersion() (version string, err error) {
 
 // CompareVersions 版本号比较
 // 比较两个版本号的大小，返回 true 表示 localVersion 小于 latestVersion
-func (a *App) CompareVersions(localVersion, latestVersion string) bool {
-	lv, _ := semver.NewVersion(localVersion)
-	lvRemote, _ := semver.NewVersion(latestVersion)
-	return lvRemote.GreaterThan(lv)
+func (a *App) CompareVersions(localVersion, latestVersion string) (bool, error) {
+	// semver not support big letter V prefix, so we need to remove it
+	if strings.HasPrefix(localVersion, "V") {
+		localVersion = "v" + localVersion[1:]
+	}
+	if strings.HasPrefix(latestVersion, "V") {
+		latestVersion = "v" + latestVersion[1:]
+	}
+
+	lv, err := semver.NewVersion(localVersion)
+	if err != nil {
+		return false, fmt.Errorf("invalid local version: %v", err)
+	}
+
+	lvRemote, err := semver.NewVersion(latestVersion)
+	if err != nil {
+		return false, fmt.Errorf("invalid remote version: %v", err)
+	}
+
+	return lvRemote.GreaterThan(lv), nil
 }
 
 // IsSupportedImageType 是否是 ImageMagick 支持的图片格式
