@@ -150,6 +150,80 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	export class Quaternion {
+	    X: number;
+	    Y: number;
+	    Z: number;
+	    W: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Quaternion(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.X = source["X"];
+	        this.Y = source["Y"];
+	        this.Z = source["Z"];
+	        this.W = source["W"];
+	    }
+	}
+	export class Vector3 {
+	    X: number;
+	    Y: number;
+	    Z: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Vector3(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.X = source["X"];
+	        this.Y = source["Y"];
+	        this.Z = source["Z"];
+	    }
+	}
+	export class Bone {
+	    Name: string;
+	    HasScale: boolean;
+	    ParentIndex: number;
+	    Position: Vector3;
+	    Rotation: Quaternion;
+	    Scale?: Vector3;
+	
+	    static createFrom(source: any = {}) {
+	        return new Bone(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Name = source["Name"];
+	        this.HasScale = source["HasScale"];
+	        this.ParentIndex = source["ParentIndex"];
+	        this.Position = this.convertValues(source["Position"], Vector3);
+	        this.Rotation = this.convertValues(source["Rotation"], Quaternion);
+	        this.Scale = this.convertValues(source["Scale"], Vector3);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	
 	export class BoneValue {
 	    BoneName: string;
@@ -163,6 +237,32 @@ export namespace COM3D2 {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.BoneName = source["BoneName"];
 	        this.Value = source["Value"];
+	    }
+	}
+	export class BoneWeight {
+	    BoneIndex0: number;
+	    BoneIndex1: number;
+	    BoneIndex2: number;
+	    BoneIndex3: number;
+	    Weight0: number;
+	    Weight1: number;
+	    Weight2: number;
+	    Weight3: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new BoneWeight(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BoneIndex0 = source["BoneIndex0"];
+	        this.BoneIndex1 = source["BoneIndex1"];
+	        this.BoneIndex2 = source["BoneIndex2"];
+	        this.BoneIndex3 = source["BoneIndex3"];
+	        this.Weight0 = source["Weight0"];
+	        this.Weight1 = source["Weight1"];
+	        this.Weight2 = source["Weight2"];
+	        this.Weight3 = source["Weight3"];
 	    }
 	}
 	export class Col {
@@ -578,6 +678,273 @@ export namespace COM3D2 {
 	        this.TypeName = source["TypeName"];
 	    }
 	}
+	export class ThickDefPerAngle {
+	    AngleDegree: number;
+	    VertexIndex: number;
+	    DefaultDistance: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new ThickDefPerAngle(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.AngleDegree = source["AngleDegree"];
+	        this.VertexIndex = source["VertexIndex"];
+	        this.DefaultDistance = source["DefaultDistance"];
+	    }
+	}
+	export class ThickPoint {
+	    TargetBoneName: string;
+	    RatioSegmentStartToEnd: number;
+	    DistanceParAngle: ThickDefPerAngle[];
+	
+	    static createFrom(source: any = {}) {
+	        return new ThickPoint(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TargetBoneName = source["TargetBoneName"];
+	        this.RatioSegmentStartToEnd = source["RatioSegmentStartToEnd"];
+	        this.DistanceParAngle = this.convertValues(source["DistanceParAngle"], ThickDefPerAngle);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class ThickGroup {
+	    GroupName: string;
+	    StartBoneName: string;
+	    EndBoneName: string;
+	    StepAngleDegree: number;
+	    Points: ThickPoint[];
+	
+	    static createFrom(source: any = {}) {
+	        return new ThickGroup(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.GroupName = source["GroupName"];
+	        this.StartBoneName = source["StartBoneName"];
+	        this.EndBoneName = source["EndBoneName"];
+	        this.StepAngleDegree = source["StepAngleDegree"];
+	        this.Points = this.convertValues(source["Points"], ThickPoint);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class SkinThickness {
+	    Use: boolean;
+	    Groups: Record<string, ThickGroup>;
+	
+	    static createFrom(source: any = {}) {
+	        return new SkinThickness(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Use = source["Use"];
+	        this.Groups = this.convertValues(source["Groups"], ThickGroup, true);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MorphData {
+	    Name: string;
+	    Indices: number[];
+	    Vertex: Vector3[];
+	    Normals: Vector3[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MorphData(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Name = source["Name"];
+	        this.Indices = source["Indices"];
+	        this.Vertex = this.convertValues(source["Vertex"], Vector3);
+	        this.Normals = this.convertValues(source["Normals"], Vector3);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Vector2 {
+	    X: number;
+	    Y: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Vector2(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.X = source["X"];
+	        this.Y = source["Y"];
+	    }
+	}
+	export class Vertex {
+	    Position: Vector3;
+	    Normal: Vector3;
+	    UV: Vector2;
+	
+	    static createFrom(source: any = {}) {
+	        return new Vertex(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Position = this.convertValues(source["Position"], Vector3);
+	        this.Normal = this.convertValues(source["Normal"], Vector3);
+	        this.UV = this.convertValues(source["UV"], Vector2);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Model {
+	    Signature: string;
+	    Version: number;
+	    Name: string;
+	    RootBoneName: string;
+	    Bones: Bone[];
+	    VertCount: number;
+	    SubMeshCount: number;
+	    BoneCount: number;
+	    BoneNames: string[];
+	    BindPoses: number[][];
+	    Vertices: Vertex[];
+	    Tangents?: Quaternion[];
+	    BoneWeights: BoneWeight[];
+	    SubMeshes: number[][];
+	    Materials: Material[];
+	    MorphData?: MorphData[];
+	    SkinThickness?: SkinThickness;
+	
+	    static createFrom(source: any = {}) {
+	        return new Model(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
+	        this.Name = source["Name"];
+	        this.RootBoneName = source["RootBoneName"];
+	        this.Bones = this.convertValues(source["Bones"], Bone);
+	        this.VertCount = source["VertCount"];
+	        this.SubMeshCount = source["SubMeshCount"];
+	        this.BoneCount = source["BoneCount"];
+	        this.BoneNames = source["BoneNames"];
+	        this.BindPoses = source["BindPoses"];
+	        this.Vertices = this.convertValues(source["Vertices"], Vertex);
+	        this.Tangents = this.convertValues(source["Tangents"], Quaternion);
+	        this.BoneWeights = this.convertValues(source["BoneWeights"], BoneWeight);
+	        this.SubMeshes = source["SubMeshes"];
+	        this.Materials = this.convertValues(source["Materials"], Material);
+	        this.MorphData = this.convertValues(source["MorphData"], MorphData);
+	        this.SkinThickness = this.convertValues(source["SkinThickness"], SkinThickness);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
 	export class PMat {
 	    Signature: string;
 	    Version: number;
@@ -725,22 +1092,6 @@ export namespace COM3D2 {
 		}
 	}
 	
-	export class Vector3 {
-	    X: number;
-	    Y: number;
-	    Z: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new Vector3(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.X = source["X"];
-	        this.Y = source["Y"];
-	        this.Z = source["Z"];
-	    }
-	}
 	export class Psk {
 	    Signature: string;
 	    Version: number;
@@ -807,6 +1158,7 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	
 	export class RangeProperty {
 	    TypeName: string;
 	    PropName: string;
@@ -823,6 +1175,7 @@ export namespace COM3D2 {
 	        this.Number = source["Number"];
 	    }
 	}
+	
 	export class Tex {
 	    Signature: string;
 	    Version: number;
@@ -975,6 +1328,9 @@ export namespace COM3D2 {
 	        this.ScaleY = source["ScaleY"];
 	    }
 	}
+	
+	
+	
 	export class VecProperty {
 	    TypeName: string;
 	    PropName: string;
@@ -991,6 +1347,8 @@ export namespace COM3D2 {
 	        this.Vector = source["Vector"];
 	    }
 	}
+	
+	
 
 }
 

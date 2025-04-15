@@ -94,6 +94,7 @@ func readMaterial(r io.Reader) (*Material, error) {
 	// 确保我们有一个 io.ReadSeeker
 	rs, ok := r.(io.ReadSeeker)
 	if !ok {
+		fmt.Printf("Warning: r is not io.ReadSeeker, reading to memory...\n")
 		// 如果不是可寻址流，就把它全部读到内存
 		allBytes, err := io.ReadAll(r)
 		if err != nil {

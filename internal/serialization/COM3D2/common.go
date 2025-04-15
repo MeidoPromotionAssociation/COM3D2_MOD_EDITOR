@@ -27,6 +27,12 @@ const (
 	MateEndString = "end"
 )
 
+// Vector2 表示二维向量或UV坐标
+type Vector2 struct {
+	X float32 `json:"X"`
+	Y float32 `json:"Y"`
+}
+
 // Vector3 表示三维向量
 type Vector3 struct {
 	X float32 `json:"X"`
@@ -34,7 +40,7 @@ type Vector3 struct {
 	Z float32 `json:"Z"`
 }
 
-// Quaternion 表示四维向量
+// Quaternion 表示四元数
 type Quaternion struct {
 	X float32 `json:"X"`
 	Y float32 `json:"Y"`

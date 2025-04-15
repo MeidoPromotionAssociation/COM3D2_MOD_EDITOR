@@ -52,3 +52,9 @@ type AnmModel struct{}
 
 // Dummy 用于让 wails 识别 anm 对应结构体，需要在签名中使用所有结构体
 func (s *AnmModel) Dummy(COM3D2.Anm, COM3D2.PropertyCurve, COM3D2.BoneCurveData, COM3D2.Keyframe) {}
+
+type ModelModel struct{}
+
+// Dummy 用于让 wails 识别 model 对应结构体，需要在签名中使用所有结构体
+func (s *ModelModel) Dummy(COM3D2.Model, COM3D2.Bone, COM3D2.Vertex, COM3D2.Vertex, COM3D2.BoneWeight, COM3D2.Matrix4x4, COM3D2.MorphData, COM3D2.SkinThickness, COM3D2.ThickGroup, COM3D2.ThickPoint, COM3D2.ThickDefPerAngle, COM3D2.Vector2, COM3D2.Vector3, COM3D2.Quaternion, COM3D2.Material) {
+}

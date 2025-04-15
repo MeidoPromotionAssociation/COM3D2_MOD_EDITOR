@@ -23,6 +23,7 @@ func main() {
 	PskService := &COM3D2.PskService{}
 	TexService := &COM3D2.TexService{}
 	AnmService := &COM3D2.AnmService{}
+	ModelService := &COM3D2.ModelService{}
 
 	MenuModel := &COM3D2.MenuModel{}
 	MateModel := &COM3D2.MateModel{}
@@ -32,6 +33,7 @@ func main() {
 	PskModel := &COM3D2.PskModel{}
 	TexModel := &COM3D2.TexModel{}
 	AnmModel := &COM3D2.AnmModel{}
+	ModelModel := &COM3D2.ModelModel{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -59,6 +61,7 @@ func main() {
 			PskService,
 			TexService,
 			AnmService,
+			ModelService,
 			MenuModel,
 			MateModel,
 			PMatModel,
@@ -67,6 +70,7 @@ func main() {
 			PskModel,
 			TexModel,
 			AnmModel,
+			ModelModel,
 		},
 	})
 

@@ -18,7 +18,7 @@ func ReadByte(r io.Reader) (byte, error) {
 	return b[0], nil
 }
 
-// ReadInt32 读取 4 字节（little-endian）
+// ReadInt32 读取 4 字节 int32（little-endian）
 func ReadInt32(r io.Reader) (int32, error) {
 	var buf [4]byte
 	_, err := io.ReadFull(r, buf[:])
@@ -26,6 +26,16 @@ func ReadInt32(r io.Reader) (int32, error) {
 		return 0, err
 	}
 	return int32(binary.LittleEndian.Uint32(buf[:])), nil
+}
+
+// ReadUInt16 读取 2 字节无符号整数 (little-endian)
+func ReadUInt16(r io.Reader) (uint16, error) {
+	var buf [2]byte
+	_, err := io.ReadFull(r, buf[:])
+	if err != nil {
+		return 0, err
+	}
+	return binary.LittleEndian.Uint16(buf[:]), nil
 }
 
 // ReadFloat32 从 r 中读取 4 个字节，以 little-endian 解码成 float32
@@ -67,6 +77,58 @@ func ReadBool(r io.Reader) (bool, error) {
 	return b != 0, nil
 }
 
+// -------------------- Float2 / Float3 / Float4 / Float4x4 --------------------
+
+func ReadFloat2(r io.Reader) ([2]float32, error) {
+	var arr [2]float32
+	for i := 0; i < 2; i++ {
+		f, err := ReadFloat32(r)
+		if err != nil {
+			return arr, err
+		}
+		arr[i] = f
+	}
+	return arr, nil
+}
+
+func ReadFloat3(r io.Reader) ([3]float32, error) {
+	var arr [3]float32
+	for i := 0; i < 3; i++ {
+		f, err := ReadFloat32(r)
+		if err != nil {
+			return arr, err
+		}
+		arr[i] = f
+	}
+	return arr, nil
+}
+
+func ReadFloat4(r io.Reader) ([4]float32, error) {
+	var arr [4]float32
+	for i := 0; i < 4; i++ {
+		f, err := ReadFloat32(r)
+		if err != nil {
+			return arr, err
+		}
+		arr[i] = f
+	}
+	return arr, nil
+}
+
+func ReadFloat4x4(r io.Reader) ([16]float32, error) {
+	var arr [16]float32
+	for i := 0; i < 16; i++ {
+		f, err := ReadFloat32(r)
+		if err != nil {
+			return arr, err
+		}
+		arr[i] = f
+	}
+	return arr, nil
+}
+
+// -------------------- Peek --------------------
+
 // PeekByte 偷看下一个字节，不移动读取指针。
 // 这里需要一个带缓冲、可 Peek 的包装，如 bufio.Reader。
 func PeekByte(r io.Reader) (byte, error) {
@@ -101,6 +163,8 @@ func PeekString(rs io.ReadSeeker) (string, error) {
 		return "", err
 	}
 
+	fmt.Printf("PeekString str: %s\n", str)
+
 	// 读完后回退到之前的位置
 	_, err = rs.Seek(startPos, io.SeekStart)
 	if err != nil {
@@ -109,6 +173,8 @@ func PeekString(rs io.ReadSeeker) (string, error) {
 
 	return str, nil
 }
+
+// -------------------- Decode --------------------
 
 // decodeLEB128FromBytes 尝试从 buf 开头解出一个 LEB128 整数，
 // 返回解析出来的数值 value，使用了多少字节 used，以及错误 err。
@@ -135,42 +201,4 @@ func decodeLEB128FromBytes(buf []byte) (value int, used int, err error) {
 		}
 	}
 	return value, used, nil
-}
-
-// -------------------- Float2 / Float3 / Float4 / Float4x4 --------------------
-
-func readFloat2(r io.Reader) ([2]float32, error) {
-	var arr [2]float32
-	for i := 0; i < 2; i++ {
-		f, err := ReadFloat32(r)
-		if err != nil {
-			return arr, err
-		}
-		arr[i] = f
-	}
-	return arr, nil
-}
-
-func readFloat3(r io.Reader) ([3]float32, error) {
-	var arr [3]float32
-	for i := 0; i < 3; i++ {
-		f, err := ReadFloat32(r)
-		if err != nil {
-			return arr, err
-		}
-		arr[i] = f
-	}
-	return arr, nil
-}
-
-func readFloat4(r io.Reader) ([4]float32, error) {
-	var arr [4]float32
-	for i := 0; i < 4; i++ {
-		f, err := ReadFloat32(r)
-		if err != nil {
-			return arr, err
-		}
-		arr[i] = f
-	}
-	return arr, nil
 }
