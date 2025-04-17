@@ -88,7 +88,15 @@ Code location: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b
 
 <br>
 
-Maybe also check out my MOD Making Tutorial (in Chinese): [https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+## Other Repositories
+
+You can also check out my other repositories
+
+- [COM3D2 Simple MOD Guide](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 MOD Editor](https://github.com/90135/COM3D2_MOD_EDITOR)
+- [COM3D2 Plugin Chinese Translation](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [90135's COM3D2 Chinese Guide](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [901's COM3D2 Script Collection](https://github.com/90135/COM3D2_Scripts_901)
 
 <br>
 
@@ -191,7 +199,13 @@ Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
 
 <br>
 
-也许也可以看看我的 MOD 制作教程（中文）：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+### 也可以看看我的其他仓库
+
+- [COM3D2 简明 MOD 教程](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 MOD 编辑器](https://github.com/90135/COM3D2_MOD_EDITOR)
+- [COM3D2 插件中文翻译](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [90135 的 COM3D2 中文指北](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [901 的 COM3D2 脚本收藏集](https://github.com/90135/COM3D2_Scripts_901)
 
 <br>
 
@@ -293,7 +307,13 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 <br>
 
-また、私の MOD 制作チュートリアル（中国語）もぜひご覧ください：[https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+### 他の倉庫もぜひご覧ください
+
+- [COM3D2 シンプルMODチュートリアル](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 MODエディター](https://github.com/90135/COM3D2_MOD_EDITOR)
+- [COM3D2 プラグイン 中国語翻訳](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [90135 の COM3D2 中国語ガイド](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [901のCOM3D2スクリプト集](https://github.com/90135/COM3D2_Scripts_901)
 
 <br>
 
