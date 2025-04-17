@@ -366,6 +366,64 @@ KISS 規約
 <br>
 <br>
 
+# Disclaimer
+```
+1. Tool Nature Statement
+  This project is an open source tool based on the BSD-3-Clause license. The developer (hereinafter referred to as the "author") is only a personal technical researcher and does not obtain any commercial benefits through this tool, nor does it provide any form of online services and user account system.
+
+2. Usage restrictions
+  Users must promise:
+    Not to produce/disseminate content that violates local laws and regulations
+    Not to use the tool for any activities that endanger national security or undermine social stability
+    Not to use this tool to carry out network attacks or crack genuine software
+
+3. Liability exemption
+  Given the characteristics of open source projects:
+    The author cannot monitor the use of all derivative codes
+    Not responsible for modified versions compiled/distributed by users
+    Not responsible for any legal liability caused by illegal use by users
+    No technical guarantee for content review or filtering is provided
+
+4. Special Terms for Mainland China
+  Users acknowledge and agree that:
+    This tool does not include any data upload/download functions, and all content generation occurs on the user's local device
+    If you find that someone is using this tool to engage in illegal activities, you should immediately report it to the public security authorities
+    The developer reserves the right to stop distributing specific versions suspected of being abused
+
+5. Age and guardianship responsibility
+  Users must be persons with full civil capacity (18 years of age or older). Minors are prohibited from downloading, installing or using this tool. Guardians must assume full management responsibility for device access.
+
+6. Agreement Update
+  The author has the right to update this statement through the GitHub repository. Continued use is deemed to accept the latest version of the terms.
+
+7. Disclaimer of Warranty
+  This tool is provided "AS IS" and the developer expressly disclaims any express or implied warranties, including but not limited to:
+    Warranty of merchantability
+    Warranty of fitness for a particular purpose
+    Warranty of code freedom from defects or potential risks
+    Warranty of continuous availability and technical support
+
+8. Waiver of liability for damages
+  Regardless of the use/inability to use this tool resulting in:
+    Direct/indirect property loss
+    Data loss or business interruption
+    Third-party claims or administrative penalties
+  The developer shall not bear any civil, administrative or criminal liability
+
+9. Waiver of liability for third-party reliance
+  If the third-party libraries/components included or relied upon by this tool have:
+    Intellectual property disputes
+    Security vulnerabilities
+    Content that violates local laws
+  The developer shall not bear joint and several liability, and users should review the relevant licenses on their own
+
+10. Version iteration risk
+  Users understand and accept:
+    Different versions of code may have compatibility issues
+    Developers are not obliged to maintain the security of old versions
+    Modifying the code on your own may lead to unforeseen legal risks
+```
+
 # Credit
 
 - [CM3D2.Serialization](https://github.com/luvoid/CM3D2.Serialization) (I got some file structure information from here)
