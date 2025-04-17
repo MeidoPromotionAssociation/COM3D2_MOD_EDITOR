@@ -324,7 +324,6 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - press `Ctrl + Shift + F12` Open Browser console
 
 <br>
-<br>
 
 # KISS Rule
 
@@ -363,7 +362,7 @@ KISS 規約
 ※「カスタムメイド3D2」「カスタムオーダーメイド3D2」上では利用しないで下さい。
 ※これらの事項は https://kisskiss.tv/kiss/diary.php?no=558 を優先します。
 ```
-<br>
+
 <br>
 
 # Disclaimer
@@ -423,6 +422,8 @@ KISS 規約
     Developers are not obliged to maintain the security of old versions
     Modifying the code on your own may lead to unforeseen legal risks
 ```
+
+<br>
 
 # Credit
 
