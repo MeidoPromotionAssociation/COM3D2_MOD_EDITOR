@@ -130,7 +130,7 @@ func readMaterial(r io.Reader) (*Material, error) {
 	}
 	m.ShaderFilename = shaderFile
 
-	// 4. properties (循环读取，直到遇到 MateEndString 字段)
+	// 4. properties (循环读取，直到遇到 EndTag 字段)
 	props := make([]Property, 0)
 	for {
 		peek, err := utilities.PeekString(rs)
@@ -138,8 +138,8 @@ func readMaterial(r io.Reader) (*Material, error) {
 			return nil, fmt.Errorf("peek property type failed: %w", err)
 		}
 
-		if peek == MateEndString {
-			// 消费掉 MateEndString
+		if peek == EndTag {
+			// 消费掉 EndTag
 			_, _ = utilities.ReadString(rs)
 			break
 		}
@@ -180,9 +180,9 @@ func (m *Material) Dump(w io.Writer) error {
 		}
 	}
 
-	// 最后写出一个 MateEndString 标识，表示 property 列表结束
-	if err := utilities.WriteString(w, MateEndString); err != nil {
-		return fmt.Errorf("write properties %s failed: %w", MateEndString, err)
+	// 最后写出一个 EndTag 标识，表示 property 列表结束
+	if err := utilities.WriteString(w, EndTag); err != nil {
+		return fmt.Errorf("write properties %s failed: %w", EndTag, err)
 	}
 
 	return nil

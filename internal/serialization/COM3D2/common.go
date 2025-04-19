@@ -7,26 +7,28 @@ import (
 )
 
 const (
-	MenuSignature  = "CM3D2_MENU"
-	MenuVersion    = 1000
-	MateSignature  = "CM3D2_MATERIAL"
-	MateVersion    = 2001
-	PMatSignature  = "CM3D2_PMATERIAL"
-	PMatVersion    = 1000
-	ColSignature   = "CM3D21_COL"
-	ColVersion     = 24301
-	PhySignature   = "CM3D21_PHY"
-	PhyVersion     = 24301
-	PskSignature   = "CM3D21_PSK"
-	PskVersion     = 24301
-	TexSignature   = "CM3D2_TEX"
-	TexVersion     = 1010
-	AnmSignature   = "CM3D2_ANIM"
-	AnmVersion     = 1001
-	ModelSignature = "CM3D2_MESH"
-	ModelVersion   = 2001
-	endByte        = 0x00
-	MateEndString  = "end"
+	MenuSignature          = "CM3D2_MENU"
+	MenuVersion            = 1000
+	MateSignature          = "CM3D2_MATERIAL"
+	MateVersion            = 2001
+	PMatSignature          = "CM3D2_PMATERIAL"
+	PMatVersion            = 1000
+	ColSignature           = "CM3D21_COL"
+	ColVersion             = 24301
+	PhySignature           = "CM3D21_PHY"
+	PhyVersion             = 24301
+	PskSignature           = "CM3D21_PSK"
+	PskVersion             = 24301
+	TexSignature           = "CM3D2_TEX"
+	TexVersion             = 1010
+	AnmSignature           = "CM3D2_ANIM"
+	AnmVersion             = 1001
+	ModelSignature         = "CM3D2_MESH"
+	ModelVersion           = 2001
+	SkinThicknessSignature = "SkinThickness"
+	SkinThicknessVersion   = 100
+	endByte                = 0x00
+	EndTag                 = "end"
 )
 
 // Vector2 表示二维向量或UV坐标
