@@ -6,6 +6,11 @@ import (
 	"io"
 )
 
+// CM3D21_PSK
+// 版本 217 以上
+// 新增 PanierRadiusDistribGroup
+// 推测对应 COM3D2 2.17 版本
+
 // Psk 整体描述一个 .psk 文件的结构
 type Psk struct {
 	Signature                    string              `json:"Signature"`                    // CM3D21_PSK

@@ -6,6 +6,9 @@ import (
 	"io"
 )
 
+// CM3D2_ANIM
+// 无版本差异
+
 // PropertyIndex 表示属性索引，用于标识属性的类型。
 // 最高位为 6，含义如下：
 const (

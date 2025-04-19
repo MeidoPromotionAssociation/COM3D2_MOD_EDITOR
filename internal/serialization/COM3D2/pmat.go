@@ -6,6 +6,9 @@ import (
 	"io"
 )
 
+// CM3D2_PMATERIAL
+// 无版本差异
+
 // PMat 对应 .PMat 文件结构
 type PMat struct {
 	Signature    string  `json:"Signature"` // "CM3D2_PMATERIAL"

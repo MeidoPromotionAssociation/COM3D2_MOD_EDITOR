@@ -8,10 +8,14 @@ import (
 	"io"
 )
 
+// CM3D2_MATERIAL
+// 有版本差异，但不体现在版本号上，也无结构差异
+// COM3D2_5 新增了一些属性，见 propertyRegistry
+
 // Mate 对应 .mate 文件的整体结构
 type Mate struct {
-	Signature string    `json:"Signature"`
-	Version   int32     `json:"Version"`
+	Signature string    `json:"Signature"` // CM3D2_MATERIAL
+	Version   int32     `json:"Version"`   // 1000 or 2000
 	Name      string    `json:"Name"`
 	Material  *Material `json:"Material"`
 }
@@ -202,10 +206,10 @@ var propertyRegistry = map[string]PropertyCreator{
 	"col":        func() Property { return &ColProperty{} },
 	"vec":        func() Property { return &VecProperty{} },
 	"f":          func() Property { return &FProperty{} },
-	"range":      func() Property { return &RangeProperty{} },
-	"tex_offset": func() Property { return &TexOffsetProperty{} },
-	"tex_scale":  func() Property { return &TexScaleProperty{} },
-	"keyword":    func() Property { return &KeywordProperty{} },
+	"range":      func() Property { return &RangeProperty{} },     // COM3D2_5 only
+	"tex_offset": func() Property { return &TexOffsetProperty{} }, // COM3D2_5 only
+	"tex_scale":  func() Property { return &TexScaleProperty{} },  // COM3D2_5 only
+	"keyword":    func() Property { return &KeywordProperty{} },   // COM3D2_5 only
 }
 
 // readProperty 根据下一段内容来解析 Property 的具体子类型

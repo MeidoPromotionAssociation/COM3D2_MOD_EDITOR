@@ -6,9 +6,12 @@ import (
 	"io"
 )
 
+// CM3D2_MENU
+// 无版本差异
+
 // Menu 对应 .menu 文件的结构
 type Menu struct {
-	Signature   string    `json:"Signature"`
+	Signature   string    `json:"Signature"` // "CM3D2_MENU"
 	Version     int32     `json:"Version"`
 	SrcFileName string    `json:"SrcFileName"`
 	ItemName    string    `json:"ItemName"`

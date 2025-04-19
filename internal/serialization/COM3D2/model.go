@@ -6,6 +6,37 @@ import (
 	"io"
 )
 
+// CM3D2_MESH
+//
+// CM3D2 支持 1000 - 2000 版本
+// COM3D2 支持 1000 到 2001 版本，2100 版本的额外数据追加在文件末尾，不影响解析，所以应该也可以支持
+// COM3D2_5 支持 1000 到 2200 以下版本
+//
+// 1000 - 2000 版本
+// 基础版本
+// 支持基本的骨骼、网格、UV、法线、切线数据
+// 支持材质和基本的形态数据
+//
+// 2001 版本
+// 新增 localScale 支持
+//
+// 2100 版本
+// 新增 SkinThickness 支持
+//
+// 版本 2101
+// 新增更多 UV 通道支持 (UV2, UV3, UV4)
+// 新增多个未知标志位读取
+//
+// 版本 2104 但低于 2200 版本
+// 新增 ShadowCastingMode 支持
+//
+// 版本 2100 以上但低于 2200 版本
+// 验证文件名，必须以 crc_ 或 crx_ 或 gp03_ 开头.
+// 对于这些特殊前缀的文件，跳过了 "Bip01" 骨骼的无权重移除
+//
+// 版本 2200
+// 未知
+
 // Model 对应 .model 文件
 // aka 皮肤网格文件结构 SkinMesh
 type Model struct {
@@ -56,9 +87,6 @@ type BoneWeight struct {
 	Weight2    float32 `json:"Weight2"`
 	Weight3    float32 `json:"Weight3"`
 }
-
-// Matrix4x4 表示4x4矩阵
-type Matrix4x4 [16]float32
 
 // MorphData 表示形态数据
 type MorphData struct {
