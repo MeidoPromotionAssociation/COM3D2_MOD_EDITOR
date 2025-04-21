@@ -1,6 +1,6 @@
 package COM3D2
 
-import "COM3D2_MOD_EDITOR_V2/internal/serialization/COM3D2"
+import "github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 
 // ColModel 用于让 wails 识别 col 对应结构体
 type ColModel struct{}

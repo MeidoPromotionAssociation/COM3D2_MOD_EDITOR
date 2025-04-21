@@ -1,9 +1,9 @@
 package COM3D2
 
 import (
-	"COM3D2_MOD_EDITOR_V2/internal/serialization/COM3D2"
 	"bufio"
 	"fmt"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 	"os"
 )
 

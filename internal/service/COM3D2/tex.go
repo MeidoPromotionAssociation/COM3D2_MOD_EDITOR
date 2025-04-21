@@ -1,10 +1,10 @@
 package COM3D2
 
 import (
-	"COM3D2_MOD_EDITOR_V2/internal/serialization/COM3D2"
-	"COM3D2_MOD_EDITOR_V2/internal/tools"
 	"bufio"
 	"fmt"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
 	"github.com/emmansun/base64" // use faster base64 implementation
 	"os"
 	"path/filepath"

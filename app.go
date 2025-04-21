@@ -1,11 +1,11 @@
 package main
 
 import (
-	"COM3D2_MOD_EDITOR_V2/internal/tools"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/Masterminds/semver"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
 	"net/http"
