@@ -8,6 +8,7 @@ import (
 	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"strings"
@@ -193,4 +194,36 @@ func (a *App) IsSupportedImageType(filePath string) bool {
 		return false
 	}
 	return true
+}
+
+// GetFileSize 获取文件大小
+func (a *App) GetFileSize(path string) (int64, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return 0, err
+	}
+	defer f.Close()
+
+	fi, err := f.Stat()
+	if err != nil {
+		return 0, err
+	}
+
+	return fi.Size(), nil
+}
+
+// GetFileInfo 获取文件信息
+func (a *App) GetFileInfo(path string) (fs.FileInfo, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	fi, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	return fi, nil
 }

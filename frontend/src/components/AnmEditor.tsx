@@ -2,11 +2,11 @@ import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react
 import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
-import {message} from "antd";
+import {Button, message, Modal} from "antd";
 import {COM3D2} from "../../wailsjs/go/models";
-import {ReadAnmFile, WriteAnmFile} from "../../wailsjs/go/COM3D2/AnmService";
+import {ConvertAnmToJson, ReadAnmFile, WriteAnmFile} from "../../wailsjs/go/COM3D2/AnmService";
 import AnmMonacoEditor from "./anm/AnmMonacoEditor";
-import {SelectPathToSave} from "../../wailsjs/go/main/App";
+import {GetFileSize, SelectPathToSave} from "../../wailsjs/go/main/App";
 import Anm = COM3D2.Anm;
 import BoneCurveData = COM3D2.BoneCurveData;
 
@@ -22,10 +22,17 @@ export interface AnmEditorRef {
 
 const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const {filePath} = props;
+
+    const [filePath, setFilePath] = useState<string | null>(props.filePath || null);
 
     const [anmData, setAnmData] = useState<Anm | null>(null);
 
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
+
+    useEffect(() => {
+        setFilePath(props.filePath || null);
+    }, [props]);
 
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
     useEffect(() => {
@@ -108,10 +115,14 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
             message.error(t('Infos.pls_open_file_first'));
             return;
         }
+        const size = await GetFileSize(filePath);
+        if (size > 1024 * 1024 * 20) {
+            setPendingFileContent({size});
+            setIsConfirmModalOpen(true);
+            return;
+        }
         try {
-            const data = await ReadAnmFile(filePath);
-            setAnmData(data);
-            console.log(data);
+            handleConfirmRead(false);
         } catch (error: any) {
             console.error(error);
             message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.anm'}) + error);
@@ -165,9 +176,60 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
         handleSaveAsFile: handleSaveAsAnmFile
     }));
 
+    // 确认读取文件
+    const handleConfirmRead = async (DirectlyConvert: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (!filePath) {
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+            return;
+        }
+        if (DirectlyConvert) {
+            const hide = message.loading(t('Infos.converting_please_wait'), 0);
+            try {
+                await ConvertAnmToJson(filePath, filePath);
+                message.success(t('Infos.success_convert_to_json') + filePath?.replace(/\.anm$/, '.json'), 5);
+                setFilePath(null)
+            } finally {
+                hide();
+            }
+            return;
+        }
+        const hide = message.loading(t('Infos.loading_please_wait'));
+        try {
+            const data = await ReadAnmFile(filePath);
+            setAnmData(data);
+        } catch (error: any) {
+            console.error(error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.anm'}) + error);
+        } finally {
+            hide();
+        }
+    };
 
     return (
         <div style={{padding: 10}}>
+            <Modal
+                title={t('Infos.large_file_waring')}
+                open={isConfirmModalOpen}
+                onCancel={() => setIsConfirmModalOpen(false)}
+                footer={[
+                    <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
+                        {t('Common.convert_to_json_directly')}
+                    </Button>,
+                    <Button key="cancel" onClick={() => {
+                        setIsConfirmModalOpen(false);
+                        setFilePath(null);
+                    }}>
+                        {t('Common.cancel')}
+                    </Button>,
+                    <Button key="confirm" onClick={() => handleConfirmRead(false)}>
+                        {t('Common.continue')}
+                    </Button>
+                ]}
+            >
+                <p>{t('Infos.file_too_large_tip', {size: (pendingFileContent?.size / 1024 / 1024).toFixed(2)})}</p>
+                <p>{t('Infos.file_too_large_convert_to_json_directly')}</p>
+            </Modal>
             <AnmMonacoEditor
                 anmData={anmData}
                 setAnmData={(newVal) => setAnmData(newVal)}

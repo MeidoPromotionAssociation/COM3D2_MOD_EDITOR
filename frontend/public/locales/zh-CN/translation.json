@@ -421,7 +421,10 @@
       "visual_editor_tip": "双击画布空白处添加新关键帧 | 拖动控制点调整切线 | 拖动关键帧点调整位置",
       "keyframe": "关键帧（曲线）",
       "keyframe_tip": "关键帧（keyframe）；可以让特性变为曲线，Unity 标准关键帧格式，注意精度只有 Float32"
-    }
+    },
+    "convert_to_json_directly": "直接转换为 JSON",
+    "cancel": "取消",
+    "continue": "继续"
   },
   "Infos": {
     "choose_file": "选择文件",
@@ -447,7 +450,13 @@
     "success_export_file_colon": "文件导出成功：",
     "auto_count_success": "自动计算成功",
     "check_update_success_new_version_available": "检查更新成功，有新版本可用，请前往主页更新",
-    "check_update_success_no_new_version": "检查更新成功，没有新版本可用"
+    "check_update_success_no_new_version": "检查更新成功，没有新版本可用",
+    "large_file_waring": "文件过大",
+    "file_too_large_tip": "尝试打开的文件约为 {{size}} MiB，由于反序列化为 JSON 后文件密度较低，转换后可能会长达数亿行，且传输至前端也需要数分钟。这可能会占用大量内存或直接导致编辑器崩溃，是否继续？",
+    "file_too_large_convert_to_json_directly": "您也可以选择直接转换为 JSON 并使用其他编辑器编辑，这将会把文件转换为同名.json 文件并输出至原目录",
+    "success_convert_to_json": "转换为 JSON 成功，输出路径：",
+    "converting_please_wait": "转换中，请稍候...",
+    "loading_please_wait": "加载中，请稍候..."
   },
   "Errors": {
     "fail_to_check_update": "检查更新失败",

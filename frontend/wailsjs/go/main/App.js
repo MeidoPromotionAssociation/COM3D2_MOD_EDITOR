@@ -14,6 +14,14 @@ export function GetAppVersion() {
   return window['go']['main']['App']['GetAppVersion']();
 }
 
+export function GetFileInfo(arg1) {
+  return window['go']['main']['App']['GetFileInfo'](arg1);
+}
+
+export function GetFileSize(arg1) {
+  return window['go']['main']['App']['GetFileSize'](arg1);
+}
+
 export function IsSupportedImageType(arg1) {
   return window['go']['main']['App']['IsSupportedImageType'](arg1);
 }
