@@ -1,5 +1,7 @@
 [English](#english) | [简体中文](#%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87) | [日本語](#%E6%97%A5%E6%9C%AC%E8%AA%9E)
 
+[Disclaimer/How to Dev/Credit/KISS Rule](#how-to-dev)
+
 [![Github All Releases](https://img.shields.io/github/downloads/90135/COM3D2_MOD_EDITOR/total.svg)]()
 
 # English
