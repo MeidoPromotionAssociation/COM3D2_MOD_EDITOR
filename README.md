@@ -241,7 +241,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 バグやリクエストがある場合は、Issues または Discussions をご利用ください
 
-または、Discord [カスタムメイドサーバー](https://discord.gg/custommaid) で私を見つけることができます。
+または、Discord [Custom Maid Server](https://discord.gg/custommaid) で私を見つけることができます。
 
 <br>
 
