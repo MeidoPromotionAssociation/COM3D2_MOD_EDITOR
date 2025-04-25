@@ -22,7 +22,7 @@ If you like it, please light up the Star~
 
 Any Bug or request, plsease use Issues or Discussions
 
-or join Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
+Or you can find me in Discord [Custom Maid Server](https://discord.gg/custommaid)
 
 <br>
 
@@ -130,11 +130,11 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 任何 Bug 或请求，请使用 Issues 或 Discussions
 
-或
-
 QQ 群 967954608 加群暗号 MOD
 
-Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
+你也可以在 Discord [Custom Maid Server](https://discord.gg/custommaid) 找到我
+
+或者我的中文 Discord 频道 [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
 
 <br>
 
@@ -241,7 +241,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 バグやリクエストがある場合は、Issues または Discussions をご利用ください
 
-または Discord [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp) に参加してください
+または、Discord [カスタムメイドサーバー](https://discord.gg/custommaid) で私を見つけることができます。
 
 <br>
 
