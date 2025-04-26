@@ -111,8 +111,9 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                                             children: [
                                                 {
                                                     title: t('PhyEditor.BoneName'),
-                                                    render: (_, field) => (
+                                                    render: (_, {key, ...field}) => (
                                                         <Form.Item
+                                                            key={key}
                                                             {...field}
                                                             name={[field.name, 'boneName']}
                                                             style={{margin: 0}}
@@ -123,8 +124,9 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                                                 },
                                                 {
                                                     title: t('PhyEditor.Value'),
-                                                    render: (_, field) => (
+                                                    render: (_, {key, ...field}) => (
                                                         <Form.Item
+                                                            key={key}
                                                             {...field}
                                                             name={[field.name, 'value']}
                                                             style={{margin: 0}}

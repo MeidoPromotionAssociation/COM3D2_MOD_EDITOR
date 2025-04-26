@@ -69,7 +69,8 @@ const App: React.FC = () => {
         });
     }
 
-    monacoInit().then(() => {})
+    monacoInit().then(() => {
+    })
 
 
     return (

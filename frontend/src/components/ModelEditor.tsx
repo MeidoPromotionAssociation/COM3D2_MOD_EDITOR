@@ -22,7 +22,7 @@ export interface ModelEditorRef {
 const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) => {
     const {t} = useTranslation();
 
-    const [filePath , setFilePath] = useState<string | null>(props.filePath || null);
+    const [filePath, setFilePath] = useState<string | null>(props.filePath || null);
 
     // Model 数据对象
     const [modelData, setModelData] = useState<Model | null>(null);

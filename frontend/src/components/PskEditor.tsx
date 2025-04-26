@@ -87,7 +87,6 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
         try {
             const data = await ReadPskFile(filePath);
             setPskData(data);
-            console.log(data);
         } catch (error: any) {
             console.error(error);
             message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.psk'}) + error);
