@@ -106,6 +106,7 @@ const NavBar: React.FC<EditorNavBarProps> = ({
                         {key: "psk-editor", label: t('EditorNavBar.PskEditor')},
                         {key: "tex-editor", label: t('EditorNavBar.TexEditor')},
                         {key: "anm-editor", label: t('EditorNavBar.AnmEditor')},
+                        {key: "model-editor", label: t('EditorNavBar.ModelEditor')},
                     ]}
                 />
             </div>

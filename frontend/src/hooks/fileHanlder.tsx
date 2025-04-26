@@ -12,9 +12,12 @@ import {
     TexEditorDirectConvertKey,
     TexEditorForcePngKey
 } from "../utils/LocalStorageKeys";
+import {FileTypeDetermine} from "../../wailsjs/go/COM3D2/CommonService";
 
 // 支持的所有文件类型，用分号分隔，不包含图片类型
-export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.psk;*.tex;*.anm"
+export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.psk;*.tex;*.anm;*.model"
+
+export const AllSupportedFileTypesSet = new Set(['menu', 'mate', 'pmat', 'col', 'phy', 'psk', 'tex', 'anm', 'model']);
 
 const useFileHandlers = () => {
     const {t} = useTranslation();
@@ -63,7 +66,8 @@ const useFileHandlers = () => {
             try {
                 ref.current.handleSaveFile();
             } catch (err) {
-                message.error(t('Errors.save_file_failed_colon') + err).then(() => {});
+                message.error(t('Errors.save_file_failed_colon') + err).then(() => {
+                });
             }
             return;
         }
@@ -76,7 +80,8 @@ const useFileHandlers = () => {
             try {
                 ref.current.handleSaveAsFile();
             } catch (err) {
-                message.error(t('Errors.save_as_file_failed_colon') + err).then(() => {});
+                message.error(t('Errors.save_as_file_failed_colon') + err).then(() => {
+                });
             }
             return;
         }
@@ -107,6 +112,9 @@ const useFileHandlers = () => {
             case "anm":
                 navigate("/anm-editor", {state: {filePath}});
                 break;
+            case "model":
+                navigate("/model-editor", {state: {filePath}});
+                break;
             case "tex":
                 // 直接转换
                 if (directConvert) {
@@ -118,6 +126,20 @@ const useFileHandlers = () => {
                     break;
                 }
             default:
+                // 尝试读取文件来推断文件类型
+                try {
+                    const filetype = await FileTypeDetermine(filePath)
+                    if (filetype.Name && AllSupportedFileTypesSet.has(filetype.Name)) {
+                        navigate(`/${filetype.Name}-editor`, {state: {filePath}});
+                        return;
+                    }
+                } catch {
+                    // 忽略错误
+                    // 继续判断是否为图片
+                }
+                //TODO JSON 转换回
+
+                // 判断是否为图片
                 let isSupportedImage = false;
                 try {
                     isSupportedImage = await IsSupportedImageType(filePath)

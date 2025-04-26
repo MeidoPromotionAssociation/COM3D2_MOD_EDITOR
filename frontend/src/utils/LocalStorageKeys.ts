@@ -34,3 +34,6 @@ export const TexEditorDirectConvertKey = "TexEditorDirectConvert"; // 存储是�
 export const TexEditorCompressKey = "TexEditorCompress"; // 存储是否压缩的键
 
 export const TexEditorDefaultFormatKey = "TexEditorDefaultFormat"; // 存储默认格式的键
+
+// ModelEditor
+export const ModelEditorViewModeKey = "ModelEditorViewMode"; // 存储默认显示格式的键

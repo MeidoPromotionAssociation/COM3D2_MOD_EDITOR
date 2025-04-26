@@ -516,6 +516,26 @@ export namespace COM3D2 {
 	        this.Number = source["Number"];
 	    }
 	}
+	export class FileType {
+	    Name: string;
+	    Type: string;
+	    Game: string;
+	    Signature: string;
+	    Version: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new FileType(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Name = source["Name"];
+	        this.Type = source["Type"];
+	        this.Game = source["Game"];
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
+	    }
+	}
 	
 	export class Keyword {
 	    Key: string;
@@ -767,6 +787,8 @@ export namespace COM3D2 {
 		}
 	}
 	export class SkinThickness {
+	    Signature: string;
+	    Version: number;
 	    Use: boolean;
 	    Groups: Record<string, ThickGroup>;
 	
@@ -776,6 +798,8 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Signature = source["Signature"];
+	        this.Version = source["Version"];
 	        this.Use = source["Use"];
 	        this.Groups = this.convertValues(source["Groups"], ThickGroup, true);
 	    }
@@ -803,6 +827,7 @@ export namespace COM3D2 {
 	    Indices: number[];
 	    Vertex: Vector3[];
 	    Normals: Vector3[];
+	    Tangents?: Quaternion[];
 	
 	    static createFrom(source: any = {}) {
 	        return new MorphData(source);
@@ -814,6 +839,7 @@ export namespace COM3D2 {
 	        this.Indices = source["Indices"];
 	        this.Vertex = this.convertValues(source["Vertex"], Vector3);
 	        this.Normals = this.convertValues(source["Normals"], Vector3);
+	        this.Tangents = this.convertValues(source["Tangents"], Quaternion);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -852,6 +878,13 @@ export namespace COM3D2 {
 	    Position: Vector3;
 	    Normal: Vector3;
 	    UV: Vector2;
+	    UV2?: Vector2;
+	    UV3?: Vector2;
+	    UV4?: Vector2;
+	    Unknown1?: Vector2;
+	    Unknown2?: Vector2;
+	    Unknown3?: Vector2;
+	    Unknown4?: Vector2;
 	
 	    static createFrom(source: any = {}) {
 	        return new Vertex(source);
@@ -862,6 +895,13 @@ export namespace COM3D2 {
 	        this.Position = this.convertValues(source["Position"], Vector3);
 	        this.Normal = this.convertValues(source["Normal"], Vector3);
 	        this.UV = this.convertValues(source["UV"], Vector2);
+	        this.UV2 = this.convertValues(source["UV2"], Vector2);
+	        this.UV3 = this.convertValues(source["UV3"], Vector2);
+	        this.UV4 = this.convertValues(source["UV4"], Vector2);
+	        this.Unknown1 = this.convertValues(source["Unknown1"], Vector2);
+	        this.Unknown2 = this.convertValues(source["Unknown2"], Vector2);
+	        this.Unknown3 = this.convertValues(source["Unknown3"], Vector2);
+	        this.Unknown4 = this.convertValues(source["Unknown4"], Vector2);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -887,6 +927,7 @@ export namespace COM3D2 {
 	    Version: number;
 	    Name: string;
 	    RootBoneName: string;
+	    ShadowCastingMode?: string;
 	    Bones: Bone[];
 	    VertCount: number;
 	    SubMeshCount: number;
@@ -911,6 +952,7 @@ export namespace COM3D2 {
 	        this.Version = source["Version"];
 	        this.Name = source["Name"];
 	        this.RootBoneName = source["RootBoneName"];
+	        this.ShadowCastingMode = source["ShadowCastingMode"];
 	        this.Bones = this.convertValues(source["Bones"], Bone);
 	        this.VertCount = source["VertCount"];
 	        this.SubMeshCount = source["SubMeshCount"];

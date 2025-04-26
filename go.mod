@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/MeidoPromotionAssociation/MeidoSerialization v1.0.0
+	github.com/MeidoPromotionAssociation/MeidoSerialization v1.0.1
 	github.com/emmansun/base64 v0.7.0
 	github.com/wailsapp/wails/v2 v2.10.1
 )

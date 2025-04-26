@@ -2,10 +2,12 @@ package COM3D2
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 	"io"
 	"os"
+	"strings"
 )
 
 // ModelService 专门处理 .model 文件的读写
@@ -93,4 +95,55 @@ func (m *ModelService) WriteModelMaterial(inputPath string, outputPath string, m
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
 	return nil
+}
+
+// ConvertModelToJson 接收输入文件路径和输出文件路径，将输入文件转换为.json 文件
+func (m *ModelService) ConvertModelToJson(inputPath string, outputPath string) error {
+	if strings.HasSuffix(outputPath,".model") {
+		outputPath = strings.TrimSuffix(outputPath,".model") + ".json"
+	}
+
+	f, err := os.Open(inputPath)
+	if err != nil {
+		return fmt.Errorf("cannot open .model file: %w", err)
+	}
+	defer f.Close()
+	var rs io.ReadSeeker = f
+	modelData, err := COM3D2.ReadModel(rs)
+	if err != nil {
+		return fmt.Errorf("parsing the .model file failed: %w", err)
+	}
+
+	marshal, err := json.Marshal(modelData)
+	if err != nil {
+		return err
+	}
+
+	f, err = os.Create(outputPath)
+	if err != nil {
+		return fmt.Errorf("unable to create model.json file: %w", err)
+	}
+	defer f.Close()
+	bw := bufio.NewWriter(f)
+	if _, err := bw.Write(marshal); err != nil {
+		return fmt.Errorf("failed to write to model.json file: %w", err)
+	}
+	if err := bw.Flush(); err != nil {
+		return fmt.Errorf("an error occurred while flush bufio: %w", err)
+	}
+	return nil
+}
+
+// ConvertJsonToModel 接收输入文件路径和输出文件路径，将输入文件转换为.model 文件
+func (m *ModelService) ConvertJsonToModel(inputPath string, outputPath string) error {
+	f, err := os.Open(inputPath)
+	if err != nil {
+		return fmt.Errorf("cannot open model.json file: %w", err)
+	}
+	defer f.Close()
+	var modelData *COM3D2.Model
+	if err := json.NewDecoder(f).Decode(&modelData); err != nil {
+		return fmt.Errorf("parsing the model.json file failed: %w", err)
+	}
+	return m.WriteModelFile(outputPath, modelData)
 }
