@@ -6,9 +6,16 @@ import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
 import {DownOutlined, GithubOutlined, SettingOutlined, TranslationOutlined} from "@ant-design/icons";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
-import {AppVersion, ChineseMODGuideUrl, CrowdinUrl, GitHubReleaseUrl, GitHubUrl} from "../utils/consts";
+import {
+    AllSupportedFileTypes,
+    AppVersion,
+    ChineseMODGuideUrl,
+    CrowdinUrl,
+    GitHubReleaseUrl,
+    GitHubUrl
+} from "../utils/consts";
 import {useVersionCheck} from "../utils/CheckUpdate";
-import useFileHandlers, {AllSupportedFileTypes} from "../hooks/fileHanlder";
+import useFileHandlers from "../hooks/fileHanlder";
 
 const {Content} = Layout;
 
