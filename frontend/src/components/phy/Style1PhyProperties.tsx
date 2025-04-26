@@ -173,7 +173,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
             {/* damping */}
             <Collapse.Panel key="damping" header={
                 <>
-                    {t('PhyEditor.Damping')}
+                    {t('PhyEditor.Damping') + ' '}
                     <Tooltip title={t('PhyEditor.Damping_tip')}>
                         <QuestionCircleOutlined/>
                     </Tooltip>
@@ -192,7 +192,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
             {/* elasticity */}
             <Collapse.Panel key="elasticity" header={
                 <>
-                    {t('PhyEditor.Elasticity')}
+                    {t('PhyEditor.Elasticity') + ' '}
                     <Tooltip title={t('PhyEditor.Elasticity_tip')}>
                         <QuestionCircleOutlined/>
                     </Tooltip>
@@ -211,7 +211,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
             {/* stiffness */}
             <Collapse.Panel key="stiffness" header={
                 <>
-                    {t('PhyEditor.Stiffness')}
+                    {t('PhyEditor.Stiffness') + ' '}
                     <Tooltip title={t('PhyEditor.Stiffness_tip')}>
                         <QuestionCircleOutlined/>
                     </Tooltip>
@@ -230,7 +230,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
             {/* inert */}
             <Collapse.Panel key="inert" header={
                 <>
-                    {t('PhyEditor.Inert')}
+                    {t('PhyEditor.Inert') + ' '}
                     <Tooltip title={t('PhyEditor.Inert_tip')}>
                         <QuestionCircleOutlined/>
                     </Tooltip>
@@ -249,7 +249,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
             {/* radius */}
             <Collapse.Panel key="radius" header={
                 <>
-                    {t('PhyEditor.Radius')}
+                    {t('PhyEditor.Radius') + ' '}
                     <Tooltip title={t('PhyEditor.Radius_tip')}>
                         <QuestionCircleOutlined/>
                     </Tooltip>
