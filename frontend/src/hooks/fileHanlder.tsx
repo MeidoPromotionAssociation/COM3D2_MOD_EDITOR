@@ -7,21 +7,24 @@ import React, {useState} from "react";
 import {ConvertAnyToAnyAndWrite} from "../../wailsjs/go/COM3D2/TexService";
 import {Quit} from "../../wailsjs/runtime";
 import {
+    FileTypeStrictModeKey,
     TexEditorCompressKey,
     TexEditorDefaultFormatKey,
     TexEditorDirectConvertKey,
     TexEditorForcePngKey
 } from "../utils/LocalStorageKeys";
 import {FileTypeDetermine} from "../../wailsjs/go/COM3D2/CommonService";
-
-// 支持的所有文件类型，用分号分隔，不包含图片类型
-export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.psk;*.tex;*.anm;*.model"
-
-export const AllSupportedFileTypesSet = new Set(['menu', 'mate', 'pmat', 'col', 'phy', 'psk', 'tex', 'anm', 'model']);
+import {AllSupportedFileTypesSet} from "../utils/consts";
 
 const useFileHandlers = () => {
     const {t} = useTranslation();
     const navigate = useNavigate();
+
+    // 文件类型判断的严格模式设置
+    const [strictMode, setStrictMode] = useState<boolean>(() => {
+        const saved = localStorage.getItem(FileTypeStrictModeKey);
+        return saved ? JSON.parse(saved) : false; // 默认为非严格模式
+    });
 
     // TexEditor 相关持久化选项
     const [forcePng] = useState<boolean>(() => {
@@ -40,6 +43,12 @@ const useFileHandlers = () => {
         const saved = localStorage.getItem(TexEditorDefaultFormatKey);
         return saved ? JSON.parse(saved) : ".png";
     })
+
+    // 更新严格模式设置
+    const updateStrictMode = (newStrictMode: boolean) => {
+        setStrictMode(newStrictMode);
+        localStorage.setItem(FileTypeStrictModeKey, JSON.stringify(newStrictMode));
+    }
 
 
     // handleSelectFile 选择文件，并转跳到对应页面
@@ -89,74 +98,71 @@ const useFileHandlers = () => {
     }
 
     const fileNavigateHandler = async (filePath: string) => {
-        const extension = getFileExtension(filePath);
-        switch (extension) {
-            case "menu":
-                navigate("/menu-editor", {state: {filePath}});
-                break;
-            case "mate":
-                navigate("/mate-editor", {state: {filePath}});
-                break;
-            case "pmat":
-                navigate("/pmat-editor", {state: {filePath}});
-                break;
-            case "col":
-                navigate("/col-editor", {state: {filePath}});
-                break;
-            case "phy":
-                navigate("/phy-editor", {state: {filePath}});
-                break;
-            case "psk":
-                navigate("/psk-editor", {state: {filePath}});
-                break;
-            case "anm":
-                navigate("/anm-editor", {state: {filePath}});
-                break;
-            case "model":
-                navigate("/model-editor", {state: {filePath}});
-                break;
-            case "tex":
-                // 直接转换
+        try {
+            // 判断文件类型
+            const fileInfo = await FileTypeDetermine(filePath, strictMode);
+
+            // 如果是图片类型
+            if (fileInfo.FileType === "image") {
                 if (directConvert) {
-                    await exportTexOrImageAsAny(filePath, filePath.replace(".tex", defaultFormat));
+                    await exportTexOrImageAsAny(filePath, filePath.replace(/\.[^.]+$/, ".tex"));
                     Quit(); // 退出程序
-                    break;
                 } else {
                     navigate("/tex-editor", {state: {filePath}});
-                    break;
                 }
-            default:
-                // 尝试读取文件来推断文件类型
-                try {
-                    const filetype = await FileTypeDetermine(filePath)
-                    if (filetype.Name && AllSupportedFileTypesSet.has(filetype.Name)) {
-                        navigate(`/${filetype.Name}-editor`, {state: {filePath}});
-                        return;
-                    }
-                } catch {
-                    // 忽略错误
-                    // 继续判断是否为图片
-                }
-                //TODO JSON 转换回
+                return;
+            }
 
-                // 判断是否为图片
-                let isSupportedImage = false;
-                try {
-                    isSupportedImage = await IsSupportedImageType(filePath)
-                } catch (err: any) {
-                    message.error(t('Errors.file_type_not_supported') + ' ' + err);
+            // 如果是支持的文件类型
+            if (fileInfo.FileType && AllSupportedFileTypesSet.has(fileInfo.FileType)) {
+                // 如果是 tex 文件且设置了直接转换
+                if (fileInfo.FileType === "tex" && directConvert) {
+                    await exportTexOrImageAsAny(filePath, filePath.replace(".tex", defaultFormat));
+                    Quit(); // 退出程序
+                    return;
                 }
 
-                if (isSupportedImage) {
-                    if (directConvert) {
-                        await exportTexOrImageAsAny(filePath, filePath.replace(/\.[^.]+$/, ".tex"));
-                        Quit(); // 退出程序
-                    } else {
-                        navigate("/tex-editor", {state: {filePath}});
-                    }
+                // 否则跳转到相应编辑器，传递 fileInfo 而不是仅仅传递 filePath
+                navigate(`/${fileInfo.FileType}-editor`, {state: {filePath, fileInfo}});
+                return;
+            }
+
+            // 如果无法识别文件类型
+            message.error(t('Errors.file_type_not_supported'));
+        } catch (err) {
+            console.error("Error determining file type:", err);
+
+            // 如果是严格模式，不继续处理错误
+            if (strictMode) {
+                message.error(t('Errors.read_file_failed_colon') + ' ' + err);
+                return;
+            }
+
+            // 如果文件类型判断失败，尝试使用扩展名判断
+            const extension = getFileExtension(filePath);
+            if (AllSupportedFileTypesSet.has(extension)) {
+                navigate(`/${extension}-editor`, {state: {filePath}});
+                return;
+            }
+
+            // 判断是否为图片
+            let isSupportedImage = false;
+            try {
+                isSupportedImage = await IsSupportedImageType(filePath);
+            } catch (imgErr: any) {
+                message.error(t('Errors.file_type_not_supported') + ' ' + imgErr);
+            }
+
+            if (isSupportedImage) {
+                if (directConvert) {
+                    await exportTexOrImageAsAny(filePath, filePath.replace(/\.[^.]+$/, ".tex"));
+                    Quit(); // 退出程序
                 } else {
-                    message.error(t('Errors.file_type_not_supported'));
+                    navigate("/tex-editor", {state: {filePath}});
                 }
+            } else {
+                message.error(t('Errors.file_type_not_supported') + ' ' + err);
+            }
         }
     }
 
@@ -174,7 +180,15 @@ const useFileHandlers = () => {
     }
 
 
-    return {handleSelectFile, handleOpenedFile, handleSaveFile, handleSaveAsFile, exportTexOrImageAsAny};
+    return {
+        handleSelectFile,
+        handleOpenedFile,
+        handleSaveFile,
+        handleSaveAsFile,
+        exportTexOrImageAsAny,
+        strictMode,
+        updateStrictMode
+    };
 };
 
 

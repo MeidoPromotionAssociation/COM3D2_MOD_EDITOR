@@ -516,24 +516,28 @@ export namespace COM3D2 {
 	        this.Number = source["Number"];
 	    }
 	}
-	export class FileType {
-	    Name: string;
-	    Type: string;
+	export class FileInfo {
+	    FileType: string;
+	    StorageFormat: string;
 	    Game: string;
 	    Signature: string;
 	    Version: number;
+	    Path: string;
+	    Size: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new FileType(source);
+	        return new FileInfo(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.Name = source["Name"];
-	        this.Type = source["Type"];
+	        this.FileType = source["FileType"];
+	        this.StorageFormat = source["StorageFormat"];
 	        this.Game = source["Game"];
 	        this.Signature = source["Signature"];
 	        this.Version = source["Version"];
+	        this.Path = source["Path"];
+	        this.Size = source["Size"];
 	    }
 	}
 	

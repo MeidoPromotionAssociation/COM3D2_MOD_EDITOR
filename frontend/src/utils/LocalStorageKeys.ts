@@ -11,6 +11,8 @@ export const UpdateRetryKey = "UpdateRetry" // 存储是否重试的键
 
 export const KeyframeEditorCanvasSizeKey = "KeyframeEditorCanvasSize"; // 存储画布大小的键
 
+export const FileTypeStrictModeKey = "FileTypeStrictMode"; // 存储文件类型判断的严格模式设置
+
 // MenuEditor
 export const MenuEditorViewModeKey = "MenuEditorViewMode"; // 存储默认显示格式的键
 
