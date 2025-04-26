@@ -131,8 +131,8 @@ const Style2MateProperties: React.FC<{
                         <Radio.Button value="vec">{t('MateEditor.vec_no_brackets')}</Radio.Button>
                         <Radio.Button value="f">{t('MateEditor.f_no_brackets')}</Radio.Button>
                         <Radio.Button value="range">{t('MateEditor.range_no_brackets')}</Radio.Button>
-                        <Radio.Button value="texOffset">{t('MateEditor.tex_offset_no_brackets')}</Radio.Button>
-                        <Radio.Button value="texScale">{t('MateEditor.tex_scale_no_brackets')}</Radio.Button>
+                        <Radio.Button value="tex_offset">{t('MateEditor.tex_offset_no_brackets')}</Radio.Button>
+                        <Radio.Button value="tex_scale">{t('MateEditor.tex_scale_no_brackets')}</Radio.Button>
                         <Radio.Button value="keyword">{t('MateEditor.keyword_no_brackets')}</Radio.Button>
                         <Radio.Button value="unknown">{t('MateEditor.unknown')}</Radio.Button>
                     </Radio.Group>
