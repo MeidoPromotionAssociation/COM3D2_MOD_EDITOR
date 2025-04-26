@@ -1,7 +1,6 @@
 package COM3D2
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -137,8 +136,14 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 		return fileInfo, nil
 	}
 
-	// 使用更小的缓冲区快速检查文件头
-	headerBytes := make([]byte, 128) // 减小到128字节，足够检查JSON开头
+	// 如果是 JSON 文件，直接解析
+	ext := strings.ToLower(filepath.Ext(path))
+	if ext == ".json" {
+		return parseJSONFileType(f, fileInfo)
+	}
+
+	// 读取少量数据来判断是否为 JSON 格式
+	headerBytes := make([]byte, 1024) // 读取前 1024 Byte 数据来判断文件类型
 	n, err := f.Read(headerBytes)
 	if err != nil && err != io.EOF {
 		return fileInfo, err
@@ -147,7 +152,7 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 
 	// 检查文件是否为 JSON 格式 (简单判断是否以'{'开头)
 	if bytes.HasPrefix(bytes.TrimSpace(headerBytes), []byte{'{'}) {
-		return parseJSONFileType(headerBytes, path, fileInfo)
+		return parseJSONFileType(f, fileInfo)
 	}
 
 	// 如果不是 JSON，假设是二进制格式，重置文件读取位置
@@ -189,40 +194,89 @@ func readBinaryFileType(rs io.ReadSeeker, fileType FileInfo) (FileInfo, error) {
 }
 
 // parseJSONFileType 解析JSON格式的文件类型，仅读取文件头部
-func parseJSONFileType(headerBytes []byte, path string, fileInfo FileInfo) (fileType FileInfo, err error) {
-	// 先尝试从读取的头部数据解析
-	var header FileHeader
-	if err := json.Unmarshal(headerBytes, &header); err == nil {
-		// 检查JSON解析是否成功并完整
-		if header.Signature != "" && header.Version != 0 {
-			return mapJSONToFileType(header, fileInfo)
-		}
-	}
+func parseJSONFileType(f *os.File, fileInfo FileInfo) (fileType FileInfo, err error) {
+	fileType = fileInfo
 
-	// 如果从头部无法完整解析，使用流式解析方式
-	f, err := os.Open(path)
-	if err != nil {
-		return fileType, err
-	}
-	defer f.Close()
+	// 使用 decoder 进行流式解析，不需要读取整个文件
+	decoder := json.NewDecoder(f)
 
-	reader := bufio.NewReader(f)
-	decoder := json.NewDecoder(reader)
-
-	// 只解析文件头部
-	var header2 FileHeader
-	if err := decoder.Decode(&header2); err != nil {
-		return fileType, fmt.Errorf("failed to parse JSON: %v", err)
-	}
-
-	fileType, err = mapJSONToFileType(header2, fileInfo)
-	if err != nil {
-		return fileType, err
-	}
+	// 只查找所需的字段，不解码整个文件
 	fileType.StorageFormat = FormatJSON
 	fileType.Game = GameCOM3D2
 
+	// 查找开始的 '{'
+	if _, err := decoder.Token(); err != nil {
+		return fileType, fmt.Errorf("unable to find JSON start tag: %v", err)
+	}
+
+	// 解析文件头找到需要的字段
+	foundSignature := false
+	foundVersion := false
+
+	for decoder.More() && !(foundSignature && foundVersion) {
+		// 获取字段名
+		key, err := decoder.Token()
+		if err != nil {
+			return fileType, fmt.Errorf("error parsing JSON key value: %v", err)
+		}
+
+		// 检查是否为我们需要的字段
+		keyStr, ok := key.(string)
+		if !ok {
+			// 跳过当前值
+			if err := skipValue(decoder); err != nil {
+				return fileType, err
+			}
+			continue
+		}
+
+		switch keyStr {
+		case "Signature":
+			var signature string
+			if err := decoder.Decode(&signature); err != nil {
+				return fileType, fmt.Errorf("failed to parse the Signature field: %v", err)
+			}
+			fileType.Signature = signature
+			foundSignature = true
+
+		case "Version":
+			var version int32
+			if err := decoder.Decode(&version); err != nil {
+				return fileType, fmt.Errorf("failed to parse the Version field: %v", err)
+			}
+			fileType.Version = version
+			foundVersion = true
+
+		default:
+			// 跳过不需要的字段
+			if err := skipValue(decoder); err != nil {
+				return fileType, err
+			}
+		}
+
+		// 如果已找到所需信息，可以提前退出
+		if foundSignature && foundVersion {
+			break
+		}
+	}
+
+	// 根据签名映射到文件类型
+	if foundSignature {
+		var mappingErr error
+		fileType.FileType, mappingErr = fileTypeMapping(fileType.Signature)
+		if mappingErr != nil {
+			return fileType, mappingErr
+		}
+	}
+
 	return fileType, nil
+}
+
+// skipValue 跳过当前 JSON 值，无论它是对象、数组还是基本类型
+func skipValue(decoder *json.Decoder) error {
+	// 使用 RawMessage 来有效地跳过当前值
+	var raw json.RawMessage
+	return decoder.Decode(&raw)
 }
 
 // fileTypeMapping 根据文件签名返回对应的文件类型
