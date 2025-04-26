@@ -76,22 +76,22 @@ type FileHeader struct {
 // FileTypeDetermine 判断文件类型，支持二进制和 JSON 格式
 // strictMode 为 true 时，严格按照文件内容判断文件类型
 // strictMode 为 false 时，优先根据文件后缀判断文件类型，如果无法判断再根据文件内容判断
-func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileType FileInfo, err error) {
-	fileType.Path = path
+func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInfo FileInfo, err error) {
+	fileInfo.Path = path
 
 	// 打开文件
 	f, err := os.Open(path)
 	if err != nil {
-		return fileType, err
+		return fileInfo, err
 	}
 	defer f.Close()
 
 	// 获取文件大小
 	fi, err := f.Stat()
 	if err != nil {
-		return fileType, err
+		return fileInfo, err
 	}
-	fileType.Size = fi.Size()
+	fileInfo.Size = fi.Size()
 
 	// 非严格模式下，优先根据文件后缀判断文件类型
 	if !strictMode {
@@ -104,24 +104,24 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileTyp
 			_, exists := fileTypeSet[ext]
 			if exists {
 				// 根据扩展名设置文件类型信息
-				fileType.FileType = ext
-				fileType.Game = GameCOM3D2
-				fileType.StorageFormat = FormatBinary
+				fileInfo.FileType = ext
+				fileInfo.Game = GameCOM3D2
+				fileInfo.StorageFormat = FormatBinary
 
 				// 尝试打开文件获取实际签名和版本
 				signature, readErr := utilities.ReadString(f)
 				if readErr != nil {
 					fmt.Printf("Warning: Failed to read signature from file %s: %v\n", path, readErr)
-					return fileType, nil //读取失败也不返回错误，因为是非严格模式
+					return fileInfo, nil //读取失败也不返回错误，因为是非严格模式
 				}
-				fileType.Signature = signature
+				fileInfo.Signature = signature
 				version, readErr := utilities.ReadInt32(f)
 				if readErr != nil {
 					fmt.Printf("Warning: Failed to read version from file %s: %v\n", path, readErr)
-					return fileType, nil
+					return fileInfo, nil
 				}
-				fileType.Version = version
-				return fileType, nil
+				fileInfo.Version = version
+				return fileInfo, nil
 			}
 		}
 	}
@@ -132,22 +132,22 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileTyp
 	imageErr := tools.IsSupportedImageType(path)
 	if imageErr == nil {
 		// 设置为图片类型
-		fileType.FileType = "image"
-		fileType.StorageFormat = FormatBinary
-		return fileType, nil
+		fileInfo.FileType = "image"
+		fileInfo.StorageFormat = FormatBinary
+		return fileInfo, nil
 	}
 
-	// 读取少量数据来判断是否为 JSON 格式
-	headerBytes := make([]byte, 1024) // 读取前 1024 Byte 数据来判断文件类型
+	// 使用更小的缓冲区快速检查文件头
+	headerBytes := make([]byte, 128) // 减小到128字节，足够检查JSON开头
 	n, err := f.Read(headerBytes)
 	if err != nil && err != io.EOF {
-		return fileType, err
+		return fileInfo, err
 	}
 	headerBytes = headerBytes[:n]
 
 	// 检查文件是否为 JSON 格式 (简单判断是否以'{'开头)
 	if bytes.HasPrefix(bytes.TrimSpace(headerBytes), []byte{'{'}) {
-		return parseJSONFileType(headerBytes, path)
+		return parseJSONFileType(headerBytes, path, fileInfo)
 	}
 
 	// 如果不是 JSON，假设是二进制格式，重置文件读取位置
@@ -156,11 +156,11 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileTyp
 		// 如果重置失败，回退到使用已读取的数据创建 Reader
 		fmt.Printf("Warning: Failed to seek file %s to beginning: %v. Using buffer instead.\n", path, err)
 		var rs io.ReadSeeker = bytes.NewReader(headerBytes)
-		return readBinaryFileType(rs, fileType)
+		return readBinaryFileType(rs, fileInfo)
 	}
 
 	// 使用重置后的文件指针读取
-	return readBinaryFileType(f, fileType)
+	return readBinaryFileType(f, fileInfo)
 }
 
 // readBinaryFileType 从二进制文件读取类型信息的辅助函数
@@ -189,13 +189,13 @@ func readBinaryFileType(rs io.ReadSeeker, fileType FileInfo) (FileInfo, error) {
 }
 
 // parseJSONFileType 解析JSON格式的文件类型，仅读取文件头部
-func parseJSONFileType(headerBytes []byte, path string) (fileType FileInfo, err error) {
+func parseJSONFileType(headerBytes []byte, path string, fileInfo FileInfo) (fileType FileInfo, err error) {
 	// 先尝试从读取的头部数据解析
 	var header FileHeader
 	if err := json.Unmarshal(headerBytes, &header); err == nil {
 		// 检查JSON解析是否成功并完整
 		if header.Signature != "" && header.Version != 0 {
-			return mapJSONToFileType(header)
+			return mapJSONToFileType(header, fileInfo)
 		}
 	}
 
@@ -215,7 +215,7 @@ func parseJSONFileType(headerBytes []byte, path string) (fileType FileInfo, err 
 		return fileType, fmt.Errorf("failed to parse JSON: %v", err)
 	}
 
-	fileType, err = mapJSONToFileType(header2)
+	fileType, err = mapJSONToFileType(header2, fileInfo)
 	if err != nil {
 		return fileType, err
 	}
@@ -234,14 +234,15 @@ func fileTypeMapping(signature string) (string, error) {
 }
 
 // mapJSONToFileType 根据 JSON 头信息映射到对应的文件类型
-func mapJSONToFileType(header FileHeader) (fileType FileInfo, err error) {
-	fileType.Signature = header.Signature
-	fileType.Version = header.Version
+func mapJSONToFileType(header FileHeader, fileInfo FileInfo) (FileInfo, error) {
+	var err error
+	fileInfo.Signature = header.Signature
+	fileInfo.Version = header.Version
 
-	fileType.FileType, err = fileTypeMapping(header.Signature)
+	fileInfo.FileType, err = fileTypeMapping(header.Signature)
 	if err != nil {
-		return fileType, err
+		return fileInfo, err
 	}
 
-	return fileType, nil
+	return fileInfo, nil
 }
