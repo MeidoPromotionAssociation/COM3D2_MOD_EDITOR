@@ -93,11 +93,14 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 	fileInfo.Size = fi.Size()
 
 	// 非严格模式下，优先根据文件后缀判断文件类型
+	ext := strings.ToLower(filepath.Ext(path))
+	// 去掉开头的点
+	ext = ext[1:]
 	if !strictMode {
-		ext := strings.ToLower(filepath.Ext(path))
 		if ext != "" {
-			// 去掉开头的点
-			ext = ext[1:]
+			if ext == "json" {
+				return parseJSONFileType(f, fileInfo)
+			}
 
 			// 检查是否是已知的文件类型
 			_, exists := fileTypeSet[ext]
@@ -127,19 +130,13 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 
 	// 严格模式或者通过扩展名无法判断时，根据文件内容判断
 
-	// 首先检查是否为支持的图片类型
+	// 检查是否为支持的图片类型
 	imageErr := tools.IsSupportedImageType(path)
 	if imageErr == nil {
 		// 设置为图片类型
 		fileInfo.FileType = "image"
 		fileInfo.StorageFormat = FormatBinary
 		return fileInfo, nil
-	}
-
-	// 如果是 JSON 文件，直接解析
-	ext := strings.ToLower(filepath.Ext(path))
-	if ext == ".json" {
-		return parseJSONFileType(f, fileInfo)
 	}
 
 	// 读取少量数据来判断是否为 JSON 格式
@@ -150,18 +147,25 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 	}
 	headerBytes = headerBytes[:n]
 
-	// 检查文件是否为 JSON 格式 (简单判断是否以'{'开头)
-	if bytes.HasPrefix(bytes.TrimSpace(headerBytes), []byte{'{'}) {
-		return parseJSONFileType(f, fileInfo)
-	}
-
-	// 如果不是 JSON，假设是二进制格式，重置文件读取位置
+	// 重置文件读取位置
 	_, err = f.Seek(0, 0)
 	if err != nil {
 		// 如果重置失败，回退到使用已读取的数据创建 Reader
 		fmt.Printf("Warning: Failed to seek file %s to beginning: %v. Using buffer instead.\n", path, err)
+		// 先检查是否为 JSON 格式
+		if bytes.HasPrefix(bytes.TrimSpace(headerBytes), []byte{'{'}) {
+			var r io.Reader = bytes.NewReader(headerBytes)
+			return parseJSONFileType(r, fileInfo)
+		}
+		// 如果不是 JSON，按二进制格式处理
 		var rs io.ReadSeeker = bytes.NewReader(headerBytes)
 		return readBinaryFileType(rs, fileInfo)
+	}
+
+	// 检查文件是否为 JSON 格式 (简单判断是否以'{'开头)
+	if bytes.HasPrefix(bytes.TrimSpace(headerBytes), []byte{'{'}) {
+		fmt.Printf("File %s is detected as JSON format.\n", path)
+		return parseJSONFileType(f, fileInfo)
 	}
 
 	// 使用重置后的文件指针读取
@@ -194,21 +198,17 @@ func readBinaryFileType(rs io.ReadSeeker, fileType FileInfo) (FileInfo, error) {
 }
 
 // parseJSONFileType 解析JSON格式的文件类型，仅读取文件头部
-func parseJSONFileType(f *os.File, fileInfo FileInfo) (fileType FileInfo, err error) {
-	fileType = fileInfo
-
+func parseJSONFileType(f io.Reader, fileInfo FileInfo) (FileInfo, error) {
 	// 使用 decoder 进行流式解析，不需要读取整个文件
 	decoder := json.NewDecoder(f)
-
-	// 只查找所需的字段，不解码整个文件
-	fileType.StorageFormat = FormatJSON
-	fileType.Game = GameCOM3D2
+	fileInfo.StorageFormat = FormatJSON
 
 	// 查找开始的 '{'
 	if _, err := decoder.Token(); err != nil {
-		return fileType, fmt.Errorf("unable to find JSON start tag: %v", err)
+		return fileInfo, fmt.Errorf("file mark as json, but unable to find JSON start tag '{': %v", err)
 	}
 
+	// 只查找所需的字段，不解码整个文件
 	// 解析文件头找到需要的字段
 	foundSignature := false
 	foundVersion := false
@@ -217,7 +217,7 @@ func parseJSONFileType(f *os.File, fileInfo FileInfo) (fileType FileInfo, err er
 		// 获取字段名
 		key, err := decoder.Token()
 		if err != nil {
-			return fileType, fmt.Errorf("error parsing JSON key value: %v", err)
+			return fileInfo, fmt.Errorf("error parsing JSON key value: %v", err)
 		}
 
 		// 检查是否为我们需要的字段
@@ -225,7 +225,7 @@ func parseJSONFileType(f *os.File, fileInfo FileInfo) (fileType FileInfo, err er
 		if !ok {
 			// 跳过当前值
 			if err := skipValue(decoder); err != nil {
-				return fileType, err
+				return fileInfo, err
 			}
 			continue
 		}
@@ -234,23 +234,23 @@ func parseJSONFileType(f *os.File, fileInfo FileInfo) (fileType FileInfo, err er
 		case "Signature":
 			var signature string
 			if err := decoder.Decode(&signature); err != nil {
-				return fileType, fmt.Errorf("failed to parse the Signature field: %v", err)
+				return fileInfo, fmt.Errorf("failed to parse the Signature field: %v", err)
 			}
-			fileType.Signature = signature
+			fileInfo.Signature = signature
 			foundSignature = true
 
 		case "Version":
 			var version int32
 			if err := decoder.Decode(&version); err != nil {
-				return fileType, fmt.Errorf("failed to parse the Version field: %v", err)
+				return fileInfo, fmt.Errorf("failed to parse the Version field: %v", err)
 			}
-			fileType.Version = version
+			fileInfo.Version = version
 			foundVersion = true
 
 		default:
 			// 跳过不需要的字段
 			if err := skipValue(decoder); err != nil {
-				return fileType, err
+				return fileInfo, err
 			}
 		}
 
@@ -263,13 +263,15 @@ func parseJSONFileType(f *os.File, fileInfo FileInfo) (fileType FileInfo, err er
 	// 根据签名映射到文件类型
 	if foundSignature {
 		var mappingErr error
-		fileType.FileType, mappingErr = fileTypeMapping(fileType.Signature)
+		fileInfo.FileType, mappingErr = fileTypeMapping(fileInfo.Signature)
 		if mappingErr != nil {
-			return fileType, mappingErr
+			return fileInfo, mappingErr
 		}
 	}
 
-	return fileType, nil
+	fileInfo.Game = GameCOM3D2
+
+	return fileInfo, nil
 }
 
 // skipValue 跳过当前 JSON 值，无论它是对象、数组还是基本类型
