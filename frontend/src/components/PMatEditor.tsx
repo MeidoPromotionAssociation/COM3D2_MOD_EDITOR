@@ -1,11 +1,11 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
-import {Checkbox, Collapse, Input, message, Space, Tooltip} from "antd";
+import {Button, Checkbox, Collapse, Input, message, Modal, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {useTranslation} from "react-i18next";
-import {ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
+import {ConvertJsonToPMat, ConvertPMatToJson, ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import PMat = COM3D2.PMat;
 import FileInfo = COM3D2.FileInfo;
@@ -22,9 +22,10 @@ export interface PMatEditorRef {
 }
 
 const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
-    const fileInfo = props.fileInfo;
-    const filePath = fileInfo?.Path;
     const {t} = useTranslation();
+
+    const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
+    const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     // 用于存储当前编辑的 PMat 数据
     const [pmatData, setPMatData] = useState<PMat | null>(null);
@@ -42,41 +43,39 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
     // 只读区是否允许编辑
     const [isInputDisabled, setIsInputDisabled] = useState(true);
 
+    // 大文件警告模态框
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
+
+    useEffect(() => {
+        if (props.fileInfo) {
+            setFileInfo(props.fileInfo);
+            setFilePath(props.fileInfo.Path);
+        }
+    }, [props.fileInfo]);
+
     // 当 filePath 变化时自动读取
     useEffect(() => {
         let isMounted = true;
 
         if (filePath) {
-            const loadPMat = async () => {
-                try {
-                    if (filePath) {
-                        const result = await ReadPMatFile(filePath);
-                        setPMatData(result);
-
-                        setSignature(result.Signature);
-                        setVersion(result.Version);
-                        setHash(result.Hash);
-                        setMaterialName(result.MaterialName);
-                        setRenderQueue(result.RenderQueue);
-                        setShader(result.Shader);
-                    }
-                } catch (err: any) {
-                    console.error(err);
-                    message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.pmate'}) + err);
-                }
-            }
-
-            if (!isMounted) return;
             const fileName = filePath.split(/[\\/]/).pop();
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
-            loadPMat().then(() => {
-            });
+
+            (async () => {
+                try {
+                    if (!isMounted) return;
+                    await handleReadPMatFile();
+                } catch {
+                }
+            })();
         } else {
             WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
             // 如果没有文件，则初始化为新文件
             const pmat = new (PMat);
             pmat.Signature = COM3D2HeaderConstants.PMatSignature;
             pmat.Version = COM3D2HeaderConstants.PMatVersion;
+            pmat.RenderQueue = 2000;
             setPMatData(pmat);
         }
 
@@ -90,10 +89,53 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
      * 读取 .pmat 文件
      */
     const handleReadPMatFile = async () => {
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t("Errors.pls_open_file_first_new_file_use_save_as"));
             return;
         }
+        try {
+            const size = fileInfo?.Size;
+            if (size > 1024 * 1024 * 20) {
+                setPendingFileContent({size});
+                setIsConfirmModalOpen(true);
+                return;
+            }
+            await handleConfirmRead(false);
+        } catch (err: any) {
+            console.error(err);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.pmate'}) + err);
+        }
+    };
+
+    // 确认读取文件
+    const handleConfirmRead = async (DirectlyConvert: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (!filePath || !fileInfo) {
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+            return;
+        }
+        if (DirectlyConvert) {
+            const hide = message.loading(t('Infos.converting_please_wait'), 0);
+            try {
+                if (fileInfo.StorageFormat == "json") {
+                    const path = filePath.replace(/\.pmat\.json$/, '.pmat');
+                    await ConvertJsonToPMat(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                } else {
+                    const path = filePath.replace(/\.pmat$/, '.pmat.json');
+                    await ConvertPMatToJson(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                }
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.directly_convert_failed_colon') + error);
+            } finally {
+                setFilePath(null)
+                hide();
+            }
+            return;
+        }
+        const hide = message.loading(t('Infos.loading_please_wait'));
         try {
             const result = await ReadPMatFile(filePath);
             setPMatData(result);
@@ -104,10 +146,11 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
             setMaterialName(result.MaterialName);
             setRenderQueue(result.RenderQueue);
             setShader(result.Shader);
-
-        } catch (err: any) {
-            console.error(err);
-            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.pmate'}) + err);
+        } catch (error: any) {
+            console.error(error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.pmate'}) + error);
+        } finally {
+            hide();
         }
     };
 
@@ -161,7 +204,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
             };
 
             // 让用户选择要保存的位置
-            const path = await SelectPathToSave("*.pmat", t("Infos.com3d2_pmat_file"));
+            const path = await SelectPathToSave("*.pmat;*.pmat.json", t("Infos.com3d2_pmat_file"));
             if (!path) {
                 // 用户取消了保存
                 return;
@@ -191,6 +234,28 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
 
     return (
         <div style={{padding: 10}}>
+            <Modal
+                title={t('Infos.large_file_waring')}
+                open={isConfirmModalOpen}
+                onCancel={() => setIsConfirmModalOpen(false)}
+                footer={[
+                    <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
+                        {t('Common.convert_directly')}
+                    </Button>,
+                    <Button key="cancel" onClick={() => {
+                        setIsConfirmModalOpen(false);
+                        setFilePath(null);
+                    }}>
+                        {t('Common.cancel')}
+                    </Button>,
+                    <Button key="confirm" onClick={() => handleConfirmRead(false)}>
+                        {t('Common.continue')}
+                    </Button>
+                ]}
+            >
+                <p>{t('Infos.file_too_large_tip', {size: (pendingFileContent?.size / 1024 / 1024).toFixed(2)})}</p>
+                <p>{t('Infos.file_too_large_convert_to_json_directly')}</p>
+            </Modal>
             {pmatData && (
                 <div style={{height: "100%"}}>
                     <Collapse

@@ -4,11 +4,12 @@ import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import {Button, message, Modal} from "antd";
 import {COM3D2} from "../../wailsjs/go/models";
-import {ConvertAnmToJson, ReadAnmFile, WriteAnmFile} from "../../wailsjs/go/COM3D2/AnmService";
+import {ConvertAnmToJson, ConvertJsonToAnm, ReadAnmFile, WriteAnmFile} from "../../wailsjs/go/COM3D2/AnmService";
 import AnmMonacoEditor from "./anm/AnmMonacoEditor";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import Anm = COM3D2.Anm;
 import BoneCurveData = COM3D2.BoneCurveData;
+import FileInfo = COM3D2.FileInfo;
 
 export interface AnmEditorProps {
     fileInfo?: any;
@@ -23,7 +24,7 @@ export interface AnmEditorRef {
 const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
     const {t} = useTranslation();
 
-    const [fileInfo, setFileInfo] = useState<any>(props.fileInfo || null);
+    const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
     const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     const [anmData, setAnmData] = useState<Anm | null>(null);
@@ -32,9 +33,11 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
     const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
 
     useEffect(() => {
-        setFileInfo(props.fileInfo || null);
-        setFilePath(props.fileInfo?.Path || null);
-    }, [props]);
+        if (props.fileInfo) {
+            setFileInfo(props.fileInfo);
+            setFilePath(props.fileInfo.Path);
+        }
+    }, [props.fileInfo]);
 
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
     useEffect(() => {
@@ -48,8 +51,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
                 try {
                     if (!isMounted) return;
                     await handleReadAnmFile();
-                } catch (error) {
-                    console.error("Error reading file:", error);
+                } catch {
                 }
             })();
         } else {
@@ -113,7 +115,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
 
     /** 读取 Anm 文件 */
     const handleReadAnmFile = async () => {
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t('Infos.pls_open_file_first'));
             return;
         }
@@ -124,7 +126,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
             return;
         }
         try {
-            handleConfirmRead(false);
+            await handleConfirmRead(false);
         } catch (error: any) {
             console.error(error);
             message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.anm'}) + error);
@@ -158,7 +160,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
         }
 
         try {
-            const newPath = await SelectPathToSave("*.anm", t('Infos.com3d2_anm_file'));
+            const newPath = await SelectPathToSave("*.anm;*.anm.json", t('Infos.com3d2_anm_file'));
             if (!newPath) {
                 // 用户取消
                 return;
@@ -181,17 +183,27 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
     // 确认读取文件
     const handleConfirmRead = async (DirectlyConvert: boolean) => {
         setIsConfirmModalOpen(false);
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
         }
         if (DirectlyConvert) {
             const hide = message.loading(t('Infos.converting_please_wait'), 0);
             try {
-                await ConvertAnmToJson(filePath, filePath);
-                message.success(t('Infos.success_convert_to_json') + filePath?.replace(/\.anm$/, '.json'), 5);
-                setFilePath(null)
+                if (fileInfo.StorageFormat == "json") {
+                    const path = filePath.replace(/\.anm\.json$/, '.anm');
+                    await ConvertJsonToAnm(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                } else {
+                    const path = filePath.replace(/\.anm$/, '.anm.json');
+                    await ConvertAnmToJson(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                }
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.directly_convert_failed_colon') + error);
             } finally {
+                setFilePath(null)
                 hide();
             }
             return;
@@ -216,7 +228,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
                 onCancel={() => setIsConfirmModalOpen(false)}
                 footer={[
                     <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
-                        {t('Common.convert_to_json_directly')}
+                        {t('Common.convert_directly')}
                     </Button>,
                     <Button key="cancel" onClick={() => {
                         setIsConfirmModalOpen(false);

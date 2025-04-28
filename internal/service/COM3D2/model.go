@@ -13,13 +13,22 @@ import (
 // ModelService 专门处理 .model 文件的读写
 type ModelService struct{}
 
-// ReadModelFile 读取 .Model 文件并返回对应结构体
+// ReadModelFile 读取 .model 或 .model.json 文件并返回对应结构体
 func (m *ModelService) ReadModelFile(path string) (*COM3D2.Model, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open .model file: %w", err)
 	}
 	defer f.Close()
+
+	if strings.HasSuffix(path,".json") {
+		decoder := json.NewDecoder(f)
+		modelData := &COM3D2.Model{}
+		if err := decoder.Decode(modelData); err!= nil {
+			return nil, fmt.Errorf("failed to read .model.json file: %w", err)
+		}
+		return modelData, nil
+	}
 
 	var rs io.ReadSeeker = f // 注意，读取 Material 时需要进行 Seek，因此这里不能使用 bufio.NewReader，读 .mate 能用是因为后续没有其他数据可以直接全部读取到内存
 	modelData, err := COM3D2.ReadModel(rs)
@@ -30,13 +39,25 @@ func (m *ModelService) ReadModelFile(path string) (*COM3D2.Model, error) {
 	return modelData, nil
 }
 
-// WriteModelFile 接收 Model 数据并写入 .model 文件
-func (m *ModelService) WriteModelFile(path string, modelData *COM3D2.Model) error {
-	f, err := os.Create(path)
+// WriteModelFile 接收 Model 数据并写入 .model 文件或 .model.json 文件
+func (m *ModelService) WriteModelFile(outputPath string, modelData *COM3D2.Model) error {
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create .model file: %w", err)
 	}
 	defer f.Close()
+
+	if strings.HasSuffix(outputPath,".json") {
+		marshal, err := json.Marshal(modelData)
+		if err!= nil {
+			return err
+		}
+		_, err = f.Write(marshal)
+		if err!= nil {
+			return fmt.Errorf("failed to write to .model.json file: %w", err)
+		}
+		return nil
+	}
 
 	bw := bufio.NewWriter(f)
 	if err := modelData.Dump(bw); err != nil {
@@ -97,10 +118,10 @@ func (m *ModelService) WriteModelMaterial(inputPath string, outputPath string, m
 	return nil
 }
 
-// ConvertModelToJson 接收输入文件路径和输出文件路径，将输入文件转换为.json 文件
+// ConvertModelToJson 接收输入文件路径和输出文件路径，将输入文件转换为 .json 文件
 func (m *ModelService) ConvertModelToJson(inputPath string, outputPath string) error {
 	if strings.HasSuffix(outputPath,".model") {
-		outputPath = strings.TrimSuffix(outputPath,".model") + ".json"
+		outputPath = strings.TrimSuffix(outputPath,".model") + ".model.json"
 	}
 
 	f, err := os.Open(inputPath)
@@ -134,8 +155,12 @@ func (m *ModelService) ConvertModelToJson(inputPath string, outputPath string) e
 	return nil
 }
 
-// ConvertJsonToModel 接收输入文件路径和输出文件路径，将输入文件转换为.model 文件
+// ConvertJsonToModel 接收输入文件路径和输出文件路径，将输入文件转换为 .model 文件
 func (m *ModelService) ConvertJsonToModel(inputPath string, outputPath string) error {
+	if strings.HasSuffix(outputPath,".json") {
+		outputPath = strings.TrimSuffix(outputPath,".json") + ".model"
+	}
+
 	f, err := os.Open(inputPath)
 	if err != nil {
 		return fmt.Errorf("cannot open model.json file: %w", err)

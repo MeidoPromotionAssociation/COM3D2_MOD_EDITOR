@@ -26,7 +26,7 @@ const MenuEditorPage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.menu", t('Infos.com3d2_menu_file'))}
+                onSelectFile={() => handleSelectFile("*.menu;*.menu.json", t('Infos.com3d2_menu_file'))}
                 onSaveFile={() => handleSaveFile(menuEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(menuEditorRef)}
             />

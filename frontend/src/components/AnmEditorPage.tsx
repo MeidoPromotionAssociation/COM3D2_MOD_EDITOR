@@ -26,7 +26,7 @@ const AnmEditorPage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.anm", t('Infos.com3d2_anm_file'))}
+                onSelectFile={() => handleSelectFile("*.;*.anm.json", t('Infos.com3d2_anm_file'))}
                 onSaveFile={() => handleSaveFile(anmEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(anmEditorRef)}
             />

@@ -151,7 +151,7 @@ const useFileHandlers = () => {
             try {
                 fileInfo.Size = await GetFileSize(filePath);
             } catch (sizeErr: any) {
-                message.error(t('Errors.file_type_not_supported') +'' + sizeErr);
+                message.error(t('Errors.file_type_not_supported') + '' + sizeErr);
             }
 
             // 如果文件类型判断失败，尝试使用扩展名判断

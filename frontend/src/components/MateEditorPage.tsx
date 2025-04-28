@@ -26,7 +26,7 @@ const MateEditorPage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.mate", t('Infos.com3d2_mate_file'))}
+                onSelectFile={() => handleSelectFile("*.mate;*.mate.json", t('Infos.com3d2_mate_file'))}
                 onSaveFile={() => handleSaveFile(mateEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(mateEditorRef)}
             />

@@ -26,7 +26,7 @@ const ColEditorPage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.col", t('Infos.com3d2_col_file'))}
+                onSelectFile={() => handleSelectFile("*.col;*.col.json", t('Infos.com3d2_col_file'))}
                 onSaveFile={() => handleSaveFile(colEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(colEditorRef)}
             />

@@ -10,7 +10,7 @@ import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useDarkMode} from "../hooks/themeSwitch";
 import {setupMonacoEditor} from "../utils/menuMonacoConfig";
-import {ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
+import {ConvertJsonToMenu, ConvertMenuToJson, ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import {MenuEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Menu = COM3D2.Menu;
@@ -31,9 +31,11 @@ export interface MenuEditorRef {
 
 
 const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
-        const fileInfo = props.fileInfo;
-        const filePath = fileInfo?.Path;
         const {t} = useTranslation();
+
+        const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
+        const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
+
         const [menuData, setMenuData] = useState<Menu | null>(null);
 
         // 只读字段
@@ -75,6 +77,8 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
 
         // 显示帮助模态
         const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
+        const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+        const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
 
         const handleShowHelp = () => {
             setIsHelpModalVisible(true);
@@ -88,38 +92,28 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             setIsHelpModalVisible(false);
         };
 
+        useEffect(() => {
+            if (props.fileInfo) {
+                setFileInfo(props.fileInfo);
+                setFilePath(props.fileInfo.Path);
+            }
+        }, [props.fileInfo]);
+
         // 当 filePath 变化或初始化时读取菜单数据
         useEffect(() => {
             let isMounted = true;
 
             if (filePath) {
-                const loadMenu = async () => {
-                    try {
-                        if (filePath) {
-                            const result = await ReadMenuFile(filePath);
-
-                            setMenuData(result);
-                            setSignature(result.Signature);
-                            setBodySize(result.BodySize);
-                            setVersion(result.Version);
-                            setSrcFileName(result.SrcFileName);
-                            setItemName(result.ItemName);
-                            setCategory(result.Category);
-                            setInfoText(result.InfoText);
-
-                            updateCommandsText(result.Commands, displayFormat);
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.menu'}) + err);
-                    }
-                }
-
-                if (!isMounted) return;
                 const fileName = filePath.split(/[\\/]/).pop();
                 WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
-                loadMenu().then(() => {
-                });
+
+                (async () => {
+                    try {
+                        if (!isMounted) return;
+                        await handleReadMenuFile();
+                    } catch {
+                    }
+                })();
             } else {
                 WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
                 if (!isMounted) return;
@@ -140,14 +134,56 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
          * 从后端读取 .menu 文件
          */
         const handleReadMenuFile = async () => {
-            if (!filePath) {
+            if (!filePath || !fileInfo) {
                 message.error(t('Infos.pls_open_file_first'));
                 return;
             }
             try {
+                const size = fileInfo?.Size;
+                if (size > 1024 * 1024 * 20) {
+                    setPendingFileContent({size});
+                    setIsConfirmModalOpen(true);
+                    return;
+                }
+                await handleConfirmRead(false);
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.menu'}) + error);
+            }
+        };
+
+        // 确认读取文件
+        const handleConfirmRead = async (DirectlyConvert: boolean) => {
+            setIsConfirmModalOpen(false);
+            if (!filePath || !fileInfo) {
+                message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+                return;
+            }
+            if (DirectlyConvert) {
+                const hide = message.loading(t('Infos.converting_please_wait'), 0);
+                try {
+                    if (fileInfo.StorageFormat == "json") {
+                        const path = filePath.replace(/\.menu\.json$/, '.menu');
+                        await ConvertJsonToMenu(filePath, path);
+                        message.success(t('Infos.directly_convert_success') + path, 5);
+                    } else {
+                        const path = filePath.replace(/\.menu$/, '.menu.json');
+                        await ConvertMenuToJson(filePath, path);
+                        message.success(t('Infos.directly_convert_success') + path, 5);
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    message.error(t('Errors.directly_convert_failed_colon') + error);
+                } finally {
+                    setFilePath(null)
+                    hide();
+                }
+                return;
+            }
+            const hide = message.loading(t('Infos.loading_please_wait'));
+            try {
                 const result = await ReadMenuFile(filePath);
                 setMenuData(result);
-
                 setSignature(result.Signature);
                 setBodySize(result.BodySize);
                 setVersion(result.Version);
@@ -156,18 +192,24 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                 setCategory(result.Category);
                 setInfoText(result.InfoText);
 
+                setDisplayFormat(displayFormat);
+
                 if (displayFormat === "treeIndent") {
                     setCommandsText(commandsToTextTreeIndent(result.Commands));
                 } else if (displayFormat === "colonSplit") {
                     setCommandsText(commandsToTextColonSplit(result.Commands));
                 } else if (displayFormat === "JSON") {
                     setCommandsText(commandsToTextJSON(result.Commands));
+                } else if (displayFormat === "TSV") {
+                    setCommandsText(commandsToTextTSV(result.Commands));
                 } else {
                     setCommandsText("unknown format");
                 }
-            } catch (err) {
-                console.error(err);
-                message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.menu'}) + err);
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.menu'}) + error);
+            } finally {
+                hide();
             }
         };
 
@@ -175,7 +217,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
          * 保存当前编辑内容到后端
          */
         const handleSaveMenuFile = async () => {
-            if (!filePath) {
+            if (!filePath || !fileInfo) {
                 message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
                 return;
             }
@@ -261,7 +303,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                     Commands: parsedCommands
                 });
 
-                const path = await SelectPathToSave("*.menu", t('Infos.com3d2_menu_file'));
+                const path = await SelectPathToSave("*.menu;*.menu.json", t('Infos.com3d2_menu_file'));
                 if (!path) {
                     // 用户取消了保存
                     return;
@@ -333,6 +375,28 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
 
         return (
             <div style={{padding: 10}}>
+                <Modal
+                    title={t('Infos.large_file_waring')}
+                    open={isConfirmModalOpen}
+                    onCancel={() => setIsConfirmModalOpen(false)}
+                    footer={[
+                        <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
+                            {t('Common.convert_directly')}
+                        </Button>,
+                        <Button key="cancel" onClick={() => {
+                            setIsConfirmModalOpen(false);
+                            setFilePath(null);
+                        }}>
+                            {t('Common.cancel')}
+                        </Button>,
+                        <Button key="confirm" onClick={() => handleConfirmRead(false)}>
+                            {t('Common.continue')}
+                        </Button>
+                    ]}
+                >
+                    <p>{t('Infos.file_too_large_tip', {size: (pendingFileContent?.size / 1024 / 1024).toFixed(2)})}</p>
+                    <p>{t('Infos.file_too_large_convert_to_json_directly')}</p>
+                </Modal>
                 {menuData && (
                     <div
                         style={{

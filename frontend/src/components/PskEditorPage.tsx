@@ -26,7 +26,7 @@ const PskEditorPage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.psk", t('Infos.com3d2_psk_file'))}
+                onSelectFile={() => handleSelectFile("*.psk;*.psk.json", t('Infos.com3d2_psk_file'))}
                 onSaveFile={() => handleSaveFile(pskEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(pskEditorRef)}
             />

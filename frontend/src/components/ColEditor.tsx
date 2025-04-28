@@ -1,9 +1,9 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
-import {Checkbox, Collapse, ConfigProvider, Form, Input, message, Radio, Space} from "antd";
+import {Button, Checkbox, Collapse, ConfigProvider, Form, Input, message, Modal, Radio, Space} from "antd";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
-import {ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
+import {ConvertColToJson, ConvertJsonToCol, ReadColFile, WriteColFile} from "../../wailsjs/go/COM3D2/ColService";
 import {useTranslation} from "react-i18next";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Style1ColProperties from "./col/Style1ColProperties";
@@ -41,8 +41,9 @@ export interface ColEditorRef {
  */
 const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const fileInfo = props.fileInfo;
-    const filePath = fileInfo?.Path;
+
+    const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
+    const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     // Col 数据对象
     const [colData, setColData] = useState<ColModel | null>(null);
@@ -59,6 +60,17 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         return saved ? Number(saved) as 1 | 2 : 1;
     });
 
+    // 大文件警告模态框
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
+
+    useEffect(() => {
+        if (props.fileInfo) {
+            setFileInfo(props.fileInfo);
+            setFilePath(props.fileInfo.Path);
+        }
+    }, [props.fileInfo]);
+
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
     useEffect(() => {
         let isMounted = true;
@@ -71,8 +83,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 try {
                     if (!isMounted) return;
                     await handleReadColFile();
-                } catch (error) {
-                    console.error("Error reading file:", error);
+                } catch {
                 }
             })();
         } else {
@@ -95,10 +106,53 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
     /** 读取 Col 文件 */
     const handleReadColFile = async () => {
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t('Infos.pls_open_file_first'));
             return;
         }
+        try {
+            const size = fileInfo?.Size;
+            if (size > 1024 * 1024 * 20) {
+                setPendingFileContent({size});
+                setIsConfirmModalOpen(true);
+                return;
+            }
+            await handleConfirmRead(false);
+        } catch (error: any) {
+            console.error(error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.col'}) + error);
+        }
+    }
+
+    // 确认读取文件
+    const handleConfirmRead = async (DirectlyConvert: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (!filePath || !fileInfo) {
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+            return;
+        }
+        if (DirectlyConvert) {
+            const hide = message.loading(t('Infos.converting_please_wait'), 0);
+            try {
+                if (fileInfo.StorageFormat == "json") {
+                    const path = filePath.replace(/\.col\.json$/, '.col');
+                    await ConvertJsonToCol(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                } else {
+                    const path = filePath.replace(/\.col$/, '.col.json');
+                    await ConvertColToJson(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                }
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.directly_convert_failed_colon') + error);
+            } finally {
+                setFilePath(null)
+                hide();
+            }
+            return;
+        }
+        const hide = message.loading(t('Infos.loading_please_wait'));
         try {
             const data = await ReadColFile(filePath);
             setColData(data);
@@ -107,8 +161,10 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
         } catch (error: any) {
             console.error(error);
             message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.col'}) + error);
+        } finally {
+            hide();
         }
-    }
+    };
 
     /** 保存 Col 文件（覆盖写回） */
     const handleSaveColFile = async () => {
@@ -151,7 +207,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             // 模式 2 JSON 编辑，直接保存
             if (viewMode === 2) {
 
-                const newPath = await SelectPathToSave("*.col", t('Infos.com3d2_col_file'));
+                const newPath = await SelectPathToSave("*.col;*.col.json", t('Infos.com3d2_col_file'));
                 if (!newPath) {
                     // 用户取消
                     return;
@@ -165,7 +221,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
             const newCol = transformFormToCol(values, colData);
 
             // 让用户选择一个保存路径
-            const newPath = await SelectPathToSave("*.col", t('Infos.com3d2_col_file'));
+            const newPath = await SelectPathToSave("*.col;*.col.json", t('Infos.com3d2_col_file'));
             if (!newPath) {
                 // 用户取消
                 return;
@@ -318,6 +374,28 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
     return (
         <div style={{padding: 10}}>
+            <Modal
+                title={t('Infos.large_file_waring')}
+                open={isConfirmModalOpen}
+                onCancel={() => setIsConfirmModalOpen(false)}
+                footer={[
+                    <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
+                        {t('Common.convert_directly')}
+                    </Button>,
+                    <Button key="cancel" onClick={() => {
+                        setIsConfirmModalOpen(false);
+                        setFilePath(null);
+                    }}>
+                        {t('Common.cancel')}
+                    </Button>,
+                    <Button key="confirm" onClick={() => handleConfirmRead(false)}>
+                        {t('Common.continue')}
+                    </Button>
+                ]}
+            >
+                <p>{t('Infos.file_too_large_tip', {size: (pendingFileContent?.size / 1024 / 1024).toFixed(2)})}</p>
+                <p>{t('Infos.file_too_large_convert_to_json_directly')}</p>
+            </Modal>
             <ConfigProvider
                 theme={{
                     components: {

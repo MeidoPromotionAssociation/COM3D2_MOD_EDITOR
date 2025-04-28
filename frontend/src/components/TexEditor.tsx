@@ -29,8 +29,10 @@ export interface TexEditorRef {
 
 const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const fileInfo = props.fileInfo;
-    const filePath = fileInfo?.Path;
+
+    const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
+    const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
+
     const {handleSelectFile, exportTexOrImageAsAny} = useFileHandlers();
     const isDarkMode = useDarkMode();
 
@@ -85,6 +87,13 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
         setDirectConvert(value);
         localStorage.setItem(TexEditorDirectConvertKey, JSON.stringify(value));
     }
+
+    useEffect(() => {
+        if (props.fileInfo) {
+            setFileInfo(props.fileInfo);
+            setFilePath(props.fileInfo.Path);
+        }
+    }, [props.fileInfo]);
 
     /** 读取任意文件并转换为 png 以供预览 */
     const handleReadTexFile = async () => {

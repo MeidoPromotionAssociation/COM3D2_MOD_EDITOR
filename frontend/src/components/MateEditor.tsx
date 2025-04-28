@@ -1,11 +1,24 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
-import {Checkbox, Collapse, ConfigProvider, Form, Input, InputNumber, message, Radio, Space, Tooltip} from 'antd';
+import {
+    Button,
+    Checkbox,
+    Collapse,
+    ConfigProvider,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    Radio,
+    Space,
+    Tooltip
+} from 'antd';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {COM3D2} from '../../wailsjs/go/models';
 import {SelectPathToSave} from '../../wailsjs/go/main/App';
 import {useTranslation} from "react-i18next";
 import {QuestionCircleOutlined} from "@ant-design/icons";
-import {ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
+import {ConvertJsonToMate, ConvertMateToJson, ReadMateFile, WriteMateFile} from "../../wailsjs/go/COM3D2/MateService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Style3MateProperties from "./mate/Style3MateProperties";
 import Style2MateProperties from "./mate/Style2MateProperties";
@@ -44,8 +57,9 @@ export interface MateEditorRef {
  */
 const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const fileInfo = props.fileInfo;
-    const filePath = fileInfo?.Path;
+
+    const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
+    const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     // 整体 .mate 数据
     const [mateData, setMateData] = useState<Mate | null>(null);
@@ -65,6 +79,16 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         return saved ? Number(saved) as 1 | 2 | 3 : 1;
     });
 
+    // 大文件警告模态框
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
+
+    useEffect(() => {
+        if (props.fileInfo) {
+            setFileInfo(props.fileInfo);
+            setFilePath(props.fileInfo.Path);
+        }
+    }, [props.fileInfo]);
 
     // 当组件挂载或 filePath 改变时，自动读取
     useEffect(() => {
@@ -78,8 +102,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                 try {
                     if (!isMounted) return;
                     await handleReadMateFile();
-                } catch (error) {
-                    console.error("Error reading file:", error);
+                } catch {
                 }
             })();
         } else {
@@ -103,10 +126,53 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
      * 读取 .mate 文件
      */
     const handleReadMateFile = async () => {
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t('Infos.pls_open_file_first'));
             return;
         }
+        try {
+            const size = fileInfo?.Size;
+            if (size > 1024 * 1024 * 20) {
+                setPendingFileContent({size});
+                setIsConfirmModalOpen(true);
+                return;
+            }
+            await handleConfirmRead(false);
+        } catch (error: any) {
+            console.error(error);
+            message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.mate'}) + error);
+        }
+    };
+
+    // 确认读取文件
+    const handleConfirmRead = async (DirectlyConvert: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (!filePath || !fileInfo) {
+            message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+            return;
+        }
+        if (DirectlyConvert) {
+            const hide = message.loading(t('Infos.converting_please_wait'), 0);
+            try {
+                if (fileInfo.StorageFormat == "json") {
+                    const path = filePath.replace(/\.mate\.json$/, '.mate');
+                    await ConvertJsonToMate(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                } else {
+                    const path = filePath.replace(/\.mate$/, '.mate.json');
+                    await ConvertMateToJson(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                }
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.directly_convert_failed_colon') + error);
+            } finally {
+                setFilePath(null)
+                hide();
+            }
+            return;
+        }
+        const hide = message.loading(t('Infos.loading_please_wait'));
         try {
             const data = await ReadMateFile(filePath);
             setMateData(data);
@@ -115,6 +181,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         } catch (error: any) {
             console.error(error);
             message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.mate'}) + error);
+        } finally {
+            hide();
         }
     };
 
@@ -164,7 +232,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             // 模式 3 JSON 编辑，直接保存
             if (viewMode === 3) {
                 // 询问保存路径
-                const newPath = await SelectPathToSave("*.mate", t('Infos.com3d2_mate_file'));
+                const newPath = await SelectPathToSave("*.mate;*.mate.json", t('Infos.com3d2_mate_file'));
                 if (!newPath) {
                     // 用户取消
                     return;
@@ -181,7 +249,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
             const newMate = transformFormToMate(values, mateData);
 
             // 询问保存路径
-            const newPath = await SelectPathToSave("*.mate", t('Infos.com3d2_mate_file'));
+            const newPath = await SelectPathToSave("*.mate;*.mate.json", t('Infos.com3d2_mate_file'));
             if (!newPath) {
                 // 用户取消
                 return;
@@ -456,6 +524,28 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
     return (
         <div style={{padding: 10}}>
+            <Modal
+                title={t('Infos.large_file_waring')}
+                open={isConfirmModalOpen}
+                onCancel={() => setIsConfirmModalOpen(false)}
+                footer={[
+                    <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
+                        {t('Common.convert_directly')}
+                    </Button>,
+                    <Button key="cancel" onClick={() => {
+                        setIsConfirmModalOpen(false);
+                        setFilePath(null);
+                    }}>
+                        {t('Common.cancel')}
+                    </Button>,
+                    <Button key="confirm" onClick={() => handleConfirmRead(false)}>
+                        {t('Common.continue')}
+                    </Button>
+                ]}
+            >
+                <p>{t('Infos.file_too_large_tip', {size: (pendingFileContent?.size / 1024 / 1024).toFixed(2)})}</p>
+                <p>{t('Infos.file_too_large_convert_to_json_directly')}</p>
+            </Modal>
             <ConfigProvider
                 theme={{
                     components: {

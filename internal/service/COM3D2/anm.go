@@ -12,13 +12,22 @@ import (
 // AnmService 专门处理 .anm 文件的读写
 type AnmService struct{}
 
-// ReadAnmFile 读取 .anm 文件并返回对应结构体
+// ReadAnmFile 读取 .anm 或 .anm.json 文件并返回对应结构体
 func (m *AnmService) ReadAnmFile(path string) (*COM3D2.Anm, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open .anm file: %w", err)
 	}
 	defer f.Close()
+
+	if strings.HasSuffix(path, ".json") {
+		decoder := json.NewDecoder(f)
+		anmData := &COM3D2.Anm{}
+		if err := decoder.Decode(anmData); err != nil {
+			return nil, fmt.Errorf("failed to read .anm.json file: %w", err)
+		}
+		return anmData, nil
+	}
 
 	br := bufio.NewReaderSize(f, 1024*1024*10) //10MB 缓冲区
 	anmData, err := COM3D2.ReadAnm(br)
@@ -29,13 +38,25 @@ func (m *AnmService) ReadAnmFile(path string) (*COM3D2.Anm, error) {
 	return anmData, nil
 }
 
-// WriteAnmFile 接收 Anm 数据并写入 .anm 文件
+// WriteAnmFile 接收 Anm 数据并写入 .anm 文件或 .anm.json 文件
 func (m *AnmService) WriteAnmFile(path string, anmData *COM3D2.Anm) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("unable to create .anm file: %w", err)
 	}
 	defer f.Close()
+
+	if strings.HasSuffix(path, ".json") {
+		marshal, err := json.Marshal(anmData)
+		if err != nil {
+			return err
+		}
+		_, err = f.Write(marshal)
+		if err != nil {
+			return fmt.Errorf("failed to write to .anm.json file: %w", err)
+		}
+		return nil
+	}
 
 	bw := bufio.NewWriter(f)
 	if err := anmData.Dump(bw); err != nil {
@@ -47,9 +68,10 @@ func (m *AnmService) WriteAnmFile(path string, anmData *COM3D2.Anm) error {
 	return nil
 }
 
+// ConvertAnmToJson 接收输入文件路径和输出文件路径，将输入文件转换为 .json 文件
 func (m *AnmService) ConvertAnmToJson(inputPath string, outputPath string) error {
 	if strings.HasSuffix(outputPath, ".anm") {
-		outputPath = strings.TrimSuffix(outputPath, ".anm") + ".json"
+		outputPath = strings.TrimSuffix(outputPath, ".anm") + ".anm.json"
 	}
 	f, err := os.Open(inputPath)
 	if err != nil {
@@ -80,16 +102,21 @@ func (m *AnmService) ConvertAnmToJson(inputPath string, outputPath string) error
 	return nil
 }
 
+// ConvertJsonToAnm 接收输入文件路径和输出文件路径，将输入文件转换为 .anm 文件
 func (m *AnmService) ConvertJsonToAnm(inputPath string, outputPath string) error {
+	if strings.HasSuffix(outputPath, ".json") {
+		outputPath = strings.TrimSuffix(outputPath, ".json") + ".anm"
+	}
+
 	f, err := os.Open(inputPath)
-	if err!= nil {
-		return fmt.Errorf("cannot open model.json file: %w", err)
+	if err != nil {
+		return fmt.Errorf("cannot open anm.json file: %w", err)
 	}
 	defer f.Close()
 	var anmData *COM3D2.Anm
 	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&anmData); err!= nil {
-		return err
+	if err := decoder.Decode(&anmData); err != nil {
+		return fmt.Errorf("parsing the anm.json file failed: %w", err)
 	}
 	return m.WriteAnmFile(outputPath, anmData)
 }

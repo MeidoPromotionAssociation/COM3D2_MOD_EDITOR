@@ -28,7 +28,7 @@ export interface ModelEditorRef {
 const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) => {
     const {t} = useTranslation();
 
-    const [fileInfo, setFileInfo] = useState<any>(props.fileInfo || null);
+    const [fileInfo, setFileInfo] = useState<FileInfo | null>(props.fileInfo || null);
     const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     // Model 数据对象
@@ -50,9 +50,11 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
     const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
 
     useEffect(() => {
-        setFileInfo(props.fileInfo || null);
-        setFilePath(props.fileInfo?.Path || null);
-    }, [props]);
+        if (props.fileInfo) {
+            setFileInfo(props.fileInfo);
+            setFilePath(props.fileInfo.Path);
+        }
+    }, [props.fileInfo]);
 
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
     useEffect(() => {
@@ -66,8 +68,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
                 try {
                     if (!isMounted) return;
                     await handleReadModelFile();
-                } catch (error) {
-                    console.error("Error reading file:", error);
+                } catch {
                 }
             })();
         } else {
@@ -86,7 +87,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
 
     /** 读取 Model 文件 */
     const handleReadModelFile = async () => {
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t('Infos.pls_open_file_first'));
             return;
         }
@@ -155,7 +156,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
     // 确认读取文件
     const handleConfirmRead = async (DirectlyConvert: boolean) => {
         setIsConfirmModalOpen(false);
-        if (!filePath) {
+        if (!filePath || !fileInfo) {
             message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
         }

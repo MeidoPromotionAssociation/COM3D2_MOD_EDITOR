@@ -26,7 +26,7 @@ const PMatEditorPage: React.FC = () => {
     return (
         <Layout style={{height: "100vh"}}>
             <NavBar
-                onSelectFile={() => handleSelectFile("*.pmat", t('Infos.com3d2_pmat_file'))}
+                onSelectFile={() => handleSelectFile("*.pmat;*.pmat.json", t('Infos.com3d2_pmat_file'))}
                 onSaveFile={() => handleSaveFile(pmatEditorRef)}
                 onSaveAsFile={() => handleSaveAsFile(pmatEditorRef)}
             />

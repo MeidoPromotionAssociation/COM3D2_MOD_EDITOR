@@ -123,7 +123,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                                                     )
                                                 },
                                                 {
-                                                    title: t('PhyEditor.Value'),
+                                                    title: t('Common.KeyFrameEditor.Value'),
                                                     render: (_, {key, ...field}) => (
                                                         <Form.Item
                                                             key={key}
@@ -136,7 +136,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                                                     )
                                                 },
                                                 {
-                                                    title: t('PhyEditor.operate'),
+                                                    title: t('Common.KeyFrameEditor.operate'),
                                                     width: 80,
                                                     render: (_, field) => (
                                                         <Button
