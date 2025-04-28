@@ -222,13 +222,14 @@ const MatePropertyItemType1 = ({
                         >
                             <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
-                        <Form.Item>
+                        <Form.Item key={`${restField.key}-col-tooltip`}>
                             <Tooltip title={t('MateEditor.col_tip')}>
                                 <QuestionCircleOutlined/>
                             </Tooltip>
                         </Form.Item>
                     </Space>
                     <Form.Item
+                        key={`${restField.key}-color-picker`}
                         label={t('MateEditor.color_picker')}
                         labelCol={{style: {width: '100px'}}}
                     >
@@ -270,7 +271,7 @@ const MatePropertyItemType1 = ({
                     >
                         <InputNumber step={0.01}/>
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item key={`${restField.key}-vec-tooltip`}>
                         <Tooltip title={t('MateEditor.vec_tip')}>
                             <QuestionCircleOutlined/>
                         </Tooltip>
@@ -288,7 +289,7 @@ const MatePropertyItemType1 = ({
                     >
                         <InputNumber style={{width: '100%'}} step={0.01}/>
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item key={`${restField.key}-f-tooltip`}>
                         <Tooltip title={t('MateEditor.f_tip')}>
                             <QuestionCircleOutlined/>
                         </Tooltip>
@@ -306,7 +307,7 @@ const MatePropertyItemType1 = ({
                     >
                         <InputNumber style={{width: '100%'}} step={0.01}/>
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item key={`${restField.key}-range-tooltip`}>
                         <Tooltip title={t('MateEditor.range_tip')}>
                             <QuestionCircleOutlined/>
                         </Tooltip>
@@ -333,7 +334,7 @@ const MatePropertyItemType1 = ({
                     >
                         <InputNumber style={{width: '100%'}} step={0.01}/>
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item key={`${restField.key}-tex-offset-tooltip`}>
                         <Tooltip title={t('MateEditor.tex_offset_tip')}>
                             <QuestionCircleOutlined/>
                         </Tooltip>
@@ -360,7 +361,7 @@ const MatePropertyItemType1 = ({
                     >
                         <InputNumber style={{width: '100%'}} step={0.01}/>
                     </Form.Item>
-                    <Form.Item>
+                    <Form.Item key={`${restField.key}-tex-scale-tooltip`}>
                         <Tooltip title={t('MateEditor.tex_scale_tip')}>
                             <QuestionCircleOutlined/>
                         </Tooltip>
