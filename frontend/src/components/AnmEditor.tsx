@@ -6,12 +6,12 @@ import {Button, message, Modal} from "antd";
 import {COM3D2} from "../../wailsjs/go/models";
 import {ConvertAnmToJson, ReadAnmFile, WriteAnmFile} from "../../wailsjs/go/COM3D2/AnmService";
 import AnmMonacoEditor from "./anm/AnmMonacoEditor";
-import {GetFileSize, SelectPathToSave} from "../../wailsjs/go/main/App";
+import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import Anm = COM3D2.Anm;
 import BoneCurveData = COM3D2.BoneCurveData;
 
 export interface AnmEditorProps {
-    filePath?: string;
+    fileInfo?: any;
 }
 
 export interface AnmEditorRef {
@@ -23,7 +23,8 @@ export interface AnmEditorRef {
 const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
     const {t} = useTranslation();
 
-    const [filePath, setFilePath] = useState<string | null>(props.filePath || null);
+    const [fileInfo, setFileInfo] = useState<any>(props.fileInfo || null);
+    const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     const [anmData, setAnmData] = useState<Anm | null>(null);
 
@@ -31,7 +32,8 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
     const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
 
     useEffect(() => {
-        setFilePath(props.filePath || null);
+        setFileInfo(props.fileInfo || null);
+        setFilePath(props.fileInfo?.Path || null);
     }, [props]);
 
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
@@ -115,7 +117,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
             message.error(t('Infos.pls_open_file_first'));
             return;
         }
-        const size = await GetFileSize(filePath);
+        const size = fileInfo?.Size;
         if (size > 1024 * 1024 * 20) {
             setPendingFileContent({size});
             setIsConfirmModalOpen(true);

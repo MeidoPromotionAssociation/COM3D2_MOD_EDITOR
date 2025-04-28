@@ -1,6 +1,6 @@
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
-import {IsSupportedImageType, SelectFile} from "../../wailsjs/go/main/App";
+import {GetFileSize, IsSupportedImageType, SelectFile} from "../../wailsjs/go/main/App";
 import {getFileExtension} from "../utils/utils";
 import {message} from "antd";
 import React, {useState} from "react";
@@ -15,6 +15,8 @@ import {
 } from "../utils/LocalStorageKeys";
 import {FileTypeDetermine} from "../../wailsjs/go/COM3D2/CommonService";
 import {AllSupportedFileTypesSet} from "../utils/consts";
+import {COM3D2} from "../../wailsjs/go/models";
+import FileInfo = COM3D2.FileInfo;
 
 const useFileHandlers = () => {
     const {t} = useTranslation();
@@ -23,7 +25,7 @@ const useFileHandlers = () => {
     // 文件类型判断的严格模式设置
     const [strictMode, setStrictMode] = useState<boolean>(() => {
         const saved = localStorage.getItem(FileTypeStrictModeKey);
-        return saved ? JSON.parse(saved) : false; // 默认为非严格模式
+        return saved ? JSON.parse(saved) : false;
     });
 
     // TexEditor 相关持久化选项
@@ -68,7 +70,6 @@ const useFileHandlers = () => {
         await fileNavigateHandler(filePath)
     }
 
-
     // handleSaveFile 保存文件，如果有 ref，则调用 ref.current.handleSaveFile()，否则提示没有文件要保存
     const handleSaveFile = (ref: React.RefObject<any> | undefined) => {
         if (ref) {
@@ -108,7 +109,7 @@ const useFileHandlers = () => {
                     await exportTexOrImageAsAny(filePath, filePath.replace(/\.[^.]+$/, ".tex"));
                     Quit(); // 退出程序
                 } else {
-                    navigate("/tex-editor", {state: {filePath}});
+                    navigate("/tex-editor", {state: {fileInfo}});
                 }
                 return;
             }
@@ -123,7 +124,7 @@ const useFileHandlers = () => {
                 }
 
                 // 否则跳转到相应编辑器，传递 fileInfo 而不是仅仅传递 filePath
-                navigate(`/${fileInfo.FileType}-editor`, {state: {filePath, fileInfo}});
+                navigate(`/${fileInfo.FileType}-editor`, {state: {fileInfo}});
                 return;
             }
 
@@ -138,10 +139,26 @@ const useFileHandlers = () => {
                 return;
             }
 
+            let fileInfo = new FileInfo();
+            fileInfo.Path = filePath;
+            fileInfo.Game = "COM3D2";
+            if (filePath.endsWith(".json")) {
+                fileInfo.StorageFormat = "json";
+            } else {
+                fileInfo.StorageFormat = "binary";
+            }
+
+            try {
+                fileInfo.Size = await GetFileSize(filePath);
+            } catch (sizeErr: any) {
+                message.error(t('Errors.file_type_not_supported') +'' + sizeErr);
+            }
+
             // 如果文件类型判断失败，尝试使用扩展名判断
             const extension = getFileExtension(filePath);
             if (AllSupportedFileTypesSet.has(extension)) {
-                navigate(`/${extension}-editor`, {state: {filePath}});
+                fileInfo.FileType = extension;
+                navigate(`/${extension}-editor`, {state: {fileInfo}});
                 return;
             }
 
@@ -154,11 +171,12 @@ const useFileHandlers = () => {
             }
 
             if (isSupportedImage) {
+                fileInfo.FileType = "image";
                 if (directConvert) {
                     await exportTexOrImageAsAny(filePath, filePath.replace(/\.[^.]+$/, ".tex"));
                     Quit(); // 退出程序
                 } else {
-                    navigate("/tex-editor", {state: {filePath}});
+                    navigate("/tex-editor", {state: {fileInfo}});
                 }
             } else {
                 message.error(t('Errors.file_type_not_supported') + ' ' + err);

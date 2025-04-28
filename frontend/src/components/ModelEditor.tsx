@@ -3,14 +3,20 @@ import {useTranslation} from "react-i18next";
 import {Button, Form, message, Modal} from "antd";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
-import {ConvertModelToJson, ReadModelFile, WriteModelFile} from "../../wailsjs/go/COM3D2/ModelService";
-import {GetFileSize, SelectPathToSave} from "../../wailsjs/go/main/App";
+import {
+    ConvertJsonToModel,
+    ConvertModelToJson,
+    ReadModelFile,
+    WriteModelFile
+} from "../../wailsjs/go/COM3D2/ModelService";
+import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {ModelEditorViewModeKey} from "../utils/LocalStorageKeys";
 import ModelMonacoEditor from "./model/ModelMonacoEditor";
 import Model = COM3D2.Model;
+import FileInfo = COM3D2.FileInfo;
 
 export interface ModelEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 export interface ModelEditorRef {
@@ -22,7 +28,8 @@ export interface ModelEditorRef {
 const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) => {
     const {t} = useTranslation();
 
-    const [filePath, setFilePath] = useState<string | null>(props.filePath || null);
+    const [fileInfo, setFileInfo] = useState<any>(props.fileInfo || null);
+    const [filePath, setFilePath] = useState<string | null>(props.fileInfo?.Path || null);
 
     // Model 数据对象
     const [modelData, setModelData] = useState<Model | null>(null);
@@ -43,7 +50,8 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
     const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
 
     useEffect(() => {
-        setFilePath(props.filePath || null);
+        setFileInfo(props.fileInfo || null);
+        setFilePath(props.fileInfo?.Path || null);
     }, [props]);
 
     /** 组件挂载或 filePath 改变时，如果传入了 filePath 就自动读取一次 */
@@ -83,7 +91,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
             return;
         }
         try {
-            const size = await GetFileSize(filePath);
+            const size = fileInfo?.Size;
             if (size > 1024 * 1024 * 20) {
                 setPendingFileContent({size});
                 setIsConfirmModalOpen(true);
@@ -123,7 +131,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
         }
 
         try {
-            const newPath = await SelectPathToSave("*.model", t('Infos.com3d2_model_file'));
+            const newPath = await SelectPathToSave("*.model;*.model.json", t('Infos.com3d2_model_file'));
             if (!newPath) {
                 // 用户取消
                 return;
@@ -154,10 +162,20 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
         if (DirectlyConvert) {
             const hide = message.loading(t('Infos.converting_please_wait'), 0);
             try {
-                await ConvertModelToJson(filePath, filePath);
-                message.success(t('Infos.success_convert_to_json') + filePath?.replace(/\.model$/, '.json'), 5);
-                setFilePath(null)
+                if (fileInfo.StorageFormat == "json") {
+                    const path = filePath.replace(/\.model\.json$/, '.model');
+                    await ConvertJsonToModel(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                } else {
+                    const path = filePath.replace(/\.model$/, '.model.json');
+                    await ConvertModelToJson(filePath, path);
+                    message.success(t('Infos.directly_convert_success') + path, 5);
+                }
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.directly_convert_failed_colon') + error);
             } finally {
+                setFilePath(null)
                 hide();
             }
             return;
@@ -183,7 +201,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
                 onCancel={() => setIsConfirmModalOpen(false)}
                 footer={[
                     <Button key="convert" type="primary" onClick={() => handleConfirmRead(true)}>
-                        {t('Common.convert_to_json_directly')}
+                        {t('Common.convert_directly')}
                     </Button>,
                     <Button key="cancel" onClick={() => {
                         setIsConfirmModalOpen(false);

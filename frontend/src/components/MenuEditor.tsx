@@ -15,11 +15,12 @@ import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import {MenuEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
+import FileInfo = COM3D2.FileInfo;
 
 type FormatType = "treeIndent" | "colonSplit" | "JSON" | "TSV";
 
 export interface MenuEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 export interface MenuEditorRef {
@@ -29,7 +30,9 @@ export interface MenuEditorRef {
 }
 
 
-const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>(({filePath}, ref) => {
+const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
+        const fileInfo = props.fileInfo;
+        const filePath = fileInfo?.Path;
         const {t} = useTranslation();
         const [menuData, setMenuData] = useState<Menu | null>(null);
 

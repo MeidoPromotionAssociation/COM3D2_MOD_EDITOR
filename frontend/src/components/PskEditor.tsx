@@ -10,9 +10,10 @@ import Style2PskProperties from "./psk/Style2PskProperties";
 import {PskEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Style1PskProperties from "./psk/Style1PskProperties";
 import Psk = COM3D2.Psk;
+import FileInfo = COM3D2.FileInfo;
 
 export interface PskEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 export interface PskEditorRef {
@@ -23,7 +24,8 @@ export interface PskEditorRef {
 
 const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const {filePath} = props;
+    const fileInfo = props.fileInfo;
+    const filePath = fileInfo?.Path;
 
     // Psk 数据对象
     const [pskData, setPskData] = useState<Psk | null>(null);

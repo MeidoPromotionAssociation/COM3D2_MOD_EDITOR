@@ -6,6 +6,8 @@ import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
 import TexEditor, {TexEditorRef} from "./TexEditor";
 import useFileHandlers from "../hooks/fileHanlder";
+import {COM3D2} from "../../wailsjs/go/models";
+import FileInfo = COM3D2.FileInfo;
 
 const {Content} = Layout;
 
@@ -14,9 +16,9 @@ const TexEditorPage: React.FC = () => {
     const location = useLocation();
     const {handleSelectFile, handleSaveFile, handleSaveAsFile} = useFileHandlers();
 
-    // 从路由 state 中获取 filePath
-    const state = location.state as { filePath: string } | undefined;
-    const filePath = state?.filePath;
+    // 从路由 state 中获取 fileInfo
+    const state = location.state as { fileInfo: FileInfo } | undefined;
+    const fileInfo = state?.fileInfo;
 
     // 用 ref 获取 texEditorRef 实例
     const texEditorRef = useRef<TexEditorRef>(null);
@@ -29,7 +31,7 @@ const TexEditorPage: React.FC = () => {
                 onSaveAsFile={() => handleSaveAsFile(texEditorRef)}
             />
             <Content style={{padding: 0, overflow: "auto"}}>
-                <TexEditor filePath={filePath} ref={texEditorRef}/>
+                <TexEditor fileInfo={fileInfo} ref={texEditorRef}/>
             </Content>
         </Layout>
     );

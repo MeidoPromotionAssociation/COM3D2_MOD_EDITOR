@@ -8,10 +8,11 @@ import {useTranslation} from "react-i18next";
 import {ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import PMat = COM3D2.PMat;
+import FileInfo = COM3D2.FileInfo;
 
 
 export interface PMatEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 export interface PMatEditorRef {
@@ -20,7 +21,9 @@ export interface PMatEditorRef {
     handleSaveAsFile: () => Promise<void>;
 }
 
-const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>(({filePath}, ref) => {
+const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
+    const fileInfo = props.fileInfo;
+    const filePath = fileInfo?.Path;
     const {t} = useTranslation();
 
     // 用于存储当前编辑的 PMat 数据

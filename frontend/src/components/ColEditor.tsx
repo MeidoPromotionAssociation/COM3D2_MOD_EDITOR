@@ -15,13 +15,14 @@ import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
 import DynamicBoneMuneCollider = COM3D2.DynamicBoneMuneCollider;
 import MissingCollider = COM3D2.MissingCollider;
 import ColModel = COM3D2.Col;
+import FileInfo = COM3D2.FileInfo;
 
 
 /** ColEditorProps:
- *  filePath: 传入要打开的 .col 文件路径
+ *  fileInfo: 传入要打开的文件信息
  */
 interface ColEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 /** ColEditorRef:
@@ -40,7 +41,8 @@ export interface ColEditorRef {
  */
 const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const {filePath} = props;
+    const fileInfo = props.fileInfo;
+    const filePath = fileInfo?.Path;
 
     // Col 数据对象
     const [colData, setColData] = useState<ColModel | null>(null);

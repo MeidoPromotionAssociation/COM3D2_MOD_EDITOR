@@ -15,9 +15,10 @@ import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
 import Keyframe = COM3D2.Keyframe;
+import FileInfo = COM3D2.FileInfo;
 
 export interface PhyEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 export interface PhyEditorRef {
@@ -294,7 +295,8 @@ function transformFormToPhy(values: any, oldPhy: Phy): Phy {
  * 使用一个 antd Form 来编辑 COM3D2.Phy 的所有字段
  */
 const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
-    const {filePath} = props;
+    const fileInfo = props.fileInfo;
+    const filePath = fileInfo?.Path;
     const {t} = useTranslation();
 
     // 从后端读取到的 phy 数据

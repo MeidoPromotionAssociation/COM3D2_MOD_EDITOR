@@ -14,9 +14,11 @@ import {
     TexEditorDirectConvertKey,
     TexEditorForcePngKey
 } from "../utils/LocalStorageKeys";
+import {COM3D2} from "../../wailsjs/go/models";
+import FileInfo = COM3D2.FileInfo;
 
 export interface TexEditorProps {
-    filePath?: string;
+    fileInfo?: FileInfo;
 }
 
 export interface TexEditorRef {
@@ -27,7 +29,8 @@ export interface TexEditorRef {
 
 const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const {filePath} = props;
+    const fileInfo = props.fileInfo;
+    const filePath = fileInfo?.Path;
     const {handleSelectFile, exportTexOrImageAsAny} = useFileHandlers();
     const isDarkMode = useDarkMode();
 

@@ -22,9 +22,10 @@ import RangeProperty = COM3D2.RangeProperty;
 import TexOffsetProperty = COM3D2.TexOffsetProperty;
 import TexScaleProperty = COM3D2.TexScaleProperty;
 import KeywordProperty = COM3D2.KeywordProperty;
+import FileInfo = COM3D2.FileInfo;
 
 interface MateEditorProps {
-    filePath?: string; // 传入要打开的 .mate 文件路径
+    fileInfo?: FileInfo;
 }
 
 export interface MateEditorRef {
@@ -43,7 +44,8 @@ export interface MateEditorRef {
  */
 const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     const {t} = useTranslation();
-    const {filePath} = props;
+    const fileInfo = props.fileInfo;
+    const filePath = fileInfo?.Path;
 
     // 整体 .mate 数据
     const [mateData, setMateData] = useState<Mate | null>(null);
