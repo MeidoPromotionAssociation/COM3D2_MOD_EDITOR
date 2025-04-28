@@ -85,6 +85,25 @@ const KeyframeEditorWithTable = ({
         };
     }, [keyframesFieldName, dragState.isDragging]);
 
+    // 当表单值变化时，重新同步数据
+    useEffect(() => {
+        // 确保表单中有数据时同步一次
+        const formValue = form.getFieldValue(keyframesFieldName);
+        if (formValue && formValue.length > 0) {
+            syncFromForm();
+        }
+    }, [form, keyframesFieldName]);
+
+    // 当显示可视化编辑器时，确保数据已同步
+    useEffect(() => {
+        if (showVisualEditor) {
+            // 添加小延迟确保表单数据已完全加载
+            setTimeout(() => {
+                syncFromForm();
+            }, 50);
+        }
+    }, [showVisualEditor]);
+
     // 处理画布大小调整
     const handleResizeMouseDown = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -399,7 +418,16 @@ const KeyframeEditorWithTable = ({
                 <Space>
                     <Button
                         icon={showVisualEditor ? <EyeInvisibleOutlined/> : <EyeOutlined/>}
-                        onClick={() => setShowVisualEditor(!showVisualEditor)}
+                        onClick={() => {
+                            // 切换显示状态
+                            const newState = !showVisualEditor;
+                            setShowVisualEditor(newState);
+
+                            // 如果是显示可视化编辑器，确保数据同步
+                            if (newState) {
+                                syncFromForm();
+                            }
+                        }}
                     >
                         {showVisualEditor ? t('Common.KeyFrameEditor.hide_visual_editor') : t('Common.KeyFrameEditor.show_visual_editor')}
                     </Button>
