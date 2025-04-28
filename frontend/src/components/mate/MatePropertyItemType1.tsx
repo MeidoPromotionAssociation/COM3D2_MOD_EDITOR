@@ -32,7 +32,7 @@ const MatePropertyItemType1 = ({
             }}
         >
             <Form.Item initialValue='tex'
-                       {...restField}
+                       key={`${restField.key}-TypeName`}
                        label={t('MateEditor.property_type')}
                        name={[name, 'TypeName']}
                        labelCol={{style: {width: '100px'}}}
@@ -54,7 +54,7 @@ const MatePropertyItemType1 = ({
             </Form.Item>
 
             <Form.Item
-                {...restField}
+                key={`${restField.key}-propName`}
                 label={t('MateEditor.property_name')}
                 name={[name, 'propName']}
                 labelCol={{style: {width: '100px'}}}
@@ -70,7 +70,7 @@ const MatePropertyItemType1 = ({
             {currentTypeName === 'tex' && (
                 <>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-subTag`}
                         label={t('MateEditor.subTag')}
                         name={[name, 'subTag']}
                         labelCol={{style: {width: '100px'}}}
@@ -90,7 +90,7 @@ const MatePropertyItemType1 = ({
                     {(currentSubTag === 'tex2d' || currentSubTag === 'cube') && (
                         <>
                             <Form.Item
-                                {...restField}
+                                key={`${restField.key}-tex2dName`}
                                 label={t('MateEditor.tex2dName')}
                                 name={[name, 'tex2dName']}
                                 labelCol={{style: {width: '100px'}}}
@@ -104,7 +104,7 @@ const MatePropertyItemType1 = ({
                                 />
                             </Form.Item>
                             <Form.Item
-                                {...restField}
+                                key={`${restField.key}-tex2dPath`}
                                 label={t('MateEditor.tex2dPath')}
                                 name={[name, 'tex2dPath']}
                                 labelCol={{style: {width: '100px'}}}
@@ -119,7 +119,7 @@ const MatePropertyItemType1 = ({
                             </Form.Item>
                             <Space>
                                 <Form.Item
-                                    {...restField}
+                                    key={`${restField.key}-offsetX`}
                                     label={t('MateEditor.offsetX')}
                                     name={[name, 'offsetX']}
                                     labelCol={{style: {width: '100px'}}}
@@ -127,7 +127,7 @@ const MatePropertyItemType1 = ({
                                     <InputNumber/>
                                 </Form.Item>
                                 <Form.Item
-                                    {...restField}
+                                    key={`${restField.key}-offsetY`}
                                     label={t('MateEditor.offsetY')}
                                     name={[name, 'offsetY']}
                                     labelCol={{style: {width: '100px'}}}
@@ -135,7 +135,7 @@ const MatePropertyItemType1 = ({
                                     <InputNumber/>
                                 </Form.Item>
                                 <Form.Item
-                                    {...restField}
+                                    key={`${restField.key}-scaleX`}
                                     label={t('MateEditor.scaleX')}
                                     name={[name, 'scaleX']}
                                     labelCol={{style: {width: '100px'}}}
@@ -143,7 +143,7 @@ const MatePropertyItemType1 = ({
                                     <InputNumber/>
                                 </Form.Item>
                                 <Form.Item
-                                    {...restField}
+                                    key={`${restField.key}-scaleY`}
                                     label={t('MateEditor.scaleY')}
                                     name={[name, 'scaleY']}
                                     labelCol={{style: {width: '100px'}}}
@@ -156,7 +156,7 @@ const MatePropertyItemType1 = ({
                     {currentSubTag === 'texRT' && (
                         <>
                             <Form.Item
-                                {...restField}
+                                key={`${restField.key}-discardedStr1`}
                                 label={t('MateEditor.unknown_text_1')}
                                 name={[name, 'discardedStr1']}
                                 labelCol={{style: {width: '100px'}}}
@@ -170,7 +170,7 @@ const MatePropertyItemType1 = ({
                                 />
                             </Form.Item>
                             <Form.Item
-                                {...restField}
+                                key={`${restField.key}-discardedStr2`}
                                 label={t('MateEditor.unknown_text_2')}
                                 name={[name, 'discardedStr2']}
                                 labelCol={{style: {width: '100px'}}}
@@ -191,7 +191,7 @@ const MatePropertyItemType1 = ({
                 <>
                     <Space>
                         <Form.Item
-                            {...restField}
+                            key={`${restField.key}-colorR`}
                             label={t('MateEditor.R')}
                             name={[name, 'colorR']}
                             labelCol={{style: {width: '100px'}}}
@@ -199,7 +199,7 @@ const MatePropertyItemType1 = ({
                             <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
-                            {...restField}
+                            key={`${restField.key}-colorG`}
                             label={t('MateEditor.G')}
                             name={[name, 'colorG']}
                             labelCol={{style: {width: '100px'}}}
@@ -207,7 +207,7 @@ const MatePropertyItemType1 = ({
                             <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
-                            {...restField}
+                            key={`${restField.key}-colorB`}
                             label={t('MateEditor.B')}
                             name={[name, 'colorB']}
                             labelCol={{style: {width: '100px'}}}
@@ -215,7 +215,7 @@ const MatePropertyItemType1 = ({
                             <InputNumber min={0} max={1} step={0.01}/>
                         </Form.Item>
                         <Form.Item
-                            {...restField}
+                            key={`${restField.key}-colorA`}
                             label={t('MateEditor.A')}
                             name={[name, 'colorA']}
                             labelCol={{style: {width: '100px'}}}
@@ -239,7 +239,7 @@ const MatePropertyItemType1 = ({
             {currentTypeName === 'vec' && (
                 <Space align="baseline">
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-vec0`}
                         label={t('MateEditor.vec_x')}
                         name={[name, 'vec0']}
                         labelCol={{style: {width: '100px'}}}
@@ -247,7 +247,7 @@ const MatePropertyItemType1 = ({
                         <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-vec1`}
                         label={t('MateEditor.vec_y')}
                         name={[name, 'vec1']}
                         labelCol={{style: {width: '100px'}}}
@@ -255,7 +255,7 @@ const MatePropertyItemType1 = ({
                         <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-vec2`}
                         label={t('MateEditor.vec_z')}
                         name={[name, 'vec2']}
                         labelCol={{style: {width: '100px'}}}
@@ -263,7 +263,7 @@ const MatePropertyItemType1 = ({
                         <InputNumber step={0.01}/>
                     </Form.Item>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-vec3`}
                         label={t('MateEditor.vec_w')}
                         name={[name, 'vec3']}
                         labelCol={{style: {width: '100px'}}}
@@ -280,7 +280,7 @@ const MatePropertyItemType1 = ({
             {currentTypeName === 'f' && (
                 <Flex gap="small" style={{width: '100%'}}>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-number-f`}
                         label={t('MateEditor.number')}
                         name={[name, 'number']}
                         labelCol={{style: {width: '100px'}}}
@@ -298,7 +298,7 @@ const MatePropertyItemType1 = ({
             {currentTypeName === 'range' && (
                 <Flex gap="small" style={{width: '100%'}}>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-number-range`}
                         label={t('MateEditor.number')}
                         name={[name, 'number']}
                         labelCol={{style: {width: '100px'}}}
@@ -316,7 +316,7 @@ const MatePropertyItemType1 = ({
             {currentTypeName === 'tex_offset' && (
                 <Flex gap="small" style={{width: '100%'}}>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-offsetX-tex_offset`}
                         label={t('MateEditor.offsetX')}
                         name={[name, 'offsetX']}
                         labelCol={{style: {width: '100px'}}}
@@ -325,7 +325,7 @@ const MatePropertyItemType1 = ({
                         <InputNumber style={{width: '100%'}} step={0.01}/>
                     </Form.Item>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-offsetY-tex_offset`}
                         label={t('MateEditor.offsetY')}
                         name={[name, 'offsetY']}
                         labelCol={{style: {width: '100px'}}}
@@ -343,7 +343,7 @@ const MatePropertyItemType1 = ({
             {currentTypeName === 'tex_scale' && (
                 <Flex gap="small" style={{width: '100%'}}>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-scaleX-tex_scale`}
                         label={t('MateEditor.scaleX')}
                         name={[name, 'scaleX']}
                         labelCol={{style: {width: '100px'}}}
@@ -352,7 +352,7 @@ const MatePropertyItemType1 = ({
                         <InputNumber style={{width: '100%'}} step={0.01}/>
                     </Form.Item>
                     <Form.Item
-                        {...restField}
+                        key={`${restField.key}-scaleY-tex_scale`}
                         label={t('MateEditor.scaleY')}
                         name={[name, 'scaleY']}
                         labelCol={{style: {width: '100px'}}}
@@ -372,7 +372,7 @@ const MatePropertyItemType1 = ({
                     {(fields, {add, remove}) => (
                         <Table
                             dataSource={fields}
-                            rowKey="key"
+                            rowKey={(record) => record.key.toString()}
                             size="small"
                             bordered
                             pagination={false}
@@ -381,7 +381,7 @@ const MatePropertyItemType1 = ({
                                     title: t('MateEditor.keyword_no_brackets'),
                                     render: (_, field) => (
                                         <Form.Item
-                                            {...restField}
+                                            key={`${restField.key}-keyword-key-${field.key}`}
                                             name={[field.name, 'key']}
                                             style={{margin: 0}}
                                         >
@@ -398,7 +398,7 @@ const MatePropertyItemType1 = ({
                                     width: 120,
                                     render: (_, field) => (
                                         <Form.Item
-                                            {...restField}
+                                            key={`${restField.key}-keyword-value-${field.key}`}
                                             name={[field.name, 'value']}
                                             valuePropName="checked"
                                             style={{margin: 0}}
