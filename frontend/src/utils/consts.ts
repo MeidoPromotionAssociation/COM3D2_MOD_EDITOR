@@ -19,6 +19,15 @@ export const CrowdinUrl = "https://crowdin.com/project/com3d2modeditorv2" // Cro
 export const ImageMagickUrl = "https://imagemagick.org/script/download.php" // ImageMagick 下载地址
 
 // 支持的所有文件类型，用分号分隔，不包含图片类型
-export const AllSupportedFileTypes = "*.menu;*.mate;*.pmat;*.col;*.phy;*.psk;*.tex;*.anm;*.model"
+export const AllSupportedFileTypes =
+    "*.menu;*.menu.json;" +
+    "*.mate;*.mate.json;" +
+    "*.pmat;*.pmat.json;" +
+    "*.col;*.col.json;" +
+    "*.phy;*.phy.json;" +
+    "*.psk;*.psk.json;" +
+    "*.tex;*.tex.json;" +
+    "*.anm;*.anm.json;" +
+    "*.model*.model.json;"
 
 export const AllSupportedFileTypesSet = new Set(['menu', 'mate', 'pmat', 'col', 'phy', 'psk', 'tex', 'anm', 'model']);
