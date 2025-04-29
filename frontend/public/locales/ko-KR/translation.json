@@ -97,7 +97,7 @@
       "Version": "파일 버전",
       "enable_edit_do_not_edit": "수정하지 마세요",
       "Name": "비고 이름",
-      "Material_Name": "재질 이름",
+      "Material_Name": "재질 이름(pmat)",
       "Material_Name_tip": "재질 이름; 게임 본체는 이를 material.name에 할당하고, 동일 이름의 .pmat 파일을 찾은 뒤 사용합니다",
       "Material_ShaderName": "셰이더 이름",
       "Material_ShaderName_tip": "게임 본체는 동일한 이름의 셰이더를 찾아 사용합니다.",

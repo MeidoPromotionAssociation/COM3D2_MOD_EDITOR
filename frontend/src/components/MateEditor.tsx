@@ -383,10 +383,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         const newMate = COM3D2.Mate.createFrom(oldMate);
 
         // 基本字段
-        if (isSignatureEditable) {
-            newMate.Signature = values.signature;
-            newMate.Version = parseInt(values.version, 10);
-        }
+        newMate.Signature = values.signature;
+        newMate.Version = parseInt(values.version, 10);
         newMate.Name = values.name;
 
         // Material
@@ -594,8 +592,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     disabled={!isHeaderEditable}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                      {t('MateEditor.file_header.Name')}
-                    </span>
+                                          {t('MateEditor.file_header.Name')}
+                                        </span>
                                     }
                                     suffix={
                                         <Tooltip title={t('MateEditor.file_header.Name_tip')}>
@@ -609,8 +607,8 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                     disabled={!isHeaderEditable}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                      {t('MateEditor.file_header.Material_Name')}
-                    </span>
+                                          {t('MateEditor.file_header.Material_Name')}
+                                        </span>
                                     }
                                     suffix={
                                         <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
