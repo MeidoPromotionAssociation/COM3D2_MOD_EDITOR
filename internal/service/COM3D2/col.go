@@ -74,35 +74,34 @@ func (m *ColService) ConvertColToJson(inputPath string, outputPath string) error
 		outputPath = strings.TrimSuffix(outputPath, ".col") + ".col.json"
 	}
 
-	f, err := os.Open(inputPath)
+	colData, err := m.ReadColFile(inputPath)
 	if err != nil {
-		return fmt.Errorf("cannot open .col file: %w", err)
-	}
-	defer f.Close()
-
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	colData, err := COM3D2.ReadCol(br)
-	if err != nil {
-		return fmt.Errorf("parsing the .col file failed: %w", err)
+		return fmt.Errorf("failed to read col file: %w", err)
 	}
 
-	marshal, err := json.Marshal(colData)
+	jsonData, err := json.Marshal(colData)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal col data: %w", err)
 	}
 
-	f, err = os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create col.json file: %w", err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("error closing output file: %w", closeErr)
+		}
+	}()
+
 	bw := bufio.NewWriter(f)
-	if _, err := bw.Write(marshal); err != nil {
+	if _, err := bw.Write(jsonData); err != nil {
 		return fmt.Errorf("failed to write to col.json file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
+
 	return nil
 }
 
@@ -117,10 +116,11 @@ func (m *ColService) ConvertJsonToCol(inputPath string, outputPath string) error
 		return fmt.Errorf("cannot open col.json file: %w", err)
 	}
 	defer f.Close()
+
 	var colData *COM3D2.Col
-	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&colData); err != nil {
+	if err := json.NewDecoder(f).Decode(&colData); err != nil {
 		return fmt.Errorf("parsing the col.json file failed: %w", err)
 	}
+
 	return m.WriteColFile(outputPath, colData)
 }

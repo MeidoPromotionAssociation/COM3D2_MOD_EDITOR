@@ -74,35 +74,34 @@ func (s *PMatService) ConvertPMatToJson(inputPath string, outputPath string) err
 		outputPath = strings.TrimSuffix(outputPath, ".pmat") + ".pmat.json"
 	}
 
-	f, err := os.Open(inputPath)
+	pmatData, err := s.ReadPMatFile(inputPath)
 	if err != nil {
-		return fmt.Errorf("cannot open .pmat file: %w", err)
-	}
-	defer f.Close()
-
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	pmatData, err := COM3D2.ReadPMat(br)
-	if err != nil {
-		return fmt.Errorf("parsing the .pmat file failed: %w", err)
+		return fmt.Errorf("failed to read pmat file: %w", err)
 	}
 
-	marshal, err := json.Marshal(pmatData)
+	jsonData, err := json.Marshal(pmatData)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal pmat data: %w", err)
 	}
 
-	f, err = os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create pmat.json file: %w", err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("error closing output file: %w", closeErr)
+		}
+	}()
+
 	bw := bufio.NewWriter(f)
-	if _, err := bw.Write(marshal); err != nil {
+	if _, err := bw.Write(jsonData); err != nil {
 		return fmt.Errorf("failed to write to pmat.json file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
+
 	return nil
 }
 
@@ -117,10 +116,11 @@ func (s *PMatService) ConvertJsonToPMat(inputPath string, outputPath string) err
 		return fmt.Errorf("cannot open pmat.json file: %w", err)
 	}
 	defer f.Close()
+
 	var pmatData *COM3D2.PMat
-	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&pmatData); err != nil {
+	if err := json.NewDecoder(f).Decode(&pmatData); err != nil {
 		return fmt.Errorf("parsing the pmat.json file failed: %w", err)
 	}
+
 	return s.WritePMatFile(outputPath, pmatData)
 }

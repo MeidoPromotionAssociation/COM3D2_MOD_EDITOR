@@ -73,35 +73,34 @@ func (s *MenuService) ConvertMenuToJson(inputPath string, outputPath string) err
 		outputPath = strings.TrimSuffix(outputPath, ".menu") + ".menu.json"
 	}
 
-	f, err := os.Open(inputPath)
+	menuData, err := s.ReadMenuFile(inputPath)
 	if err != nil {
-		return fmt.Errorf("cannot open .menu file: %w", err)
-	}
-	defer f.Close()
-
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	menuData, err := COM3D2.ReadMenu(br)
-	if err != nil {
-		return fmt.Errorf("parsing the .menu file failed: %w", err)
+		return fmt.Errorf("failed to read menu file: %w", err)
 	}
 
-	marshal, err := json.Marshal(menuData)
+	jsonData, err := json.Marshal(menuData)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal menu data: %w", err)
 	}
 
-	f, err = os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create menu.json file: %w", err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("error closing output file: %w", closeErr)
+		}
+	}()
+
 	bw := bufio.NewWriter(f)
-	if _, err := bw.Write(marshal); err != nil {
+	if _, err := bw.Write(jsonData); err != nil {
 		return fmt.Errorf("failed to write to menu.json file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
+
 	return nil
 }
 
@@ -116,10 +115,11 @@ func (s *MenuService) ConvertJsonToMenu(inputPath string, outputPath string) err
 		return fmt.Errorf("cannot open menu.json file: %w", err)
 	}
 	defer f.Close()
+
 	var menuData *COM3D2.Menu
-	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&menuData); err != nil {
+	if err := json.NewDecoder(f).Decode(&menuData); err != nil {
 		return fmt.Errorf("parsing the menu.json file failed: %w", err)
 	}
+
 	return s.WriteMenuFile(outputPath, menuData)
 }

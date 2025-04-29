@@ -74,35 +74,34 @@ func (m *PhyService) ConvertPhyToJson(inputPath string, outputPath string) error
 		outputPath = strings.TrimSuffix(outputPath, ".phy") + ".phy.json"
 	}
 
-	f, err := os.Open(inputPath)
+	phyData, err := m.ReadPhyFile(inputPath)
 	if err != nil {
-		return fmt.Errorf("cannot open .phy file: %w", err)
-	}
-	defer f.Close()
-
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	phyData, err := COM3D2.ReadPhy(br)
-	if err != nil {
-		return fmt.Errorf("parsing the .phy file failed: %w", err)
+		return fmt.Errorf("failed to read phy file: %w", err)
 	}
 
-	marshal, err := json.Marshal(phyData)
+	jsonData, err := json.Marshal(phyData)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal phy data: %w", err)
 	}
 
-	f, err = os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create phy.json file: %w", err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("error closing output file: %w", closeErr)
+		}
+	}()
+
 	bw := bufio.NewWriter(f)
-	if _, err := bw.Write(marshal); err != nil {
+	if _, err := bw.Write(jsonData); err != nil {
 		return fmt.Errorf("failed to write to phy.json file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
+
 	return nil
 }
 
@@ -117,10 +116,11 @@ func (m *PhyService) ConvertJsonToPhy(inputPath string, outputPath string) error
 		return fmt.Errorf("cannot open phy.json file: %w", err)
 	}
 	defer f.Close()
+
 	var phyData *COM3D2.Phy
-	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&phyData); err != nil {
+	if err := json.NewDecoder(f).Decode(&phyData); err != nil {
 		return fmt.Errorf("parsing the phy.json file failed: %w", err)
 	}
+
 	return m.WritePhyFile(outputPath, phyData)
 }

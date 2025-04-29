@@ -74,35 +74,34 @@ func (m *MateService) ConvertMateToJson(inputPath string, outputPath string) err
 		outputPath = strings.TrimSuffix(outputPath, ".mate") + ".mate.json"
 	}
 
-	f, err := os.Open(inputPath)
+	mateData, err := m.ReadMateFile(inputPath)
 	if err != nil {
-		return fmt.Errorf("cannot open .mate file: %w", err)
-	}
-	defer f.Close()
-
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	mateData, err := COM3D2.ReadMate(br)
-	if err != nil {
-		return fmt.Errorf("parsing the .mate file failed: %w", err)
+		return fmt.Errorf("failed to read mate file: %w", err)
 	}
 
-	marshal, err := json.Marshal(mateData)
+	jsonData, err := json.Marshal(mateData)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal mate data: %w", err)
 	}
 
-	f, err = os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create mate.json file: %w", err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("error closing output file: %w", closeErr)
+		}
+	}()
+
 	bw := bufio.NewWriter(f)
-	if _, err := bw.Write(marshal); err != nil {
+	if _, err := bw.Write(jsonData); err != nil {
 		return fmt.Errorf("failed to write to mate.json file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
+
 	return nil
 }
 
@@ -117,10 +116,11 @@ func (m *MateService) ConvertJsonToMate(inputPath string, outputPath string) err
 		return fmt.Errorf("cannot open mate.json file: %w", err)
 	}
 	defer f.Close()
+
 	var mateData *COM3D2.Mate
-	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&mateData); err != nil {
+	if err := json.NewDecoder(f).Decode(&mateData); err != nil {
 		return fmt.Errorf("parsing the mate.json file failed: %w", err)
 	}
+
 	return m.WriteMateFile(outputPath, mateData)
 }

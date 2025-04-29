@@ -73,32 +73,35 @@ func (m *AnmService) ConvertAnmToJson(inputPath string, outputPath string) error
 	if strings.HasSuffix(outputPath, ".anm") {
 		outputPath = strings.TrimSuffix(outputPath, ".anm") + ".anm.json"
 	}
-	f, err := os.Open(inputPath)
+
+	anmData, err := m.ReadAnmFile(inputPath)
 	if err != nil {
-		return fmt.Errorf("cannot open.anm file: %w", err)
+		return fmt.Errorf("failed to read anm file: %w", err)
 	}
-	defer f.Close()
-	br := bufio.NewReaderSize(f, 1024*1024*10) //10MB 缓冲区
-	anmData, err := COM3D2.ReadAnm(br)
+
+	jsonData, err := json.Marshal(anmData)
 	if err != nil {
-		return fmt.Errorf("parsing the.anm file failed: %w", err)
+		return fmt.Errorf("failed to marshal anm data: %w", err)
 	}
-	marshal, err := json.Marshal(anmData)
+
+	f, err := os.Create(outputPath)
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to create anm.json file: %w", err)
 	}
-	f, err = os.Create(outputPath)
-	if err != nil {
-		return fmt.Errorf("unable to create model.json file: %w", err)
-	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			err = fmt.Errorf("error closing output file: %w", closeErr)
+		}
+	}()
+
 	bw := bufio.NewWriter(f)
-	if _, err := bw.Write(marshal); err != nil {
-		return fmt.Errorf("failed to write to model.json file: %w", err)
+	if _, err := bw.Write(jsonData); err != nil {
+		return fmt.Errorf("failed to write to anm.json file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)
 	}
+
 	return nil
 }
 
@@ -113,10 +116,11 @@ func (m *AnmService) ConvertJsonToAnm(inputPath string, outputPath string) error
 		return fmt.Errorf("cannot open anm.json file: %w", err)
 	}
 	defer f.Close()
+
 	var anmData *COM3D2.Anm
-	decoder := json.NewDecoder(f)
-	if err := decoder.Decode(&anmData); err != nil {
+	if err := json.NewDecoder(f).Decode(&anmData); err != nil {
 		return fmt.Errorf("parsing the anm.json file failed: %w", err)
 	}
+
 	return m.WriteAnmFile(outputPath, anmData)
 }
