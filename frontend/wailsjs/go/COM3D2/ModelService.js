@@ -18,10 +18,18 @@ export function ReadModelMaterial(arg1) {
   return window['go']['COM3D2']['ModelService']['ReadModelMaterial'](arg1);
 }
 
+export function ReadModelMetadata(arg1) {
+  return window['go']['COM3D2']['ModelService']['ReadModelMetadata'](arg1);
+}
+
 export function WriteModelFile(arg1, arg2) {
   return window['go']['COM3D2']['ModelService']['WriteModelFile'](arg1, arg2);
 }
 
 export function WriteModelMaterial(arg1, arg2, arg3) {
   return window['go']['COM3D2']['ModelService']['WriteModelMaterial'](arg1, arg2, arg3);
+}
+
+export function WriteModelMetadata(arg1, arg2, arg3) {
+  return window['go']['COM3D2']['ModelService']['WriteModelMetadata'](arg1, arg2, arg3);
 }

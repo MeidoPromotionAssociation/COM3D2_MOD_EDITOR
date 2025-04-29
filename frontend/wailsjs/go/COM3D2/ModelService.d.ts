@@ -10,6 +10,10 @@ export function ReadModelFile(arg1:string):Promise<COM3D2.Model>;
 
 export function ReadModelMaterial(arg1:string):Promise<Array<COM3D2.Material>>;
 
+export function ReadModelMetadata(arg1:string):Promise<COM3D2.ModelMetadata>;
+
 export function WriteModelFile(arg1:string,arg2:COM3D2.Model):Promise<void>;
 
 export function WriteModelMaterial(arg1:string,arg2:string,arg3:Array<COM3D2.Material>):Promise<void>;
+
+export function WriteModelMetadata(arg1:string,arg2:string,arg3:COM3D2.ModelMetadata):Promise<void>;
