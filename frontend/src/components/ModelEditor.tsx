@@ -1,18 +1,22 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {Button, Form, message, Modal} from "antd";
+import {Button, message, Modal, Radio} from "antd";
 import {WindowSetTitle} from "../../wailsjs/runtime";
 import {COM3D2} from "../../wailsjs/go/models";
 import {
     ConvertJsonToModel,
     ConvertModelToJson,
     ReadModelFile,
-    WriteModelFile
+    ReadModelMetadata,
+    WriteModelFile,
+    WriteModelMetadata
 } from "../../wailsjs/go/COM3D2/ModelService";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {ModelEditorViewModeKey} from "../utils/LocalStorageKeys";
 import ModelMonacoEditor from "./model/ModelMonacoEditor";
+import ModelMetadataEditor from "./model/ModelMetadataEditor";
 import Model = COM3D2.Model;
+import ModelMetadata = COM3D2.ModelMetadata;
 import FileInfo = COM3D2.FileInfo;
 
 export interface ModelEditorProps {
@@ -34,13 +38,10 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
     // Model 数据对象
     const [modelData, setModelData] = useState<Model | null>(null);
 
-    // 是否允许编辑 Signature、Version 等字段
-    const [headerEditable, setHeaderEditable] = useState(false);
+    // ModelMetadata 数据对象
+    const [modelMetadata, setModelMetadata] = useState<ModelMetadata | null>(null);
 
-    // antd form
-    const [form] = Form.useForm();
-
-    // 用来切换视图模式
+    // 用来切换视图模式: 1=完整JSON编辑, 2=元数据编辑
     const [viewMode, setViewMode] = useState<1 | 2>(() => {
         const saved = localStorage.getItem(ModelEditorViewModeKey);
         return saved ? Number(saved) as 1 | 2 : 1;
@@ -77,6 +78,12 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
             // 没有 filePath 时，可初始化一个新的 model 对象
             const newModel = COM3D2.Model.createFrom({});
             setModelData(newModel);
+
+            // 同时初始化一个新的 ModelMetadata 对象
+            const newModelMetadata = COM3D2.ModelMetadata.createFrom({
+                Materials: []
+            });
+            setModelMetadata(newModelMetadata);
         }
 
         return () => {
@@ -93,7 +100,8 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
         }
         try {
             const size = fileInfo?.Size;
-            if (size > 1024 * 1024 * 20) {
+            // 仅完整编辑模式检查
+            if (viewMode === 1 && size > 1024 * 1024 * 20) {
                 setPendingFileContent({size});
                 setIsConfirmModalOpen(true);
                 return;
@@ -111,37 +119,127 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
             message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
             return;
         }
-        if (!modelData) {
-            message.error(t('Errors.pls_load_file_first'));
-            return;
-        }
-        try {
-            await WriteModelFile(filePath, modelData);
-            message.success(t('Infos.success_save_file'));
-        } catch (error: any) {
-            console.error(error);
-            message.error(t('Errors.save_file_failed_colon') + error);
+
+        // 根据当前视图模式决定保存方式
+        if (viewMode === 1) {
+            // 完整模式 - 保存整个 Model
+            if (!modelData) {
+                message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+                return;
+            }
+            const hide = message.loading(t('Infos.saving_please_wait'), 0);
+            try {
+                await WriteModelFile(filePath, modelData);
+                message.success(t('Infos.success_save_file'));
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.save_file_failed_colon') + error);
+            } finally {
+                hide();
+            }
+        } else {
+            // 元数据模式 - 只保存 ModelMetadata
+            if (!modelMetadata) {
+                message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+                return;
+            }
+            const hide = message.loading(t('Infos.saving_please_wait'), 0);
+            try {
+                await WriteModelMetadata(filePath, filePath, modelMetadata);
+                message.success(t('Infos.success_save_file'));
+            } catch (error: any) {
+                console.error(error);
+                message.error(t('Errors.save_file_failed_colon') + error);
+            } finally {
+                hide();
+            }
         }
     }
 
     /** 另存为 Model 文件 */
     const handleSaveAsModelFile = async () => {
-        if (!modelData) {
-            message.error(t('Errors.pls_load_file_first'));
-            return;
-        }
-
-        try {
-            const newPath = await SelectPathToSave("*.model;*.model.json", t('Infos.com3d2_model_file'));
-            if (!newPath) {
-                // 用户取消
+        // 根据当前视图模式决定保存方式
+        if (viewMode === 1) {
+            // 完整模式 - 保存整个 Model
+            if (!modelData) {
+                message.error(t('Errors.pls_load_file_first'));
                 return;
             }
-            await WriteModelFile(newPath, modelData);
-            message.success(t('Infos.success_save_as_file_colon') + newPath);
-        } catch (error: any) {
-            message.error(t('Errors.save_as_file_failed_colon') + error.message);
-            console.error(error);
+
+            try {
+                const newPath = await SelectPathToSave("*.model;*.model.json", t('Infos.com3d2_model_file'));
+                if (!newPath) {
+                    // 用户取消
+                    return;
+                }
+
+                const hide = message.loading(t('Infos.saving_please_wait'), 0);
+                try {
+                    await WriteModelFile(newPath, modelData);
+                    message.success(t('Infos.success_save_as_file_colon') + newPath);
+                } catch (error: any) {
+                    console.error(error);
+                    message.error(t('Errors.save_as_file_failed_colon') + error);
+                } finally {
+                    hide();
+                }
+
+            } catch (error: any) {
+                message.error(t('Errors.save_as_file_failed_colon') + error.message);
+                console.error(error);
+            }
+        } else {
+            // 元数据模式 - 只保存 ModelMetadata
+            if (!modelMetadata) {
+                message.error(t('Errors.pls_load_file_first'));
+                return;
+            }
+
+            try {
+                const newPath = await SelectPathToSave("*.model;*.model.json", t('Infos.com3d2_model_file'));
+                if (!newPath) {
+                    // 用户取消
+                    return;
+                }
+
+                const hide = message.loading(t('Infos.saving_please_wait'), 0);
+                try {
+                    if (!filePath) {
+                        // 如果没有原始文件路径，则创建一个新的 Model 对象并保存
+                        const newModel = COM3D2.Model.createFrom({
+                            Signature: modelMetadata.Signature,
+                            Version: modelMetadata.Version,
+                            Name: modelMetadata.Name,
+                            RootBoneName: modelMetadata.RootBoneName,
+                            ShadowCastingMode: modelMetadata.ShadowCastingMode,
+                            Materials: modelMetadata.Materials,
+                            Bones: [],
+                            VertCount: 0,
+                            SubMeshCount: 0,
+                            BoneCount: 0,
+                            BoneNames: [],
+                            BindPoses: [],
+                            Vertices: [],
+                            BoneWeights: [],
+                            SubMeshes: []
+                        });
+                        await WriteModelFile(newPath, newModel);
+                    } else {
+                        // 如果有原始文件路径，则使用 WriteModelMetadata
+                        await WriteModelMetadata(filePath, newPath, modelMetadata);
+                    }
+                    message.success(t('Infos.success_save_as_file_colon') + newPath);
+                } catch (error: any) {
+                    console.error(error);
+                    message.error(t('Errors.save_as_file_failed_colon') + error);
+                } finally {
+                    hide();
+                }
+
+            } catch (error: any) {
+                message.error(t('Errors.save_as_file_failed_colon') + error.message);
+                console.error(error);
+            }
         }
     }
 
@@ -181,10 +279,18 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
             }
             return;
         }
-        const hide = message.loading(t('Infos.loading_please_wait'));
+
+        const hide = message.loading(t('Infos.loading_please_wait'), 0);
         try {
-            const data = await ReadModelFile(filePath);
-            setModelData(data);
+            if (viewMode === 1) {
+                // 完整模式，读取完整 Model 数据
+                const data = await ReadModelFile(filePath);
+                setModelData(data);
+            } else {
+                // 元数据模式，读取 ModelMetadata 数据
+                const metadata = await ReadModelMetadata(filePath);
+                setModelMetadata(metadata);
+            }
         } catch (error: any) {
             console.error(error);
             message.error(t('Errors.read_foo_file_failed_colon', {file_type: '.model'}) + error);
@@ -218,12 +324,38 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
                 <p>{t('Infos.file_too_large_tip', {size: (pendingFileContent?.size / 1024 / 1024).toFixed(2)})}</p>
                 <p>{t('Infos.file_too_large_convert_to_json_directly')}</p>
             </Modal>
-            <ModelMonacoEditor
-                modelData={modelData}
-                setModelData={(newVal) => setModelData(newVal)}
-            >
-            </ModelMonacoEditor>
 
+            {/* 视图模式切换 */}
+            <div style={{marginBottom: 8}}>
+                <Radio.Group
+                    block
+                    value={viewMode}
+                    onChange={(e) => {
+                        setViewMode(e.target.value);
+                        localStorage.setItem(ModelEditorViewModeKey, e.target.value.toString());
+                    }}
+                    options={[
+                        {label: t('ModelEditor.full_model'), value: 1},
+                        {label: t('ModelEditor.metadata_only'), value: 2},
+                    ]}
+                    optionType="button"
+                    buttonStyle="solid"
+                    size="small"
+                />
+            </div>
+
+            {/* 根据视图模式显示不同的编辑器 */}
+            {viewMode === 1 ? (
+                <ModelMonacoEditor
+                    modelData={modelData}
+                    setModelData={(newVal) => setModelData(newVal)}
+                />
+            ) : (
+                <ModelMetadataEditor
+                    modelMetadata={modelMetadata}
+                    onModelMetadataChange={(newVal) => setModelMetadata(newVal)}
+                />
+            )}
         </div>
     );
 })

@@ -141,6 +141,8 @@ export const COM3D2HeaderConstants = {
     TexVersion: 1010,
     AnmSignature: "CM3D2_ANIM",
     AnmVersion: 1001,
+    ModelSignature: "CM3D2_MODEL",
+    ModelVersion: 2001,
 
     endByte: 0x00,
     MateEndString: "end"

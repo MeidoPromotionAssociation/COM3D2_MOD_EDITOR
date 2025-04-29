@@ -92,6 +92,7 @@
   },
   "MateEditor": {
     "file_header": {
+      "basic_info": "基本信息",
       "file_head": "文件头",
       "Signature": "文件签名",
       "Version": "文件版本",
@@ -396,6 +397,26 @@
     "BustKeyLeft": "是否启用左胸动画",
     "BustKeyRight": "是否启用右胸动画"
   },
+  "ModelEditor": {
+    "file_header": {
+      "file_head": "文件头",
+      "Signature": "文件签名",
+      "Version": "文件版本",
+      "enable_edit_do_not_edit": "不要修改"
+    },
+    "model_name": "模型名",
+    "model_name_tip": "模型的名字 (Name)，会被游戏设置为 GameObject 的名称，经常被各种插件使用，例如 HighHeel 插件，游戏内也会检查是否为特殊名称",
+    "root_bone_name": "根骨骼名",
+    "root_bone_name_tip": "根骨骼名 (RootBoneName)，模型的根骨骼名，通常是模型的根节点，例如物件骨骼通常为 Bone_center，身体骨骼通常为 Bip01",
+    "shadow_casting_mode": "阴影投射模式",
+    "shadow_casting_mode_tip": "阴影投射模式 (ShadowCastingMode)，仅 COM3D2.5 有效，须模型版本大于等于 2104 且小于 2200，Off 关闭阴影投射，On 投射阴影，TwoSided 双面投射阴影，ShadowsOnly 只投射阴影",
+    "full_model": "完整模式（仅 JSON）",
+    "metadata_only": "元数据编辑模式",
+    "materials": "材质",
+    "add_material": "添加材质",
+    "delete_material": "删除材质",
+    "no_materials": "无材质"
+  },
   "SettingsPage": {
     "general_settings": "通用设置",
     "update_settings": "更新设置",
@@ -461,7 +482,8 @@
     "file_too_large_convert_to_json_directly": "您也可以选择直接转换，例如：如果输入是`文件名.model.json`则会被直接转换回`文件名.model`，反之亦然，转换后输出至原目录。转换为 .json 后您也可以选择使用其他编辑器编辑后再使用本编辑器转换回。",
     "directly_convert_success": "直接转换成功，输出路径：",
     "converting_please_wait": "转换中，请稍候...",
-    "loading_please_wait": "加载中，请稍候..."
+    "loading_please_wait": "加载中，请稍候...",
+    "saving_please_wait": "保存中，请稍候..."
   },
   "Errors": {
     "fail_to_check_update": "检查更新失败",

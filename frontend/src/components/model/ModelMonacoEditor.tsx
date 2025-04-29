@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {useDarkMode} from "../../hooks/themeSwitch";
 import {COM3D2} from "../../../wailsjs/go/models";
-import {useTranslation} from "react-i18next";
 import Model = COM3D2.Model;
 
 /** 直接用 Monaco Editor 展示/编辑整个 JSON */
@@ -10,7 +9,6 @@ const ModelMonacoEditor: React.FC<{
     modelData: Model | null;
     setModelData: (a: Model | null) => void;
 }> = ({modelData, setModelData}) => {/**/
-    const {t} = useTranslation();
     const isDarkMode = useDarkMode();
     const [jsonValue, setJsonValue] = useState("");
     const editorRef = useRef<any>(null);
@@ -91,7 +89,7 @@ const ModelMonacoEditor: React.FC<{
 
     return (
         <div style={{
-            height: "calc(100vh - 90px)",
+            height: "calc(100vh - 120px)",
             borderRadius: '8px',   // 添加圆角
             overflow: 'hidden'     // 隐藏超出圆角范围的部分
         }}>
