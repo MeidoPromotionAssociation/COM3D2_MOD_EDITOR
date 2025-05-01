@@ -1,5 +1,6 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
-import {Collapse, ConfigProvider, Form, Input, Radio, Tooltip,} from 'antd';
+import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useState} from 'react';
+import debounce from 'lodash/debounce';
+import {Button, Collapse, ConfigProvider, Form, Input, Radio, Tooltip,} from 'antd';
 import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
 import Style3MateProperties from "../mate/Style3MateProperties";
@@ -294,18 +295,93 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
             });
         }
 
+        // Set the properties array to the material
+        updatedMaterial.Properties = newProps as any;
         return updatedMaterial;
     };
 
-    // 表单值变化时，更新 Material 对象
-    const handleFormValuesChange = (changedValues: any, allValues: any) => {
+    // 手动更新 Material 对象
+    const updateMaterialFromForm = () => {
         if (!material) return;
 
-        const updatedMaterial = transformFormToMaterial(allValues, material);
+        // 获取当前表单值
+        const currentFormValues = form.getFieldsValue(true);
+        const updatedMaterial = transformFormToMaterial(currentFormValues, material);
         setMaterial(updatedMaterial);
 
         if (props.onMaterialChange) {
             props.onMaterialChange(updatedMaterial);
+        }
+
+        return updatedMaterial;
+    };
+
+    // 使用防抖函数延迟更新 Material 对象
+    const debouncedUpdateMaterial = useMemo(
+        () => debounce((allValues: any) => {
+            if (!material) return;
+
+            const updatedMaterial = transformFormToMaterial(allValues, material);
+            setMaterial(updatedMaterial);
+
+            if (props.onMaterialChange) {
+                props.onMaterialChange(updatedMaterial);
+            }
+        }, 500), // 500ms 的防抖时间
+        [material, props.onMaterialChange]
+    );
+
+    // 表单值变化时，使用防抖函数延迟更新 Material 对象
+    const handleFormValuesChange = (changedValues: any, allValues: any) => {
+        // 如果是添加新属性或修改属性类型，不立即更新
+        // 只有当用户完成属性的配置后才更新
+
+        // 检查是否有属性类型变化
+        let shouldSkipUpdate = false;
+
+        if (changedValues.properties) {
+            // 检查是否有属性类型变化
+            const hasTypeNameChange = Object.keys(changedValues.properties).some(key => {
+                const prop = changedValues.properties[key];
+                return prop?.TypeName !== undefined;
+            });
+
+            // 检查是否有属性名变化
+            const hasPropNameChange = Object.keys(changedValues.properties).some(key => {
+                const prop = changedValues.properties[key];
+                return prop?.propName !== undefined;
+            });
+
+            // 检查是否有 tex 类型但没有 subTag 的属性
+            const hasTexWithoutSubTag = Object.keys(allValues.properties || {}).some(key => {
+                const fullProp = allValues.properties?.[key];
+                return fullProp?.TypeName === 'tex' && !fullProp?.subTag;
+            });
+
+            // 检查是否是新添加的属性
+            const isNewProperty = Object.keys(changedValues.properties).length === 1 &&
+                Object.values(changedValues.properties)[0] === undefined;
+
+            // 检查是否有 subTag 变化
+            const hasSubTagChange = Object.keys(changedValues.properties).some(key =>
+                changedValues.properties[key]?.subTag !== undefined);
+
+            // 如果是以下情况，则跳过更新：
+            // 1. 属性类型变化
+            // 2. 新添加的属性
+            // 3. TEX 类型但没有 subTag
+            // 但如果是 subTag 变化，则允许更新
+            shouldSkipUpdate = (hasTypeNameChange || isNewProperty || hasTexWithoutSubTag) && !hasSubTagChange;
+
+            // 如果只是属性名变化，且不是 TEX 类型没有 subTag，则允许更新
+            if (hasPropNameChange && !hasTypeNameChange && !hasTexWithoutSubTag) {
+                shouldSkipUpdate = false;
+            }
+        }
+
+        // 如果不需要跳过更新，则执行防抖更新
+        if (!shouldSkipUpdate) {
+            debouncedUpdateMaterial(allValues);
         }
     };
 
@@ -394,18 +470,13 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
                             block
                             value={viewMode}
                             onChange={(e) => {
-                                // 在切换显示模式之前获取当前表单值并更新 material
-                                const currentFormValues = form.getFieldsValue(true);
+                                // 在切换显示模式之前更新 material
                                 if (material && (viewMode !== 3)) { // 非模式 3 时从表单拿数据，因为模式 3 是 JSON
-                                    const updatedMaterial = transformFormToMaterial(currentFormValues, material);
-                                    setMaterial(updatedMaterial);
-
-                                    if (props.onMaterialChange) {
-                                        props.onMaterialChange(updatedMaterial);
-                                    }
+                                    // 强制立即更新，不使用防抖
+                                    const updatedMaterial = updateMaterialFromForm();
 
                                     // 更新临时 Mate 对象
-                                    if (tempMateData) {
+                                    if (tempMateData && updatedMaterial) {
                                         const updatedTempMate = Mate.createFrom(tempMateData);
                                         updatedTempMate.Material = updatedMaterial;
                                         setTempMateData(updatedTempMate);
