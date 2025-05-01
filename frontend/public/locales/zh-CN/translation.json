@@ -399,7 +399,7 @@
   },
   "ModelEditor": {
     "file_header": {
-      "file_head": "文件头",
+      "basic_info": "基本信息",
       "Signature": "文件签名",
       "Version": "文件版本",
       "enable_edit_do_not_edit": "不要修改"

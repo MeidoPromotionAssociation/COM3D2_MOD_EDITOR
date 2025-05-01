@@ -125,7 +125,7 @@ const ModelMetadataEditor: React.FC<ModelMetadataEditorProps> = ({
             >
                 <div style={{marginBottom: '8px'}}>
                     <Collapse defaultActiveKey={['header']}>
-                        <Collapse.Panel key="header" header={t('ModelEditor.file_header.file_head')}>
+                        <Collapse.Panel key="header" header={t('ModelEditor.file_header.basic_info')}>
                             <Space>
                                 <Form.Item name="signature" initialValue={COM3D2HeaderConstants.ModelSignature}>
                                     <Input

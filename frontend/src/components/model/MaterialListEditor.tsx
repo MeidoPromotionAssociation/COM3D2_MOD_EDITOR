@@ -4,12 +4,52 @@ import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import MaterialEditor from './MaterialEditor';
+import type {DragEndEvent} from '@dnd-kit/core';
+import {
+    closestCenter,
+    DndContext,
+    MeasuringStrategy,
+    MouseSensor,
+    TouchSensor,
+    useSensor,
+    useSensors
+} from '@dnd-kit/core';
+import {arrayMove, horizontalListSortingStrategy, SortableContext, useSortable} from '@dnd-kit/sortable';
+import {CSS} from '@dnd-kit/utilities';
 import Material = COM3D2.Material;
 
 export interface MaterialListEditorProps {
     materials: Material[];
     onMaterialsChange: (materials: Material[]) => void;
 }
+
+interface DraggableTabPaneProps extends React.HTMLAttributes<HTMLDivElement> {
+    'data-node-key': string;
+}
+
+const DraggableTabNode: React.FC<Readonly<DraggableTabPaneProps>> = ({className, ...props}) => {
+    const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
+        id: props['data-node-key'],
+    });
+
+    // 简化样式处理，仅保留必要的变换
+    const style: React.CSSProperties = {
+        ...props.style,
+        transform: CSS.Transform.toString(transform),
+        transition: transition || 'none', // 使用更快地过渡或无过渡
+        cursor: 'move',
+        opacity: isDragging ? 0.7 : 1,
+        zIndex: isDragging ? 9999 : 'auto', // 使用更高的 z-index
+        pointerEvents: isDragging ? 'none' : 'auto', // 拖拽时禁用鼠标事件，减少干扰
+    };
+
+    return React.cloneElement(props.children as React.ReactElement<any>, {
+        ref: setNodeRef,
+        style,
+        ...attributes,
+        ...listeners,
+    });
+};
 
 /**
  * MaterialListEditor 组件
@@ -22,6 +62,26 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                                                                }) => {
     const {t} = useTranslation();
     const [activeKey, setActiveKey] = useState<string | null>(null);
+
+    // 使用分离的鼠标和触摸传感器，提供更轻量级的拖拽体验
+    const mouseSensor = useSensor(MouseSensor, {
+        // 鼠标传感器配置 - 最小距离和延迟
+        activationConstraint: {
+            distance: 2,
+            delay: 0,
+        }
+    });
+
+    const touchSensor = useSensor(TouchSensor, {
+        // 触摸传感器配置 - 最小距离和延迟
+        activationConstraint: {
+            distance: 2,
+            delay: 0,
+        }
+    });
+
+    // 组合传感器
+    const sensors = useSensors(mouseSensor, touchSensor);
 
     // 添加新的 Material
     const handleAddMaterial = () => {
@@ -56,6 +116,27 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
         const updatedMaterials = [...materials];
         updatedMaterials[index] = updatedMaterial;
         onMaterialsChange(updatedMaterials);
+    };
+
+    // 处理拖拽结束事件
+    const onDragEnd = ({active, over}: DragEndEvent) => {
+        if (active.id !== over?.id && over?.id) {
+            // 找到拖拽的标签和目标标签的索引
+            const activeId = active.id.toString();
+            const overId = over.id.toString();
+
+            const activeIndex = parseInt(activeId.split('-')[1]);
+            const overIndex = parseInt(overId.split('-')[1]);
+
+            if (!isNaN(activeIndex) && !isNaN(overIndex) && activeIndex !== overIndex) {
+                // 重新排序材质列表
+                const updatedMaterials = arrayMove([...materials], activeIndex, overIndex);
+                onMaterialsChange(updatedMaterials);
+
+                // 更新活动标签
+                setActiveKey(`material-${overIndex}`);
+            }
+        }
     };
 
     // 生成 Tabs 项
@@ -114,6 +195,35 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                                 {t('ModelEditor.add_material')}
                             </Button>
                         }
+                        renderTabBar={(tabBarProps, DefaultTabBar) => (
+                            <DndContext
+                                sensors={sensors}
+                                onDragEnd={onDragEnd}
+                                collisionDetection={closestCenter}
+                                modifiers={[]}
+                                measuring={{
+                                    droppable: {
+                                        strategy: MeasuringStrategy.Always // 始终测量可放置区域，提高响应速度
+                                    }
+                                }}
+                            >
+                                <SortableContext
+                                    items={items.map((i) => i.key)}
+                                    strategy={horizontalListSortingStrategy}
+                                >
+                                    <DefaultTabBar {...tabBarProps}>
+                                        {(node) => (
+                                            <DraggableTabNode
+                                                {...(node as React.ReactElement<DraggableTabPaneProps>).props}
+                                                key={node.key}
+                                            >
+                                                {node}
+                                            </DraggableTabNode>
+                                        )}
+                                    </DefaultTabBar>
+                                </SortableContext>
+                            </DndContext>
+                        )}
                     />
                 </>
             )}
