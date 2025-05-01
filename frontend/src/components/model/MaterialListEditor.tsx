@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo, useCallback, lazy, Suspense} from 'react';
 import {Button, Empty, Tabs, Tooltip} from 'antd';
 import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
-import MaterialEditor from './MaterialEditor';
+// Lazy load MaterialEditor component
+const MaterialEditor = lazy(() => import('./MaterialEditor'));
 import type {DragEndEvent} from '@dnd-kit/core';
 import {
     closestCenter,
@@ -27,7 +28,7 @@ interface DraggableTabPaneProps extends React.HTMLAttributes<HTMLDivElement> {
     'data-node-key': string;
 }
 
-const DraggableTabNode: React.FC<Readonly<DraggableTabPaneProps>> = ({className, ...props}) => {
+const DraggableTabNode = React.memo<Readonly<DraggableTabPaneProps>>(({className, ...props}) => {
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id: props['data-node-key'],
     });
@@ -51,7 +52,7 @@ const DraggableTabNode: React.FC<Readonly<DraggableTabPaneProps>> = ({className,
             {child}
         </div>
     );
-};
+});
 
 /**
  * MaterialListEditor 组件
@@ -64,6 +65,7 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                                                                }) => {
     const {t} = useTranslation();
     const [activeKey, setActiveKey] = useState<string | null>(null);
+    const [isTabSwitching, setIsTabSwitching] = useState(false);
 
     // 使用鼠标传感器
     const mouseSensor = useSensor(MouseSensor, {
@@ -81,18 +83,27 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
     });
 
     // 添加点击事件处理函数
-    const handleTabClick = (key: string) => {
+    const handleTabClick = useCallback((key: string) => {
         // 如果点击的是当前标签，不做任何处理
         if (key === activeKey) return;
 
+        // 设置正在切换标签状态
+        setIsTabSwitching(true);
+
+        // 立即更新标签选中状态，使 UI 响应更快
         setActiveKey(key);
-    };
+
+        // 在微小延迟后重置切换状态，允许内容渲染
+        setTimeout(() => {
+            setIsTabSwitching(false);
+        }, 50); // 小延迟使切换更流畅
+    }, [activeKey]);
 
     // 组合传感器
     const sensors = useSensors(mouseSensor, touchSensor);
 
     // 添加新的 Material
-    const handleAddMaterial = () => {
+    const handleAddMaterial = useCallback(() => {
         const newMaterial = Material.createFrom({
             Name: `Material_${materials.length}`,
             ShaderName: "",
@@ -105,10 +116,10 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
 
         // 设置新添加的 Material 为当前活动项
         setActiveKey(`material-${updatedMaterials.length - 1}`);
-    };
+    }, [materials, onMaterialsChange]);
 
     // 删除 Material
-    const handleDeleteMaterial = (index: number) => {
+    const handleDeleteMaterial = useCallback((index: number) => {
         const updatedMaterials = [...materials];
         updatedMaterials.splice(index, 1);
         onMaterialsChange(updatedMaterials);
@@ -117,17 +128,17 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
         if (activeKey === `material-${index}`) {
             setActiveKey(null);
         }
-    };
+    }, [activeKey, materials, onMaterialsChange]);
 
     // 更新 Material
-    const handleMaterialChange = (index: number, updatedMaterial: Material) => {
+    const handleMaterialChange = useCallback((index: number, updatedMaterial: Material) => {
         const updatedMaterials = [...materials];
         updatedMaterials[index] = updatedMaterial;
         onMaterialsChange(updatedMaterials);
-    };
+    }, [materials, onMaterialsChange]);
 
     // 处理拖拽结束事件
-    const onDragEnd = ({active, over}: DragEndEvent) => {
+    const onDragEnd = useCallback(({active, over}: DragEndEvent) => {
         if (active.id !== over?.id && over?.id) {
             // 找到拖拽的标签和目标标签的索引
             const activeId = active.id.toString();
@@ -142,10 +153,10 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                 onMaterialsChange(updatedMaterials);
             }
         }
-    };
+    }, [materials, onMaterialsChange]);
 
-    // 生成 Tabs 项
-    const items = materials.map((material, index) => ({
+    // 生成 Tabs 项 - 使用 useMemo 缓存以避免不必要的重新渲染
+    const items = useMemo(() => materials.map((material, index) => ({
         key: `material-${index}`,
         label: (
             <span style={{cursor: 'pointer'}}>
@@ -165,12 +176,17 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
             </span>
         ),
         children: (
-            <MaterialEditor
-                material={material}
-                onMaterialChange={(updatedMaterial) => handleMaterialChange(index, updatedMaterial)}
-            />
+            <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading editor...</div>}>
+                {/* 仅当标签切换完成后渲染内容，或者当前标签就是活动标签 */}
+                {(!isTabSwitching || `material-${index}` === activeKey) && (
+                    <MaterialEditor
+                        material={material}
+                        onMaterialChange={(updatedMaterial) => handleMaterialChange(index, updatedMaterial)}
+                    />
+                )}
+            </Suspense>
         )
-    }));
+    })), [materials, t, handleDeleteMaterial, handleMaterialChange, isTabSwitching, activeKey]);
 
     return (
         <div>
@@ -208,7 +224,7 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                                 modifiers={[]}
                                 measuring={{
                                     droppable: {
-                                        strategy: MeasuringStrategy.Always // 始终测量可放置区域，提高响应速度
+                                        strategy: MeasuringStrategy.Always,
                                     }
                                 }}
                             >

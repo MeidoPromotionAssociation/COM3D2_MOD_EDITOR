@@ -1,6 +1,6 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useState} from 'react';
 import debounce from 'lodash/debounce';
-import {Button, Collapse, ConfigProvider, Form, Input, Radio, Tooltip,} from 'antd';
+import {Collapse, ConfigProvider, Form, Input, Radio, Tooltip,} from 'antd';
 import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
 import Style3MateProperties from "../mate/Style3MateProperties";
