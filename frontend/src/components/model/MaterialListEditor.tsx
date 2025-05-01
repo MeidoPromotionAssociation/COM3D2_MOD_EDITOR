@@ -32,23 +32,25 @@ const DraggableTabNode: React.FC<Readonly<DraggableTabPaneProps>> = ({className,
         id: props['data-node-key'],
     });
 
-    // 简化样式处理，仅保留必要的变换
     const style: React.CSSProperties = {
         ...props.style,
         transform: CSS.Transform.toString(transform),
-        transition: transition || 'none', // 使用更快地过渡或无过渡
-        cursor: 'move',
+        transition: 'none',
         opacity: isDragging ? 0.7 : 1,
-        zIndex: isDragging ? 9999 : 'auto', // 使用更高的 z-index
-        pointerEvents: isDragging ? 'none' : 'auto', // 拖拽时禁用鼠标事件，减少干扰
+        zIndex: isDragging ? 9999 : 'auto',
     };
 
-    return React.cloneElement(props.children as React.ReactElement<any>, {
-        ref: setNodeRef,
-        style,
-        ...attributes,
-        ...listeners,
-    });
+    const child = props.children as React.ReactElement;
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            {...attributes}
+            {...listeners}
+        >
+            {child}
+        </div>
+    );
 };
 
 /**
@@ -63,22 +65,28 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
     const {t} = useTranslation();
     const [activeKey, setActiveKey] = useState<string | null>(null);
 
-    // 使用分离的鼠标和触摸传感器，提供更轻量级的拖拽体验
+    // 使用鼠标传感器
     const mouseSensor = useSensor(MouseSensor, {
-        // 鼠标传感器配置 - 最小距离和延迟
         activationConstraint: {
-            distance: 2,
-            delay: 0,
+            distance: 10,
+            delay: 100,
         }
     });
 
     const touchSensor = useSensor(TouchSensor, {
-        // 触摸传感器配置 - 最小距离和延迟
         activationConstraint: {
-            distance: 2,
-            delay: 0,
+            distance: 10,
+            delay: 100,
         }
     });
+
+    // 添加点击事件处理函数
+    const handleTabClick = (key: string) => {
+        // 如果点击的是当前标签，不做任何处理
+        if (key === activeKey) return;
+
+        setActiveKey(key);
+    };
 
     // 组合传感器
     const sensors = useSensors(mouseSensor, touchSensor);
@@ -132,9 +140,6 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                 // 重新排序材质列表
                 const updatedMaterials = arrayMove([...materials], activeIndex, overIndex);
                 onMaterialsChange(updatedMaterials);
-
-                // 更新活动标签
-                setActiveKey(`material-${overIndex}`);
             }
         }
     };
@@ -143,7 +148,7 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
     const items = materials.map((material, index) => ({
         key: `material-${index}`,
         label: (
-            <span>
+            <span style={{cursor: 'pointer'}}>
                 {index + ': ' + material.Name || `Material_${index}`}
                 <Tooltip title={t('ModelEditor.delete_material')}>
                     <Button
@@ -184,7 +189,7 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                     <Tabs
                         type="card"
                         activeKey={activeKey || undefined}
-                        onChange={setActiveKey}
+                        onChange={handleTabClick}
                         items={items}
                         tabBarExtraContent={
                             <Button
