@@ -1,10 +1,8 @@
-import React, {useState, useMemo, useCallback, lazy, Suspense} from 'react';
+import React, {lazy, Suspense, useCallback, useMemo, useState} from 'react';
 import {Button, Empty, Tabs, Tooltip} from 'antd';
 import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
-// Lazy load MaterialEditor component
-const MaterialEditor = lazy(() => import('./MaterialEditor'));
 import type {DragEndEvent} from '@dnd-kit/core';
 import {
     closestCenter,
@@ -17,6 +15,8 @@ import {
 } from '@dnd-kit/core';
 import {arrayMove, horizontalListSortingStrategy, SortableContext, useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
+// Lazy load MaterialEditor component
+const MaterialEditor = lazy(() => import('./MaterialEditor'));
 import Material = COM3D2.Material;
 
 export interface MaterialListEditorProps {
@@ -94,9 +94,9 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
         setActiveKey(key);
 
         // 在微小延迟后重置切换状态，允许内容渲染
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             setIsTabSwitching(false);
-        }, 50); // 小延迟使切换更流畅
+        });
     }, [activeKey]);
 
     // 组合传感器
@@ -176,7 +176,7 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
             </span>
         ),
         children: (
-            <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading editor...</div>}>
+            <Suspense fallback={<div style={{padding: '20px', textAlign: 'center'}}>Loading editor...</div>}>
                 {/* 仅当标签切换完成后渲染内容，或者当前标签就是活动标签 */}
                 {(!isTabSwitching || `material-${index}` === activeKey) && (
                     <MaterialEditor

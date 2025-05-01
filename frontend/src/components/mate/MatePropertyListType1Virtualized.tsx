@@ -1,12 +1,11 @@
 // MatePropertyListType1Virtualized.tsx
-import React, {FC, useEffect, useLayoutEffect, useMemo, useRef} from "react";
+import React, {FC, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef} from "react";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {Button, Divider, FormInstance} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
-
 import MatePropertyItemType1 from "./MatePropertyItemType1";
-import {t} from "i18next";
+import {useTranslation} from "react-i18next";
 
 // 分组后扁平化出来的列表项类型
 type MyListItem =
@@ -33,6 +32,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                                                                                 remove,
                                                                                 form,
                                                                             }) => {
+    const {t} = useTranslation();
 
     // 用来缓存各行的实际高度
     const listRef = useRef<VariableSizeList>(null);
@@ -90,18 +90,18 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
 
 
     // 动态获取行高
-    const getItemSize = (index: number): number => {
+    const getItemSize = useCallback((index: number): number => {
         return rowHeights.current[index] || 100;
-    };
+    }, []);
 
     // 测量行高并更新缓存
-    const measureRowHeight = (index: number, height: number) => {
+    const measureRowHeight = useCallback((index: number, height: number) => {
         if (rowHeights.current[index] !== height) {
             rowHeights.current[index] = height;
             // 通知列表重新计算滚动位置
             listRef.current?.resetAfterIndex(index);
         }
-    };
+    }, []);
 
     // 使用 useLayoutEffect 来处理渲染完后计算行高
     useLayoutEffect(() => {
@@ -136,7 +136,7 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
 
 
     // rowRenderer
-    const Row = ({index, style}: ListChildComponentProps) => {
+    const Row = memo(({index, style}: ListChildComponentProps) => {
         const item = renderList[index];
 
         if (item.type === "group") {
@@ -186,7 +186,10 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                 </div>
             );
         }
-    };
+    });
+
+    // 使用 useMemo 缓存渲染函数
+    const renderRow = useMemo(() => Row, [Row, renderList]);
 
     return (
         <div style={{height: "570px"}}>
@@ -206,8 +209,9 @@ const MatePropertyListType1Virtualized: FC<VirtualizedPropertyListProps> = ({
                                 return `property-${item.field}-${index}`;
                             }
                         }}
+                        overscanCount={5}
                     >
-                        {Row}
+                        {renderRow}
                     </VariableSizeList>
                 )}
             </AutoSizer>
