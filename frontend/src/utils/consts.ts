@@ -28,6 +28,6 @@ export const AllSupportedFileTypes =
     "*.psk;*.psk.json;" +
     "*.tex;*.tex.json;" +
     "*.anm;*.anm.json;" +
-    "*.model*.model.json;"
+    "*.model;*.model.json;"
 
 export const AllSupportedFileTypesSet = new Set(['menu', 'mate', 'pmat', 'col', 'phy', 'psk', 'tex', 'anm', 'model']);
