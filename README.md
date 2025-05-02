@@ -36,6 +36,7 @@ For now, it allows you to edit files in these formats
 - `.psk`
 - `.tex` (preview & convert only & requires external dependencies)
 - `.anm` (JSON only)
+- `.model` (JSON only full mode and metadata editing mode)
 
 ### Highlights
 
@@ -148,6 +149,7 @@ QQ 群 967954608 加群暗号 MOD
 - `.psk`
 - `.tex` (仅支持预览和转换、需要外部依赖)
 - `.anm` (仅 JSON 格式)
+- `.model` (仅 JSON的完整模式和元数据编辑模式)
 
 ### 亮点
 
@@ -255,6 +257,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - `.psk`
 - `.tex` (プレビューと変換のみサポート、外部依存関係が必要)
 - `.anm` (JSONフォーマットのみ)
+- `.model` (JSONのみのフルモードとメタデータ編集モード)
 
 ### ハイライト
 
