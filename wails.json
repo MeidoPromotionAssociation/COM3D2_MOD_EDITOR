@@ -59,6 +59,13 @@
         "description": "COM3D2 Texture File",
         "iconName": "texFileIcon",
         "role": "Editor"
+      },
+      {
+        "ext": "model",
+        "name": "model",
+        "description": "COM3D2 Model File",
+        "iconName": "modelFileIcon",
+        "role": "Editor"
       }
     ]
   }
