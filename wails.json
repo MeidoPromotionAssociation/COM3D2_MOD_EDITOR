@@ -61,6 +61,13 @@
         "role": "Editor"
       },
       {
+        "ext": "anm",
+        "name": "anm",
+        "description": "COM3D2 Animation File",
+        "iconName": "anmFileIcon",
+        "role": "Editor"
+      },
+      {
         "ext": "model",
         "name": "model",
         "description": "COM3D2 Model File",
