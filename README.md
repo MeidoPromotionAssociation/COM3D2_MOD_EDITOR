@@ -338,15 +338,21 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 # How to Dev
 
-1. clone this repo
-2. install [Golang](https://go.dev/)  1.24+
-3. run `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
-4. install [Nodejs](https://nodejs.org/) v22
-5. install Pnpm `npm install -g pnpm@latest-10`
+1. Clone this repo, and cd to project root
+2. Install [Golang](https://go.dev/)  1.24+
+3. Run `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
+4. Install [Nodejs](https://nodejs.org/) v22 lts
+5. Install Pnpm `npm install -g pnpm@latest-10`
+6. Run `cd .\frontend\` and `pnpm install`
 
-- run `wails dev` in project root to run in dev mode
-- run `wails build` in project root to build project
-- press `Ctrl + Shift + F12` Open Browser console
+<br>
+
+- Run `wails dev` in project root to run in dev mode
+- Run `wails build` in project root to build project
+- Press `Ctrl + Shift + F12` Open Browser console
+- This is a Wails App. The front-end method is automatically generated after the back-end is bound.
+- Starting from v1.4.0, the core serialization library of this application has been separated into a separate repository: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+- To view the serialization structure and methods, please refer to the repository above.
 
 <br>
 
