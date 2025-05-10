@@ -120,7 +120,7 @@ Please download it from Github Releases: [https://github.com/90135/COM3D2_MOD_ED
 
 <br>
 
-## Other Repositories
+### Other Repositories
 
 You can also check out my other repositories
 
