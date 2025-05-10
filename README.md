@@ -24,7 +24,7 @@ Any Bug or request, plsease use Issues or Discussions
 
 Or you can find me in Discord [Custom Maid Server](https://discord.gg/custommaid)
 
-<br>
+### Supported File Types
 
 For now, it allows you to edit files in these formats
 
@@ -37,6 +37,23 @@ For now, it allows you to edit files in these formats
 - `.tex` (preview & convert only & requires external dependencies)
 - `.anm` (JSON only)
 - `.model` (JSON only full mode and metadata editing mode)
+
+Current Game Version COM3D2 v2.44.1 & COM3D2.5 v3.44.1 
+
+| Extension | Description           | Version Support    | Note                                                                                                                                    |
+|-----------|-----------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| .menu     | Menu files            | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
+| .mate     | Material files        | All versions       | No structural changes so far, but there are some 2.5-only features                                                                      |
+| .pmat     | Rendering order files | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
+| .col      | Collider files        | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
+| .phy      | Physics files         | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
+| .psk      | Panier skirt files    | All versions       | No structural change since version 217                                                                                                  |
+| .tex      | Texture files         | All versions       | Not support write version 1000, because version 1000 is poorly designed (CM3D2 also supports version 1010,so there is no reason to use) |
+| .anm      | Animation files       | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
+| .model    | Model files           | Versions 1000-2200 |                                                                                                                                         |
+
+Each file corresponds to a .go file：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
+
 
 ### Highlights
 
@@ -135,9 +152,11 @@ QQ 群 967954608 加群暗号 MOD
 
 你也可以在 Discord [Custom Maid Server](https://discord.gg/custommaid) 找到我
 
-或者我的中文 Discord 频道 [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
+或者我的中文 Discord 频道 [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp) 
 
-<br>
+有问题请在群内提问/反馈，请勿私聊
+
+### 支持的文件类型
 
 目前，它允许您编辑以下格式的文件
 
@@ -150,6 +169,22 @@ QQ 群 967954608 加群暗号 MOD
 - `.tex` (仅支持预览和转换、需要外部依赖)
 - `.anm` (仅 JSON 格式)
 - `.model` (仅 JSON的完整模式和元数据编辑模式)
+
+当前游戏版本 COM3D2 v2.44.1 和 COM3D2.5 v3.44.1
+
+| 扩展名    | 描述     | 版本支持         | 备注                                                     |
+|--------|--------|--------------|--------------------------------------------------------|
+| .menu  | 菜单文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .mate  | 材质文件   | 所有版本         | 目前为止未发生过结构更改，但有一些属性只在 2.5 有效                             |
+| .pmat  | 渲染顺序文件 | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .col   | 碰撞体文件  | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .phy   | 物理文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .psk   | 裙撑文件   | 所有版本         | 自版本 217 以后没有发生结构变化                                     |
+| .tex   | 纹理文件   | 所有版本         | 不支持写出版本 1000，因为版本 1000 设计不佳（CM3D2 也支持版本 1010，因此没有理由使用） |
+| .anm   | 动画文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .model | 模型文件   | 1000-2200 版本 |                                                        |
+
+每种文件对应一个 .go 文件：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
 ### 亮点
 
@@ -245,9 +280,9 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 または、Discord [Custom Maid Server](https://discord.gg/custommaid) で私を見つけることができます。
 
-<br>
+### 対応ファイル形式
 
-現在、以下の形式のファイルを編集することができます。
+現在以下の形式のファイル編集が可能です
 
 - `.menu`
 - `.mate`
@@ -255,9 +290,25 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 - `.col`
 - `.phy`
 - `.psk`
-- `.tex` (プレビューと変換のみサポート、外部依存関係が必要)
-- `.anm` (JSONフォーマットのみ)
-- `.model` (JSONのみのフルモードとメタデータ編集モード)
+- `.tex` (プレビューと変換のみ対応、外部依存関係が必要)
+- `.anm` (JSON形式のみ)
+- `.model` (JSONの完全スキーマとメタデータ編集モード)
+
+対応ゲームバージョン COM3D2 v2.44.1 および COM3D2.5 v3.44.1
+
+| 拡張子   | 説明       | 対応バージョン     | 備考                                                     |
+|--------|------------|------------------|--------------------------------------------------------|
+| .menu  | メニューファイル | 全バージョン       | これまで構造の変更がないためバージョン番号は無関係                           |
+| .mate  | マテリアルファイル | 全バージョン       | 構造変更はないが2.5で有効な属性が存在する                               |
+| .pmat  | 描画順ファイル | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
+| .col   | コリジョンファイル | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
+| .phy   | 物理ファイル  | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
+| .psk   | プチシェコール | 全バージョン       | バージョン217以降で構造変更なし                                       |
+| .tex   | テクスチャファイル | 全バージョン       | バージョン1000の書き出し非対応（設計が不適切なため、CM3D2でも1010をサポートしているため必要性なし） |
+| .anm   | アニメーションファイル | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
+| .model | モデルファイル | バージョン1000-2200 |                                                        |
+
+各ファイルに対応する.goファイル：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
 ### ハイライト
 
