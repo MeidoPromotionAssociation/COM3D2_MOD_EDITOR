@@ -482,13 +482,22 @@ KISS 規約
 <br>
 
 # Disclaimer
+
+By downloading this software, you accept and agree to abide by this disclaimer
+
+下载此软件即表示您接受并同意遵守此免责声明
+
 ```
+English
+
 1. Tool Nature Statement
   This project is an open source tool based on the BSD-3-Clause license. The developer (hereinafter referred to as the "author") is only a personal technical researcher and does not obtain any commercial benefits through this tool, nor does it provide any form of online services and user account system.
 
 2. Usage restrictions
+  This software shall not be used for any illegal purpose, including but not limited to the production and dissemination of obscene materials and other illegal acts that may violate the laws and regulations of the place where the user is located. The user shall bear all responsibility for the consequences of violating the law.
+
   Users must promise:
-    Not to produce/disseminate content that violates local laws and regulations
+    Not to publish, transmit, disseminate, or store any content that violates the laws and regulations of the place where the user is located
     Not to use the tool for any activities that endanger national security or undermine social stability
     Not to use this tool to carry out network attacks or crack genuine software
 
@@ -499,44 +508,103 @@ KISS 規約
     Not responsible for any legal liability caused by illegal use by users
     No technical guarantee for content review or filtering is provided
 
-4. Special Terms for Mainland China
   Users acknowledge and agree that:
     This tool does not include any data upload/download functions, and all content generation occurs on the user's local device
     If you find that someone is using this tool to engage in illegal activities, you should immediately report it to the public security authorities
     The developer reserves the right to stop distributing specific versions suspected of being abused
 
-5. Age and guardianship responsibility
+4. Age and guardianship responsibility
   Users must be persons with full civil capacity (18 years of age or older). Minors are prohibited from downloading, installing or using this tool. Guardians must assume full management responsibility for device access.
 
-6. Agreement Update
+5. Agreement Update
   The author has the right to update this statement through the GitHub repository. Continued use is deemed to accept the latest version of the terms.
 
-7. Disclaimer of Warranty
+6. Disclaimer of Warranty
   This tool is provided "AS IS" and the developer expressly disclaims any express or implied warranties, including but not limited to:
     Warranty of merchantability
     Warranty of fitness for a particular purpose
     Warranty of code freedom from defects or potential risks
     Warranty of continuous availability and technical support
 
-8. Waiver of liability for damages
+7. Waiver of liability for damages
   Regardless of the use/inability to use this tool resulting in:
     Direct/indirect property loss
     Data loss or business interruption
     Third-party claims or administrative penalties
   The developer shall not bear any civil, administrative or criminal liability
 
-9. Waiver of liability for third-party reliance
+8. Waiver of liability for third-party reliance
   If the third-party libraries/components included or relied upon by this tool have:
     Intellectual property disputes
     Security vulnerabilities
     Content that violates local laws
+    Subject to criminal or civil penalties
   The developer shall not bear joint and several liability, and users should review the relevant licenses on their own
 
-10. Version iteration risk
+9. Version iteration risk
   Users understand and accept:
     Different versions of code may have compatibility issues
     Developers are not obliged to maintain the security of old versions
     Modifying the code on your own may lead to unforeseen legal risks
+
+简体中文
+
+1. 工具性质声明  
+   本项目是基于 BSD-3-Clause 许可证的开源工具。开发者（以下简称"作者"）仅为个人技术研究者，不通过本工具获取任何商业利益，亦不提供任何形式的在线服务及用户账号体系。
+
+2. 使用限制
+   本软件不得用于任何违法用途，包括但不限于制作、传播淫秽物品等可能违反所在地法律法规的违法行为。使用者因违反法律造成的后果需自行承担全部责任。
+
+   用户必须承诺：  
+     - 不发布、传送、传播、储存任何违反所在地法律法规的内容
+     - 不将工具用于任何危害国家安全或破坏社会稳定的活动
+     - 不使用本工具实施网络攻击或破解正版软件
+
+3. 责任豁免  
+   鉴于开源项目特性：  
+     - 作者无法监控所有衍生代码的使用
+     - 不负责用户自行编译/分发的修改版本
+     - 不承担用户非法使用导致的任何法律责任
+     - 不提供内容审核或过滤的技术保证
+
+   用户知悉并同意：  
+     - 本工具不包含任何数据上传/下载功能，所有内容生成均在用户本地设备完成
+     - 如发现有人利用本工具从事违法活动，应立即向公安机关举报
+     - 开发者保留停止分发涉嫌被滥用的特定版本的权利
+
+4. 年龄及监护责任  
+   用户须为完全民事行为能力人（18 周岁及以上），禁止未成年人下载、安装或使用。监护人须对设备访问承担完全管理责任。
+
+5. 协议更新  
+   作者有权通过 GitHub 仓库更新本声明，继续使用视为接受最新版本条款。
+
+6. 担保免责  
+  此工具按"原样"提供，不附带任何明示或暗示的保证，包括但不限于：
+     - 适销性担保  
+     - 特定用途适用性担保  
+     - 代码无缺陷或潜在风险担保  
+     - 持续可用性及技术支持担保  
+
+7. 损害赔偿责任免除  
+   无论使用/无法使用本工具导致：  
+     - 直接/间接财产损失
+     - 数据丢失或业务中断
+     - 第三方索赔或行政处罚
+     - 受到刑事或民事处罚
+   开发者均不承担民事、行政或刑事责任  
+
+8. 第三方依赖免责  
+   本工具包含或依赖的第三方库/组件如存在：  
+     - 知识产权纠纷  
+     - 安全漏洞  
+     - 违反当地法律的内容  
+   开发者不承担连带责任，用户应自行审查相关许可  
+
+9. 版本迭代风险  
+    用户理解并接受：  
+     - 不同版本代码可能存在兼容性问题  
+     - 开发者无义务维护旧版本安全性  
+     - 自行修改代码可能导致不可预见的法律风险
 ```
 
 <br>
