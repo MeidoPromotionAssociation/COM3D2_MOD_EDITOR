@@ -106,6 +106,18 @@ The only active network request is for update checks, which solely communicates 
 Code location: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 
+### Download
+
+By downloading this software, you accept and agree to abide by the [Disclaimer](https://github.com/90135/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
+
+Please download it from Github Releases: [https://github.com/90135/COM3D2_MOD_EDITOR/releases](https://github.com/90135/COM3D2_MOD_EDITOR/releases)
+
+- If you want to install the editor into your system and automatically associate the file type, please use `COM3D2.MOD.EDITOR.V2-amd64-installer.exe ` 
+  - After associating the file type, different files will be displayed with different icons. Please check [here](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build) to preview the icon
+- If you don't want to install, please use `COM3D2_MOD_EDITOR_V2.exe `
+- If you are on Linux, please use `COM3D2_MOD_EDITOR_V2-amd64-Linux `
+
+
 <br>
 
 ## Other Repositories
@@ -236,6 +248,17 @@ QQ 群 967954608 加群暗号 MOD
 
 代码位于 https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
+### 下载
+
+下载此软件即表示您接受并同意遵守[免责声明](https://github.com/90135/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
+
+请在 Github Releases 中下载：[https://github.com/90135/COM3D2_MOD_EDITOR/releases](https://github.com/90135/COM3D2_MOD_EDITOR/releases)
+
+- 如果您希望将编辑器安装到系统中并自动关联文件类型，请使用 `COM3D2.MOD.EDITOR.V2-amd64-installer.exe`
+  - 关联文件类型后，不同的文件将显示不同的图标。请查看[此处](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build)预览图标。
+- 如果您不想安装，请使用 `COM3D2_MOD_EDITOR_V2.exe`
+- 如果您使用的是 Linux 系统，请使用 `COM3D2_MOD_EDITOR_V2-amd64-Linux`
+
 <br>
 
 ### 也可以看看我的其他仓库
@@ -360,6 +383,17 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 唯一の能動的なネットワークリクエストは更新チェック用で、GitHub API のみにリクエストを送信します。更新チェック機能を無効にすることも可能です。
 
 該当コード: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+
+### ダウンロード
+
+本ソフトウェアをダウンロードすることにより、[免責事項](https://github.com/90135/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)に同意し、遵守することに同意したものとみなされます
+
+Github Releasesからダウンロードしてください：[https://github.com/90135/COM3D2_MOD_EDITOR/releases](https://github.com/90135/COM3D2_MOD_EDITOR/releases)
+
+- システムへのインストールとファイルタイプの自動関連付けを希望する場合、`COM3D2.MOD.EDITOR.V2-amd64-installer.exe`を使用してください
+  - ファイルタイプの関連付けを行うと、異なるファイルタイプに応じて異なるアイコンが表示されます。アイコンプレビューは[こちら](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build)で確認できます
+- インストールを希望しない場合、`COM3D2_MOD_EDITOR_V2.exe`を使用してください
+- Linuxシステムをご利用の場合、`COM3D2_MOD_EDITOR_V2-amd64-Linux`を使用してください
 
 <br>
 
