@@ -118,6 +118,15 @@ Please download it from Github Releases: [https://github.com/90135/COM3D2_MOD_ED
 - If you are on Linux, please use `COM3D2_MOD_EDITOR_V2-amd64-Linux `
 
 
+### FAQ
+
+- Opening large files is slow
+  - This application is built with Wails technology, so it is essentially a browser architecture with separated front-end and back-end. Therefore, after the back-end parses the file, it must be passed to the front-end through Http. This is the main speed bottleneck, not the application itself, and I can do little about it
+
+- I want to process files in batches
+  - This is a planned feature, but we currently provide a command line interface in a separate program that can batch convert files for other programs to process.
+  - Please see: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+
 <br>
 
 ### Other Repositories
@@ -259,6 +268,15 @@ QQ 群 967954608 加群暗号 MOD
 - 如果您不想安装，请使用 `COM3D2_MOD_EDITOR_V2.exe`
 - 如果您使用的是 Linux 系统，请使用 `COM3D2_MOD_EDITOR_V2-amd64-Linux`
 
+### 常见问题
+
+- 打开大文件时很慢
+  - 本应用使用 Wails 技术打造，所以其本质上是一个前后端分离的浏览器架构，因此后端解析文件后必须通过 Http 传递至前端，这里是主要速度瓶颈，而非应用本身，我对此几乎无能为力
+
+- 我希望批量处理文件
+  - 这是一个计划中的功能，但目前我们在单独的程序中提供了一个命令行界面，可以批量转换文件以便其他程序处理。
+  - 请查看：[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+
 <br>
 
 ### 也可以看看我的其他仓库
@@ -394,6 +412,15 @@ Github Releasesからダウンロードしてください：[https://github.com/
   - ファイルタイプの関連付けを行うと、異なるファイルタイプに応じて異なるアイコンが表示されます。アイコンプレビューは[こちら](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build)で確認できます
 - インストールを希望しない場合、`COM3D2_MOD_EDITOR_V2.exe`を使用してください
 - Linuxシステムをご利用の場合、`COM3D2_MOD_EDITOR_V2-amd64-Linux`を使用してください
+
+### よくある質問
+
+- 大きなファイルを開くのが遅い
+  - このアプリケーションはWailsテクノロジーで構築されているため、本質的にはフロントエンドとバックエンドが分離されたブラウザアーキテクチャです。そのため、バックエンドでファイルを解析した後、HTTP経由でフロントエンドに渡す必要があります。これがアプリケーション自体ではなく、主な速度ボトルネックであり、対処できる範囲が限られています。
+
+- ファイルを一括処理したい
+  - これは計画中の機能ですが、現在、他のプログラムで処理できるようにファイルを一括変換できるコマンドラインインターフェースを別のプログラムで提供しています。
+  - 詳細は[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)をご覧ください。
 
 <br>
 
