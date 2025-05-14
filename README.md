@@ -2,7 +2,7 @@
 
 [Disclaimer/How to Dev/Credit/KISS Rule](#how-to-dev)
 
-[![Github All Releases](https://img.shields.io/github/downloads/90135/COM3D2_MOD_EDITOR/total.svg)]()
+[![Github All Releases](https://img.shields.io/github/downloads/90135/COM3D2_MOD_EDITOR/total.svg)]() [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/90135/COM3D2_MOD_EDITOR)
 
 # English
 
