@@ -510,9 +510,11 @@ KISS 規約
 
 # Disclaimer
 
-By downloading this software, you accept and agree to abide by this disclaimer
+By downloading this software, you agree to read, accept and abide by this Disclaimer
 
-下载此软件即表示您接受并同意遵守此免责声明
+下载此软件即表示您已阅读且接受并同意遵守此免责声明
+
+このソフトウェアをダウンロードすることにより、お客様はこの免責事項を読み、同意し、遵守することに同意するものとします。
 
 ```
 English
