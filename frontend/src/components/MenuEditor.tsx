@@ -65,7 +65,20 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
         // 监听 Dark Mode
         const isDarkMode = useDarkMode();
         // Monaco Editor 编程语言
-        const [language, setLanguage] = useState("plaintext");
+        const [language, setLanguage] = useState(() => {
+            // 根据当前的 displayFormat 初始化 language
+            const fmt = localStorage.getItem(MenuEditorViewModeKey) as FormatType || "treeIndent";
+            if (fmt === "JSON") {
+                return "json";
+            } else if (fmt === "treeIndent") {
+                return "menuTreeIndent";
+            } else if (fmt === "colonSplit") {
+                return "menuColonSplit";
+            } else if (fmt === "TSV") {
+                return "menuTSV";
+            }
+            return "plaintext";
+        });
 
         // 显示格式选项
         const formatOptions: CheckboxGroupProps<string>['options'] = [
