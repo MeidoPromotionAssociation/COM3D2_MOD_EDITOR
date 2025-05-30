@@ -80,6 +80,8 @@
       "tex_filename": "纹理文件名（foo.tex）",
       "blend_mode": "混合模式"
     },
+    "command_description": "命令说明",
+    "place_mouse_on_command_view_description": "将鼠标放在命令上可以查看说明",
     "ArgCount": "参数和命令的计数",
     "Args": "命令及其参数，第一个为命令，后面的为命令的参数",
     "menu_editor_help": "Menu 编辑器帮助",
@@ -87,8 +89,9 @@
     "ctrl_space": "树形缩进格式下按 `Ctrl + 空格` 显示补全选项",
     "other_shortcuts": "其他快捷键请参考 Monaco Editor 的默认快捷键",
     "note": "注意事项",
-    "format_tree_tsv_use_tab": "树形缩进格式和 TSV 格式使用 `Tab` 键缩进，不是空格哦",
-    "only_tree_indent_have_autocomplete": "只有树形缩进格式下才有自动补全和提示"
+    "format_tree_tsv_use_tab": "树形缩进格式和 TSV 格式使用 `Tab` 键缩进（\\t），不是空格哦",
+    "only_tree_indent_have_autocomplete": "只有树形缩进格式下才有自动补全和提示",
+    "cannot_save_empty_line": "无法保存空行，包括只有制表符 `Tab` 键（\\t） 等空白字符的行，JSON 格式除外"
   },
   "MateEditor": {
     "file_header": {
@@ -450,7 +453,10 @@
     },
     "convert_directly": "直接转换",
     "cancel": "取消",
-    "continue": "继续"
+    "continue": "继续",
+    "continue_save": "继续保存",
+    "back": "返回",
+    "note_colon" : "注意："
   },
   "Infos": {
     "choose_file": "选择文件",
@@ -483,7 +489,10 @@
     "directly_convert_success": "直接转换成功，输出路径：",
     "converting_please_wait": "转换中，请稍候...",
     "loading_please_wait": "加载中，请稍候...",
-    "saving_please_wait": "保存中，请稍候..."
+    "saving_please_wait": "保存中，请稍候...",
+    "critical_command_missing_params": "关键命令缺少参数",
+    "commands_missing_params": "以下关键命令缺少必要参数：",
+    "may_cause_game_malfunction": "这可能导致游戏出错"
   },
   "Errors": {
     "fail_to_check_update": "检查更新失败",

@@ -1,7 +1,20 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {Editor} from "@monaco-editor/react";
 import {COM3D2} from "../../wailsjs/go/models";
-import {Button, Checkbox, CheckboxProps, Collapse, Flex, Input, message, Modal, Radio, Space, Tooltip} from "antd";
+import {
+    Button,
+    Checkbox,
+    CheckboxProps,
+    Collapse,
+    Flex,
+    FloatButton,
+    Input,
+    message,
+    Modal,
+    Radio,
+    Space,
+    Tooltip
+} from "antd";
 import {CheckboxGroupProps} from "antd/es/checkbox";
 import {useTranslation} from "react-i18next";
 import {WindowSetTitle} from "../../wailsjs/runtime";
@@ -92,6 +105,10 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
         const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
         const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
         const [pendingFileContent, setPendingFileContent] = useState<{ size: number }>({size: 0});
+
+        // 关键命令缺少参数的Modal状态
+        const [isMissingParamsModalOpen, setIsMissingParamsModalOpen] = useState(false);
+        const [missingCommandNames, setMissingCommandNames] = useState<string[]>([]);
 
         const handleShowHelp = () => {
             setIsHelpModalVisible(true);
@@ -257,6 +274,40 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                         parsedCommands = [];
                 }
 
+                // 检查关键命令是否缺少参数
+                const criticalCommands = ['category', 'setumei', 'name'];
+                const missingParamCommands = parsedCommands.filter(command =>
+                    // 只检查关键命令
+                    command.Args &&
+                    command.Args.length > 0 &&
+                    criticalCommands.includes(command.Args[0].toLowerCase()) &&
+                    // 检查是否缺少参数（参数数量为1表示只有命令名没有参数）
+                    (command.Args.length === 1 || (command.Args.length > 1 && command.Args[1].trim() === ''))
+                );
+
+                if (missingParamCommands.length > 0) {
+                    // 获取所有缺少参数的命令名称
+                    const cmdNames = missingParamCommands.map(cmd => cmd.Args[0]);
+                    setMissingCommandNames(cmdNames);
+                    setIsMissingParamsModalOpen(true);
+                    return;
+                }
+
+                await saveMenuFileToPath(parsedCommands);
+            } catch (err) {
+                console.error(err);
+                message.error(t('Errors.save_file_failed_colon') + err);
+            }
+        };
+
+        // 实际保存文件的函数
+        const saveMenuFileToPath = async (parsedCommands: Command[]) => {
+            try {
+                if (!filePath) {
+                    message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+                    return;
+                }
+
                 const newMenuData = COM3D2.Menu.createFrom({
                     Signature: signature,
                     BodySize: bodySize,
@@ -268,7 +319,6 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                     Commands: parsedCommands
                 });
 
-
                 await WriteMenuFile(filePath, newMenuData);
                 message.success(t('Infos.success_save_file'));
             } catch (err) {
@@ -277,6 +327,36 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             }
         };
 
+        // 处理关键命令缺少参数Modal的确认
+        const handleMissingParamsOk = async () => {
+            setIsMissingParamsModalOpen(false);
+
+            // 继续保存
+            let parsedCommands: Command[];
+            switch (displayFormat) {
+                case "treeIndent":
+                    parsedCommands = parseTextAsTreeIndent(commandsText);
+                    break;
+                case "colonSplit":
+                    parsedCommands = parseTextAsColonSplit(commandsText);
+                    break;
+                case "JSON":
+                    parsedCommands = parseTextAsJSON(commandsText);
+                    break;
+                case "TSV":
+                    parsedCommands = parseTextAsTSV(commandsText);
+                    break;
+                default:
+                    parsedCommands = [];
+            }
+
+            await saveMenuFileToPath(parsedCommands);
+        };
+
+        // 处理关键命令缺少参数Modal的取消
+        const handleMissingParamsCancel = () => {
+            setIsMissingParamsModalOpen(false);
+        };
 
         /**
          * 另存为文件
@@ -528,22 +608,47 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                     overflow: 'hidden'     // 隐藏超出圆角范围的部分
                                 }}
                             >
-                                <Button
+                                <FloatButton
                                     onClick={handleShowHelp}
-                                    size="small"
-                                    type="text"
-                                    style={{position: "absolute", bottom: 0, right: 0, zIndex: 9999}}
                                     icon={<QuestionCircleOutlined/>}
+                                    style={{zoom: 0.8}}
                                 />
                                 <Modal title={t('MenuEditor.menu_editor_help')} open={isHelpModalVisible}
                                        onOk={handleHelpOk} onCancel={handleHelpCancel}>
+                                    <h4>{t('MenuEditor.command_description')}</h4>
+                                    <p>{t('MenuEditor.place_mouse_on_command_view_description')}</p>
                                     <h4>{t('MenuEditor.shortcut')}</h4>
                                     <p>{t('MenuEditor.ctrl_space')}</p>
                                     <p>{t('MenuEditor.other_shortcuts')}</p>
                                     <h4>{t('MenuEditor.note')}</h4>
                                     <p>{t('MenuEditor.format_tree_tsv_use_tab')}</p>
                                     <p>{t('MenuEditor.only_tree_indent_have_autocomplete')}</p>
+                                    <p>{t('MenuEditor.cannot_save_empty_line')}</p>
                                     {/*TODO*/}
+                                </Modal>
+                                <Modal
+                                    title={t('Infos.critical_command_missing_params')}
+                                    open={isMissingParamsModalOpen}
+                                    onOk={handleMissingParamsOk}
+                                    onCancel={handleMissingParamsCancel}
+                                    okText={t('Common.continue_save')}
+                                    cancelText={t('Common.back')}
+                                    footer={[
+                                        <Button onClick={handleMissingParamsOk}>
+                                            {t('Common.continue_save')}
+                                        </Button>,
+                                        <Button type="primary" onClick={handleMissingParamsCancel}>
+                                            {t('Common.back')}
+                                        </Button>,
+                                    ]}
+                                >
+                                    <p>{t('Infos.commands_missing_params')}</p>
+                                    {missingCommandNames.map((name, index) => (
+                                        <li key={index}>{name}</li>
+                                    ))}
+                                    <br/>
+                                    <p>{t('Infos.may_cause_game_malfunction')}</p>
+                                    <p>{t('Common.note_colon')}{t('MenuEditor.cannot_save_empty_line')}</p>
                                 </Modal>
                                 <Editor
                                     beforeMount={(monacoInstance) => setupMonacoEditor(monacoInstance)}
@@ -563,8 +668,8 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                 )}
             </div>
         );
-    })
-;
+    }
+);
 
 export default MenuEditor;
 
