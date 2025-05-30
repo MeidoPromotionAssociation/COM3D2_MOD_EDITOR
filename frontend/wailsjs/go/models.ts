@@ -116,8 +116,8 @@ export namespace COM3D2 {
 	    Signature: string;
 	    Version: number;
 	    BoneCurves: BoneCurveData[];
-	    BustKeyLeft: boolean;
-	    BustKeyRight: boolean;
+	    BustKeyLeft?: boolean;
+	    BustKeyRight?: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Anm(source);
