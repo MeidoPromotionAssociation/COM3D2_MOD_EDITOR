@@ -88,7 +88,10 @@
         "format_tree_tsv_use_tab": "Use Tab key for tree indentation and TSV formats, not spaces.",
         "only_tree_indent_have_autocomplete": "Autocomplete and hints are only available in Tree Indentation format.",
         "ArgCount": "Count of parameters and commands",
-        "Args": "Command and its parameters, first is command and next is command parameter"
+        "Args": "Command and its parameters, first is command and next is command parameter",
+        "command_description": "Command Description",
+        "place_mouse_on_command_view_description": "Put the mouse over the command to see description",
+        "cannot_save_empty_line": "Cannot save empty lines, including lines with blank characters such as the tabs `Tab` key (\\t), except in JSON format"
     },
     "MateEditor": {
         "file_header": {
@@ -124,8 +127,8 @@
         "vec_no_brackets": "Vector",
         "vec_tip": "Vector (vec); similar to color but with RGBA replaced by XYZW. The game assigns this to the corresponding texture's color.",
         "unknown": "Unknown",
-        "style1": "Style 1",
-        "style2": "Style 2",
+        "style1": "Form Edit 1",
+        "style2": "Form Edit 2",
         "style3": "JSON",
         "subTag": "Sub Type",
         "tex2d": "2D Texture (tex2d)",
@@ -201,7 +204,7 @@
         "dpc": "Plane Collider (dpc)",
         "dbm": "Chest Collider (dbm)",
         "missing": "Missing (missing)",
-        "style1": "Style 1",
+        "style1": "Form Edit",
         "style2": "JSON",
         "Colliders": "Colliders",
         "add_collider": "Add Collider",
@@ -246,7 +249,7 @@
             "enable_edit_do_not_edit": "Do not modify",
             "RootName_tip": "Root Node Name (RootName); the name of the root Transform to apply physical effects. This field is not used by the game but is read and discarded, although it's not recommended to leave it empty to avoid possible reading errors (2.43.0)."
         },
-        "style1": "Style 1",
+        "style1": "Form Edit",
         "style2": "JSON",
         "Damping": "Damping",
         "Damping_tip": "Damping; Decay rate that controls the attenuation speed of bone movement. Higher values result in slower swinging (slower return to original position), lower values result in faster swinging (0=fastest decay, 1=slowest decay), default 0.5",
@@ -269,9 +272,9 @@
         "Force_tip": "External Force; Continuous force applied to bones (positive values push, negative values pull on XYZ axes), default 0,-0.01,0",
         "Collider": "Collider",
         "ColliderFileName": "Collider File Name",
-        "ColliderFileName_tip": "Collider File Name (ColliderFileName); enter the name of the foobar.col file, but without the .col extension. It's recommended to have the same name as the phy file. If not entered, the game will try to read the object name from .model and add .col.",
+        "ColliderFileName_tip": "Collider File Name (ColliderFileName); Fill in the col file name to be applied, for example, foobar.col, but remove the .col suffix. It is recommended to have the same name as the phy file. If not filled in, the game will also try to read the `object name in the .model` + .col file",
         "ColliderCount": "Collider Count",
-        "ColliderCount_tip": "Collider Count (ColliderCount); the number of colliders, which corresponds to the number of colliders in the col file mentioned in 'Collider File Name'. Clicking the auto-calculate button will automatically search for the col file in the same folder and calculate the collider count. This value is used to initialize the collider list.",
+        "ColliderCount_tip": "Collider Count (ColliderCount); Fill in the number of colliders in the corresponding col file. Click the Auto Calculate button to automatically find the col file filled in the `Collider File Name` in the same folder as this file and calculate the number of colliders. This value is used to initialize the collider list.",
         "auto_count": "Auto Calculate",
         "ExclusionsCount": "Exclusions Count",
         "FreezeAxis": "Freeze Axis",
@@ -381,7 +384,10 @@
         "directly_convert_success": "Direct conversion successful, output path: ",
         "converting_please_wait": "Converting, please wait...",
         "loading_please_wait": "Saving, please wait...",
-        "saving_please_wait": "Saving, please wait..."
+        "saving_please_wait": "Saving, please wait...",
+        "critical_command_missing_params": "Missing parameter for key command",
+        "commands_missing_params": "The key command below is missing the required parameter: ",
+        "may_cause_game_malfunction": "This may cause a game malfunction"
     },
     "Errors": {
         "fail_to_check_update": "Failed to check updates",
@@ -483,7 +489,10 @@
         "choose_language": "Choose Language",
         "convert_directly": "Convert directly",
         "cancel": "Cancel",
-        "continue": "Continue"
+        "continue": "Continue",
+        "continue_save": "Save anyway",
+        "back": "Back",
+        "note_colon": "Note: "
     },
     "ModelEditor": {
         "file_header": {

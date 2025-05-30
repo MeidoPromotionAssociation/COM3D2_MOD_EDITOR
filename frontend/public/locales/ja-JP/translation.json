@@ -88,7 +88,10 @@
         "format_tree_tsv_use_tab": "ツリーインデント形式とTSV形式は `Tab` キーでインデントします，スペースではありません",
         "only_tree_indent_have_autocomplete": "ツリーインデント形式のみオートコンプリートとヒント機能が利用可能",
         "ArgCount": "引数とコマンドのカウント",
-        "Args": "コマンドとその引数。最初の項目がコマンド、それ以降がコマンドの引数"
+        "Args": "コマンドとその引数。最初の項目がコマンド、それ以降がコマンドの引数",
+        "command_description": "コマンド説明",
+        "place_mouse_on_command_view_description": "コマンドにマウスを乗せると説明を表示します",
+        "cannot_save_empty_line": "空行（タブ文字`Tab`（\\\\t）などの空白文字のみの行を含む）は保存できません。JSONフォーマットは除きます"
     },
     "MateEditor": {
         "file_header": {
@@ -124,8 +127,8 @@
         "vec_no_brackets": "ベクトル",
         "vec_tip": "ベクトル値（XYZW形式）。カラー空間変換あり。Material.SetVector",
         "unknown": "不明",
-        "style1": "フォーム編集1",
-        "style2": "フォーム編集2",
+        "style1": "フォーム編集 1",
+        "style2": "フォーム編集 2",
         "style3": "JSON編集",
         "subTag": "サブタイプ",
         "tex2d": "2Dテクスチャ（tex2d）",
@@ -291,60 +294,64 @@
     },
     "TexEditor": {
         "file_header": {
-            "file_head": "ファイルヘッダー（通常は変更不要）",
-            "Signature": "ファイルシグネチャ",
+            "file_head": "ファイルヘッダー（通常変更不要）",
+            "Signature": "ファイル署名",
             "Version": "ファイルバージョン",
-            "enable_edit_do_not_edit": "編集禁止"
+            "enable_edit_do_not_edit": "編集不可"
         },
-        "pls_select_a_file_to_preview": "プレビューするファイルを選択してください。.tex または対応画像形式が開けます",
-        "tex_tip": ".texファイルは4形式をサポート。ARGB32/RGB24時はPNG/JPG形式データ、DXT5/DXT1時はDDS形式データ。最高画質は'強制PNG'を有効化、最高効率は'圧縮'を有効化（v2.43.0）",
-        "no_ImageMagick": "ImageMagick がインストールされていません",
-        "ImageMagick_tip": "多様な形式をサポートするため、本機能にはImageMagickのインストールと`magick`コマンドの使用可能な状態が必要です",
-        "ImageMagick_tip2": "インストール後、ターミナルで`magick -version`を実行し成功を確認後、本アプリを再起動してください",
-        "ImageMagick_download_tip": "ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時は`Add application directory to your system path`にチェック。または`winget install ImageMagick.Q16-HDRI`でインストール",
-        "download_ImageMagick": "ImageMagick をダウンロード",
-        "force_png": "強制PNG",
+        "pls_select_a_file_to_preview": "プレビューするファイルを選択してください。.texまたは対応画像形式を開けます",
+        "tex_tip": ".texファイル、ARGB32、RGB24形式の場合データはPNGまたはJPG形式、DXT5、DXT1形式の場合データはDDS形式。最高品質を求める場合は「PNG強制」をオンに、最高効率を求める場合は「圧縮」をオンに（2.43.0）",
+        "no_ImageMagick": "ImageMagickがインストールされていません",
+        "ImageMagick_tip": "より多くのフォーマットをサポートするため、この機能にはImageMagickのインストールが必要です。システムで`magick`コマンドが使用可能である必要があります",
+        "ImageMagick_tip2": "インストール後、ターミナルで`magick -version`を実行して成功すればインストール完了です。このアプリケーションを再起動すると使用できるようになります",
+        "ImageMagick_download_tip": "ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`オプションを探してインストールしてください。インストール時に`Add application directory to your system path`にチェックを入れる必要があります。または、ターミナルで`winget install ImageMagick.Q16-HDRI`を実行してインストールしてください",
+        "download_ImageMagick": "ImageMagickをダウンロード",
+        "force_png": "PNG強制",
         "auto_format": "自動フォーマット",
-        "force_png_tip": "常にPNG形式に変換。有効時は選択形式に関わらずPNGで変換（.tex変換時もデータ部をPNG化）。無効時は'圧縮'設定・透明度・元形式の非可逆圧縮状態に基づきPNG/JPGを自動選択",
+        "force_png_tip": "PNG強制；このオプションをチェックすると、選択した形式に関わらず、すべてPNG形式に強制変換されます。.texへの変換時もデータ部分は強制的にPNG形式になります。オフの場合は選択した拡張子の形式に変換され、.texへの変換時は「圧縮」設定と透明チャンネルの有無、元形式が可逆か非可逆かによってPNGかJPGに変換されます",
         "compress": "圧縮",
-        "no_compress": "非圧縮",
-        "compress_tip": ".tex変換時のみ有効。有効時はDXT5/DXT1でDDS形式に圧縮（VRAM/メモリ効率向上、但し非可逆）。無効時は'強制PNG'設定に基づきPNG/JPGを選択",
+        "no_compress": "圧縮しない",
+        "compress_tip": "圧縮するかどうか；.texへの変換時のみ有効。チェックすると画像をDXT5またはDXT1圧縮でDDS形式に変換して.texに保存します。読み込み効率が高く、VRAMとメモリを節約できますが、非可逆圧縮となります。オフの場合は「PNG強制」設定に応じてPNGかJPGに変換されます",
         "direct_convert": "直接変換",
         "preview": "プレビュー",
-        "direct_convert_tip": "有効時、エクスプローラーから.texを開くと直接画像変換、画像を開くと直接.tex変換（エディタ画面非表示）。形式はエディタのデフォルト設定に従う",
+        "direct_convert_tip": "有効にすると、ファイルエクスプローラーから.texファイルをこのアプリで開くと直接画像に変換し、画像を開くと直接.texに変換します。エディター画面は表示されません。形式はエディター内の設定されたデフォルト形式およびその他のオプションに依存します",
         "export_as_image": "画像としてエクスポート",
-        "export_as_image_tip": "ImageMagick対応形式でエクスポート。'強制PNG'有効時は拡張子に関わらずPNG化。入力/出力共にtexの場合は無変換。拡張子未指定時はPNGをデフォルト",
+        "export_as_image_tip": "画像として出力します。選択した拡張子に応じて自動的に形式変換されます（ImageMagickがサポートする形式のみ）。.texへの変換も可能です。「PNG強制」がチェックされている場合、どの拡張子を選んでもPNG形式に変換されます。入出力の両方が.texの場合は、そのままコピーされます。拡張子が指定されていない場合、デフォルトでPNGに変換されます",
         "export_as_tex": "texとしてエクスポート",
-        "export_as_tex_tip": ".texファイルとしてエクスポート（拡張子は.tex固定）",
+        "export_as_tex_tip": ".texファイルとして出力します。画像としてエクスポートと同様ですが、.tex拡張子のみ選択可能です",
         "no_preview_available": "プレビュー不可",
         "quick_export": "クイックエクスポート",
-        "quick_export_tip": "同名ファイルに即時変換。画像→.tex、.tex→画像の相互変換",
+        "quick_export_tip": "クイックエクスポート、同名ファイルへ素早く出力します。形式はエディター内の設定されたデフォルト形式に依存します。通常画像を開いている場合は.texに出力し、.texを開いている場合は画像に出力します",
         "default_format": "デフォルト形式",
-        "default_format_tip": "クイックエクスポート/直接変換用デフォルト形式（例: .webpのように拡張子付きで指定）"
+        "default_format_tip": "クイックエクスポートと直接変換に使用するデフォルト形式。ドット付きで指定（例：.webp）"
     },
     "AnmEditor": {
         "file_header": {
             "Signature": "ファイル署名",
             "Version": "ファイルバージョン"
         },
-        "BonePath": "ルートノードから始まるボーンパス。スラッシュ / で区切り、続く PropertyCurves が適用されるボーンを指定",
+        "BonePath": "ボーンパス、ルートノードから始まり、スラッシュ / で区切られています。これに続く PropertyCurves がどのボーンに適用されるかを示します",
         "PropertyCurves": "プロパティカーブリスト",
         "BoneCurves": "ボーンカーブリスト",
-        "PropertyIndex": "続くキーフレーム Keyframes が適用されるボーンプロパティの指定。0: ローカル回転 X（LocalRotation X）, 1: ローカル回転 Y, 2: ローカル回転 Z, 3: ローカル回転 W, 4: ローカル位置 X（localPosition X）, 5: ローカル位置 Y, 6: ローカル位置 Z",
-        "Keyframes": "キーフレーム/カーブ。Unity標準キーフレームフォーマット",
+        "PropertyIndex": "これに続くキーフレーム Keyframes がボーンのどのプロパティに適用されるかを示します。0 はローカル回転 X（LocalRotation X）、1 はローカル回転 Y、2 はローカル回転 Z、3 はローカル回転 W、4 はローカル位置 X（localPosition X）、5 はローカル位置 Y、6 はローカル位置 Z です",
+        "Keyframes": "キーフレーム/カーブ、Unity 標準キーフレーム形式",
         "Time": "時間",
         "Value": "値",
-        "InTangent": "インタンジェント",
-        "OutTangent": "アウトタンジェント",
-        "BustKeyLeft": "左胸アニメーションの有効化状態",
-        "BustKeyRight": "右胸アニメーションの有効化状態"
+        "InTangent": "入力接線",
+        "OutTangent": "出力接線",
+        "BustKeyLeft": "左胸アニメーションを有効にするかどうか",
+        "BustKeyRight": "右胸アニメーションを有効にするかどうか"
     },
     "SettingsPage": {
         "check_update_now": "今すぐ更新を確認",
         "is_check_update": "更新確認の有無",
         "is_check_update_tip": "デフォルトは true、Github API にアクセスして最新バージョン情報を取得します。24時間間隔でチェックし、前回のチェックが失敗した場合は1時間後に再試行します。ブラウザのキャッシュをクリアするとこの設定はリセットされます",
         "dismiss_update_note": "更新通知の消去",
-        "dismiss_update_note_tip": "更新通知を消去します。新しいバージョンがある場合は通知が再表示されます（手動で消去しない限り）。更新チェックを無効にしない限り、次回のチェック時に再表示されます"
+        "dismiss_update_note_tip": "更新通知を消去します。新しいバージョンがある場合は通知が再表示されます（手動で消去しない限り）。更新チェックを無効にしない限り、次回のチェック時に再表示されます",
+        "general_settings": "一般設定",
+        "update_settings": "更新設定",
+        "file_type_strict_mode": "厳格ファイルタイプ検査",
+        "file_type_strict_mode_tip": "有効時、ファイルの内容に基づいて厳格にファイルタイプを判断します。ファイル署名を変更した場合、厳格モードではファイルの開封を拒否します。無効時（デフォルト）、ファイル拡張子を優先的に使用し、判断できない場合にファイル内容を参照します。"
     },
     "Infos": {
         "choose_file": "ファイルを選択",
@@ -371,7 +378,16 @@
         "auto_count_success": "自動計算が成功しました",
         "check_update_success_new_version_available": "アップデートチェック完了（新バージョンあり）ホームページから更新してください",
         "check_update_success_no_new_version": "アップデートチェック完了（最新バージョンです）",
-        "large_file_waring": "ファイルサイズが大きすぎます"
+        "large_file_waring": "ファイルサイズが大きすぎます",
+        "file_too_large_tip": "開こうとしているファイルは約 {{size}} MiB です。JSONにデシリアライズするとファイル密度が低くなるため、変換後は数億行に達する可能性があり、フロントエンドへの転送にも数分かかります。メモリを大量に消費するか、エディタがクラッシュする可能性があります。続行しますか？",
+        "file_too_large_convert_to_json_directly": "直接変換も選択可能です（例: `ファイル名.model.json`を入力すると`ファイル名.model`に逆変換）。出力は元のディレクトリに行われます。.json変換後は他エディタで編集し、当エディタで再変換することも可能です。",
+        "directly_convert_success": "直接変換が成功しました。出力パス：",
+        "converting_please_wait": "変換中、しばらくお待ちください...",
+        "loading_please_wait": "読み込み中、しばらくお待ちください...",
+        "saving_please_wait": "保存中、しばらくお待ちください...",
+        "critical_command_missing_params": "必須コマンドにパラメータが不足しています",
+        "commands_missing_params": "以下の必須コマンドに必要なパラメータが不足しています：",
+        "may_cause_game_malfunction": "ゲームの不具合を引き起こす可能性があります"
     },
     "Errors": {
         "fail_to_check_update": "更新チェックに失敗しました",
@@ -390,7 +406,8 @@
             "pls_fill_file_name_first": "先に「コライダーファイル名」に入力してください",
             "read_file_filed": "対応するcolファイルの読み込みに失敗しました"
         },
-        "read_foo_file_failed_colon": "{{file_type}}ファイルの読み込みに失敗: "
+        "read_foo_file_failed_colon": "{{file_type}}ファイルの読み込みに失敗: ",
+        "directly_convert_failed_colon": "直接変換に失敗しました: "
     },
     "PskEditor": {
         "file_header": {
@@ -472,7 +489,10 @@
         "choose_language": "言語選択",
         "convert_directly": "直接変換",
         "cancel": "キャンセル",
-        "continue": "続く"
+        "continue": "続く",
+        "continue_save": "続けて保存",
+        "back": "戻る",
+        "note_colon": "注意："
     },
     "ModelEditor": {
         "file_header": {
@@ -481,6 +501,17 @@
             "Version": "ファイルバージョン",
             "enable_edit_do_not_edit": "編集不可"
         },
-        "model_name": "モデル名"
+        "model_name": "モデル名",
+        "model_name_tip": "モデル名 (Name)、ゲーム内ではGameObjectの名前として設定され、HighHeelプラグインなど様々なプラグインで使用されます。特殊名称のチェックもゲーム内で行われます",
+        "root_bone_name": "ルートボーン名",
+        "root_bone_name_tip": "ルートボーン名 (RootBoneName)、モデルのルートボーン名で、通常はモデルのルートノードです。例えば小物ボーンは通常 Bone_center、身体ボーンは通常 Bip01 です",
+        "shadow_casting_mode": "シャドウキャスティングモード",
+        "shadow_casting_mode_tip": "シャドウキャスティングモード (ShadowCastingMode)、COM3D2.5のみ有効、モデルバージョンが2104以上2200未満の場合に有効。Off: シャドウ無効、On: シャドウ投影、TwoSided: 両面シャドウ投影、ShadowsOnly: シャドウのみ",
+        "full_model": "完全モード（JSONのみ）",
+        "metadata_only": "メタデータ編集モード",
+        "materials": "マテリアル",
+        "add_material": "マテリアル追加",
+        "delete_material": "マテリアル削除",
+        "no_materials": "マテリアルなし"
     }
 }
