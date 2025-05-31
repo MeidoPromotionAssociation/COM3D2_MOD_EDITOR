@@ -49,7 +49,7 @@ Current Game Version COM3D2 v2.44.1 & COM3D2.5 v3.44.1
 | .phy      | Physics files         | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
 | .psk      | Panier skirt files    | All versions       | No structural change since version 217                                                                                                  |
 | .tex      | Texture files         | All versions       | Not support write version 1000, because version 1000 is poorly designed (CM3D2 also supports version 1010,so there is no reason to use) |
-| .anm      | Animation files       | All versions       | No structural changes so far, so version numbers are irrelevant                                                                         |
+| .anm      | Animation files       | All versions       |                                                                                                                                         |
 | .model    | Model files           | Versions 1000-2200 |                                                                                                                                         |
 
 Each file corresponds to a .go file：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
@@ -127,17 +127,22 @@ Please download it from Github Releases: [https://github.com/90135/COM3D2_MOD_ED
   - This is a planned feature, but we currently provide a command line interface in a separate program that can batch convert files for other programs to process.
   - Please see: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 
+- Unable to export .tex version 1000
+  - This is intentional.
+  - When converting version 1000 of .tex, please export it as an image first, and then convert it back to .tex.
+
 <br>
 
 ### Other Repositories
 
-You can also check out my other repositories
+Also check out my other repositories
 
-- [COM3D2 Simple MOD Guide Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 Simple MOD Guide in Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
 - [COM3D2 MOD Editor](https://github.com/90135/COM3D2_MOD_EDITOR)
 - [COM3D2 Plugin Chinese Translation](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
-- [90135's COM3D2 Chinese Guide](https://github.com/90135/COM3D2_GUIDE_CHINESE)
-- [90135's COM3D2 Script Collection](https://github.com/90135/COM3D2_Scripts_901)
+- [COM3D2 Chinese Guide by 90135](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [COM3D2 Script Collection by 90135](https://github.com/90135/COM3D2_Scripts_901)
+- [COM3D2 Tools](https://github.com/90135/COM3D2_Tools_901)
 
 <br>
 
@@ -202,7 +207,7 @@ QQ 群 967954608 加群暗号 MOD
 | .phy   | 物理文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
 | .psk   | 裙撑文件   | 所有版本         | 自版本 217 以后没有发生结构变化                                     |
 | .tex   | 纹理文件   | 所有版本         | 不支持写出版本 1000，因为版本 1000 设计不佳（CM3D2 也支持版本 1010，因此没有理由使用） |
-| .anm   | 动画文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .anm   | 动画文件   | 所有版本         |                                                       |
 | .model | 模型文件   | 1000-2200 版本 |                                                        |
 
 每种文件对应一个 .go 文件：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
@@ -277,6 +282,10 @@ QQ 群 967954608 加群暗号 MOD
   - 这是一个计划中的功能，但目前我们在单独的程序中提供了一个命令行界面，可以批量转换文件以便其他程序处理。
   - 请查看：[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 
+- 无法导出 1000 版本的 .tex 文件
+  - 这是有意为之的
+  - 转换 1000 版 .tex 文件时，请先将其导出为图片，然后再转换回 .tex 文件。
+
 <br>
 
 ### 也可以看看我的其他仓库
@@ -286,6 +295,7 @@ QQ 群 967954608 加群暗号 MOD
 - [COM3D2 插件中文翻译](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
 - [90135 的 COM3D2 中文指北](https://github.com/90135/COM3D2_GUIDE_CHINESE)
 - [90135 的 COM3D2 脚本收藏集](https://github.com/90135/COM3D2_Scripts_901)
+- [90135 的 COM3D2 工具](https://github.com/90135/COM3D2_Tools_901)
 
 <br>
 
@@ -346,7 +356,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 | .phy   | 物理ファイル  | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
 | .psk   | プチシェコール | 全バージョン       | バージョン217以降で構造変更なし                                       |
 | .tex   | テクスチャファイル | 全バージョン       | バージョン1000の書き出し非対応（設計が不適切なため、CM3D2でも1010をサポートしているため必要性なし） |
-| .anm   | アニメーションファイル | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
+| .anm   | アニメーションファイル | 全バージョン       |                                                  |
 | .model | モデルファイル | バージョン1000-2200 |                                                        |
 
 各ファイルに対応する.goファイル：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
@@ -422,15 +432,19 @@ Github Releasesからダウンロードしてください：[https://github.com/
   - これは計画中の機能ですが、現在、他のプログラムで処理できるようにファイルを一括変換できるコマンドラインインターフェースを別のプログラムで提供しています。
   - 詳細は[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)をご覧ください。
 
+- バージョン1000の.texファイルはエクスポートできません
+  - これは意図的な動作です
+  - バージョン1000の.texファイルを変換する場合は、まず画像としてエクスポートし、その後.texファイルに戻してください。
+
 <br>
 
 ### 他の倉庫もぜひご覧ください
-
-- [COM3D2 簡潔な MOD チュートリアル (中国語)](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 シンプルMODガイド（中国語）](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
 - [COM3D2 MODエディター](https://github.com/90135/COM3D2_MOD_EDITOR)
-- [COM3D2 プラグイン 中国語翻訳](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
-- [90135 の COM3D2 中国語ガイド](https://github.com/90135/COM3D2_GUIDE_CHINESE)
-- [90135のCOM3D2スクリプト集](https://github.com/90135/COM3D2_Scripts_901)
+- [COM3D2プラグイン 中国語翻訳](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [90135によるCOM3D2中国語ガイド](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [90135によるCOM3D2スクリプト集](https://github.com/90135/COM3D2_Scripts_901)
+- [COM3D2ツール](https://github.com/90135/COM3D2_Tools_901)
 
 <br>
 
