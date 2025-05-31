@@ -174,8 +174,6 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 任何 Bug 或请求，请使用 Issues 或 Discussions
 
-QQ 群 967954608 加群暗号 MOD
-
 你也可以在 Discord [Custom Maid Server](https://discord.gg/custommaid) 找到我
 
 或者我的中文 Discord 频道 [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp) 
