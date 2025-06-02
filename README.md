@@ -2,7 +2,7 @@
 
 [Disclaimer/How to Dev/Credit/KISS Rule](#how-to-dev)
 
-[![Github All Releases](https://img.shields.io/github/downloads/90135/COM3D2_MOD_EDITOR/total.svg)]() [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/90135/COM3D2_MOD_EDITOR)
+[![Github All Releases](https://img.shields.io/github/downloads/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/total.svg)]() [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
 
 # English
 
@@ -103,17 +103,17 @@ This application does not collect any personal information nor upload any data t
 
 The only active network request is for update checks, which solely communicates with GitHub API. You can disable the update check feature.
 
-Code location: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+Code location: https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 
 ### Download
 
-By downloading this software, you accept and agree to abide by the [Disclaimer](https://github.com/90135/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
+By downloading this software, you accept and agree to abide by the [Disclaimer](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
 
-Please download it from Github Releases: [https://github.com/90135/COM3D2_MOD_EDITOR/releases](https://github.com/90135/COM3D2_MOD_EDITOR/releases)
+Please download it from Github Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
 
 - If you want to install the editor into your system and automatically associate the file type, please use `COM3D2.MOD.EDITOR.V2-amd64-installer.exe ` 
-  - After associating the file type, different files will be displayed with different icons. Please check [here](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build) to preview the icon
+  - After associating the file type, different files will be displayed with different icons. Please check [here](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build) to preview the icon
 - If you don't want to install, please use `COM3D2_MOD_EDITOR_V2.exe `
 - If you are on Linux, please use `COM3D2_MOD_EDITOR_V2-amd64-Linux `
 
@@ -137,9 +137,9 @@ Please download it from Github Releases: [https://github.com/90135/COM3D2_MOD_ED
 
 Also check out my other repositories
 
-- [COM3D2 Simple MOD Guide in Chinese](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
-- [COM3D2 MOD Editor](https://github.com/90135/COM3D2_MOD_EDITOR)
-- [COM3D2 Plugin Chinese Translation](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [COM3D2 Simple MOD Guide in Chinese](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 MOD Editor](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
+- [COM3D2 Plugin Chinese Translation](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
 - [COM3D2 Chinese Guide by 90135](https://github.com/90135/COM3D2_GUIDE_CHINESE)
 - [COM3D2 Script Collection by 90135](https://github.com/90135/COM3D2_Scripts_901)
 - [COM3D2 Tools](https://github.com/90135/COM3D2_Tools_901)
@@ -258,16 +258,16 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 唯一的主动网络请求是用于检查更新，它只会请求 Github API，您也可以关闭更新检查功能。
 
-代码位于 https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+代码位于 https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 ### 下载
 
-下载此软件即表示您接受并同意遵守[免责声明](https://github.com/90135/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
+下载此软件即表示您接受并同意遵守[免责声明](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
 
-请在 Github Releases 中下载：[https://github.com/90135/COM3D2_MOD_EDITOR/releases](https://github.com/90135/COM3D2_MOD_EDITOR/releases)
+请在 Github Releases 中下载：[https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
 
 - 如果您希望将编辑器安装到系统中并自动关联文件类型，请使用 `COM3D2.MOD.EDITOR.V2-amd64-installer.exe`
-  - 关联文件类型后，不同的文件将显示不同的图标。请查看[此处](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build)预览图标。
+  - 关联文件类型后，不同的文件将显示不同的图标。请查看[此处](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build)预览图标。
 - 如果您不想安装，请使用 `COM3D2_MOD_EDITOR_V2.exe`
 - 如果您使用的是 Linux 系统，请使用 `COM3D2_MOD_EDITOR_V2-amd64-Linux`
 
@@ -288,9 +288,9 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 ### 也可以看看我的其他仓库
 
-- [COM3D2 简明 MOD 教程中文](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
-- [COM3D2 MOD 编辑器](https://github.com/90135/COM3D2_MOD_EDITOR)
-- [COM3D2 插件中文翻译](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [COM3D2 简明 MOD 教程中文](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 MOD 编辑器](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
+- [COM3D2 插件中文翻译](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
 - [90135 的 COM3D2 中文指北](https://github.com/90135/COM3D2_GUIDE_CHINESE)
 - [90135 的 COM3D2 脚本收藏集](https://github.com/90135/COM3D2_Scripts_901)
 - [90135 的 COM3D2 工具](https://github.com/90135/COM3D2_Tools_901)
@@ -408,16 +408,16 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 唯一の能動的なネットワークリクエストは更新チェック用で、GitHub API のみにリクエストを送信します。更新チェック機能を無効にすることも可能です。
 
-該当コード: https://github.com/90135/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
+該当コード: https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 ### ダウンロード
 
-本ソフトウェアをダウンロードすることにより、[免責事項](https://github.com/90135/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)に同意し、遵守することに同意したものとみなされます
+本ソフトウェアをダウンロードすることにより、[免責事項](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)に同意し、遵守することに同意したものとみなされます
 
-Github Releasesからダウンロードしてください：[https://github.com/90135/COM3D2_MOD_EDITOR/releases](https://github.com/90135/COM3D2_MOD_EDITOR/releases)
+Github Releasesからダウンロードしてください：[https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
 
 - システムへのインストールとファイルタイプの自動関連付けを希望する場合、`COM3D2.MOD.EDITOR.V2-amd64-installer.exe`を使用してください
-  - ファイルタイプの関連付けを行うと、異なるファイルタイプに応じて異なるアイコンが表示されます。アイコンプレビューは[こちら](https://github.com/90135/COM3D2_MOD_EDITOR/tree/main/build)で確認できます
+  - ファイルタイプの関連付けを行うと、異なるファイルタイプに応じて異なるアイコンが表示されます。アイコンプレビューは[こちら](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build)で確認できます
 - インストールを希望しない場合、`COM3D2_MOD_EDITOR_V2.exe`を使用してください
 - Linuxシステムをご利用の場合、`COM3D2_MOD_EDITOR_V2-amd64-Linux`を使用してください
 
@@ -437,9 +437,9 @@ Github Releasesからダウンロードしてください：[https://github.com/
 <br>
 
 ### 他の倉庫もぜひご覧ください
-- [COM3D2 シンプルMODガイド（中国語）](https://github.com/90135/COM3D2_Simple_MOD_Guide_Chinese)
-- [COM3D2 MODエディター](https://github.com/90135/COM3D2_MOD_EDITOR)
-- [COM3D2プラグイン 中国語翻訳](https://github.com/90135/COM3D2_Plugin_Translate_Chinese)
+- [COM3D2 シンプルMODガイド（中国語）](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 MODエディター](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
+- [COM3D2プラグイン 中国語翻訳](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
 - [90135によるCOM3D2中国語ガイド](https://github.com/90135/COM3D2_GUIDE_CHINESE)
 - [90135によるCOM3D2スクリプト集](https://github.com/90135/COM3D2_Scripts_901)
 - [COM3D2ツール](https://github.com/90135/COM3D2_Tools_901)
