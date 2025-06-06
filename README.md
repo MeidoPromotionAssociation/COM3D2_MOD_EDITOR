@@ -522,11 +522,11 @@ KISS 規約
 
 # Disclaimer
 
-By downloading this software, you agree to read, accept and abide by this Disclaimer
+By downloading this software, you agree to read, accept and abide by this Disclaimer, this is a developer protection measure and we apologize for any inconvenience this may cause.
 
-下载此软件即表示您已阅读且接受并同意遵守此免责声明
+下载此软件即表示您已阅读且接受并同意遵守此免责声明，这是为了保护开发人员而采取的措施，对于由此造成的不便，我们深表歉意。
 
-このソフトウェアをダウンロードすることにより、お客様はこの免責事項を読み、同意し、遵守することに同意するものとします。
+本ソフトウェアをダウンロードすることにより、利用者は本免責事項を読み、内容を理解し、全ての条項に同意し、遵守することを表明したものとみなされます。これは開発者保護のための措置であることをご理解いただき、ご不便をおかけする場合もあらかじめご了承ください。
 
 ```
 English
