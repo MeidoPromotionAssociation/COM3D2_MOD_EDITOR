@@ -513,5 +513,13 @@
         "add_material": "マテリアル追加",
         "delete_material": "マテリアル削除",
         "no_materials": "マテリアルなし"
+    },
+    "Disclaimer": {
+        "title": "免責事項",
+        "to_protect_author_please_read_and_agree": "著者を保護するために、以下の免責事項を読んで同意する必要があります。",
+        "sorry_for_inconvenience": "ご不便をおかけして申し訳ございません。",
+        "agree": "読んで同意します",
+        "disagree": "同意しない（終了）",
+        "load_error": "免責事項のコンテンツを読み込めませんでした。オンライン版は https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer でご確認ください。"
     }
 }

@@ -16,7 +16,8 @@
         "TexEditor": "Tex",
         "open_file": "파일 열기",
         "save_file": "파일 저장",
-        "save_as_file": "다른 이름으로 저장"
+        "save_as_file": "다른 이름으로 저장",
+        "SettingsPage": "설정"
     },
     "MenuEditor": {
         "treeIndent": "트리 들여쓰기",
@@ -102,7 +103,8 @@
             "Material_ShaderName_tip": "게임 본체는 동일한 이름의 셰이더를 찾아 사용합니다.",
             "Material_ShaderFilename": "셰이더 파일 이름",
             "Material_ShaderFilename_tip": "게임 본체는 특정 경로에서 이 셰이더 파일을 찾습니다.",
-            "Name_tip": "Name 본인이 보기 편하려 붙이는 이름입니다. 게임은 단순히 그것을 읽고 버립니다(2.43.0)"
+            "Name_tip": "Name 본인이 보기 편하려 붙이는 이름입니다. 게임은 단순히 그것을 읽고 버립니다(2.43.0)",
+            "basic_info": "기본 정보"
         },
         "add_new_property": "새 속성 항목 추가",
         "property": "속성",
@@ -122,6 +124,8 @@
         "vec_no_brackets": "벡터",
         "vec_tip": "벡터(vec); 사실상 색상이지만 RGBA 대신 XYZW를 사용합니다. 게임 본체는 해당 텍스처의 색상을 이 값으로 설정합니다.",
         "unknown": "알 수 없음",
+        "style1": "양식 편집 1",
+        "style2": "양식 편집 2",
         "style3": "JSON 편집",
         "subTag": "하위 유형",
         "tex2d": "2D 텍스처(tex2d)",
@@ -461,6 +465,23 @@
             "visual_editor_tip": "캔버스의 빈 영역을 더블클릭시 새 키 프레임을 추가합니다. 접선을 조정하려면 제어점을 드래그하세요 | 키 프레임 포인트를 드래그하여 위치를 조정하세요",
             "keyframe": "키프레임(곡선)",
             "keyframe_tip": "키프레임 (keyframe): 특성을 곡선으로 변환할 수 있습니다. Unity 표준 키프레임 형식이며 정확도는 Float32에 불과합니다."
+        },
+        "cancel": "취소",
+        "continue": "계속하다",
+        "continue_save": "계속 저장하기",
+        "back": "반품"
+    },
+    "ModelEditor": {
+        "file_header": {
+            "basic_info": "기본 정보"
         }
+    },
+    "Disclaimer": {
+        "title": "부인 성명",
+        "to_protect_author_please_read_and_agree": "저자를 보호하기 위해 다음 면책 조항을 읽고 동의해야 합니다",
+        "sorry_for_inconvenience": "이로 인해 불편을 끼쳐드려 죄송합니다",
+        "agree": "나는 읽었고 동의합니다",
+        "disagree": "동의하지 않음(종료)",
+        "load_error": "면책 조항 내용을 불러오지 못했습니다. https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer 에서 온라인 버전을 확인하세요."
     }
 }
