@@ -3,6 +3,14 @@
     "new_version_button": "新版本可用🚀",
     "help_us_translate_editor": "帮助我们翻译编辑器"
   },
+  "Disclaimer": {
+    "title": "免责声明",
+    "to_protect_author_please_read_and_agree": "为了保护作者，您必须阅读并同意以下免责声明：",
+    "sorry_for_inconvenience": "给您带来不便敬请谅解",
+    "agree": "我已阅读并同意",
+    "disagree": "不同意（退出）",
+    "load_error": "加载免责声明内容失败。请查看在线版本 https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer。"
+  },
   "EditorNavBar": {
     "HomePage": "首页",
     "MenuEditor": "Menu",
@@ -456,7 +464,7 @@
     "continue": "继续",
     "continue_save": "继续保存",
     "back": "返回",
-    "note_colon" : "注意："
+    "note_colon": "注意："
   },
   "Infos": {
     "choose_file": "选择文件",

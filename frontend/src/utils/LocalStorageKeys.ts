@@ -8,6 +8,7 @@ export const LatestVersionKey = "LatestVersion" // 存储最新版本号的键
 export const UpdateRetryKey = "UpdateRetry" // 存储是否重试的键
 
 // Common
+export const DisclaimerAgreedKey = "DisclaimerAgreedKey"; // 存储免责声明同意状态的键
 
 export const KeyframeEditorCanvasSizeKey = "KeyframeEditorCanvasSize"; // 存储画布大小的键
 

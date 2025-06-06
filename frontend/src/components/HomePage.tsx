@@ -1,10 +1,10 @@
 // frontend/src/components/HomePage.tsx
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Dropdown, FloatButton, Layout, MenuProps} from "antd";
+import {Button, FloatButton, Layout} from "antd";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
-import {DownOutlined, GithubOutlined, SettingOutlined, TranslationOutlined} from "@ant-design/icons";
+import {GithubOutlined, SettingOutlined} from "@ant-design/icons";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {
     AllSupportedFileTypes,
@@ -20,11 +20,13 @@ import useFileHandlers from "../hooks/fileHanlder";
 const {Content} = Layout;
 
 const HomePage: React.FC = () => {
-    const {t, i18n} = useTranslation();
-    const [language, setLanguage] = React.useState('zh-CN');
+    const {t} = useTranslation();
     const hasUpdate = useVersionCheck();
     const {handleSelectFile, handleSaveFile} = useFileHandlers();
     const navigate = useNavigate();
+    const [language, setLanguage] = useState(() => {
+        return localStorage.getItem('i18nextLng');
+    });
 
     // 设置窗口标题
     useEffect(() => {
@@ -34,23 +36,6 @@ const HomePage: React.FC = () => {
         setTitle().then(() => {
         });
     });
-
-
-    const handleLanguageChange: MenuProps['onClick'] = (e) => {
-        i18n.changeLanguage(e.key).then(() => {
-        });
-        setLanguage(e.key);
-    };
-
-    const languageMenu: MenuProps = {
-        items: [
-            {label: '简体中文 (Simplified Chinese)', key: "zh-CN"},
-            {label: 'English (American English)', key: "en-US"},
-            {label: '日本語 (Japanese)', key: "ja-JP"},
-            {label: '韓國語 (Korean)', key: "ko-KR"},
-        ],
-        onClick: handleLanguageChange,
-    };
 
 
     return (
@@ -106,19 +91,6 @@ const HomePage: React.FC = () => {
                         {t('Infos.pls_select_a_file_to_edit')}
                     </p>
 
-                    <Dropdown menu={languageMenu} placement="bottomRight">
-                        <Button>
-                            <TranslationOutlined/><DownOutlined/>
-                        </Button>
-                    </Dropdown>
-
-                    <FloatButton
-                        style={{marginTop: 20}}
-                        onClick={() => navigate("/settings")}
-                        icon={<SettingOutlined/>}
-                    >
-                    </FloatButton>
-
                     <p>
                         {AppVersion}
                     </p>
@@ -133,6 +105,14 @@ const HomePage: React.FC = () => {
                     alignItems: 'center',
                     padding: '0px 0'
                 }}>
+                    <FloatButton
+                        style={{marginTop: 20}}
+                        onClick={() => navigate("/settings")}
+                        icon={<SettingOutlined/>}
+                    >
+                    </FloatButton>
+
+
                     <Button type="text" size="large" style={{color: "#666"}}
                             onClick={() => BrowserOpenURL(GitHubUrl)}>
                         <GithubOutlined/>
