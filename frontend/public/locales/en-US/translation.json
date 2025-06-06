@@ -516,10 +516,10 @@
     },
     "Disclaimer": {
         "title": "DISCLAIMER",
-        "to_protect_author_please_read_and_agree": "In order to protect authors, you must read and agree to the following disclaimer: ",
-        "sorry_for_inconvenience": "We apologize for any inconvenience this may cause.",
         "agree": "I have read and agree",
         "disagree": "Disagree (exit)",
-        "load_error": "Failed to load disclaimer content. Please check the online version at https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer"
+        "load_error": "Failed to load disclaimer content. Please check the online version at https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer",
+        "please_read_and_agree": "You must read and agree to the following disclaimer: ",
+        "this_is_to_protect_authors_sorry_for_inconvenience": "This is for the developers' protection and we apologize for any inconvenience this may cause."
     }
 }

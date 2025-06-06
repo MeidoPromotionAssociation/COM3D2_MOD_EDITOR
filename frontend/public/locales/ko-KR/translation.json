@@ -478,10 +478,10 @@
     },
     "Disclaimer": {
         "title": "부인 성명",
-        "to_protect_author_please_read_and_agree": "저자를 보호하기 위해 다음 면책 조항을 읽고 동의해야 합니다",
-        "sorry_for_inconvenience": "이로 인해 불편을 끼쳐드려 죄송합니다",
         "agree": "나는 읽었고 동의합니다",
         "disagree": "동의하지 않음(종료)",
-        "load_error": "면책 조항 내용을 불러오지 못했습니다. https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer 에서 온라인 버전을 확인하세요."
+        "load_error": "면책 조항 내용을 불러오지 못했습니다. https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer 에서 온라인 버전을 확인하세요.",
+        "please_read_and_agree": "다음 면책 조항을 읽고 동의해야 합니다: ",
+        "this_is_to_protect_authors_sorry_for_inconvenience": "이는 개발자를 보호하기 위한 조치이며, 이로 인해 불편을 드려 죄송합니다."
     }
 }

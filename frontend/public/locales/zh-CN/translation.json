@@ -5,8 +5,8 @@
   },
   "Disclaimer": {
     "title": "免责声明",
-    "to_protect_author_please_read_and_agree": "为了保护作者，您必须阅读并同意以下免责声明：",
-    "sorry_for_inconvenience": "给您带来不便敬请谅解",
+    "please_read_and_agree": "您必须阅读并同意以下免责声明：",
+    "this_is_to_protect_authors_sorry_for_inconvenience": "这是为了保护开发人员而采取的措施，对于由此造成的不便，我们深表歉意。",
     "agree": "我已阅读并同意",
     "disagree": "不同意（退出）",
     "load_error": "加载免责声明内容失败。请查看在线版本 https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer"

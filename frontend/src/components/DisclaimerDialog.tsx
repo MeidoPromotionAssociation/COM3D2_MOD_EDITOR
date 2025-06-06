@@ -81,8 +81,8 @@ const DisclaimerDialog: React.FC<DisclaimerDialogProps> = ({onAgree, visible}) =
                 </Dropdown>
             </div>
 
-            <p>{t('Disclaimer.to_protect_author_please_read_and_agree')}</p>
-            <p style={{marginTop: '0.5em', marginBottom: '1em'}}>{t('Disclaimer.sorry_for_inconvenience')}</p>
+            <p>{t('Disclaimer.please_read_and_agree')}</p>
+            <p style={{marginTop: '0.5em', marginBottom: '1em'}}>{t('Disclaimer.this_is_to_protect_authors_sorry_for_inconvenience')}</p>
 
             <div
                 style={{
