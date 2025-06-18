@@ -559,31 +559,31 @@ In case of any discrepancy between the translated versions, the Simplified Chine
 2. Usage restrictions
   This software shall not be used for any illegal purposes. This includes, but is not limited to, creating or disseminating obscene or illegal materials, infringing upon the intellectual property rights of others, violating platform user agreements, or any other actions that may contravene the laws and regulations of the user's jurisdiction.
     Users shall bear full responsibility for any consequences arising from violations of the law.
-
-Users must commit to:
-    - Not creating, publishing, transmitting, disseminating, or storing any content that violates the laws and regulations of their jurisdiction.
-    - Not creating, publishing, transmitting, disseminating, or storing obscene or illegal materials.
-    - Not creating, publishing, transmitting, disseminating, or storing content that infringes upon the intellectual property rights of others.
-    - Not creating, publishing, transmitting, disseminating, or storing content that violates platform user agreements.
-    - Not using the tool for any activities that endanger national security or undermine social stability.
-    - Not using the tool to conduct cyber attacks or crack licensed software.
-    - The Author has no legal association with user-generated content.
-    - Any content created using this tool that violates local laws and regulations (including but not limited to pornography, violence, or infringing content) entails legal liability borne solely by the content creator.
+  
+  Users must commit to:
+      - Not creating, publishing, transmitting, disseminating, or storing any content that violates the laws and regulations of their jurisdiction.
+      - Not creating, publishing, transmitting, disseminating, or storing obscene or illegal materials.
+      - Not creating, publishing, transmitting, disseminating, or storing content that infringes upon the intellectual property rights of others.
+      - Not creating, publishing, transmitting, disseminating, or storing content that violates platform user agreements.
+      - Not using the tool for any activities that endanger national security or undermine social stability.
+      - Not using the tool to conduct cyber attacks or crack licensed software.
+      - The Author has no legal association with user-generated content.
+      - Any content created using this tool that violates local laws and regulations (including but not limited to pornography, violence, or infringing content) entails legal liability borne solely by the content creator.
 
 3. Liability exemption
-Given the nature of open-source projects:
-    - The Author cannot monitor the use of all derivative code.
-    - The Author is not responsible for modified versions compiled/distributed by users.
-    - The Author assumes no liability for any legal consequences resulting from illegal use by users.
-    - The Author provides no technical guarantee for content review or filtering.
-    - The tool's operational mechanism inherently prevents it from recognizing or filtering content nature.
-    - All data processing occurs solely on the user's local device; the Author cannot access or control any user data.
+  Given the nature of open-source projects:
+      - The Author cannot monitor the use of all derivative code.
+      - The Author is not responsible for modified versions compiled/distributed by users.
+      - The Author assumes no liability for any legal consequences resulting from illegal use by users.
+      - The Author provides no technical guarantee for content review or filtering.
+      - The tool's operational mechanism inherently prevents it from recognizing or filtering content nature.
+      - All data processing occurs solely on the user's local device; the Author cannot access or control any user data.
 
-Users acknowledge and agree that:
-    - This tool possesses no content generation capabilities; the final content depends entirely on the input files. The tool merely performs format conversion operations and cannot be held responsible for the legality, nature, or usage context of the user's input data.
-    - This tool contains no data upload/download capabilities; all content processing is completed on the user's local device.
-    - If illegal activities involving this tool are discovered, they must be reported immediately to the public security authorities.
-    - The Author reserves the right to cease distribution of specific versions suspected of being abused.
+  Users acknowledge and agree that:
+      - This tool possesses no content generation capabilities; the final content depends entirely on the input files. The tool merely performs format conversion operations and cannot be held responsible for the legality, nature, or usage context of the user's input data.
+      - This tool contains no data upload/download capabilities; all content processing is completed on the user's local device.
+      - If illegal activities involving this tool are discovered, they must be reported immediately to the public security authorities.
+      - The Author reserves the right to cease distribution of specific versions suspected of being abused.
 
 4. Age and guardianship responsibility
   Users must be persons with full civil capacity (18 years of age or older). Minors are prohibited from downloading, installing or using this tool. Guardians must assume full management responsibility for device access.
