@@ -132,6 +132,11 @@ Please download it from Github Releases: [https://github.com/MeidoPromotionAssoc
   - This is intentional.
   - When converting version 1000 of .tex, please export it as an image first, and then convert it back to .tex.
 
+- I want to export to a plain text file
+  - It can support importing and exporting to text files, for batch editing or using other editors.
+  - Using the Save As function, you can specify the extension as `*.menu.json`, `*.mate.json`, etc., and you can see the prompt when exporting.
+  - The batch processing program mentioned in the above question can also support this format.
+
 <br>
 
 ### Other Repositories
@@ -286,6 +291,11 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
   - 这是有意为之的
   - 转换 1000 版 .tex 文件时，请先将其导出为图片，然后再转换回 .tex 文件。
 
+- 我希望导出为纯文本文件
+  - 可以支持导入和导出为文本文件，以便进行批量编辑或使用其他编辑器。
+  - 使用另存为功能，可以指定扩展名为 `*.menu.json`、`*.mate.json` 等，导出时可以看到提示。
+  - 上面的问题中提到的批量处理程序也可以支持此格式。
+
 <br>
 
 ### 也可以看看我的其他仓库
@@ -436,6 +446,11 @@ Github Releasesからダウンロードしてください：[https://github.com/
 - バージョン1000の.texファイルはエクスポートできません
   - これは意図的な動作です
   - バージョン1000の.texファイルを変換する場合は、まず画像としてエクスポートし、その後.texファイルに戻してください。
+
+- プレーンテキストファイルにエクスポートしたい
+  - テキストファイルへのインポートとエクスポートをサポートしており、一括編集や他のエディタでの使用も可能です。
+  - 「名前を付けて保存」機能を使用すると、拡張子を「*.menu.json」「*.mate.json」などに指定でき、エクスポート時にプロンプ​​トが表示されます。
+  - 上記の質問で言及されているバッチ処理プログラムもこの形式をサポートしています。
 
 <br>
 
