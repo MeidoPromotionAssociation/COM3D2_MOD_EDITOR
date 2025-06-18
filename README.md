@@ -80,6 +80,7 @@ This application requires the following software to run:
   - Install from the official website: [https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
   - On the download page, look for `ImageMagick-version-Q16-HDRI-x64-dll.exe` and install it. During installation, check `Add application directory to your system path`.
   - Or install via terminal command: `winget install ImageMagick.Q16-HDRI`
+  - The version used for testing is `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` If you have problems, please try this version.
   - After installation, verify by running `magick -version` in your terminal. A version number output indicates success.
   - ImageMagick® is a free and open-source software suite for image editing and manipulation.
 
@@ -235,6 +236,7 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
   - 请从官方网站安装：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
   - 在下载页面上找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 下载并安装，安装时需要勾选 `Add application directory to your system path`
   - 或者在您的终端执行 `winget install ImageMagick.Q16-HDRI` 命令安装。
+  - 用于测试是版本是 `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` 如果出现问题，请尝试这个版本。
   - 安装完成后在终端执行 `magick -version` 命令查看版本号，如果显示版本号则说明安装成功。
   - ImageMagick® 是一个自由的开源软件套件，用于编辑和操纵数字图像。
 
@@ -385,6 +387,7 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
   - 公式サイトからインストールしてください：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
   - ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時に`Add application directory to your system path（システムパスに追加）`にチェックを入れてください
   - またはターミナルで次のコマンドを実行：`winget install ImageMagick.Q16-HDRI`
+  - テストに使用したバージョンは `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` です。問題がある場合は、このバージョンを試してください。
   - インストール後、ターミナルで`magick -version`を実行し、バージョン番号が表示されれば成功です
   - ImageMagick® は画像編集・加工用のオープンソースソフトウェアスイートです
 
