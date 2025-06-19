@@ -76,13 +76,17 @@ const DisclaimerDialog: React.FC<DisclaimerDialogProps> = ({onAgree, visible}) =
                 <span style={{marginRight: '8px'}}>{t('Common.choose_language')}</span>
                 <Dropdown menu={languageMenu} placement="bottomRight">
                     <Button>
+                        {language === 'zh-CN' ? '简体中文 (Simplified Chinese)' : language === 'en-US' ? 'English (American English)' : language === 'ja-JP' ? '日本語 (Japanese)' : '韓國語 (Korean)'}
                         <TranslationOutlined/> <DownOutlined/>
                     </Button>
                 </Dropdown>
             </div>
 
             <p>{t('Disclaimer.please_read_and_agree')}</p>
-            <p style={{marginTop: '0.5em', marginBottom: '1em'}}>{t('Disclaimer.this_is_to_protect_authors_sorry_for_inconvenience')}</p>
+            <p style={{
+                marginTop: '0.5em',
+                marginBottom: '1em'
+            }}>{t('Disclaimer.this_is_to_protect_authors_sorry_for_inconvenience')}</p>
 
             <div
                 style={{

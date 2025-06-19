@@ -103,15 +103,15 @@ const SettingsPage: React.FC = () => {
                                                         {(() => {
                                                             switch (item.value) {
                                                                 case 'zh-CN':
-                                                                    return '简体中文';
+                                                                    return '简体中文 (Simplified Chinese)';
                                                                 case 'en-US':
-                                                                    return 'English';
+                                                                    return 'English (American English)';
                                                                 case 'ja-JP':
-                                                                    return '日本語';
+                                                                    return '日本語 (Japanese)';
                                                                 case 'ko-KR':
-                                                                    return '韓國語';
+                                                                    return '韓國語 (Korean)';
                                                                 default:
-                                                                    return '简体中文';
+                                                                    return '简体中文 (Simplified Chinese)';
                                                             }
                                                         })()} <TranslationOutlined/>
                                                         <DownOutlined style={{marginLeft: 8}}/>
