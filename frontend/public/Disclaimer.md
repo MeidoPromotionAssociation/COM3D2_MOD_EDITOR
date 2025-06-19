@@ -18,19 +18,19 @@ In case of any discrepancy between the translated versions, the Simplified Chine
    jurisdiction.
    Users shall bear full responsibility for any consequences arising from violations of the law.
 
-Users must commit to:
-
-- Not creating, publishing, transmitting, disseminating, or storing any content that violates the laws and regulations
-  of their jurisdiction.
-- Not creating, publishing, transmitting, disseminating, or storing obscene or illegal materials.
-- Not creating, publishing, transmitting, disseminating, or storing content that infringes upon the intellectual
-  property rights of others.
-- Not creating, publishing, transmitting, disseminating, or storing content that violates platform user agreements.
-- Not using the tool for any activities that endanger national security or undermine social stability.
-- Not using the tool to conduct cyber attacks or crack licensed software.
-- The Author has no legal association with user-generated content.
-- Any content created using this tool that violates local laws and regulations (including but not limited to
-  pornography, violence, or infringing content) entails legal liability borne solely by the content creator.
+   Users must commit to:
+    - Not creating, publishing, transmitting, disseminating, or storing any content that violates the laws and
+      regulations of their jurisdiction.
+    - Not creating, publishing, transmitting, disseminating, or storing obscene or illegal materials.
+    - Not creating, publishing, transmitting, disseminating, or storing content that infringes upon the intellectual
+      property rights of others.
+    - Not creating, publishing, transmitting, disseminating, or storing content that violates platform user
+      agreements.
+    - Not using the tool for any activities that endanger national security or undermine social stability.
+    - Not using the tool to conduct cyber attacks or crack licensed software.
+    - The Author has no legal association with user-generated content.
+    - Any content created using this tool that violates local laws and regulations (including but not limited to
+      pornography, violence, or infringing content) entails legal liability borne solely by the content creator.
 
 3. Liability exemption
    Given the nature of open-source projects:
@@ -41,16 +41,15 @@ Users must commit to:
     - The tool's operational mechanism inherently prevents it from recognizing or filtering content nature.
     - All data processing occurs solely on the user's local device; the Author cannot access or control any user data.
 
-Users acknowledge and agree that:
-
-- This tool possesses no content generation capabilities; the final content depends entirely on the input files. The
-  tool merely performs format conversion operations and cannot be held responsible for the legality, nature, or usage
-  context of the user's input data.
-- This tool contains no data upload/download capabilities; all content processing is completed on the user's local
-  device.
-- If illegal activities involving this tool are discovered, they must be reported immediately to the public security
-  authorities.
-- The Author reserves the right to cease distribution of specific versions suspected of being abused.
+   Users acknowledge and agree that:
+    - This tool possesses no content generation capabilities; the final content depends entirely on the input files. The
+      tool merely performs format conversion operations and cannot be held responsible for the legality, nature, or
+      usage context of the user's input data.
+    - This tool contains no data upload/download capabilities; all content processing is completed on the user's local
+      device.
+    - If illegal activities involving this tool are discovered, they must be reported immediately to the public security
+      authorities.
+    - The Author reserves the right to cease distribution of specific versions suspected of being abused.
 
 4. Age and guardianship responsibility
    Users must be persons with full civil capacity (18 years of age or older). Minors are prohibited from downloading,
@@ -145,14 +144,14 @@ Users acknowledge and agree that:
     - 数据丢失或业务中断
     - 第三方索赔或行政处罚
     - 受到刑事或民事处罚
-      开发者均不承担民事、行政或刑事责任
+    开发者均不承担民事、行政或刑事责任
 
 8. 第三方依赖免责  
    本工具包含或依赖的第三方库/组件如存在：
     - 知识产权纠纷
     - 安全漏洞
     - 违反当地法律的内容  
-      开发者不承担连带责任，用户应自行审查相关许可
+    开发者不承担连带责任，用户应自行审查相关许可
 
 9. 版本迭代风险  
    用户理解并接受：
@@ -175,7 +174,7 @@ Users acknowledge and agree that:
     - わいせつ物や違法物の作成・頒布
     - 他人の知的財産権の侵害
     - プラットフォーム利用規約違反行為
-      使用者は、法律違反によって生じた結果について、自ら全ての責任を負うものとします。
+   使用者は、法律違反によって生じた結果について、自ら全ての責任を負うものとします。
 
    ユーザーは以下を確約しなければなりません：
     - 所在地の法令に違反する内容を、作成、公開、送信、拡散、保存しないこと。
@@ -197,8 +196,7 @@ Users acknowledge and agree that:
     - すべてのデータ処理はユーザーのローカルデバイス上で完了し、開発者はユーザーデータにアクセスまたは制御することはできません。
 
    ユーザーはこれを理解し同意するものとします：
-    -
-    本ツールはコンテンツ生成能力を一切有しておらず、最終的なコンテンツは完全に入力ファイルに依存します。ツールはフォーマット変換操作のみを実行し、ユーザー入力データの合法性、内容の性質、および使用シナリオについて責任を負うことはできません。
+    - 本ツールはコンテンツ生成能力を一切有しておらず、最終的なコンテンツは完全に入力ファイルに依存します。ツールはフォーマット変換操作のみを実行し、ユーザー入力データの合法性、内容の性質、および使用シナリオについて責任を負うことはできません。
     - 本ツールにはいかなるデータアップロード/ダウンロード機能も含まれておらず、すべてのコンテンツ生成はユーザーのローカルデバイス上で完了します。
     - 本ツールを利用した違法行為を発見した場合は、直ちに公安機関に通報すること。
     - 開発者は、悪用の疑いのある特定バージョンの配布停止権利を留保します。
@@ -224,7 +222,7 @@ Users acknowledge and agree that:
     - 知的財産権に関する紛争
     - セキュリティ上の脆弱性
     - 当地の法律に違反する内容
-      が存在する場合でも、開発者は連帯責任を負わず、ユーザーは関連ライセンスを自ら確認するものとします。
+   が存在する場合でも、開発者は連帯責任を負わず、ユーザーは関連ライセンスを自ら確認するものとします。
 
 9. バージョン更新リスク
    ユーザーは以下を理解し受諾するものとします：
