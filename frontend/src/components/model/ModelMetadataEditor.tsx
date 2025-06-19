@@ -179,21 +179,6 @@ const ModelMetadataEditor: React.FC<ModelMetadataEditorProps> = ({
                                 />
                             </Form.Item>
 
-                            <Form.Item name="rootBoneName">
-                                <Input
-                                    addonBefore={
-                                        <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                                          {t('ModelEditor.root_bone_name')}
-                                        </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('ModelEditor.root_bone_name_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
-                            </Form.Item>
-
                             <Form.Item name="shadowCastingMode">
                                 <Input
                                     addonBefore={
