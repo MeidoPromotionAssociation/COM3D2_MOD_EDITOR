@@ -122,6 +122,7 @@ const ModelMetadataEditor: React.FC<ModelMetadataEditorProps> = ({
                 // Form 级别统一设置 labelCol
                 labelCol={{style: {width: '15vw'}}}
                 requiredMark={false}
+                onValuesChange={handleFormValuesChange}
             >
                 <div style={{marginBottom: '8px'}}>
                     <Collapse defaultActiveKey={['header']}>
