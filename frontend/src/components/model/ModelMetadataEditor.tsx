@@ -96,7 +96,7 @@ const ModelMetadataEditor: React.FC<ModelMetadataEditorProps> = ({
     const transformFormToModelMetadata = (formValues: any, originalMetadata: ModelMetadata): ModelMetadata => {
         return new COM3D2.ModelMetadata({
             ...originalMetadata,
-            Signature: formValues.signature? formValues.signature : COM3D2HeaderConstants.ModelSignature,
+            Signature: formValues.signature ? formValues.signature : COM3D2HeaderConstants.ModelSignature,
             Version: formValues.version ? formValues.version : COM3D2HeaderConstants.ModelVersion,
             Name: formValues.modelName ? formValues.modelName : '',
             RootBoneName: formValues.rootBoneName ? formValues.rootBoneName : '',
