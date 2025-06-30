@@ -85,8 +85,12 @@ func (t *TexService) CovertTexToImage(inputPath string, forcePng bool) (covertTe
 // 如果 forcePNG 为 false 那么如果图像是有损格式且没有透明通道，则保存为 JPG，否则保存为 PNG
 // 如果 forcePNG 为 true 则强制保存为 PNG，不考虑图像格式和透明通道
 // 如果是 1011 版本的 tex（纹理图集），则还会生成一个 .uv.csv 文件（例如 foo.png 对应 foo.png.uv.csv），文件内容为矩形数组 x, y, w, h 一行一组
-func (t *TexService) ConvertTexToImageAndWrite(tex *COM3D2.Tex, outputPath string, forcePng bool) error {
-	err := COM3D2.ConvertTexToImageAndWrite(tex, outputPath, forcePng)
+func (t *TexService) ConvertTexToImageAndWrite(inputPath string, outputPath string, forcePng bool) error {
+	tex, err := t.ReadTexFile(inputPath)
+	if err != nil {
+		return err
+	}
+	err = COM3D2.ConvertTexToImageAndWrite(tex, outputPath, forcePng)
 	if err != nil {
 		return err
 	}
@@ -161,11 +165,7 @@ func (t *TexService) ConvertAnyToPng(inputPath string) (Base64EncodedPngData str
 // 如果输入输出都是 .tex，则原样复制，只不过是先读取再写出
 func (t *TexService) ConvertAnyToAnyAndWrite(inputPath string, texName string, compress bool, forcePNG bool, outputPath string) error {
 	if strings.HasSuffix(strings.ToLower(inputPath), ".tex") {
-		tex, err := t.ReadTexFile(inputPath)
-		if err != nil {
-			return err
-		}
-		return t.ConvertTexToImageAndWrite(tex, outputPath, forcePNG)
+		return t.ConvertTexToImageAndWrite(inputPath, outputPath, forcePNG)
 	} else {
 		if strings.HasSuffix(strings.ToLower(outputPath), ".tex") {
 			err := t.ConvertImageToTexAndWrite(inputPath, texName, compress, forcePNG, outputPath)

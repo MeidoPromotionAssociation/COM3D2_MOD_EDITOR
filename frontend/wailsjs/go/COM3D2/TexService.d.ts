@@ -12,7 +12,7 @@ export function ConvertImageToTex(arg1:string,arg2:string,arg3:boolean,arg4:bool
 
 export function ConvertImageToTexAndWrite(arg1:string,arg2:string,arg3:boolean,arg4:boolean,arg5:string):Promise<void>;
 
-export function ConvertTexToImageAndWrite(arg1:COM3D2.Tex,arg2:string,arg3:boolean):Promise<void>;
+export function ConvertTexToImageAndWrite(arg1:string,arg2:string,arg3:boolean):Promise<void>;
 
 export function CovertTexToImage(arg1:string,arg2:boolean):Promise<COM3D2.CovertTexToImageResult>;
 
