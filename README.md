@@ -8,13 +8,15 @@
 
 ## COM3D2 MOD EDITOR V2
 
-COM3D2 MOD editor, built with Golang + Wails + React + TypeScript, Modern technology here we come!!
+COM3D2 MOD EDITOR, built with Golang + Wails + React + TypeScript, Modern technology here we come!!
 
 <br>
 
-This is a MOD creation tool for [カスタムオーダーメイド3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2)
+This is a MOD creation tool (modding tool) for [カスタムオーダーメイド3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2)
 
-But it can also be used for [カスタムメイド3D 2](https://www.kisskiss.tv/kiss/) (CUSTOM MAID 3D2 / CM3D2)
+But it can also be used for [カスタムメイド3D 2](https://www.kisskiss.tv/cm3d2/) (CUSTOM MAID 3D2 / CM3D2)
+
+[KISS](https://www.kisskiss.tv/) is the company/brand that makes these games
 
 <br>
 
@@ -170,9 +172,11 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 <br>
 
-这是 [カスタムオーダーメイド3D2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2) 的 MOD 制作工具
+这是用于游戏 [カスタムオーダーメイド3D2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2) 的 MOD 制作工具
 
-但它也可以用于 [カスタムメイド3D 2](https://www.kisskiss.tv/kiss/) (CUSTOM MAID 3D2 / CM3D2)
+但它也可以用于 [カスタムメイド3D 2](https://www.kisskiss.tv/cm3d2/) (CUSTOM MAID 3D2 / CM3D2)
+
+[KISS](https://www.kisskiss.tv) 是制作这些游戏的公司/品牌
 
 <br>
 
@@ -331,7 +335,9 @@ COM3D2 MOD エディターは、Golang + Wails + React + TypeScript を使用し
 
 [カスタムオーダーメイド3D2](https://com3d2.jp/)(CUSTOM ORDER MAID 3D2 / COM3D2)用のMOD作成ツールです。
 
-ただし、[カスタムメイド3D 2](https://www.kisskiss.tv/kiss/)(CUSTOM MAID 3D2 / CM3D2)でも使用できます。
+ただし、[カスタムメイド3D 2](https://www.kisskiss.tv/cm3d2/)(CUSTOM MAID 3D2 / CM3D2)でも使用できます。
+
+KISSはこれらのゲームを制作する会社/ブランドです
 
 <br>
 
