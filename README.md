@@ -162,6 +162,11 @@ Also check out my other repositories
 <br>
 <br>
 <br>
+
+---
+
+<br>
+<br>
 <br>
 
 # 简体中文
@@ -321,6 +326,11 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 <br>
 <br>
 <br>
+
+---
+
+<br>
+<br>
 <br>
 
 # 日本語
@@ -477,6 +487,13 @@ Github Releasesからダウンロードしてください：[https://github.com/
 
 <br>
 <br>
+<br>
+<br>
+<br>
+<br>
+
+---
+
 <br>
 <br>
 <br>
