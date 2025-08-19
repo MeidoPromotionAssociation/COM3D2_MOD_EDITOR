@@ -18,6 +18,7 @@ import PskEditorPage from "./components/PskEditorPage";
 import ModelEditorPage from "./components/ModelEditorPage";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import {DisclaimerAgreedKey} from "./utils/LocalStorageKeys";
+import '@ant-design/v5-patch-for-react-19';
 
 const App: React.FC = () => {
     const isDarkMode = useDarkMode();
