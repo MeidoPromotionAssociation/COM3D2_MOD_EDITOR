@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 )
 
 // ModelService 专门处理 .model 文件的读写

@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/utilities"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/utilities"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
 )
 
 // 游戏名称

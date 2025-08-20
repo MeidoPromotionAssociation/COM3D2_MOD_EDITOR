@@ -3,12 +3,13 @@ package COM3D2
 import (
 	"bufio"
 	"fmt"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
-	"github.com/emmansun/base64" // use faster base64 implementation
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
+	"github.com/emmansun/base64" // use faster base64 implementation
 )
 
 // TexService 专门处理 .tex 文件的读写

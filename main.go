@@ -3,6 +3,7 @@ package main
 import (
 	"COM3D2_MOD_EDITOR_V2/internal/service/COM3D2"
 	"embed"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"

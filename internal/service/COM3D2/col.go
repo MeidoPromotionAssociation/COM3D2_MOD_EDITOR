@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 	"os"
 	"strings"
+
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 )
 
 // ColService 专门处理 .col 文件的读写

@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 	"os"
 	"strings"
+
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
 )
 
 // MateService 专门处理 .mate 文件的读写

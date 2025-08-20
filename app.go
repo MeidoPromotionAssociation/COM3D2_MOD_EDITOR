@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
 	"io/fs"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Masterminds/semver"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 const (
