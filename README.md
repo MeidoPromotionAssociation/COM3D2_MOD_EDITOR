@@ -56,6 +56,7 @@ Current Game Version COM3D2 v2.44.1 & COM3D2.5 v3.44.1
 
 Each file corresponds to a .go file：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
+If you're looking for a serialization library, check out [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization) That is the core of COM3D2 MOD EDITOR V2.
 
 ### Highlights
 
@@ -225,6 +226,8 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 每种文件对应一个 .go 文件：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
+如果您正在寻找序列化库，请查看[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization) 这是 COM3D2 MOD EDITOR V2 的核心。
+
 ### 亮点
 
 - 完全开源，完全免费，完全自由；和非开源的非自由软件说再见。
@@ -386,6 +389,8 @@ KISSはこれらのゲームを制作する会社/ブランドです
 | .model | モデルファイル | バージョン1000-2200 |                                                        |
 
 各ファイルに対応する.goファイル：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
+
+シリアル化ライブラリをお探しの場合は、[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization) をご覧ください。これが COM3D2 MOD EDITOR V2 の核となります。
 
 ### ハイライト
 
