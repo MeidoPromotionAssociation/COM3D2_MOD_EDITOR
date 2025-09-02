@@ -59,6 +59,7 @@ const useFileHandlers = () => {
     const handleSelectFile = async (fileTypes: string, description: string) => {
         try {
             const filePath = await SelectFile(fileTypes, description);
+            if (!filePath) return;
             await fileNavigateHandler(filePath)
         } catch (err) {
             message.error(t('Errors.file_selection_error_colon') + err);
@@ -99,6 +100,7 @@ const useFileHandlers = () => {
     }
 
     const fileNavigateHandler = async (filePath: string) => {
+        if (!filePath) return;
         try {
             // 判断文件类型
             const fileInfo = await FileTypeDetermine(filePath, strictMode);
@@ -151,6 +153,7 @@ const useFileHandlers = () => {
             try {
                 fileInfo.Size = await GetFileSize(filePath);
             } catch (sizeErr: any) {
+                console.warn('GetFileSize failed: ', sizeErr)
                 message.error(t('Errors.file_type_not_supported') + '' + sizeErr);
             }
 
@@ -168,6 +171,7 @@ const useFileHandlers = () => {
                 isSupportedImage = await IsSupportedImageType(filePath);
             } catch (imgErr: any) {
                 message.error(t('Errors.file_type_not_supported') + ' ' + imgErr);
+                console.warn('IsSupportedImageType failed:', imgErr);
             }
 
             if (isSupportedImage) {
