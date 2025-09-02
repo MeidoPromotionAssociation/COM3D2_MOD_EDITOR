@@ -853,7 +853,6 @@ In case of any discrepancy between the translated versions, the Simplified Chine
 
 # Credit
 
-- [CM3D2.Serialization](https://github.com/luvoid/CM3D2.Serialization) (I got some file structure information from here)
 - [Golang](https://golang.org/)
 - [Wails](https://wails.io/)
 - [React](https://reactjs.org/)
@@ -861,3 +860,6 @@ In case of any discrepancy between the translated versions, the Simplified Chine
 - [Ant Design](https://ant.design/)
 - [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 - [ImageMagick](https://imagemagick.org/) by ImageMagick Studio LLC
+- [CM3D2.Serialization](https://github.com/luvoid/CM3D2.Serialization) (I got some file structure information from here)
+- [CM3D2.ToolKit](https://github.com/usagirei/CM3D2.Toolkit) by usagirei
+- [CM3D2.ToolKit](https://github.com/JustAGuest4168/CM3D2.Toolkit) by JustAGuest4168 (I got .arc and .nei file structure information from here)
