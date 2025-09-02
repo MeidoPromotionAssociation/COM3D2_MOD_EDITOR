@@ -26,6 +26,7 @@ func main() {
 	TexService := &COM3D2.TexService{}
 	AnmService := &COM3D2.AnmService{}
 	ModelService := &COM3D2.ModelService{}
+	NeiService := &COM3D2.NeiService{}
 
 	MenuModel := &COM3D2.MenuModel{}
 	MateModel := &COM3D2.MateModel{}
@@ -36,6 +37,7 @@ func main() {
 	TexModel := &COM3D2.TexModel{}
 	AnmModel := &COM3D2.AnmModel{}
 	ModelModel := &COM3D2.ModelModel{}
+	NeiModel := &COM3D2.NeiModel{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -65,6 +67,7 @@ func main() {
 			TexService,
 			AnmService,
 			ModelService,
+			NeiService,
 			MenuModel,
 			MateModel,
 			PMatModel,
@@ -74,6 +77,7 @@ func main() {
 			TexModel,
 			AnmModel,
 			ModelModel,
+			NeiModel,
 		},
 	})
 

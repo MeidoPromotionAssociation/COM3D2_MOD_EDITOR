@@ -40,3 +40,6 @@ export const TexEditorDefaultFormatKey = "TexEditorDefaultFormat"; // 存储默�
 
 // ModelEditor
 export const ModelEditorViewModeKey = "ModelEditorViewMode"; // 存储默认显示格式的键
+
+// NeiEditor
+export const NeiEditorViewModeKey = "NeiEditorViewMode" // 存储默认显示格式的键

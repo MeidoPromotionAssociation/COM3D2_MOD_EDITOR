@@ -1,7 +1,7 @@
 github.com/Masterminds/semver v1.5.0 h1:H65muMkzWKEuNDnfl9d70GUjFniHKHRbFPGBuZ3QEww=
 github.com/Masterminds/semver v1.5.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
-github.com/MeidoPromotionAssociation/MeidoSerialization v1.1.0 h1:FA9iMR8/yMDG1y5DXYUp5+lDb4xxTdtzMnivyrbqQhg=
-github.com/MeidoPromotionAssociation/MeidoSerialization v1.1.0/go.mod h1:kyOE/ZeSSPcqXb3MerDFFXv6Gc8DiESeK5PNTvRu+Ys=
+github.com/MeidoPromotionAssociation/MeidoSerialization v1.1.1 h1:uBmbbl3tB5YujwQl4IVM3m9S5oOq58UoMq6d6eKnDds=
+github.com/MeidoPromotionAssociation/MeidoSerialization v1.1.1/go.mod h1:is3w/q8FgrpzvXSV7y1MEs70M/ixmndq5MoHE7HEG1w=
 github.com/bep/debounce v1.2.1 h1:v67fRdBA9UQu2NhLFXrSg0Brw7CexQekrBwDMM8bzeY=
 github.com/bep/debounce v1.2.1/go.mod h1:H8yggRPQKLUhUoqrJC1bO2xNya7vanpDl7xR3ISbCJ0=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=

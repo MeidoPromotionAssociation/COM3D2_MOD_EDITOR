@@ -19,6 +19,7 @@ import ModelEditorPage from "./components/ModelEditorPage";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import {DisclaimerAgreedKey} from "./utils/LocalStorageKeys";
 import '@ant-design/v5-patch-for-react-19';
+import NeiEditorPage from "./components/NeiEditorPage";
 
 const App: React.FC = () => {
     const isDarkMode = useDarkMode();
@@ -101,6 +102,7 @@ const App: React.FC = () => {
                     <Route path="/tex-editor" element={<TexEditorPage/>}/>
                     <Route path="/anm-editor" element={<AnmEditorPage/>}/>
                     <Route path="/model-editor" element={<ModelEditorPage/>}/>
+                    <Route path="/nei-editor" element={<NeiEditorPage/>}/>
                     <Route path="/settings" element={<SettingsPage/>}/>
                 </Routes>
             )}

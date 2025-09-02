@@ -12,7 +12,8 @@ COM3D2 MOD EDITOR, built with Golang + Wails + React + TypeScript, Modern techno
 
 <br>
 
-This is a MOD creation tool (modding tool) for [カスタムオーダーメイド3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 / COM3D2)
+This is a MOD creation tool (modding tool) for [カスタムオーダーメイド3D 2](https://com3d2.jp/) (CUSTOM ORDER MAID 3D2 /
+COM3D2)
 
 But it can also be used for [カスタムメイド3D 2](https://www.kisskiss.tv/cm3d2/) (CUSTOM MAID 3D2 / CM3D2)
 
@@ -40,7 +41,7 @@ For now, it allows you to edit files in these formats
 - `.anm` (JSON only)
 - `.model` (JSON only full mode and metadata editing mode)
 
-Current Game Version COM3D2 v2.44.1 & COM3D2.5 v3.44.1 
+Current Game Version COM3D2 v2.44.1 & COM3D2.5 v3.44.1
 
 | Extension | Description           | Version Support    | Note                                                                                                                                    |
 |-----------|-----------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
@@ -54,14 +55,18 @@ Current Game Version COM3D2 v2.44.1 & COM3D2.5 v3.44.1
 | .anm      | Animation files       | All versions       |                                                                                                                                         |
 | .model    | Model files           | Versions 1000-2200 |                                                                                                                                         |
 
-Each file corresponds to a .go file：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
+Each file corresponds to a .go
+file：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
-If you're looking for a serialization library, check out [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization) That is the core of COM3D2 MOD EDITOR V2.
+If you're looking for a serialization library, check
+out [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+That is the core of COM3D2 MOD EDITOR V2.
 
 ### Highlights
 
 - Fully open source, completely free, and completely free; say goodbye to non-open source non-free software.
-- With full multilingual support, please contribute to us through [Crowdin](https://crowdin.com/project/com3d2modeditorv2)!
+- With full multilingual support, please contribute to us
+  through [Crowdin](https://crowdin.com/project/com3d2modeditorv2)!
 - With complete entry help, don’t know what to fill in the box? You are in the right place!
 - Ability to create files from scratch, no need to copy files from elsewhere.
 - With light mode and dark mode.
@@ -72,20 +77,28 @@ If you're looking for a serialization library, check out [https://github.com/Mei
 ### Requirements
 
 This application requires the following software to run:
+
 - Microsoft Edge WebView2
-  - This app is built using the Wails framework which relies on Microsoft Edge WebView2 to render the UI.
-  - If you're using Windows 11, this is usually pre-installed on your system.
-  - For other systems without WebView2 installed，the application should prompt you to install it upon launch.
-  - Alternatively, you can install it from the official website: [https://developer.microsoft.com/en-us/microsoft-edge/webview2/](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
-  - What is Microsoft Edge WebView2? [https://learn.microsoft.com/en-us/microsoft-edge/webview2/](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
+    - This app is built using the Wails framework which relies on Microsoft Edge WebView2 to render the UI.
+    - If you're using Windows 11, this is usually pre-installed on your system.
+    - For other systems without WebView2 installed，the application should prompt you to install it upon launch.
+    - Alternatively, you can install it from the official
+      website: [https://developer.microsoft.com/en-us/microsoft-edge/webview2/](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
+    - What is Microsoft Edge
+      WebView2? [https://learn.microsoft.com/en-us/microsoft-edge/webview2/](https://learn.microsoft.com/en-us/microsoft-edge/webview2/)
 - ImageMagick
-  - Required for working with .tex files and image processing features to support various image formats. Optional if you don't need .tex editing.
-  - Install from the official website: [https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
-  - On the download page, look for `ImageMagick-version-Q16-HDRI-x64-dll.exe` and install it. During installation, check `Add application directory to your system path`.
-  - Or install via terminal command: `winget install ImageMagick.Q16-HDRI`
-  - The version used for testing is `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` If you have problems, please try this version.
-  - After installation, verify by running `magick -version` in your terminal. A version number output indicates success.
-  - ImageMagick® is a free and open-source software suite for image editing and manipulation.
+    - Required for working with .tex files and image processing features to support various image formats. Optional if
+      you don't need .tex editing.
+    - Install from the official
+      website: [https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
+    - On the download page, look for `ImageMagick-version-Q16-HDRI-x64-dll.exe` and install it. During installation,
+      check `Add application directory to your system path`.
+    - Or install via terminal command: `winget install ImageMagick.Q16-HDRI`
+    - The version used for testing is `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` If you have problems, please try this
+      version.
+    - After installation, verify by running `magick -version` in your terminal. A version number output indicates
+      success.
+    - ImageMagick® is a free and open-source software suite for image editing and manipulation.
 
 ### Localization
 
@@ -93,11 +106,13 @@ This application requires the following software to run:
 
 We use Crowdin for localization, and we will synchronize translations with Crowdin at each release.
 
-If you want to participate in localization, please check [https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2)
+If you want to participate in localization, please
+check [https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2)
 
 register a free account and you can contribute translations on Crowdin.
 
-Currently, some languages use AI translation. If you are not satisfied with the existing translations, please feel free to contribute translations through Crowdin.
+Currently, some languages use AI translation. If you are not satisfied with the existing translations, please feel free
+to contribute translations through Crowdin.
 
 If your language is not available, you can request to add a new language in Crowdin or Issue.
 
@@ -105,40 +120,49 @@ If your language is not available, you can request to add a new language in Crow
 
 This application does not collect any personal information nor upload any data to servers.
 
-The only active network request is for update checks, which solely communicates with GitHub API. You can disable the update check feature.
+The only active network request is for update checks, which solely communicates with GitHub API. You can disable the
+update check feature.
 
-Code location: https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
-
+Code
+location: https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/blob/c2ea8d4bf2ea42c3b28b929ce7c118eac33cad20/app.go#L127
 
 ### Download
 
-By downloading this software, you accept and agree to abide by the [Disclaimer](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
+By downloading this software, you accept and agree to abide by
+the [Disclaimer](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
 
-Please download it from Github Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
+Please download it from Github
+Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
 
-- If you want to install the editor into your system and automatically associate the file type, please use `COM3D2.MOD.EDITOR.V2-amd64-installer.exe ` 
-  - After associating the file type, different files will be displayed with different icons. Please check [here](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build) to preview the icon
+- If you want to install the editor into your system and automatically associate the file type, please use
+  `COM3D2.MOD.EDITOR.V2-amd64-installer.exe `
+    - After associating the file type, different files will be displayed with different icons. Please
+      check [here](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build) to preview the icon
 - If you don't want to install, please use `COM3D2_MOD_EDITOR_V2.exe `
 - If you are on Linux, please use `COM3D2_MOD_EDITOR_V2-amd64-Linux `
-
 
 ### FAQ
 
 - Opening large files is slow
-  - This application is built with Wails technology, so it is essentially a browser architecture with separated front-end and back-end. Therefore, after the back-end parses the file, it must be passed to the front-end through Http. This is the main speed bottleneck, not the application itself, and I can do little about it
+    - This application is built with Wails technology, so it is essentially a browser architecture with separated
+      front-end and back-end. Therefore, after the back-end parses the file, it must be passed to the front-end through
+      Http. This is the main speed bottleneck, not the application itself, and I can do little about it
 
 - I want to process files in batches
-  - This is a planned feature, but we currently provide a command line interface in a separate program that can batch convert files for other programs to process.
-  - Please see: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+    - This is a planned feature, but we currently provide a command line interface in a separate program that can batch
+      convert files for other programs to process.
+    - Please
+      see: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 
 - Unable to export .tex version 1000
-  - This is intentional.
-  - When converting version 1000 of .tex, please export it as an image first, and then convert it back to .tex.
+    - This is intentional.
+    - When converting version 1000 of .tex, please export it as an image first, and then convert it back to .tex.
 
 - I want to export to a plain text file
-  - It can support importing and exporting to text files, for batch editing or using other editors.
-  - Using the Save As function, you can specify the extension as `*.menu.json`, `*.mate.json`, etc., and you can see the prompt when exporting.
-  - The batch processing program mentioned in the above question can also support this format.
+    - It can support importing and exporting to text files, for batch editing or using other editors.
+    - Using the Save As function, you can specify the extension as `*.menu.json`, `*.mate.json`, etc., and you can see
+      the prompt when exporting.
+    - The batch processing program mentioned in the above question can also support this format.
 
 <br>
 
@@ -192,7 +216,7 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 你也可以在 Discord [Custom Maid Server](https://discord.gg/custommaid) 找到我
 
-或者我的中文 Discord 频道 [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp) 
+或者我的中文 Discord 频道 [https://discord.gg/XQVfcJWbPp](https://discord.gg/XQVfcJWbPp)
 
 有问题请在群内提问/反馈，请勿私聊
 
@@ -214,19 +238,21 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 | 扩展名    | 描述     | 版本支持         | 备注                                                     |
 |--------|--------|--------------|--------------------------------------------------------|
-| .menu  | 菜单文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
-| .mate  | 材质文件   | 所有版本         | 目前为止未发生过结构更改，但有一些属性只在 2.5 有效                             |
-| .pmat  | 渲染顺序文件 | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
-| .col   | 碰撞体文件  | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
-| .phy   | 物理文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                   |
+| .menu  | 菜单文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                 |
+| .mate  | 材质文件   | 所有版本         | 目前为止未发生过结构更改，但有一些属性只在 2.5 有效                           |
+| .pmat  | 渲染顺序文件 | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                 |
+| .col   | 碰撞体文件  | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                 |
+| .phy   | 物理文件   | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                 |
 | .psk   | 裙撑文件   | 所有版本         | 自版本 217 以后没有发生结构变化                                     |
 | .tex   | 纹理文件   | 所有版本         | 不支持写出版本 1000，因为版本 1000 设计不佳（CM3D2 也支持版本 1010，因此没有理由使用） |
-| .anm   | 动画文件   | 所有版本         |                                                       |
+| .anm   | 动画文件   | 所有版本         |                                                        |
 | .model | 模型文件   | 1000-2200 版本 |                                                        |
 
-每种文件对应一个 .go 文件：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
+每种文件对应一个 .go
+文件：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
-如果您正在寻找序列化库，请查看[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization) 这是 COM3D2 MOD EDITOR V2 的核心。
+如果您正在寻找序列化库，请查看[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+这是 COM3D2 MOD EDITOR V2 的核心。
 
 ### 亮点
 
@@ -242,20 +268,24 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 ### 依赖
 
 该应用需要以下软件以运行：
+
 - Microsoft Edge WebView2
-  - 本应用使用 Wails 技术打造，它依赖于 Microsoft Edge WebView2 来渲染页面，因此需要安装 WebView2。
-  - 如果你使用 Windows 11，这通常已经安装在你的系统上了。
-  - 如果你使用其他系统，且没有安装 WebView2，启动应用程序时它应该会提示您安装。
-  - 或者您也可以从官方网站安装：[https://developer.microsoft.com/zh-cn/microsoft-edge/webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2)
-  - Microsoft Edge WebView2 是什么？[https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
+    - 本应用使用 Wails 技术打造，它依赖于 Microsoft Edge WebView2 来渲染页面，因此需要安装 WebView2。
+    - 如果你使用 Windows 11，这通常已经安装在你的系统上了。
+    - 如果你使用其他系统，且没有安装 WebView2，启动应用程序时它应该会提示您安装。
+    -
+    或者您也可以从官方网站安装：[https://developer.microsoft.com/zh-cn/microsoft-edge/webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2)
+    - Microsoft Edge WebView2
+      是什么？[https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
 - ImageMagick
-  - 使用 .tex 格式和图片处理相关功能需要安装 ImageMagick，这是为了支持尽可能多的图片格式。如果您不使用 .tex 编辑，您可以选择不安装。
-  - 请从官方网站安装：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
-  - 在下载页面上找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 下载并安装，安装时需要勾选 `Add application directory to your system path`
-  - 或者在您的终端执行 `winget install ImageMagick.Q16-HDRI` 命令安装。
-  - 用于测试是版本是 `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` 如果出现问题，请尝试这个版本。
-  - 安装完成后在终端执行 `magick -version` 命令查看版本号，如果显示版本号则说明安装成功。
-  - ImageMagick® 是一个自由的开源软件套件，用于编辑和操纵数字图像。
+    - 使用 .tex 格式和图片处理相关功能需要安装 ImageMagick，这是为了支持尽可能多的图片格式。如果您不使用 .tex 编辑，您可以选择不安装。
+    - 请从官方网站安装：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
+    - 在下载页面上找到 `ImageMagick-版本号-Q16-HDRI-x64-dll.exe` 下载并安装，安装时需要勾选
+      `Add application directory to your system path`
+    - 或者在您的终端执行 `winget install ImageMagick.Q16-HDRI` 命令安装。
+    - 用于测试是版本是 `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` 如果出现问题，请尝试这个版本。
+    - 安装完成后在终端执行 `magick -version` 命令查看版本号，如果显示版本号则说明安装成功。
+    - ImageMagick® 是一个自由的开源软件套件，用于编辑和操纵数字图像。
 
 ### 本地化
 
@@ -283,30 +313,35 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 下载此软件即表示您接受并同意遵守[免责声明](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
 
-请在 Github Releases 中下载：[https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
+请在 Github Releases
+中下载：[https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
 
 - 如果您希望将编辑器安装到系统中并自动关联文件类型，请使用 `COM3D2.MOD.EDITOR.V2-amd64-installer.exe`
-  - 关联文件类型后，不同的文件将显示不同的图标。请查看[此处](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build)预览图标。
+    -
+    关联文件类型后，不同的文件将显示不同的图标。请查看[此处](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build)
+    预览图标。
 - 如果您不想安装，请使用 `COM3D2_MOD_EDITOR_V2.exe`
 - 如果您使用的是 Linux 系统，请使用 `COM3D2_MOD_EDITOR_V2-amd64-Linux`
 
 ### 常见问题
 
 - 打开大文件时很慢
-  - 本应用使用 Wails 技术打造，所以其本质上是一个前后端分离的浏览器架构，因此后端解析文件后必须通过 Http 传递至前端，这里是主要速度瓶颈，而非应用本身，我对此几乎无能为力
+    - 本应用使用 Wails 技术打造，所以其本质上是一个前后端分离的浏览器架构，因此后端解析文件后必须通过 Http
+      传递至前端，这里是主要速度瓶颈，而非应用本身，我对此几乎无能为力
 
 - 我希望批量处理文件
-  - 这是一个计划中的功能，但目前我们在单独的程序中提供了一个命令行界面，可以批量转换文件以便其他程序处理。
-  - 请查看：[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+    - 这是一个计划中的功能，但目前我们在单独的程序中提供了一个命令行界面，可以批量转换文件以便其他程序处理。
+    -
+    请查看：[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 
 - 无法导出 1000 版本的 .tex 文件
-  - 这是有意为之的
-  - 转换 1000 版 .tex 文件时，请先将其导出为图片，然后再转换回 .tex 文件。
+    - 这是有意为之的
+    - 转换 1000 版 .tex 文件时，请先将其导出为图片，然后再转换回 .tex 文件。
 
 - 我希望导出为纯文本文件
-  - 可以支持导入和导出为文本文件，以便进行批量编辑或使用其他编辑器。
-  - 使用另存为功能，可以指定扩展名为 `*.menu.json`、`*.mate.json` 等，导出时可以看到提示。
-  - 上面的问题中提到的批量处理程序也可以支持此格式。
+    - 可以支持导入和导出为文本文件，以便进行批量编辑或使用其他编辑器。
+    - 使用另存为功能，可以指定扩展名为 `*.menu.json`、`*.mate.json` 等，导出时可以看到提示。
+    - 上面的问题中提到的批量处理程序也可以支持此格式。
 
 <br>
 
@@ -376,21 +411,22 @@ KISSはこれらのゲームを制作する会社/ブランドです
 
 対応ゲームバージョン COM3D2 v2.44.1 および COM3D2.5 v3.44.1
 
-| 拡張子   | 説明       | 対応バージョン     | 備考                                                     |
-|--------|------------|------------------|--------------------------------------------------------|
-| .menu  | メニューファイル | 全バージョン       | これまで構造の変更がないためバージョン番号は無関係                           |
-| .mate  | マテリアルファイル | 全バージョン       | 構造変更はないが2.5で有効な属性が存在する                               |
-| .pmat  | 描画順ファイル | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
-| .col   | コリジョンファイル | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
-| .phy   | 物理ファイル  | 全バージョン       | 構造変更がないためバージョン番号は無関係                                 |
-| .psk   | プチシェコール | 全バージョン       | バージョン217以降で構造変更なし                                       |
-| .tex   | テクスチャファイル | 全バージョン       | バージョン1000の書き出し非対応（設計が不適切なため、CM3D2でも1010をサポートしているため必要性なし） |
-| .anm   | アニメーションファイル | 全バージョン       |                                                  |
-| .model | モデルファイル | バージョン1000-2200 |                                                        |
+| 拡張子    | 説明          | 対応バージョン        | 備考                                                       |
+|--------|-------------|----------------|----------------------------------------------------------|
+| .menu  | メニューファイル    | 全バージョン         | これまで構造の変更がないためバージョン番号は無関係                                |
+| .mate  | マテリアルファイル   | 全バージョン         | 構造変更はないが2.5で有効な属性が存在する                                   |
+| .pmat  | 描画順ファイル     | 全バージョン         | 構造変更がないためバージョン番号は無関係                                     |
+| .col   | コリジョンファイル   | 全バージョン         | 構造変更がないためバージョン番号は無関係                                     |
+| .phy   | 物理ファイル      | 全バージョン         | 構造変更がないためバージョン番号は無関係                                     |
+| .psk   | プチシェコール     | 全バージョン         | バージョン217以降で構造変更なし                                        |
+| .tex   | テクスチャファイル   | 全バージョン         | バージョン1000の書き出し非対応（設計が不適切なため、CM3D2でも1010をサポートしているため必要性なし） |
+| .anm   | アニメーションファイル | 全バージョン         |                                                          |
+| .model | モデルファイル     | バージョン1000-2200 |                                                          |
 
 各ファイルに対応する.goファイル：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
 
-シリアル化ライブラリをお探しの場合は、[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization) をご覧ください。これが COM3D2 MOD EDITOR V2 の核となります。
+シリアル化ライブラリをお探しの場合は、[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+をご覧ください。これが COM3D2 MOD EDITOR V2 の核となります。
 
 ### ハイライト
 
@@ -407,28 +443,35 @@ KISSはこれらのゲームを制作する会社/ブランドです
 ### 必要なソフトウェア
 
 本アプリケーションの実行には以下のソフトウェアが必要です：
+
 - Microsoft Edge WebView2
-  - 本アプリはWailsフレームワークを使用しており、UIのレンダリングにMicrosoft Edge WebView2を必要とします
-  - Windows 11をご利用の場合、通常はプリインストールされています
-  - 他のOSを使用している場合、WebView2が未インストールの状態でアプリを起動するとインストールプロンプトが表示されます
-  - 公式サイトから手動でインストールすることも可能です：[https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/](https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/)
-  - Microsoft Edge WebView2とは？[https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
+    - 本アプリはWailsフレームワークを使用しており、UIのレンダリングにMicrosoft Edge WebView2を必要とします
+    - Windows 11をご利用の場合、通常はプリインストールされています
+    - 他のOSを使用している場合、WebView2が未インストールの状態でアプリを起動するとインストールプロンプトが表示されます
+    -
+    公式サイトから手動でインストールすることも可能です：[https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/](https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/)
+    - Microsoft Edge
+      WebView2とは？[https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/)
 - ImageMagick
-  - .texファイルの編集および画像処理機能を使用する場合に必要です。.tex編集が不要な場合はインストール不要です
-  - 公式サイトからインストールしてください：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
-  - ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時に`Add application directory to your system path（システムパスに追加）`にチェックを入れてください
-  - またはターミナルで次のコマンドを実行：`winget install ImageMagick.Q16-HDRI`
-  - テストに使用したバージョンは `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` です。問題がある場合は、このバージョンを試してください。
-  - インストール後、ターミナルで`magick -version`を実行し、バージョン番号が表示されれば成功です
-  - ImageMagick® は画像編集・加工用のオープンソースソフトウェアスイートです
+    - .texファイルの編集および画像処理機能を使用する場合に必要です。.tex編集が不要な場合はインストール不要です
+    -
+    公式サイトからインストールしてください：[https://imagemagick.org/script/download.php](https://imagemagick.org/script/download.php)
+    - ダウンロードページで`ImageMagick-バージョン-Q16-HDRI-x64-dll.exe`を選択し、インストール時に
+      `Add application directory to your system path（システムパスに追加）`にチェックを入れてください
+    - またはターミナルで次のコマンドを実行：`winget install ImageMagick.Q16-HDRI`
+    - テストに使用したバージョンは `ImageMagick-7.1.1-47-Q16-HDRI-x64-dll.exe` です。問題がある場合は、このバージョンを試してください。
+    - インストール後、ターミナルで`magick -version`を実行し、バージョン番号が表示されれば成功です
+    - ImageMagick® は画像編集・加工用のオープンソースソフトウェアスイートです
 
 ### ローカライゼーション
 
 [![Crowdin](https://badges.crowdin.net/com3d2modeditorv2/localized.svg)](https://crowdin.com/project/com3d2modeditorv2)
 
-私たちはCrowdinを使用してローカライゼーションを行っており、各バージョンのリリース時に[Crowdin](https://crowdin.com/project/com3d2modeditorv2)から翻訳を同期します。
+私たちはCrowdinを使用してローカライゼーションを行っており、各バージョンのリリース時に[Crowdin](https://crowdin.com/project/com3d2modeditorv2)
+から翻訳を同期します。
 
-ローカライゼーションに参加したい場合は、[https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2) をご覧ください。
+ローカライゼーションに参加したい場合は、[https://crowdin.com/project/com3d2modeditorv2](https://crowdin.com/project/com3d2modeditorv2)
+をご覧ください。
 
 無料アカウントを登録すれば、Crowdin上で翻訳に貢献することができます。
 
@@ -446,36 +489,45 @@ KISSはこれらのゲームを制作する会社/ブランドです
 
 ### ダウンロード
 
-本ソフトウェアをダウンロードすることにより、[免責事項](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)に同意し、遵守することに同意したものとみなされます
+本ソフトウェアをダウンロードすることにより、[免責事項](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR?tab=readme-ov-file#disclaimer)
+に同意し、遵守することに同意したものとみなされます
 
-Github Releasesからダウンロードしてください：[https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
+Github
+Releasesからダウンロードしてください：[https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releases)
 
-- システムへのインストールとファイルタイプの自動関連付けを希望する場合、`COM3D2.MOD.EDITOR.V2-amd64-installer.exe`を使用してください
-  - ファイルタイプの関連付けを行うと、異なるファイルタイプに応じて異なるアイコンが表示されます。アイコンプレビューは[こちら](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build)で確認できます
+- システムへのインストールとファイルタイプの自動関連付けを希望する場合、`COM3D2.MOD.EDITOR.V2-amd64-installer.exe`
+  を使用してください
+    -
+    ファイルタイプの関連付けを行うと、異なるファイルタイプに応じて異なるアイコンが表示されます。アイコンプレビューは[こちら](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/tree/main/build)
+    で確認できます
 - インストールを希望しない場合、`COM3D2_MOD_EDITOR_V2.exe`を使用してください
 - Linuxシステムをご利用の場合、`COM3D2_MOD_EDITOR_V2-amd64-Linux`を使用してください
 
 ### よくある質問
 
 - 大きなファイルを開くのが遅い
-  - このアプリケーションはWailsテクノロジーで構築されているため、本質的にはフロントエンドとバックエンドが分離されたブラウザアーキテクチャです。そのため、バックエンドでファイルを解析した後、HTTP経由でフロントエンドに渡す必要があります。これがアプリケーション自体ではなく、主な速度ボトルネックであり、対処できる範囲が限られています。
+    -
+    このアプリケーションはWailsテクノロジーで構築されているため、本質的にはフロントエンドとバックエンドが分離されたブラウザアーキテクチャです。そのため、バックエンドでファイルを解析した後、HTTP経由でフロントエンドに渡す必要があります。これがアプリケーション自体ではなく、主な速度ボトルネックであり、対処できる範囲が限られています。
 
 - ファイルを一括処理したい
-  - これは計画中の機能ですが、現在、他のプログラムで処理できるようにファイルを一括変換できるコマンドラインインターフェースを別のプログラムで提供しています。
-  - 詳細は[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)をご覧ください。
+    - これは計画中の機能ですが、現在、他のプログラムで処理できるようにファイルを一括変換できるコマンドラインインターフェースを別のプログラムで提供しています。
+    -
+    詳細は[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+    をご覧ください。
 
 - バージョン1000の.texファイルはエクスポートできません
-  - これは意図的な動作です
-  - バージョン1000の.texファイルを変換する場合は、まず画像としてエクスポートし、その後.texファイルに戻してください。
+    - これは意図的な動作です
+    - バージョン1000の.texファイルを変換する場合は、まず画像としてエクスポートし、その後.texファイルに戻してください。
 
 - プレーンテキストファイルにエクスポートしたい
-  - テキストファイルへのインポートとエクスポートをサポートしており、一括編集や他のエディタでの使用も可能です。
-  - 「名前を付けて保存」機能を使用すると、拡張子を「*.menu.json」「*.mate.json」などに指定でき、エクスポート時にプロンプ​​トが表示されます。
-  - 上記の質問で言及されているバッチ処理プログラムもこの形式をサポートしています。
+    - テキストファイルへのインポートとエクスポートをサポートしており、一括編集や他のエディタでの使用も可能です。
+    - 「名前を付けて保存」機能を使用すると、拡張子を「*.menu.json」「*.mate.json」などに指定でき、エクスポート時にプロンプ​​トが表示されます。
+    - 上記の質問で言及されているバッチ処理プログラムもこの形式をサポートしています。
 
 <br>
 
 ### 他の倉庫もぜひご覧ください
+
 - [COM3D2 シンプルMODガイド（中国語）](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
 - [COM3D2 MODエディター](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
 - [COM3D2プラグイン 中国語翻訳](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
@@ -521,7 +573,8 @@ Github Releasesからダウンロードしてください：[https://github.com/
 - Run `wails build` in project root to build project
 - Press `Ctrl + Shift + F12` Open Browser console
 - This is a Wails App. The front-end method is automatically generated after the back-end is bound.
-- Starting from v1.4.0, the core serialization library of this application has been separated into a separate repository: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+- Starting from v1.4.0, the core serialization library of this application has been separated into a separate
+  repository: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 - To view the serialization structure and methods, please refer to the repository above.
 
 <br>
@@ -535,7 +588,6 @@ Github Releasesからダウンロードしてください：[https://github.com/
 *KISS cannot be held responsible for any problems that may arise when using MODs.
 
 *If any problem occurs, please do not contact KISS.
-
 
 ```
 KISS 規約
@@ -568,7 +620,8 @@ KISS 規約
 
 # Disclaimer
 
-By downloading this software, you agree to read, accept and abide by this Disclaimer, this is a developer protection measure and we apologize for any inconvenience this may cause.
+By downloading this software, you agree to read, accept and abide by this Disclaimer, this is a developer protection
+measure and we apologize for any inconvenience this may cause.
 
 下载此软件即表示您已阅读且接受并同意遵守此免责声明，这是为了保护开发人员而采取的措施，对于由此造成的不便，我们深表歉意。
 

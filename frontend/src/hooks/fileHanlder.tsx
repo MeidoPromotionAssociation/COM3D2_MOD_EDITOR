@@ -105,6 +105,12 @@ const useFileHandlers = () => {
             // 判断文件类型
             const fileInfo = await FileTypeDetermine(filePath, strictMode);
 
+            // 如果是 csv
+            if (fileInfo.FileType === "csv") {
+                navigate(`/nei-editor`, {state: {fileInfo}});
+                return;
+            }
+
             // 如果是图片类型
             if (fileInfo.FileType === "image") {
                 if (directConvert) {

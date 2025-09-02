@@ -2,6 +2,7 @@ package COM3D2
 
 import (
 	"bytes"
+	"crypto/aes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -16,27 +17,52 @@ import (
 
 // 游戏名称
 const (
+	UnknowGame = "Unknown"
+	NoneGame   = "None"
 	GameCOM3D2 = "COM3D2"
 	GameKCES   = "KCES"
 )
 
 // 文件类型
 const (
-	FormatBinary = "binary"
-	FormatJSON   = "json"
+	FormatUnknown = "Unknown"
+	FormatBinary  = "binary"
+	FormatJSON    = "json"
+	FormatCSV     = "csv"
+)
+
+const (
+	UnknownFileType  = "Unknown"
+	UnknownSignature = "Unknown"
+)
+
+const (
+	SignatureNone = "None"
 )
 
 // 文件类型集合，用于判断文件类型
 var fileTypeSet = map[string]struct{}{
-	"menu":  {},
-	"mate":  {},
-	"pmat":  {},
-	"col":   {},
-	"phy":   {},
-	"psk":   {},
-	"tex":   {},
-	"anm":   {},
-	"model": {},
+	"menu":   {},
+	"mate":   {},
+	"pmat":   {},
+	"col":    {},
+	"phy":    {},
+	"psk":    {},
+	"tex":    {},
+	"anm":    {},
+	"model":  {},
+	"preset": {},
+	"save":   {},
+}
+
+// SpecialFileTypeSet 特殊文件类型集合，用于判断文件类型
+var SpecialFileTypeSet = map[string]struct{}{
+	"nei": {},
+}
+
+var NoneGameFileTypeSet = map[string]struct{}{
+	"csv":  {},
+	"json": {},
 }
 
 // 文件签名映射，用于判断文件类型
@@ -48,8 +74,8 @@ var fileSignatureMap = map[string]string{
 	COM3D2.PhySignature:    "phy",
 	COM3D2.PskSignature:    "psk",
 	COM3D2.TexSignature:    "tex",
-	COM3D2.ModelSignature:  "model",
 	COM3D2.AnmSignature:    "anm",
+	COM3D2.ModelSignature:  "model",
 	COM3D2.PresetSignature: "preset",
 	COM3D2.SaveSignature:   "save",
 }
@@ -103,6 +129,22 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 				return parseJSONFileType(f, fileInfo)
 			}
 
+			// 检查是否是特殊文件类型
+			// 例如 .nei, .arc 这类文件无法按常规方式读取签名与版本，直接根据扩展名返回
+			if _, exists := SpecialFileTypeSet[ext]; exists {
+				fileInfo.FileType = ext
+				fileInfo.Game = GameCOM3D2
+				fileInfo.StorageFormat = FormatBinary
+				return fileInfo, nil
+			}
+
+			if _, exists := NoneGameFileTypeSet[ext]; exists {
+				fileInfo.FileType = ext
+				fileInfo.Game = NoneGame
+				fileInfo.StorageFormat = FormatBinary
+				return fileInfo, nil
+			}
+
 			// 检查是否是已知的文件类型
 			_, exists := fileTypeSet[ext]
 			if exists {
@@ -136,6 +178,7 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 	if imageErr == nil {
 		// 设置为图片类型
 		fileInfo.FileType = "image"
+		fileInfo.Game = NoneGame
 		fileInfo.StorageFormat = FormatBinary
 		return fileInfo, nil
 	}
@@ -169,8 +212,42 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 		return parseJSONFileType(f, fileInfo)
 	}
 
-	// 使用重置后的文件指针读取
-	return readBinaryFileType(f, fileInfo)
+	// 尝试严格识别 NEI（解密并校验固定签名）
+	if ok, err := detectNEI(f); err == nil && ok {
+		fileInfo.FileType = "nei"
+		fileInfo.Game = GameCOM3D2
+		fileInfo.StorageFormat = FormatBinary
+		fileInfo.Signature = string(COM3D2.NeiSignature)
+		return fileInfo, nil
+	} else if err != nil {
+		return fileInfo, fmt.Errorf("failed to detect NEI: %w", err)
+	}
+
+	ft, err := readBinaryFileType(f, fileInfo)
+	if err == nil {
+		return ft, nil
+	}
+
+	// 二进制签名读取失败，尝试按文本/CSV 进行内容识别；若仍无法识别，则返回 unknown 而非报错
+	if _, _ = f.Seek(0, 0); true {
+		csvReader := tools.NewCSVReaderSkipUTF8BOM(f, 0)
+		if csvReader != nil {
+			_, err = csvReader.Read()
+			if err == nil {
+				fileInfo.FileType = "csv"
+				fileInfo.Game = NoneGame
+				fileInfo.StorageFormat = FormatCSV
+				fileInfo.Signature = SignatureNone
+				return fileInfo, nil
+			}
+		}
+	}
+
+	fileInfo.FileType = UnknownFileType
+	fileInfo.Game = UnknowGame
+	fileInfo.StorageFormat = FormatUnknown
+	fileInfo.Signature = UnknownSignature
+	return fileInfo, nil
 }
 
 // readBinaryFileType 从二进制文件读取类型信息的辅助函数
@@ -302,4 +379,37 @@ func mapJSONToFileType(header FileHeader, fileInfo FileInfo) (FileInfo, error) {
 	}
 
 	return fileInfo, nil
+}
+
+// detectNEI 尝试通过解密并校验签名来识别 NEI 文件
+func detectNEI(rs io.ReadSeeker) (bool, error) {
+	// 读取整个文件（NEI 需要完整密文以解密）
+	data, err := io.ReadAll(rs)
+	if err != nil {
+		return false, fmt.Errorf("read file content failed: %w", err)
+	}
+	// 重置游标，供后续其他探测继续使用
+	if _, err := rs.Seek(0, 0); err != nil {
+		return false, fmt.Errorf("reset reader position failed: %w", err)
+	}
+
+	// 快速过滤：长度至少包含 1 字节 extraLen 和 4 字节 ivSeed
+	if len(data) < 5 {
+		return false, nil
+	}
+	dataLen := len(data) - 5
+	if dataLen <= 0 || dataLen%aes.BlockSize != 0 {
+		return false, nil
+	}
+	// 检查额外填充长度是否在合理范围 [0, blockSize)
+	ivSeed := data[dataLen+1 : dataLen+5]
+	extraLen := int(data[dataLen] ^ ivSeed[0])
+	if extraLen < 0 || extraLen >= aes.BlockSize {
+		return false, nil
+	}
+	// 通过底层解析器进行严格校验（含解密与魔数校验）
+	if _, err := COM3D2.ReadNei(bytes.NewReader(data), nil); err != nil {
+		return false, nil
+	}
+	return true, nil
 }

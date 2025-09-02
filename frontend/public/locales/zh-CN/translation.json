@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "new_version_button": "新版本可用🚀",
+    "new_version_button": "新版本可用\uD83D\uDE80",
     "help_us_translate_editor": "帮助我们翻译编辑器"
   },
   "Disclaimer": {
@@ -22,6 +22,7 @@
     "ModelEditor": "Model",
     "PskEditor": "Psk",
     "TexEditor": "Tex",
+    "NeiEditor": "Nei",
     "SettingsPage": "设置",
     "open_file": "打开文件",
     "save_file": "保存文件",
@@ -428,6 +429,13 @@
     "delete_material": "删除材质",
     "no_materials": "无材质"
   },
+  "NeiEditor": {
+    "table_mode": "表格编辑",
+    "csv_editor_mode": "直接编辑",
+    "add_row": "添加行",
+    "add_column": "添加列",
+    "column": "列"
+  },
   "SettingsPage": {
     "general_settings": "通用设置",
     "update_settings": "更新设置",
@@ -459,6 +467,7 @@
       "keyframe": "关键帧（曲线）",
       "keyframe_tip": "关键帧（keyframe）；可以让特性变为曲线，Unity 标准关键帧格式，注意精度只有 Float32"
     },
+    "operate": "操作",
     "convert_directly": "直接转换",
     "cancel": "取消",
     "continue": "继续",
@@ -480,6 +489,7 @@
     "com3d2_model_file": "COM3D2 模型文件",
     "com3d2_psk_file": "COM3D2 裙子物理文件",
     "com3d2_tex_file": "COM3D2 纹理文件",
+    "com3d2_nei_file": "COM3D2 加密 CSV 文件",
     "com3d2_mod_files": "COM3D2 MOD 文件",
     "image_file": "图片文件",
     "pls_open_file_first": "请先打开文件",

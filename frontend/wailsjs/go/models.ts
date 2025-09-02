@@ -1031,6 +1031,22 @@ export namespace COM3D2 {
 		}
 	}
 	
+	export class Nei {
+	    Rows: number;
+	    Cols: number;
+	    Data: string[][];
+	
+	    static createFrom(source: any = {}) {
+	        return new Nei(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Rows = source["Rows"];
+	        this.Cols = source["Cols"];
+	        this.Data = source["Data"];
+	    }
+	}
 	export class PMat {
 	    Signature: string;
 	    Version: number;
