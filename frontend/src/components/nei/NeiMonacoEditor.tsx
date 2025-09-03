@@ -30,7 +30,7 @@ const NeiMonacoEditor: React.FC<NeiMonacoEditorProps> = ({
             // Only update if this is an external change, not from our editor
             if (!isInternalUpdate.current && neiDataJson !== prevNeiDataRef.current) {
                 // 显示时不添加 BOM 头
-                const csvString = csvDataToDisplayString(neiData.Data);
+                const csvString = csvDataToString(neiData.Data);
                 setCsvValue(csvString);
                 prevNeiDataRef.current = neiDataJson;
             }
@@ -44,7 +44,7 @@ const NeiMonacoEditor: React.FC<NeiMonacoEditorProps> = ({
     useEffect(() => {
         if (neiData && neiData.Data) {
             // 显示时不添加 BOM 头
-            const csvString = csvDataToDisplayString(neiData.Data);
+            const csvString = csvDataToString(neiData.Data);
             setCsvValue(csvString);
             prevNeiDataRef.current = JSON.stringify(neiData.Data);
         }
@@ -107,19 +107,6 @@ const NeiMonacoEditor: React.FC<NeiMonacoEditorProps> = ({
             // CSV parsing failed, don't update parent
             console.warn('CSV parsing failed:', err);
         }
-    };
-
-    /** CSV 数据转换为显示字符串（不带 BOM） */
-    const csvDataToDisplayString = (csvData: string[][]): string => {
-        return csvData.map(row =>
-            row.map(cell => {
-                // 如果单元格包含逗号、引号或换行符，需要用引号包围
-                if (cell.includes(',') || cell.includes('"') || cell.includes('\n')) {
-                    return `"${cell.replace(/"/g, '""')}"`;
-                }
-                return cell;
-            }).join(',')
-        ).join('\n');
     };
 
     return (

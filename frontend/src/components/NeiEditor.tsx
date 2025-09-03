@@ -15,7 +15,6 @@ import {useTranslation} from "react-i18next";
 import {NeiEditorViewModeKey} from "../utils/LocalStorageKeys";
 import NeiTableEditor from "./nei/NeiTableEditor";
 import NeiMonacoEditor from "./nei/NeiMonacoEditor";
-import {toLower} from "lodash";
 import NeiModel = COM3D2.Nei;
 import FileInfo = COM3D2.FileInfo;
 
@@ -150,10 +149,10 @@ const NeiEditor = forwardRef<NeiEditorRef, NeiEditorProps>((props, ref) => {
         const hide = message.loading(t('Infos.loading_please_wait'));
         try {
             console.log(filePath)
-            if (toLower(filePath).endsWith(".nei")) {
+            if (filePath.toLowerCase().endsWith(".nei")) {
                 const data = await ReadNeiFile(filePath);
                 setNeiData(data);
-            } else if (toLower(filePath).endsWith(".csv")) {
+            } else if (filePath.toLowerCase().endsWith(".csv")) {
                 const data = await CSVFileToNei(filePath)
                 setNeiData(data);
             } else {
@@ -226,9 +225,9 @@ const NeiEditor = forwardRef<NeiEditorRef, NeiEditorProps>((props, ref) => {
         handleSaveAsFile: handleSaveAsNeiFile
     }));
 
-    /** CSV 数据转换为字符串（带 UTF-8-BOM） */
+    /** CSV 数据转换为字符串（不带 BOM） */
     const csvDataToString = (csvData: string[][]): string => {
-        const csvString = csvData.map(row =>
+        return csvData.map(row =>
             row.map(cell => {
                 // 如果单元格包含逗号、引号或换行符，需要用引号包围
                 if (cell.includes(',') || cell.includes('"') || cell.includes('\n')) {
@@ -237,12 +236,9 @@ const NeiEditor = forwardRef<NeiEditorRef, NeiEditorProps>((props, ref) => {
                 return cell;
             }).join(',')
         ).join('\n');
-
-        // 添加 UTF-8-BOM
-        return '\ufeff' + csvString;
     };
 
-    /** 字符串转换为 CSV 数据 */
+    /** 字符串转换为 CSV 数据（去掉 BOM） */
     const stringToCSVData = (csvString: string): string[][] => {
         // 移除 UTF-8-BOM 如果存在
         const cleanString = csvString.replace(/^\ufeff/, '');
