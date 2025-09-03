@@ -44,18 +44,18 @@ For now, it allows you to edit files in these formats
 
 Current Game Version COM3D2 v2.45.0 & COM3D2.5 v3.45.0
 
-| Extension | Description           | Version Support    | Note                                                                                                                                                                              |
-|-----------|-----------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| .menu     | Menu files            | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                   |
-| .mate     | Material files        | All versions       | No structural changes so far, but there are some 2.5-only features                                                                                                                |
-| .pmat     | Rendering order files | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                   |
-| .col      | Collider files        | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                   |
-| .phy      | Physics files         | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                   |
-| .psk      | Panier skirt files    | All versions       | No structural change since version 217                                                                                                                                            |
-| .tex      | Texture files         | All versions       | Not support write version 1000, because version 1000 is poorly designed (CM3D2 also supports version 1010,so there is no reason to use)                                           |
-| .anm      | Animation files       | All versions       |                                                                                                                                                                                   |
-| .model    | Model files           | Versions 1000-2200 |                                                                                                                                                                                   |
-| .nei      | Encrypted CSV File    | All Versions       | .nei files use Shift-JIS encoding internally, but we use UTF-8-BOM encoding when reading and writing CSV files. Using characters not supported by Shift-JIS may result in errors. |
+| Extension | Description           | Version Support    | Note                                                                                                                                                                           |
+|-----------|-----------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| .menu     | Menu files            | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                |
+| .mate     | Material files        | All versions       | No structural changes so far, but there are some 2.5-only features                                                                                                             |
+| .pmat     | Rendering order files | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                |
+| .col      | Collider files        | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                |
+| .phy      | Physics files         | All versions       | No structural changes so far, so version numbers are irrelevant                                                                                                                |
+| .psk      | Panier skirt files    | All versions       | No structural change since version 217                                                                                                                                         |
+| .tex      | Texture files         | All versions       | Not support write version 1000, because version 1000 is poorly designed (CM3D2 also supports version 1010,so there is no reason to use)                                        |
+| .anm      | Animation files       | All versions       |                                                                                                                                                                                |
+| .model    | Model files           | Versions 1000-2200 |                                                                                                                                                                                |
+| .nei      | Encrypted CSV File    | All Versions       | .nei files use Shift-JIS encoding internally, but we use UTF-8-BOM encoding when reading and writing CSV files. Using characters not supported by Shift-JIS will cause errors. |
 
 Each file corresponds to a .go
 file：[https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2](https://github.com/MeidoPromotionAssociation/MeidoSerialization/tree/main/serialization/COM3D2)
@@ -156,7 +156,7 @@ Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releas
     - Please
       see: [https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 
-- Unable to export .tex version 1000
+- Unable to export `.tex` version 1000
     - This is intentional.
     - When converting version 1000 of .tex, please export it as an image first, and then convert it back to .tex.
 
@@ -165,6 +165,34 @@ Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releas
     - Using the Save As function, you can specify the extension as `*.menu.json`, `*.mate.json`, etc., and you can see
       the prompt when exporting.
     - The batch processing program mentioned in the above question can also support this format.
+
+- Unable to save when using certain characters in `.nei` file
+    - If you got the error below
+    - That's because you used characters that are not supported by Shift-JIS encoding. .nei files use Shift-JIS encoding internally and we cannot change this. Please remove the unsupported characters.
+    - `failed to write to .neiData file: failed to encode string: encoding: rune not supported by encoding.`
+    - `failed to write to .nei file: failed to encode string: encoding: rune not supported by encoding.`
+
+- About version 1011 of the .tex file
+    - __New fields__: Version 1011 adds a `Rects` (texture atlas) array to the binary structure. Its elements are four `float32` values: `x, y, w, h`, representing rectangles in normalized UV space.
+    - __When converting an image to `.tex`:
+    - If a `.uv.csv` file with the same name exists in the same directory (e.g., `foo.png.uv.csv`), the rectangles in it will be read and the 1011 version of the tex file will be generated.
+    - If no `.uv.csv` file exists, the 1010 version (without `Rects`) will be generated.
+    - __When converting `.tex` to an image__:
+    - If the source `.tex` is 1011 and contains `Rects`, a `.uv.csv` file with the same name will be generated next to the output image (e.g., `output.png.uv.csv`).
+    - __.uv.csv format__:
+    - Encoding must be: UTF-8 with BOM.
+    - Delimiter: English comma `,`.
+    - Number of columns: 4 columns per row, in the order `x, y, w, h` (x, y, width, height); values are typically in the range `[0, 1]` (normalized UVs). It is recommended to retain up to 6 decimal places and use `float32` precision.
+      Example:
+
+    ```csv
+    0.000000,0.000000,0.500000,0.500000
+    0.500000,0.000000,0.500000,0.500000
+    0.000000,0.500000,0.500000,0.500000
+    ```
+
+- About CSV format
+    - All CSV files used in this program are encoded using UTF-8-BOM, separated by ',', and follow the [RFC4180](https://datatracker.ietf.org/doc/html/rfc4180)  standard.
 
 <br>
 
@@ -239,18 +267,18 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 当前游戏版本 COM3D2 v2.45.0 和 COM3D2.5 v3.45.0
 
-| 扩展名    | 描述        | 版本支持         | 备注                                                                               |
-|--------|-----------|--------------|----------------------------------------------------------------------------------|
-| .menu  | 菜单文件      | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                           |
-| .mate  | 材质文件      | 所有版本         | 目前为止未发生过结构更改，但有一些属性只在 2.5 有效                                                     |
-| .pmat  | 渲染顺序文件    | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                           |
-| .col   | 碰撞体文件     | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                           |
-| .phy   | 物理文件      | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                           |
-| .psk   | 裙撑文件      | 所有版本         | 自版本 217 以后没有发生结构变化                                                               |
-| .tex   | 纹理文件      | 所有版本         | 不支持写出版本 1000，因为版本 1000 设计不佳（CM3D2 也支持版本 1010，因此没有理由使用）                           |
-| .anm   | 动画文件      | 所有版本         |                                                                                  |
-| .model | 模型文件      | 1000-2200 版本 |                                                                                  |
-| .nei   | 加密 CSV 文件 | 所有版本         | .nei 内部使用 Shift-JIS 编码，但我们在读写时 CSV 时会使用 UTF-8-BOM 编码，如果使用了 Shift-JIS 不支持字符则可能会出错 |
+| 扩展名    | 描述        | 版本支持         | 备注                                                                             |
+|--------|-----------|--------------|--------------------------------------------------------------------------------|
+| .menu  | 菜单文件      | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                         |
+| .mate  | 材质文件      | 所有版本         | 目前为止未发生过结构更改，但有一些属性只在 2.5 有效                                                   |
+| .pmat  | 渲染顺序文件    | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                         |
+| .col   | 碰撞体文件     | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                         |
+| .phy   | 物理文件      | 所有版本         | 目前为止未发生过结构更改，因此版本号无关紧要                                                         |
+| .psk   | 裙撑文件      | 所有版本         | 自版本 217 以后没有发生结构变化                                                             |
+| .tex   | 纹理文件      | 所有版本         | 不支持写出版本 1000，因为版本 1000 设计不佳（CM3D2 也支持版本 1010，因此没有理由使用）                         |
+| .anm   | 动画文件      | 所有版本         |                                                                                |
+| .model | 模型文件      | 1000-2200 版本 |                                                                                |
+| .nei   | 加密 CSV 文件 | 所有版本         | .nei 内部使用 Shift-JIS 编码，但我们在读写时 CSV 时会使用 UTF-8-BOM 编码，如果使用了 Shift-JIS 不支持字符则会出错 |
 
 
 每种文件对应一个 .go
@@ -278,7 +306,6 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
     - 本应用使用 Wails 技术打造，它依赖于 Microsoft Edge WebView2 来渲染页面，因此需要安装 WebView2。
     - 如果你使用 Windows 11，这通常已经安装在你的系统上了。
     - 如果你使用其他系统，且没有安装 WebView2，启动应用程序时它应该会提示您安装。
-    -
     或者您也可以从官方网站安装：[https://developer.microsoft.com/zh-cn/microsoft-edge/webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2)
     - Microsoft Edge WebView2
       是什么？[https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/](https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/)
@@ -339,7 +366,7 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
     -
     请查看：[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
 
-- 无法导出 1000 版本的 .tex 文件
+- 无法导出 1000 版本的 `.tex` 文件
     - 这是有意为之的
     - 转换 1000 版 .tex 文件时，请先将其导出为图片，然后再转换回 .tex 文件。
 
@@ -347,6 +374,15 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
     - 可以支持导入和导出为文本文件，以便进行批量编辑或使用其他编辑器。
     - 使用另存为功能，可以指定扩展名为 `*.menu.json`、`*.mate.json` 等，导出时可以看到提示。
     - 上面的问题中提到的批量处理程序也可以支持此格式。
+
+- 在 `.nei` 文件中使用某些字符时无法保存
+    - 如果您遇到下面的错误
+    - 这是因为您使用了 Shift-JIS 编码不支持的字符。.nei 文件内部使用 Shift-JIS 编码，我们无法更改此设置。请删除不支持的字符。    
+    - `failed to write to .neiData file: failed to encode string: encoding: rune not supported by encoding.`
+    - `failed to write to .nei file: failed to encode string: encoding: rune not supported by encoding.`
+
+- 关于 CSV 格式
+    - 本程序中使用的所有 CSV 文件均采用 UTF-8-BOM 编码，以“,”分隔，并遵循 [RFC4180](https://datatracker.ietf.org/doc/html/rfc4180) 标准。
 
 <br>
 
@@ -522,7 +558,7 @@ Releasesからダウンロードしてください：[https://github.com/MeidoPr
     詳細は[https://github.com/MeidoPromotionAssociation/MeidoSerialization](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
     をご覧ください。
 
-- バージョン1000の.texファイルはエクスポートできません
+- バージョン1000の`.tex`ファイルはエクスポートできません
     - これは意図的な動作です
     - バージョン1000の.texファイルを変換する場合は、まず画像としてエクスポートし、その後.texファイルに戻してください。
 
@@ -530,6 +566,15 @@ Releasesからダウンロードしてください：[https://github.com/MeidoPr
     - テキストファイルへのインポートとエクスポートをサポートしており、一括編集や他のエディタでの使用も可能です。
     - 「名前を付けて保存」機能を使用すると、拡張子を「*.menu.json」「*.mate.json」などに指定でき、エクスポート時にプロンプ​​トが表示されます。
     - 上記の質問で言及されているバッチ処理プログラムもこの形式をサポートしています。
+
+- `.nei` ファイルで特定の文字を使用すると保存できません
+    - 以下のエラーが発生した場合
+    - Shift-JIS エンコードでサポートされていない文字を使用したことが原因です。.nei ファイルは内部的に Shift-JIS エンコードを使用しており、これを変更することはできません。サポートされていない文字を削除してください。
+    - `failed to write to .neiData file: failed to encode string: encoding: rune not supported by encoding.`
+    - `failed to write to .nei file: failed to encode string: encoding: rune not supported by encoding.`
+
+- CSV形式について
+    - このプログラムで使用されるすべてのCSVファイルは、UTF-8-BOMでエンコードされ、「,」で区切られており、[RFC4180](https://datatracker.ietf.org/doc/html/rfc4180)標準に準拠しています。
 
 <br>
 
