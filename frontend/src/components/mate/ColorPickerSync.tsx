@@ -4,7 +4,6 @@ import {ColorPicker, Form, FormInstance, Space} from 'antd';
 import debounce from 'lodash/debounce';
 import {AggregationColor} from "antd/es/color-picker/color";
 
-
 interface ColorPickerSyncProps {
     form: FormInstance;
     name: number; // 当前 properties 数组的索引
@@ -55,19 +54,11 @@ const ColorPickerSync: React.FC<ColorPickerSyncProps> = ({form, name}) => {
     const updateNumericFields = useCallback((newColor: AggregationColor) => {
         // newColor.toRgb() 返回 { r, g, b, a }
         const rgba = newColor.toRgb();
-
-        const currentProperties = form.getFieldValue('properties') || [];
-        const updatedProperties = [...currentProperties];
-
-        // 注意：选色器中的 r, g, b 为 [0,255]，而表单存储 [0,1]
-        updatedProperties[name] = {
-            ...updatedProperties[name],
-            colorR: rgba.r / 255,
-            colorG: rgba.g / 255,
-            colorB: rgba.b / 255,
-            colorA: rgba.a,
-        };
-        form.setFieldsValue({properties: updatedProperties});
+        // 仅更新当前项的 4 个字段，避免替换整个 properties 数组，减少虚拟列表刷新
+        form.setFieldValue(['properties', name, 'colorR'], rgba.r / 255);
+        form.setFieldValue(['properties', name, 'colorG'], rgba.g / 255);
+        form.setFieldValue(['properties', name, 'colorB'], rgba.b / 255);
+        form.setFieldValue(['properties', name, 'colorA'], rgba.a);
     }, [form, name]);
 
     // 使用防抖函数延迟更新表单，避免频繁更新导致卡顿
@@ -78,6 +69,13 @@ const ColorPickerSync: React.FC<ColorPickerSyncProps> = ({form, name}) => {
             }, 200),
         [updateNumericFields]
     );
+
+    useEffect(() => {
+        // 组件卸载时取消防抖回调，避免潜在的状态更新警告
+        return () => {
+            debouncedUpdate.cancel();
+        };
+    }, [debouncedUpdate]);
 
     const handleColorChange = useCallback(
         (color: AggregationColor) => {
