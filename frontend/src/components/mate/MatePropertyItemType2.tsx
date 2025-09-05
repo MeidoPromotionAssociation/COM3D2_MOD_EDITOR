@@ -220,7 +220,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorR']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             key={`${restField.key}-colorG`}
@@ -228,7 +228,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorG']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             key={`${restField.key}-colorB`}
@@ -236,7 +236,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorB']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} step={0.01}/>
                         </Form.Item>
                         <Form.Item
                             key={`${restField.key}-colorA`}
@@ -244,7 +244,7 @@ const MatePropertyItemType2 = ({
                             name={[name, 'colorA']}
                             labelCol={{style: {width: '60px'}}}
                         >
-                            <InputNumber min={0} max={1} step={0.01}/>
+                            <InputNumber min={0} step={0.01}/>
                         </Form.Item>
                         <Form.Item>
                             <Tooltip title={t('MateEditor.col_tip')}>
