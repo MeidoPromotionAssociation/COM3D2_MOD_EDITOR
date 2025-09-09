@@ -448,7 +448,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             if (menuData && menuData.Commands) {
                 updateCommandsText(menuData.Commands, displayFormat);
             }
-        }, [displayFormat]);
+        }, [displayFormat, menuData]);
 
 
         // 将文件操作方法暴露给父组件
@@ -592,8 +592,48 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                         buttonStyle="solid"
                                         value={displayFormat}
                                         onChange={(e) => {
-                                            setDisplayFormat(e.target.value);
-                                            localStorage.setItem(MenuEditorViewModeKey, e.target.value);
+                                            const newFmt = e.target.value as FormatType;
+                                            try {
+                                                // 1) 先按当前视图解析现有文本
+                                                let parsed: Command[] = [];
+                                                switch (displayFormat) {
+                                                    case "treeIndent":
+                                                        parsed = parseTextAsTreeIndent(commandsText);
+                                                        break;
+                                                    case "colonSplit":
+                                                        parsed = parseTextAsColonSplit(commandsText);
+                                                        break;
+                                                    case "JSON":
+                                                        parsed = parseTextAsJSON(commandsText);
+                                                        break;
+                                                    case "TSV":
+                                                        parsed = parseTextAsTSV(commandsText);
+                                                        break;
+                                                    default:
+                                                        parsed = [];
+                                                }
+
+                                                // 2) 同步更新内存中的 Commands
+                                                setMenuData((prev) => {
+                                                    if (!prev) return prev;
+                                                    return COM3D2.Menu.createFrom({
+                                                        ...prev,
+                                                        Commands: parsed,
+                                                    });
+                                                });
+
+                                                // 3) 切换视图；文本将在 useEffect 中用最新 Commands 渲染
+                                                setDisplayFormat(newFmt);
+                                                localStorage.setItem(MenuEditorViewModeKey, newFmt);
+                                            } catch (err: any) {
+                                                console.error(err);
+                                                if (displayFormat === "JSON") {
+                                                    message.error(t('Errors.json_parse_failed') + (err?.message || "")).then();
+                                                } else {
+                                                    message.error(String(err?.message || err || 'Parse failed')).then();
+                                                }
+                                                // 解析失败则不切换视图
+                                            }
                                         }}
                                     />
                                 </Flex>
