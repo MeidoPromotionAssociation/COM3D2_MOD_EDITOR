@@ -88,8 +88,8 @@
     "note": "注意事項",
     "format_tree_tsv_use_tab": "ツリーインデント形式とTSV形式は `Tab` キーでインデントします，スペースではありません",
     "only_tree_indent_have_autocomplete": "ツリーインデント形式のみオートコンプリートとヒント機能が利用可能",
-    "ArgCount": "引数とコマンドのカウント",
-    "Args": "コマンドとその引数。最初の項目がコマンド、それ以降がコマンドの引数",
+    "Command": "コマンド",
+    "Args": "コマンドパラメータ",
     "command_description": "コマンド説明",
     "place_mouse_on_command_view_description": "コマンドにマウスを乗せると説明を表示します",
     "cannot_save_empty_line": "空行（タブ文字`Tab`（\\\\t）などの空白文字のみの行を含む）は保存できません。JSONフォーマットは除きます"

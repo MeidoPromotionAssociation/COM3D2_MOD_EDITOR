@@ -88,8 +88,8 @@
     "note": "주의 사항",
     "format_tree_tsv_use_tab": "트리 들여쓰기 형식과 TSV 형식 모두에서 인덴트는 스페이스가 아닌 `Tab` 키를 사용합니다",
     "only_tree_indent_have_autocomplete": "자동완성과 힌트는 트리 들여쓰기 형식에서만 작동합니다",
-    "ArgCount": "매개변수 및 명령의 개수",
-    "Args": "명령어와 매개변수, 첫 번째는 명령어이고, 그 다음은 명령어 매개변수입니다."
+    "Command": "명령",
+    "Args": "명령 매개변수"
   },
   "MateEditor": {
     "file_header": {

@@ -298,7 +298,7 @@ export namespace COM3D2 {
 	    }
 	}
 	export class Command {
-	    ArgCount: number;
+	    Command: string;
 	    Args: string[];
 	
 	    static createFrom(source: any = {}) {
@@ -307,7 +307,7 @@ export namespace COM3D2 {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ArgCount = source["ArgCount"];
+	        this.Command = source["Command"];
 	        this.Args = source["Args"];
 	    }
 	}

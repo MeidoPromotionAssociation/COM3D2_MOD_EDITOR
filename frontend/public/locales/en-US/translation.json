@@ -88,8 +88,8 @@
     "note": "Note",
     "format_tree_tsv_use_tab": "Use Tab key for tree indentation and TSV formats, not spaces.",
     "only_tree_indent_have_autocomplete": "Autocomplete and hints are only available in Tree Indentation format.",
-    "ArgCount": "Count of parameters and commands",
-    "Args": "Command and its parameters, first is command and next is command parameter",
+    "Command": "Command",
+    "Args": "Command parameters",
     "command_description": "Command Description",
     "place_mouse_on_command_view_description": "Put the mouse over the command to see description",
     "cannot_save_empty_line": "Cannot save empty lines, including lines with blank characters such as the tabs `Tab` key (\\t), except in JSON format"

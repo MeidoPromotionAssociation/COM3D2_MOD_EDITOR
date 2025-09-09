@@ -61,15 +61,19 @@ const defineMenuJsonSchema = (monacoInstance: any) => {
                     items: {
                         type: "object",
                         properties: {
-                            ArgCount: {
-                                type: "number",
-                                description: t('MenuEditor.ArgCount')
+                            Command: {
+                                type: "string",
+                                description: t('MenuEditor.Command')
                             },
                             Args: {
-                                type: "array",
-                                description: t('MenuEditor.Args'),
+                                anyOf: [
+                                    { type: "array", items: { type: "string" }, description: t('MenuEditor.Args') },
+                                    { type: "null" }
+                                ]
                             }
-                        }
+                        },
+                        required: ["Command"],
+                        additionalProperties: true
                     }
                 }
             }

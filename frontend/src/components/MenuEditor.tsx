@@ -276,18 +276,16 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
 
                 // 检查关键命令是否缺少参数
                 const criticalCommands = ['category', 'setumei', 'name'];
-                const missingParamCommands = parsedCommands.filter(command =>
-                    // 只检查关键命令
-                    command.Args &&
-                    command.Args.length > 0 &&
-                    criticalCommands.includes(command.Args[0].toLowerCase()) &&
-                    // 检查是否缺少参数（参数数量为1表示只有命令名没有参数）
-                    (command.Args.length === 1 || (command.Args.length > 1 && command.Args[1].trim() === ''))
-                );
+                const missingParamCommands = parsedCommands.filter(command => {
+                    const cmdName = (command.Command || '').toLowerCase();
+                    const args = command.Args ?? [];
+                    return criticalCommands.includes(cmdName) &&
+                        (args.length === 0 || (args[0] ?? '').trim() === '');
+                });
 
                 if (missingParamCommands.length > 0) {
                     // 获取所有缺少参数的命令名称
-                    const cmdNames = missingParamCommands.map(cmd => cmd.Args[0]);
+                    const cmdNames = missingParamCommands.map(cmd => cmd.Command);
                     setMissingCommandNames(cmdNames);
                     setIsMissingParamsModalOpen(true);
                     return;
@@ -694,13 +692,12 @@ export default MenuEditor;
 function commandsToTextTreeIndent(commands: Command[]): string {
     const lines: string[] = [];
     commands.forEach((cmd) => {
-        if (cmd.Args && cmd.Args.length > 0) {
-            // 假设 Args[0] 是类似命令名
-            lines.push(cmd.Args[0]);
-            // 后续参数
-            for (let i = 1; i < cmd.Args.length; i++) {
-                // 只在这里插入一次制表符
-                lines.push("\t" + cmd.Args[i]);
+        const name = (cmd.Command ?? '').trim();
+        const args = cmd.Args ?? [];
+        if (name) {
+            lines.push(name);
+            for (const p of args) {
+                lines.push("\t" + p);
             }
             lines.push(""); // 命令与命令之间空行
         }
@@ -718,10 +715,13 @@ function commandsToTextTreeIndent(commands: Command[]): string {
 function commandsToTextColonSplit(commands: Command[]): string {
     const lines: string[] = [];
     commands.forEach((cmd) => {
-        if (cmd.Args && cmd.Args.length > 0) {
-            const commandName = cmd.Args[0];
-            const restParams = cmd.Args.slice(1);
-            lines.push(`${commandName}: ${restParams.join(", ")}`);
+        const name = (cmd.Command ?? '').trim();
+        const args = cmd.Args ?? [];
+        if (!name) return;
+        if (args.length > 0) {
+            lines.push(`${name}: ${args.join(", ")}`);
+        } else {
+            lines.push(name);
         }
     });
     return lines.join("\n");
@@ -748,9 +748,10 @@ function commandsToTextJSON(commands: Command[]): string {
 function commandsToTextTSV(commands: Command[]): string {
     const lines: string[] = [];
     commands.forEach((cmd) => {
-        if (cmd.Args && cmd.Args.length > 0) {
-            // 把该 command 的所有 Args 用 \t 拼成一个字符串
-            lines.push(cmd.Args.join("\t"));
+        const name = (cmd.Command ?? '').trim();
+        const args = cmd.Args ?? [];
+        if (name) {
+            lines.push([name, ...args].join("\t"));
         }
     });
     return lines.join("\n");
@@ -767,38 +768,42 @@ function parseTextAsTreeIndent(text: string): Command[] {
     const lines = text.split(/\r?\n/);
     const commands: Command[] = [];
 
-    let currentArgs: string[] = [];
+    let currentName: string | null = null;
+    let currentParams: string[] = [];
 
-    function commitArgs() {
-        if (currentArgs.length > 0) {
+    function commit() {
+        if (currentName && currentName.trim() !== '') {
             commands.push({
-                ArgCount: currentArgs.length,
-                Args: [...currentArgs],
-            });
-            currentArgs = [];
+                Command: currentName.trim(),
+                Args: currentParams.length > 0 ? currentParams : null,
+            } as unknown as Command);
         }
+        currentName = null;
+        currentParams = [];
     }
 
     for (let line of lines) {
-        const trimmed = line.trimEnd(); // 保留左侧缩进判断
+        const raw = line; // 保留左侧缩进判断
         // 空行：提交上一条命令
-        if (!trimmed.trim()) {
-            commitArgs();
+        if (!raw.trim()) {
+            commit();
             continue;
         }
 
-        if (trimmed.startsWith("\t")) {
+        if (raw.startsWith("\t")) {
             // 1) 直接去掉开头所有 \t
-            const paramText = trimmed.replace(/^\t+/, "");
-            currentArgs.push(paramText);
+            const paramText = raw.replace(/^\t+/, "");
+            if (currentName !== null) {
+                currentParams.push(paramText);
+            }
         } else {
             // 2) 新的命令行
-            commitArgs();  // 提交上一条命令
-            currentArgs.push(trimmed);
+            commit();  // 提交上一条命令
+            currentName = raw.trim();
         }
     }
     // 最后一条
-    commitArgs();
+    commit();
 
     return commands;
 }
@@ -807,7 +812,9 @@ function parseTextAsTreeIndent(text: string): Command[] {
  * parseTextAsColonSplit
  *  - 冒号分割
  *  - 每行形如: CommandName: param1, param2, ...
- *  - 冒号分隔 commandName 与后续，用逗号再分隔后续
+ * 示例:
+ *  CommandName: param1, param2
+ *  AnotherCmd: x, y, z
  */
 function parseTextAsColonSplit(text: string): Command[] {
     const lines = text.split(/\r?\n/);
@@ -819,28 +826,22 @@ function parseTextAsColonSplit(text: string): Command[] {
 
         const colonIndex = trimmed.indexOf(":");
         if (colonIndex < 0) {
-            // 没有冒号就跳过或视为只有一个 Arg
+            // 没有冒号 => 只有命令名
             commands.push({
-                ArgCount: 1,
-                Args: [trimmed],
-            });
+                Command: trimmed,
+                Args: null,
+            } as unknown as Command);
             continue;
         }
         const commandName = trimmed.substring(0, colonIndex).trim();
         const rest = trimmed.substring(colonIndex + 1).trim();
 
-        let args = [commandName];
-        if (rest) {
-            const split_ed = rest.split(",");
-            split_ed.forEach((item) => {
-                args.push(item.trim());
-            });
-        }
+        const argsArr = rest ? rest.split(",").map((item) => item.trim()).filter(s => s.length > 0) : [];
 
         commands.push({
-            ArgCount: args.length,
-            Args: args,
-        });
+            Command: commandName,
+            Args: argsArr.length > 0 ? argsArr : null,
+        } as unknown as Command);
     }
     return commands;
 }
@@ -849,7 +850,7 @@ function parseTextAsColonSplit(text: string): Command[] {
  * parseTextAsJSON
  *  - JSON
  *  - 期望整个编辑器内容是一个 JSON 数组
- *  - 形如: [ { "ArgCount": 2, "Args": ["Foo", "Bar"] }, ... ]
+ *  - 形如: [ { "Command": "Foo", "Args": ["Bar"] }, ... ]
  */
 function parseTextAsJSON(text: string): Command[] {
     const trimmed = text.trim();
@@ -863,20 +864,32 @@ function parseTextAsJSON(text: string): Command[] {
         if (!Array.isArray(parsed)) {
             message.error(t('Errors.json_root_node_not_array')).then(() => {
             });
+            return [];
         }
-        // 简单映射为 Command[]
+        // 映射为 Command[]
         return parsed.map((item: any) => {
+            if (typeof item.Command !== "string") {
+                throw new Error("Invalid Command field");
+            }
+            let args: string[] | null;
+            if (item.Args === null || item.Args === undefined) {
+                args = null;
+            } else if (Array.isArray(item.Args)) {
+                // 校验元素均为字符串（宽松处理：非字符串将转为字符串）
+                args = item.Args.map((v: any) => String(v));
+            } else {
+                throw new Error("Invalid Args field");
+            }
             return {
-                ArgCount: item.ArgCount ?? (item.Args ? item.Args.length : 0),
-                Args: item.Args ?? [],
-            } as Command;
+                Command: item.Command,
+                Args: args,
+            } as unknown as Command;
         });
     } catch (err: any) {
         console.error("parseTextAsJSON error:", err);
         throw new Error(t('Errors.json_parse_failed') + err.message);
     }
 }
-
 
 /**
  * parseTextAsTSV
@@ -900,20 +913,20 @@ function parseTextAsTSV(text: string): Command[] {
         if (tabIndex < 0) {
             // 行内没有任何制表符 => 整行当作命令名称
             commands.push({
-                ArgCount: 1,
-                Args: [trimmed],
-            });
+                Command: trimmed,
+                Args: null,
+            } as unknown as Command);
         } else {
             // 第一个制表符之前是命令名称
             const commandName = trimmed.substring(0, tabIndex);
             // 第一个制表符之后的剩余部分，再次用 \t 分割为参数
             const rest = trimmed.substring(tabIndex + 1);
-            const params = rest.split("\t");
+            const params = rest.length > 0 ? rest.split("\t") : [];
 
             commands.push({
-                ArgCount: 1 + params.length,
-                Args: [commandName, ...params],
-            });
+                Command: commandName,
+                Args: params.length > 0 ? params : null,
+            } as unknown as Command);
         }
     }
     return commands;
