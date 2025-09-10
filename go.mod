@@ -34,7 +34,7 @@ require (
 	github.com/wailsapp/go-webview2 v1.0.21 // indirect; wails v2.10.2 not supported v1.0.22
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	golang.org/x/crypto v0.42.0 // indirect
-	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/net v0.44.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
 )

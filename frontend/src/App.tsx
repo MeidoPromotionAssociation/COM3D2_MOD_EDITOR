@@ -67,7 +67,7 @@ const App: React.FC = () => {
         const editorWorker = await import("monaco-editor/esm/vs/editor/editor.worker?worker")
         const jsonWorker = await import("monaco-editor/esm/vs/language/json/json.worker?worker")
 
-        self.MonacoEnvironment = {
+        MonacoEnvironment = {
             getWorker(_, label) {
                 if (label === "json") {
                     return new jsonWorker.default()
