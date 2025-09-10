@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import {Button, Card, Image, Input, message, Space, Spin, Switch, Tooltip} from "antd";
 import {CheckImageMagick, ConvertAnyToPng} from "../../wailsjs/go/COM3D2/TexService";
 import {ExportOutlined} from "@ant-design/icons";
-import {ImageMagickUrl} from "../utils/consts";
+import {AppTitle, AppTitleNoAuthor, ImageMagickUrl} from "../utils/consts";
 import useFileHandlers from "../hooks/fileHanlder";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {useDarkMode} from "../hooks/themeSwitch";
@@ -166,7 +166,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop() || "";
-            WindowSetTitle(`COM3D2 MOD EDITOR V2 by 90135 —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -177,7 +177,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
         }
 
         return () => {

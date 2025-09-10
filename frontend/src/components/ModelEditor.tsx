@@ -15,6 +15,7 @@ import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import {ModelEditorViewModeKey} from "../utils/LocalStorageKeys";
 import ModelMonacoEditor from "./model/ModelMonacoEditor";
 import ModelMetadataEditor from "./model/ModelMetadataEditor";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import Model = COM3D2.Model;
 import ModelMetadata = COM3D2.ModelMetadata;
 import FileInfo = COM3D2.FileInfo;
@@ -63,7 +64,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -73,7 +74,7 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 model 对象
             const newModel = COM3D2.Model.createFrom({});

@@ -11,6 +11,7 @@ import {ReadColFile} from "../../wailsjs/go/COM3D2/ColService";
 import Style2PhyProperties from "./phy/Style2PhyProperties";
 import Style1PhyProperties from "./phy/Style1PhyProperties";
 import {PhyEditorViewModeKey} from "../utils/LocalStorageKeys";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import Phy = COM3D2.Phy;
 import BoneValue = COM3D2.BoneValue;
 import AnimationCurve = COM3D2.AnimationCurve;
@@ -347,7 +348,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -357,7 +358,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 如果没有 filePath，就新建一个空的
             const newPhy = COM3D2.Phy.createFrom({});

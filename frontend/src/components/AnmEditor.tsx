@@ -7,6 +7,7 @@ import {COM3D2} from "../../wailsjs/go/models";
 import {ConvertAnmToJson, ConvertJsonToAnm, ReadAnmFile, WriteAnmFile} from "../../wailsjs/go/COM3D2/AnmService";
 import AnmMonacoEditor from "./anm/AnmMonacoEditor";
 import {SelectPathToSave} from "../../wailsjs/go/main/App";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import Anm = COM3D2.Anm;
 import BoneCurveData = COM3D2.BoneCurveData;
 import FileInfo = COM3D2.FileInfo;
@@ -45,7 +46,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -55,7 +56,7 @@ const AnmEditor = forwardRef<AnmEditorRef, AnmEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 anm 对象示例
             const newAnm = new Anm();

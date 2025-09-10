@@ -25,6 +25,7 @@ import Style2MateProperties from "./mate/Style2MateProperties";
 import Style1MateProperties from "./mate/Style1MateProperties";
 import Style1MatePropertiesVirtualized from "./mate/Style1MatePropertiesVirtualized";
 import {MateEditorViewModeKey} from "../utils/LocalStorageKeys";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import Mate = COM3D2.Mate;
 import Material = COM3D2.Material;
 import TexProperty = COM3D2.TexProperty;
@@ -93,7 +94,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -103,7 +104,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 Col 对象
             const mate = new Mate();

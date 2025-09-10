@@ -9,6 +9,7 @@ import {SelectPathToSave} from "../../wailsjs/go/main/App";
 import Style2PskProperties from "./psk/Style2PskProperties";
 import {PskEditorViewModeKey} from "../utils/LocalStorageKeys";
 import Style1PskProperties from "./psk/Style1PskProperties";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import Psk = COM3D2.Psk;
 import FileInfo = COM3D2.FileInfo;
 
@@ -60,7 +61,7 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -70,7 +71,7 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 psk 对象
             const newPsk = COM3D2.Psk.createFrom({});

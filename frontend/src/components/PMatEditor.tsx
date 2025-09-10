@@ -7,6 +7,7 @@ import {COM3D2} from "../../wailsjs/go/models";
 import {useTranslation} from "react-i18next";
 import {ConvertJsonToPMat, ConvertPMatToJson, ReadPMatFile, WritePMatFile} from "../../wailsjs/go/COM3D2/PMatService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import PMat = COM3D2.PMat;
 import FileInfo = COM3D2.FileInfo;
 
@@ -60,7 +61,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -70,7 +71,7 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             // 如果没有文件，则初始化为新文件
             const pmat = new (PMat);
             pmat.Signature = COM3D2HeaderConstants.PMatSignature;

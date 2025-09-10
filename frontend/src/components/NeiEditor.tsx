@@ -15,6 +15,7 @@ import {useTranslation} from "react-i18next";
 import {NeiEditorViewModeKey} from "../utils/LocalStorageKeys";
 import NeiTableEditor from "./nei/NeiTableEditor";
 import NeiMonacoEditor from "./nei/NeiMonacoEditor";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import NeiModel = COM3D2.Nei;
 import FileInfo = COM3D2.FileInfo;
 
@@ -74,7 +75,7 @@ const NeiEditor = forwardRef<NeiEditorRef, NeiEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -84,7 +85,7 @@ const NeiEditor = forwardRef<NeiEditorRef, NeiEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 没有 filePath 时，初始化一个新的 Nei 对象
             const newNei = new NeiModel();

@@ -9,6 +9,7 @@ import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import Style1ColProperties from "./col/Style1ColProperties";
 import Style2ColProperties from "./col/Style2ColProperties";
 import {colEditorViewModeKey} from "../utils/LocalStorageKeys";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import DynamicBoneColliderBase = COM3D2.DynamicBoneColliderBase;
 import DynamicBoneCollider = COM3D2.DynamicBoneCollider;
 import DynamicBonePlaneCollider = COM3D2.DynamicBonePlaneCollider;
@@ -77,7 +78,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
 
         if (filePath) {
             const fileName = filePath.split(/[\\/]/).pop();
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+            WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
             (async () => {
                 try {
@@ -87,7 +88,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                 }
             })();
         } else {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle);
             if (!isMounted) return;
             // 没有 filePath 时，可初始化一个新的 Col 对象
             const newCol = new ColModel();

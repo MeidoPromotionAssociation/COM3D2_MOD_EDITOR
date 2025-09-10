@@ -26,6 +26,7 @@ import {setupMonacoEditor} from "../utils/menuMonacoConfig";
 import {ConvertJsonToMenu, ConvertMenuToJson, ReadMenuFile, WriteMenuFile} from "../../wailsjs/go/COM3D2/MenuService";
 import {COM3D2HeaderConstants} from "../utils/ConstCOM3D2";
 import {MenuEditorViewModeKey} from "../utils/LocalStorageKeys";
+import {AppTitle, AppTitleNoAuthor} from "../utils/consts";
 import Menu = COM3D2.Menu;
 import Command = COM3D2.Command;
 import FileInfo = COM3D2.FileInfo;
@@ -135,7 +136,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
 
             if (filePath) {
                 const fileName = filePath.split(/[\\/]/).pop();
-                WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135 —— " + t("Infos.editing_colon") + fileName + "  (" + filePath + ")");
+                WindowSetTitle(AppTitleNoAuthor + ` —— ${t("Infos.editing_colon")}${fileName}  (${filePath})`);
 
                 (async () => {
                     try {
@@ -145,7 +146,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                     }
                 })();
             } else {
-                WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+                WindowSetTitle(AppTitle);
                 if (!isMounted) return;
                 const defaultSignature = COM3D2HeaderConstants.MenuSignature;
                 const defaultVersion = COM3D2HeaderConstants.MenuVersion;
