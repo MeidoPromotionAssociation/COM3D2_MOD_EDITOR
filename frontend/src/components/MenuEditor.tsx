@@ -147,11 +147,26 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             } else {
                 WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
                 if (!isMounted) return;
+                const defaultSignature = COM3D2HeaderConstants.MenuSignature;
+                const defaultVersion = COM3D2HeaderConstants.MenuVersion;
                 setMenuData(new Menu());
-                setSignature(COM3D2HeaderConstants.MenuSignature);
-                setVersion(COM3D2HeaderConstants.MenuVersion);
+                setSignature(defaultSignature);
+                setVersion(defaultVersion);
                 setBodySize(0);
-                updateCommandsText([], displayFormat);
+                if (displayFormat === "JSON") {
+                    setCommandsText(JSON.stringify({
+                        Signature: defaultSignature,
+                        BodySize: 0,
+                        Version: defaultVersion,
+                        SrcFileName: "",
+                        ItemName: "",
+                        Category: "",
+                        InfoText: "",
+                        Commands: []
+                    }, null, 2));
+                } else {
+                    updateCommandsText([], displayFormat);
+                }
             }
 
             return () => {
