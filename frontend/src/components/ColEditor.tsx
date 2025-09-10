@@ -431,6 +431,7 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                                 <Form.Item>
                                     <Checkbox
                                         checked={headerEditable}
+                                        disabled={viewMode === 2}
                                         onChange={(e) => setHeaderEditable(e.target.checked)}
                                     >
                                         {t('ColEditor.file_header.enable_edit_do_not_edit')}

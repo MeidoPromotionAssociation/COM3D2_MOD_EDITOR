@@ -446,6 +446,7 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
                                 <Form.Item>
                                     <Checkbox
                                         checked={headerEditable}
+                                        disabled={viewMode === 2}
                                         onChange={(e) => setHeaderEditable(e.target.checked)}
                                     >
                                         {t('PskEditor.file_header.enable_edit_do_not_edit')}

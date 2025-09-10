@@ -588,6 +588,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                                 <Form.Item>
                                     <Checkbox
                                         checked={isHeaderEditable}
+                                        disabled={viewMode === 2}
                                         onChange={(e) => setIsHeaderEditable(e.target.checked)}
                                     >
                                         {t('PhyEditor.file_header.enable_edit_do_not_edit')}
@@ -596,6 +597,7 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                             </Space>
                             <Form.Item name="rootName">
                                 <Input
+                                    disabled={viewMode === 2}
                                     addonBefore={t('PhyEditor.file_header.RootName')}
                                     suffix={
                                         <Tooltip title={t('PhyEditor.file_header.RootName_tip')}>

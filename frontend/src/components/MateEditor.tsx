@@ -67,9 +67,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
     // 是否允许编辑 Signature, Version 等字段（默认禁用）
     const [isSignatureEditable, setIsSignatureEditable] = useState(false);
 
-    // 是否允许编辑文件头的其他字段（默认启用，仅模式 3 禁用，模式 3 应当在 JSON 中直接编辑）
-    const [isHeaderEditable, setIsHeaderEditable] = useState(true);
-
     // 用于 antd 的表单来管理字段
     const [form] = Form.useForm();
 
@@ -580,6 +577,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 <Form.Item>
                                     <Checkbox
                                         checked={isSignatureEditable}
+                                        disabled={viewMode === 3}
                                         onChange={(e) => setIsSignatureEditable(e.target.checked)}
                                     >
                                         {t('MateEditor.file_header.enable_edit_do_not_edit')}
@@ -589,7 +587,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
 
                             <Form.Item name="name">
                                 <Input
-                                    disabled={!isHeaderEditable}
+                                    disabled={viewMode === 3}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('MateEditor.file_header.Name')}
@@ -604,7 +602,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                             <Form.Item name="materialName">
                                 <Input
-                                    disabled={!isHeaderEditable}
+                                    disabled={viewMode === 3}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('MateEditor.file_header.Material_Name')}
@@ -619,7 +617,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                             <Form.Item name="shaderName">
                                 <Input
-                                    disabled={!isHeaderEditable}
+                                    disabled={viewMode === 3}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                       {t('MateEditor.file_header.Material_ShaderName')}
@@ -634,7 +632,7 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                             </Form.Item>
                             <Form.Item name="shaderFilename">
                                 <Input
-                                    disabled={!isHeaderEditable}
+                                    disabled={viewMode === 3}
                                     addonBefore={
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                       {t('MateEditor.file_header.Material_ShaderFilename')}
@@ -661,12 +659,6 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 if (mateData && e.target.value !== 3) { // 非模式 3 时更新表单数据，因为模式 3 是 JSON
                                     const updatedMate = transformFormToMate(currentFormValues, mateData);
                                     setMateData(updatedMate);
-                                }
-
-                                if (e.target.value === 3) {
-                                    setIsHeaderEditable(false) // 模式 3 不允许编辑表单文件头，应当直接在 JSON 中编辑
-                                } else {
-                                    setIsHeaderEditable(true)
                                 }
 
                                 setViewMode(e.target.value);
