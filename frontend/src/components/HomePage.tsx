@@ -8,6 +8,7 @@ import {GithubOutlined, SettingOutlined} from "@ant-design/icons";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {
     AllSupportedFileTypes,
+    AppTitle,
     AppVersion,
     ChineseMODGuideUrl,
     CrowdinUrl,
@@ -31,7 +32,7 @@ const HomePage: React.FC = () => {
     // 设置窗口标题
     useEffect(() => {
         const setTitle = async () => {
-            WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
+            WindowSetTitle(AppTitle)
         }
         setTitle().then(() => {
         });

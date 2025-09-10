@@ -6,7 +6,7 @@ export const UpdateCheckInterval = 24 * 60 * 60 * 1000; // 检查更新的间隔
 
 export const RetryInterval = 1 * 60 * 60 * 1000; // 重试检查更新间隔 1 小时（毫秒）
 
-export const AppTitle = "COM3D2 MOD EDITOR V2 by 90135";
+export const AppTitle = "COM3D2 MOD EDITOR V2 by 90135  -  " + AppVersion;
 
 export const AppTitleNoAuthor = "COM3D2 MOD EDITOR V2"
 
