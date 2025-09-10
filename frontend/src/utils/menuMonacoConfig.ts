@@ -57,24 +57,44 @@ const defineMenuJsonSchema = (monacoInstance: any) => {
             {
                 fileMatch: ["*"],
                 schema: {
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            Command: {
-                                type: "string",
-                                description: t('MenuEditor.Command')
+                    oneOf: [
+                        // 完整 Menu 对象
+                        {
+                            type: "object",
+                            properties: {
+                                Signature: {type: "string", description: t('MenuEditor.file_header.Signature')},
+                                BodySize: {type: "number", description: t('MenuEditor.file_header.BodySize')},
+                                Version: {type: "number", description: t('MenuEditor.file_header.Version')},
+                                SrcFileName: {type: "string", description: t('MenuEditor.file_header.SrcFileName_tip')},
+                                ItemName: {type: "string", description: t('MenuEditor.file_header.ItemName_tip')},
+                                Category: {type: "string", description: t('MenuEditor.file_header.Category_tip')},
+                                InfoText: {type: "string", description: t('MenuEditor.file_header.SetInfoText_tip')},
+                                Commands: {
+                                    type: "array",
+                                    items: {
+                                        type: "object",
+                                        properties: {
+                                            Command: {type: "string", description: t('MenuEditor.Command')},
+                                            Args: {
+                                                anyOf: [
+                                                    {
+                                                        type: "array",
+                                                        items: {type: "string"},
+                                                        description: t('MenuEditor.Args')
+                                                    },
+                                                    {type: "null"}
+                                                ]
+                                            }
+                                        },
+                                        required: ["Command"],
+                                        additionalProperties: true
+                                    }
+                                }
                             },
-                            Args: {
-                                anyOf: [
-                                    { type: "array", items: { type: "string" }, description: t('MenuEditor.Args') },
-                                    { type: "null" }
-                                ]
-                            }
-                        },
-                        required: ["Command"],
-                        additionalProperties: true
-                    }
+                            required: ["Signature", "BodySize", "Version", "SrcFileName", "ItemName", "Category", "InfoText", "Commands"],
+                            additionalProperties: false
+                        }
+                    ]
                 }
             }
         ]

@@ -147,7 +147,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             } else {
                 WindowSetTitle("COM3D2 MOD EDITOR V2 by 90135");
                 if (!isMounted) return;
-                setMenuData(new (Menu));
+                setMenuData(new Menu());
                 setSignature(COM3D2HeaderConstants.MenuSignature);
                 setVersion(COM3D2HeaderConstants.MenuVersion);
                 setBodySize(0);
@@ -229,7 +229,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                 } else if (displayFormat === "colonSplit") {
                     setCommandsText(commandsToTextColonSplit(result.Commands));
                 } else if (displayFormat === "JSON") {
-                    setCommandsText(commandsToTextJSON(result.Commands));
+                    setCommandsText(JSON.stringify(result, null, 2));
                 } else if (displayFormat === "TSV") {
                     setCommandsText(commandsToTextTSV(result.Commands));
                 } else {
@@ -257,6 +257,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             }
             try {
                 let parsedCommands: Command[];
+                let parsedMenuFromJSON: Menu | null = null;
                 switch (displayFormat) {
                     case "treeIndent":
                         parsedCommands = parseTextAsTreeIndent(commandsText);
@@ -265,7 +266,16 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                         parsedCommands = parseTextAsColonSplit(commandsText);
                         break;
                     case "JSON":
-                        parsedCommands = parseTextAsJSON(commandsText);
+                        parsedMenuFromJSON = parseTextAsMenuJSON(commandsText, {
+                            Signature: signature,
+                            BodySize: bodySize,
+                            Version: version,
+                            SrcFileName: srcFileName,
+                            ItemName: itemName,
+                            Category: category,
+                            InfoText: infoText,
+                        });
+                        parsedCommands = parsedMenuFromJSON.Commands ?? [];
                         break;
                     case "TSV":
                         parsedCommands = parseTextAsTSV(commandsText);
@@ -288,6 +298,13 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                     const cmdNames = missingParamCommands.map(cmd => cmd.Command);
                     setMissingCommandNames(cmdNames);
                     setIsMissingParamsModalOpen(true);
+                    return;
+                }
+
+                // JSON 视图：优先使用 JSON 中的数据保存
+                if (displayFormat === "JSON" && parsedMenuFromJSON) {
+                    await WriteMenuFile(filePath, COM3D2.Menu.createFrom(parsedMenuFromJSON));
+                    message.success(t('Infos.success_save_file'));
                     return;
                 }
 
@@ -331,6 +348,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
 
             // 继续保存
             let parsedCommands: Command[];
+            let parsedMenuFromJSON: Menu | null = null;
             switch (displayFormat) {
                 case "treeIndent":
                     parsedCommands = parseTextAsTreeIndent(commandsText);
@@ -339,13 +357,33 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                     parsedCommands = parseTextAsColonSplit(commandsText);
                     break;
                 case "JSON":
-                    parsedCommands = parseTextAsJSON(commandsText);
+                    parsedMenuFromJSON = parseTextAsMenuJSON(commandsText, {
+                        Signature: signature,
+                        BodySize: bodySize,
+                        Version: version,
+                        SrcFileName: srcFileName,
+                        ItemName: itemName,
+                        Category: category,
+                        InfoText: infoText,
+                    });
+                    parsedCommands = parsedMenuFromJSON.Commands ?? [];
                     break;
                 case "TSV":
                     parsedCommands = parseTextAsTSV(commandsText);
                     break;
                 default:
                     parsedCommands = [];
+            }
+
+            // JSON 视图：优先使用 JSON 中的数据保存
+            if (displayFormat === "JSON" && parsedMenuFromJSON) {
+                if (!filePath) {
+                    message.error(t('Errors.pls_open_file_first_new_file_use_save_as'));
+                    return;
+                }
+                await WriteMenuFile(filePath, COM3D2.Menu.createFrom(parsedMenuFromJSON));
+                message.success(t('Infos.success_save_file'));
+                return;
             }
 
             await saveMenuFileToPath(parsedCommands);
@@ -366,6 +404,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
             }
             try {
                 let parsedCommands: Command[];
+                let parsedMenuFromJSON: Menu | null = null;
                 switch (displayFormat) {
                     case "treeIndent":
                         parsedCommands = parseTextAsTreeIndent(commandsText);
@@ -374,13 +413,34 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                         parsedCommands = parseTextAsColonSplit(commandsText);
                         break;
                     case "JSON":
-                        parsedCommands = parseTextAsJSON(commandsText);
+                        parsedMenuFromJSON = parseTextAsMenuJSON(commandsText, {
+                            Signature: signature,
+                            BodySize: bodySize,
+                            Version: version,
+                            SrcFileName: srcFileName,
+                            ItemName: itemName,
+                            Category: category,
+                            InfoText: infoText,
+                        });
+                        parsedCommands = parsedMenuFromJSON.Commands ?? [];
                         break;
                     case "TSV":
                         parsedCommands = parseTextAsTSV(commandsText);
                         break;
                     default:
                         parsedCommands = [];
+                }
+
+                // JSON 视图：优先使用 JSON 中的数据另存为
+                if (displayFormat === "JSON" && parsedMenuFromJSON) {
+                    const path = await SelectPathToSave("*.menu;*.menu.json", t('Infos.com3d2_menu_file'));
+                    if (!path) {
+                        // 用户取消了保存
+                        return;
+                    }
+                    await WriteMenuFile(path, COM3D2.Menu.createFrom(parsedMenuFromJSON));
+                    message.success(t('Infos.success_save_as_file_colon') + path);
+                    return;
                 }
 
                 const newMenuData = COM3D2.Menu.createFrom({
@@ -425,7 +485,16 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                     language = "menuColonSplit"
                     break;
                 case "JSON":
-                    text = commandsToTextJSON(commands);
+                    text = JSON.stringify({
+                        Signature: signature,
+                        BodySize: bodySize,
+                        Version: version,
+                        SrcFileName: srcFileName,
+                        ItemName: itemName,
+                        Category: category,
+                        InfoText: infoText,
+                        Commands: commands ?? []
+                    }, null, 2);
                     language = "json"
                     break;
                 case "TSV":
@@ -506,18 +575,19 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                             <Space style={{width: '100%'}}>
                                                 <Input addonBefore={t('MenuEditor.file_header.Signature')}
                                                        value={signature}
-                                                       disabled={isInputDisabled}
+                                                       disabled={isInputDisabled || displayFormat === "JSON"}
                                                        onChange={(e) => setSignature(e.target.value)}/>
                                                 <Input addonBefore={t('MenuEditor.file_header.BodySize')}
                                                        value={bodySize}
-                                                       disabled={isInputDisabled}
+                                                       disabled={isInputDisabled || displayFormat === "JSON"}
                                                        onChange={(e) => setBodySize(parseInt(e.target.value, 10))}/>
                                                 <Input addonBefore={t('MenuEditor.file_header.Version')}
                                                        value={version}
-                                                       disabled={isInputDisabled}
+                                                       disabled={isInputDisabled || displayFormat === "JSON"}
                                                        type="number"
                                                        onChange={(e) => setVersion(parseInt(e.target.value, 10))}/>
                                                 <Checkbox checked={!isInputDisabled}
+                                                          disabled={displayFormat === "JSON"}
                                                           onChange={handleCheckboxChange}>{t('MenuEditor.file_header.enable_edit_do_not_edit')}</Checkbox>
                                             </Space>
 
@@ -529,6 +599,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                                     textAlign: 'left'
                                                 }}>{t('MenuEditor.file_header.SrcFileName')}</span>}
                                                        value={srcFileName}
+                                                       disabled={displayFormat === "JSON"}
                                                        onChange={(e) => setSrcFileName(e.target.value)}
                                                        suffix={
                                                            <Tooltip title={t('MenuEditor.file_header.SrcFileName_tip')}>
@@ -541,6 +612,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                                     textAlign: 'left'
                                                 }}>{t('MenuEditor.file_header.ItemName')}</span>}
                                                        value={itemName}
+                                                       disabled={displayFormat === "JSON"}
                                                        onChange={(e) => setItemName(e.target.value)}
                                                        suffix={
                                                            <Tooltip title={t('MenuEditor.file_header.ItemName_tip')}>
@@ -553,6 +625,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                                     textAlign: 'left'
                                                 }}>{t('MenuEditor.file_header.Category')}</span>}
                                                        value={category}
+                                                       disabled={displayFormat === "JSON"}
                                                        onChange={(e) => setCategory(e.target.value)}
                                                        suffix={
                                                            <Tooltip title={t('MenuEditor.file_header.Category_tip')}>
@@ -565,6 +638,7 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                                     textAlign: 'left'
                                                 }}>{t('MenuEditor.file_header.SetInfoText')}</span>}
                                                        value={infoText}
+                                                       disabled={displayFormat === "JSON"}
                                                        onChange={(e) => setInfoText(e.target.value)}
                                                        suffix={
                                                            <Tooltip title={t('MenuEditor.file_header.SetInfoText_tip')}>
@@ -594,44 +668,55 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                         onChange={(e) => {
                                             const newFmt = e.target.value as FormatType;
                                             try {
-                                                // 1) 先按当前视图解析现有文本
-                                                let parsed: Command[] = [];
-                                                switch (displayFormat) {
-                                                    case "treeIndent":
-                                                        parsed = parseTextAsTreeIndent(commandsText);
-                                                        break;
-                                                    case "colonSplit":
-                                                        parsed = parseTextAsColonSplit(commandsText);
-                                                        break;
-                                                    case "JSON":
-                                                        parsed = parseTextAsJSON(commandsText);
-                                                        break;
-                                                    case "TSV":
-                                                        parsed = parseTextAsTSV(commandsText);
-                                                        break;
-                                                    default:
-                                                        parsed = [];
-                                                }
-
-                                                // 2) 同步更新内存中的 Commands
-                                                setMenuData((prev) => {
-                                                    if (!prev) return prev;
-                                                    return COM3D2.Menu.createFrom({
-                                                        ...prev,
-                                                        Commands: parsed,
+                                                if (displayFormat === "JSON") {
+                                                    // 当前为 JSON 视图：解析整个 Menu，并覆盖所有字段与 Commands
+                                                    const menu = parseTextAsMenuJSON(commandsText, {
+                                                        Signature: signature,
+                                                        BodySize: bodySize,
+                                                        Version: version,
+                                                        SrcFileName: srcFileName,
+                                                        ItemName: itemName,
+                                                        Category: category,
+                                                        InfoText: infoText,
                                                     });
-                                                });
-
+                                                    setMenuData(menu);
+                                                    setSignature(menu.Signature ?? "");
+                                                    setBodySize(menu.BodySize ?? 0);
+                                                    setVersion(menu.Version ?? 0);
+                                                    setSrcFileName(menu.SrcFileName ?? "");
+                                                    setItemName(menu.ItemName ?? "");
+                                                    setCategory(menu.Category ?? "");
+                                                    setInfoText(menu.InfoText ?? "");
+                                                } else {
+                                                    // 其它视图：仅解析 Commands 并写回
+                                                    let parsed: Command[] = [];
+                                                    switch (displayFormat) {
+                                                        case "treeIndent":
+                                                            parsed = parseTextAsTreeIndent(commandsText);
+                                                            break;
+                                                        case "colonSplit":
+                                                            parsed = parseTextAsColonSplit(commandsText);
+                                                            break;
+                                                        case "TSV":
+                                                            parsed = parseTextAsTSV(commandsText);
+                                                            break;
+                                                        default:
+                                                            parsed = [];
+                                                    }
+                                                    setMenuData((prev) => {
+                                                        if (!prev) return prev;
+                                                        return COM3D2.Menu.createFrom({
+                                                            ...prev,
+                                                            Commands: parsed,
+                                                        });
+                                                    });
+                                                }
                                                 // 3) 切换视图；文本将在 useEffect 中用最新 Commands 渲染
                                                 setDisplayFormat(newFmt);
                                                 localStorage.setItem(MenuEditorViewModeKey, newFmt);
                                             } catch (err: any) {
                                                 console.error(err);
-                                                if (displayFormat === "JSON") {
-                                                    message.error(t('Errors.json_parse_failed') + (err?.message || "")).then();
-                                                } else {
-                                                    message.error(String(err?.message || err || 'Parse failed')).then();
-                                                }
+                                                message.error((displayFormat === "JSON" ? t('Errors.json_parse_failed') : '') + (err?.message || "")).then();
                                                 // 解析失败则不切换视图
                                             }
                                         }}
@@ -768,15 +853,6 @@ function commandsToTextColonSplit(commands: Command[]): string {
 }
 
 /**
- * JSON
- *  - 整个 commands 数组转为 JSON，缩进 2 格
- */
-function commandsToTextJSON(commands: Command[]): string {
-    return JSON.stringify(commands, null, 2);
-}
-
-
-/**
  * TSV
  *  - 每条命令一行
  *  - 同一条命令所有参数用制表符分隔
@@ -887,51 +963,6 @@ function parseTextAsColonSplit(text: string): Command[] {
 }
 
 /**
- * parseTextAsJSON
- *  - JSON
- *  - 期望整个编辑器内容是一个 JSON 数组
- *  - 形如: [ { "Command": "Foo", "Args": ["Bar"] }, ... ]
- */
-function parseTextAsJSON(text: string): Command[] {
-    const trimmed = text.trim();
-    if (!trimmed) {
-        // 空内容 => 空数组
-        return [];
-    }
-
-    try {
-        const parsed = JSON.parse(trimmed);
-        if (!Array.isArray(parsed)) {
-            message.error(t('Errors.json_root_node_not_array')).then(() => {
-            });
-            return [];
-        }
-        // 映射为 Command[]
-        return parsed.map((item: any) => {
-            if (typeof item.Command !== "string") {
-                throw new Error("Invalid Command field");
-            }
-            let args: string[] | null;
-            if (item.Args === null || item.Args === undefined) {
-                args = null;
-            } else if (Array.isArray(item.Args)) {
-                // 校验元素均为字符串（宽松处理：非字符串将转为字符串）
-                args = item.Args.map((v: any) => String(v));
-            } else {
-                throw new Error("Invalid Args field");
-            }
-            return {
-                Command: item.Command,
-                Args: args,
-            } as unknown as Command;
-        });
-    } catch (err: any) {
-        console.error("parseTextAsJSON error:", err);
-        throw new Error(t('Errors.json_parse_failed') + err.message);
-    }
-}
-
-/**
  * parseTextAsTSV
  *  - TSV
  *  - 每行表示一条命令
@@ -970,4 +1001,70 @@ function parseTextAsTSV(text: string): Command[] {
         }
     }
     return commands;
+}
+
+/**
+ * parseTextAsMenuJSON
+ * 将文本解析回 MENU 对象
+ */
+function parseTextAsMenuJSON(text: string, fallback?: Partial<Menu>): Menu {
+    const trimmed = (text || "").trim();
+    if (!trimmed) {
+        return COM3D2.Menu.createFrom({
+            Signature: fallback?.Signature ?? COM3D2HeaderConstants.MenuSignature,
+            BodySize: fallback?.BodySize ?? 0,
+            Version: fallback?.Version ?? COM3D2HeaderConstants.MenuVersion,
+            SrcFileName: fallback?.SrcFileName ?? "",
+            ItemName: fallback?.ItemName ?? "",
+            Category: fallback?.Category ?? "",
+            InfoText: fallback?.InfoText ?? "",
+            Commands: []
+        });
+    }
+    try {
+        const raw = JSON.parse(trimmed);
+        const mapCmd = (arr: any[]) =>
+            arr.map((item: any) => {
+                if (typeof item.Command !== "string") throw new Error("Invalid Command field");
+                let args: string[] | null;
+                if (item.Args === null || item.Args === undefined) args = null;
+                else if (Array.isArray(item.Args)) args = item.Args.map((v: any) => String(v));
+                else throw new Error("Invalid Args field");
+                return {Command: item.Command, Args: args} as unknown as Command;
+            });
+
+        // 兼容旧格式：根为 Commands 数组
+        if (Array.isArray(raw)) {
+            const cmds = mapCmd(raw);
+            return COM3D2.Menu.createFrom({
+                Signature: fallback?.Signature ?? COM3D2HeaderConstants.MenuSignature,
+                BodySize: fallback?.BodySize ?? 0,
+                Version: fallback?.Version ?? COM3D2HeaderConstants.MenuVersion,
+                SrcFileName: fallback?.SrcFileName ?? "",
+                ItemName: fallback?.ItemName ?? "",
+                Category: fallback?.Category ?? "",
+                InfoText: fallback?.InfoText ?? "",
+                Commands: cmds,
+            });
+        }
+
+        if (raw && typeof raw === "object") {
+            const cmd = Array.isArray(raw.Commands) ? mapCmd(raw.Commands) : [];
+            return COM3D2.Menu.createFrom({
+                Signature: raw.Signature ?? fallback?.Signature ?? COM3D2HeaderConstants.MenuSignature,
+                BodySize: raw.BodySize ?? fallback?.BodySize ?? 0,
+                Version: raw.Version ?? fallback?.Version ?? COM3D2HeaderConstants.MenuVersion,
+                SrcFileName: raw.SrcFileName ?? fallback?.SrcFileName ?? "",
+                ItemName: raw.ItemName ?? fallback?.ItemName ?? "",
+                Category: raw.Category ?? fallback?.Category ?? "",
+                InfoText: raw.InfoText ?? fallback?.InfoText ?? "",
+                Commands: cmd,
+            });
+        }
+
+        throw new Error("Invalid JSON root type");
+    } catch (err: any) {
+        console.error("parseTextAsMenuJSON error:", err);
+        throw new Error(t('Errors.json_parse_failed') + (err?.message || ""));
+    }
 }
