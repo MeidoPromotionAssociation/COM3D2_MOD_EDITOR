@@ -42,7 +42,7 @@ For now, it allows you to edit files in these formats
 - `.model` (JSON only full mode and metadata editing mode)
 - `.nei`
 
-Current Game Version COM3D2 v2.45.0 & COM3D2.5 v3.45.0
+Current Game Version COM3D2 v2.46.3 & COM3D2.5 v3.46.3
 
 | Extension | Description           | Version Support    | Note                                                                                                                                                                           |
 |-----------|-----------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -173,23 +173,25 @@ Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releas
     - `failed to write to .nei file: failed to encode string: encoding: rune not supported by encoding.`
 
 - About version 1011 of the .tex file
-    - __New fields__: Version 1011 adds a `Rects` (texture atlas) array to the binary structure. Its elements are four `float32` values: `x, y, w, h`, representing rectangles in normalized UV space.
-    - __When converting an image to `.tex`:
-    - If a `.uv.csv` file with the same name exists in the same directory (e.g., `foo.png.uv.csv`), the rectangles in it will be read and the 1011 version of the tex file will be generated.
-    - If no `.uv.csv` file exists, the 1010 version (without `Rects`) will be generated.
-    - __When converting `.tex` to an image__:
-    - If the source `.tex` is 1011 and contains `Rects`, a `.uv.csv` file with the same name will be generated next to the output image (e.g., `output.png.uv.csv`).
-    - __.uv.csv format__:
-    - Encoding must be: UTF-8 with BOM.
-    - Delimiter: English comma `,`.
-    - Number of columns: 4 columns per row, in the order `x, y, w, h` (x, y, width, height); values are typically in the range `[0, 1]` (normalized UVs). It is recommended to retain up to 6 decimal places and use `float32` precision.
-      Example:
-
-    ```csv
-    0.000000,0.000000,0.500000,0.500000
-    0.500000,0.000000,0.500000,0.500000
-    0.000000,0.500000,0.500000,0.500000
-    ```
+    - New fields:
+      - Version 1011 adds a `Rects` (texture atlas) array to the binary structure. Its elements are four `float32` values: `x, y, w, h`, representing rectangles in normalized UV space.
+    - When converting an image to `.tex`:
+      - If a `.uv.csv` file with the same name exists in the same directory (e.g., `foo.png.uv.csv`), the rectangles in it will be read and the 1011 version of the tex file will be generated.
+      - If no `.uv.csv` file exists, the 1010 version (without `Rects`) will be generated.
+    - When converting `.tex` to an image:
+      - If the source `.tex` is 1011 and contains `Rects`, a `.uv.csv` file with the same name will be generated next to the output image (e.g., `output.png.uv.csv`).
+    - .uv.csv format:
+      - Encoding must be: UTF-8 with BOM.
+      - Delimiter: English comma `,`.
+      - Number of columns: 4 columns per row, in the order `x, y, w, h` (x, y, width, height); values are typically in the range `[0, 1]` (normalized UVs). It is recommended to retain up to 6 decimal places and use `float32` precision.
+        Example:
+  
+      ```csv
+      x,y,w,h
+      0.000000,0.000000,0.500000,0.500000
+      0.500000,0.000000,0.500000,0.500000
+      0.000000,0.500000,0.500000,0.500000
+      ```
 
 - About CSV format
     - All CSV files used in this program are encoded using UTF-8-BOM, separated by ',', and follow the [RFC4180](https://datatracker.ietf.org/doc/html/rfc4180)  standard.
@@ -375,6 +377,27 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
     - `failed to write to .neiData file: failed to encode string: encoding: rune not supported by encoding.`
     - `failed to write to .nei file: failed to encode string: encoding: rune not supported by encoding.`
 
+- 关于 1011 版本的 .tex
+    - 新增字段：
+      - 1011 版本在二进制结构中新增 `Rects`（纹理图集）数组，元素为 `x, y, w, h` 四个 `float32`，表示归一化 UV 空间内的矩形。
+    - 将图片转换为 `.tex` 时：
+        - 若同目录存在同名的 `.uv.csv`（如 `foo.png.uv.csv`），会读取其中的矩形并生成 1011 版本的 tex。
+        - 若不存在 `.uv.csv`，则生成 1010 版本（不含 `Rects`）。
+    - 将 `.tex` 转换为图片时:
+        - 若源 `.tex` 为 1011 且包含 `Rects`，在输出图片旁会生成同名 `.uv.csv`（如 `output.png.uv.csv`）
+    - .uv.csv 格式：
+        - 编码必须为：UTF-8-BOM。
+        - 分隔符：英文逗号`,`。
+        - 列数：每行 4 列，依次为 `x, y, w, h` (x, y, width, heigh)；取值通常位于区间 `[0,1]`（归一化 UV），建议保留最多 6 位小数，精度为
+          `float32`。
+        - 示例：
+        ```csv
+        x,y,w,h
+        0.000000,0.000000,0.500000,0.500000
+        0.500000,0.000000,0.500000,0.500000
+        0.000000,0.500000,0.500000,0.500000
+        ```
+
 - 关于 CSV 格式
     - 本程序中使用的所有 CSV 文件均采用 UTF-8-BOM 编码，以“,”分隔，并遵循 [RFC4180](https://datatracker.ietf.org/doc/html/rfc4180) 标准。
 
@@ -445,7 +468,7 @@ KISSはこれらのゲームを制作する会社/ブランドです
 - `.model` (JSONの完全スキーマとメタデータ編集モード)
 - `.nei`
 
-対応ゲームバージョン COM3D2 v2.45.0 および COM3D2.5 v3.45.0
+対応ゲームバージョン COM3D2 v2.46.3 および COM3D2.5 v3.46.3
 
 | 拡張子    | 説明          | 対応バージョン        | 備考                                                                                                                  |
 |--------|-------------|----------------|---------------------------------------------------------------------------------------------------------------------|
@@ -561,6 +584,27 @@ Releasesからダウンロードしてください：[https://github.com/MeidoPr
     - `failed to write to .neiData file: failed to encode string: encoding: rune not supported by encoding.`
     - `failed to write to .nei file: failed to encode string: encoding: rune not supported by encoding.`
 
+- .tex ファイルのバージョン1011について
+  - 新しいフィールド：
+    - バージョン1011では、バイナリ構造に`Rects`（テクスチャアトラス）配列が追加されました。その要素は4つの`float32`値：`x, y, w, h`で、正規化されたUV空間の矩形を表します。
+  - 画像を`.tex`に変換する場合：
+    - 同じディレクトリに同じ名前の`.uv.csv`ファイルが存在する場合（例：`foo.png.uv.csv`）、その中の矩形が読み取られ、1011バージョンのtexファイルが生成されます。
+    - `.uv.csv`ファイルが存在しない場合は、（`Rects`のない）1010バージョンが生成されます。
+  - `.tex`を画像に変換する場合：
+    - ソースの`.tex`が1011で`Rects`を含んでいる場合、出力画像の隣に同じ名前の`.uv.csv`ファイルが生成されます（例：`output.png.uv.csv`）。
+  - .uv.csvのフォーマット：
+    - エンコーディング：UTF-8 with BOMでなければなりません。
+    - デリミタ：英語のカンマ`,`。
+    - 列数：各行に4列、`x, y, w, h`（x, y, 幅, 高さ）の順番。値は通常`[0, 1]`の範囲（正規化UV）です。小数点以下6桁まで保持し、`float32`精度を使用することをお勧めします。
+      例：
+
+    ```csv
+    x,y,w,h
+    0.000000,0.000000,0.500000,0.500000
+    0.500000,0.000000,0.500000,0.500000
+    0.000000,0.500000,0.500000,0.500000
+    ```
+
 - CSV形式について
     - このプログラムで使用されるすべてのCSVファイルは、UTF-8-BOMでエンコードされ、「,」で区切られており、[RFC4180](https://datatracker.ietf.org/doc/html/rfc4180)標準に準拠しています。
 
@@ -601,7 +645,7 @@ Releasesからダウンロードしてください：[https://github.com/MeidoPr
 # How to Dev
 
 1. Clone this repo, and cd to project root
-2. Install [Golang](https://go.dev/)  1.24+
+2. Install [Golang](https://go.dev/)  1.25+
 3. Run `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
 4. Install [Nodejs](https://nodejs.org/) v22 lts
 5. Install Pnpm `npm install -g pnpm@latest-10`
