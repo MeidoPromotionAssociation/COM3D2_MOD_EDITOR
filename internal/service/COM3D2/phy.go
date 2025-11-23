@@ -30,8 +30,7 @@ func (m *PhyService) ReadPhyFile(path string) (*COM3D2.Phy, error) {
 		return phyData, nil
 	}
 
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	phyData, err := COM3D2.ReadPhy(br)
+	phyData, err := COM3D2.ReadPhy(f) // 无需缓冲，3579 个样本中 90% 文件小于: 754 B
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .phy file failed: %w", err)
 	}

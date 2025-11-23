@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2"
-	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/utilities"
+	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/binaryio"
 	"github.com/MeidoPromotionAssociation/MeidoSerialization/tools"
 )
 
@@ -154,13 +154,13 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 				fileInfo.StorageFormat = FormatBinary
 
 				// 尝试打开文件获取实际签名和版本
-				signature, readErr := utilities.ReadString(f)
+				signature, readErr := binaryio.ReadString(f)
 				if readErr != nil {
 					fmt.Printf("Warning: Failed to read signature from file %s: %v\n", path, readErr)
 					return fileInfo, nil //读取失败也不返回错误，因为是非严格模式
 				}
 				fileInfo.Signature = signature
-				version, readErr := utilities.ReadInt32(f)
+				version, readErr := binaryio.ReadInt32(f)
 				if readErr != nil {
 					fmt.Printf("Warning: Failed to read version from file %s: %v\n", path, readErr)
 					return fileInfo, nil
@@ -252,14 +252,14 @@ func (m *CommonService) FileTypeDetermine(path string, strictMode bool) (fileInf
 
 // readBinaryFileType 从二进制文件读取类型信息的辅助函数
 func readBinaryFileType(rs io.ReadSeeker, fileType FileInfo) (FileInfo, error) {
-	signature, err := utilities.ReadString(rs)
+	signature, err := binaryio.ReadString(rs)
 	if err != nil {
 		// 如果读取签名失败，可能不是支持的二进制格式
 		return fileType, fmt.Errorf("failed to read signature: %w", err)
 	}
 	fileType.Signature = signature
 
-	version, err := utilities.ReadInt32(rs)
+	version, err := binaryio.ReadInt32(rs)
 	if err != nil {
 		return fileType, fmt.Errorf("failed to read version: %w", err)
 	}

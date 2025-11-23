@@ -30,8 +30,7 @@ func (s *PMatService) ReadPMatFile(path string) (*COM3D2.PMat, error) {
 		return pmatData, nil
 	}
 
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	PMatData, err := COM3D2.ReadPMat(br)
+	PMatData, err := COM3D2.ReadPMat(f) // 无需缓冲，4147 个样本中 90% 文件小于: 88 B
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .pmat file failed: %w", err)
 	}

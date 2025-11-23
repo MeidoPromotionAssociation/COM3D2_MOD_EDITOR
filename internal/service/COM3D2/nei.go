@@ -20,7 +20,7 @@ func (s *NeiService) ReadNeiFile(path string) (*COM3D2.Nei, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
+	br := bufio.NewReaderSize(f, 1024*4) //4KB 缓冲区， 175 个样本中 90% 文件小于 2.94 KB，中位数 1.72 KB，平均 1.89 KB
 	neiData, err := COM3D2.ReadNei(br, nil)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .nei file failed: %w", err)
@@ -33,13 +33,13 @@ func (s *NeiService) ReadNeiFile(path string) (*COM3D2.Nei, error) {
 func (s *NeiService) WriteNeiFile(neiData *COM3D2.Nei, path string) error {
 	f, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("unable to create .neiData file: %w", err)
+		return fmt.Errorf("unable to create .nei file: %w", err)
 	}
 	defer f.Close()
 
 	bw := bufio.NewWriter(f)
 	if err := neiData.Dump(bw); err != nil {
-		return fmt.Errorf("failed to write to .neiData file: %w", err)
+		return fmt.Errorf("failed to write to .nei file: %w", err)
 	}
 	if err := bw.Flush(); err != nil {
 		return fmt.Errorf("an error occurred while flush bufio: %w", err)

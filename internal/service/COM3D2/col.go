@@ -30,8 +30,7 @@ func (m *ColService) ReadColFile(path string) (*COM3D2.Col, error) {
 		return colData, nil
 	}
 
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	colData, err := COM3D2.ReadCol(br)
+	colData, err := COM3D2.ReadCol(f) // 无需缓冲，2690 个样本中 90% 的文件小于 1.65 KB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .col file failed: %w", err)
 	}

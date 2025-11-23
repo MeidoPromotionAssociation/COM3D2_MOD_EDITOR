@@ -30,8 +30,7 @@ func (m *PskService) ReadPskFile(path string) (*COM3D2.Psk, error) {
 		return pskData, nil
 	}
 
-	br := bufio.NewReaderSize(f, 1024*1024*1) //1MB 缓冲区
-	pskData, err := COM3D2.ReadPsk(br)
+	pskData, err := COM3D2.ReadPsk(f) // 无需缓冲，379 个样本中 90% 文件小于 167 B
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .psk file failed: %w", err)
 	}

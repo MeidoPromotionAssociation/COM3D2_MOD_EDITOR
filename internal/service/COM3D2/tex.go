@@ -23,7 +23,7 @@ func (t *TexService) ReadTexFile(path string) (*COM3D2.Tex, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReaderSize(f, 1024*1024*10) //10MB 缓冲区
+	br := bufio.NewReaderSize(f, 1024*1024*2) // 2MB 缓冲区，229076 个样本中 90% 的文件小于 1.04MB，中位数 80.84 KB，平均 451.85 KB，最大可达 64MB，平衡为 2MB 缓冲区。
 	TexData, err := COM3D2.ReadTex(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .tex file failed: %w", err)

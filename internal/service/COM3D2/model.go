@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
@@ -31,8 +30,7 @@ func (m *ModelService) ReadModelFile(path string) (*COM3D2.Model, error) {
 		return modelData, nil
 	}
 
-	var rs io.ReadSeeker = f // 注意，读取 Material 时需要进行 Seek，因此这里不能使用 bufio.NewReader，读 .mate 能用是因为后续没有其他数据可以直接全部读取到内存
-	modelData, err := COM3D2.ReadModel(rs)
+	modelData, err := COM3D2.ReadModel(f) // .model need seek
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .model file failed: %w", err)
 	}
@@ -87,8 +85,7 @@ func (m *ModelService) ReadModelMetadata(path string) (*COM3D2.ModelMetadata, er
 			return nil, fmt.Errorf("failed to read .model.json file: %w", err)
 		}
 	} else {
-		var rs io.ReadSeeker = f
-		modelData, err = COM3D2.ReadModel(rs)
+		modelData, err = COM3D2.ReadModel(f)
 		if err != nil {
 			return nil, fmt.Errorf("parsing the .model file failed: %w", err)
 		}
@@ -121,8 +118,7 @@ func (m *ModelService) WriteModelMetadata(inputPath string, outputPath string, m
 			return fmt.Errorf("failed to read .model.json file: %w", err)
 		}
 	} else {
-		var rs io.ReadSeeker = f
-		modelData, err = COM3D2.ReadModel(rs)
+		modelData, err = COM3D2.ReadModel(f)
 		if err != nil {
 			return fmt.Errorf("parsing the .model file failed: %w", err)
 		}
@@ -155,8 +151,7 @@ func (m *ModelService) ReadModelMaterial(path string) ([]*COM3D2.Material, error
 		return modelData.Materials, nil
 	}
 
-	var rs io.ReadSeeker = f
-	modelData, err := COM3D2.ReadModel(rs)
+	modelData, err := COM3D2.ReadModel(f)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .model file failed: %w", err)
 	}
@@ -183,8 +178,7 @@ func (m *ModelService) WriteModelMaterial(inputPath string, outputPath string, m
 			return fmt.Errorf("failed to read.model.json file: %w", err)
 		}
 	} else {
-		var rs io.ReadSeeker = f
-		modelData, err = COM3D2.ReadModel(rs)
+		modelData, err = COM3D2.ReadModel(f)
 		if err != nil {
 			return fmt.Errorf("parsing the .model file failed: %w", err)
 		}

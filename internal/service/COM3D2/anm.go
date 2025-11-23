@@ -30,7 +30,7 @@ func (m *AnmService) ReadAnmFile(path string) (*COM3D2.Anm, error) {
 		return anmData, nil
 	}
 
-	br := bufio.NewReaderSize(f, 1024*1024*10) //10MB 缓冲区
+	br := bufio.NewReaderSize(f, 1024*128) // 128KB 缓冲，7931 个样本中 90% 文件小于 97.35 KB，平均 848.27 KB，中位数 16.89 KB，最大 81.28 MB
 	anmData, err := COM3D2.ReadAnm(br)
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .anm file failed: %w", err)
