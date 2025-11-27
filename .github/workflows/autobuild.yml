@@ -74,7 +74,7 @@ jobs:
           path: /home/runner/work/COM3D2_MOD_EDITOR/COM3D2_MOD_EDITOR/build/bin/COM3D2_MOD_EDITOR_V2.exe
 
       - name: Build Linux Wails App
-        run: CGO_ENABLED=0; GOTOOLCHAIN=auto && wails build -platform linux/amd64 -skipbindings -devtools -clean -tags webkit2_41 -o COM3D2_MOD_EDITOR_V2-amd64-Linux 
+        run: CGO_ENABLED=0 GOTOOLCHAIN=auto wails build -platform linux/amd64 -skipbindings -devtools -clean -tags webkit2_41 -o COM3D2_MOD_EDITOR_V2-amd64-Linux 
 
       - name: Upload Linux Build Artifact
         uses: actions/upload-artifact@v4
