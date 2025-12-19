@@ -18,25 +18,25 @@
     "@monaco-editor/react": "^4.7.0",
     "@types/lodash": "^4.17.21",
     "@types/react-window": "^1.8.8",
-    "antd": "^6.0.0",
-    "i18next": "^25.6.3",
+    "antd": "^6.1.1",
+    "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.55.1",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-i18next": "^16.3.5",
-    "react-router-dom": "^7.9.6",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-i18next": "^16.5.0",
+    "react-router-dom": "^7.11.0",
     "react-virtualized-auto-sizer": "^1.0.26",
     "react-window": "^1.8.11"
   },
   "devDependencies": {
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.3.0"
   },
   "packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b"
 }
