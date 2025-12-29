@@ -30,7 +30,7 @@ func (m *ColService) ReadColFile(path string) (*COM3D2.Col, error) {
 		return colData, nil
 	}
 
-	colData, err := COM3D2.ReadCol(f) // 无需缓冲，2690 个样本中 90% 的文件小于 1.65 KB
+	colData, err := COM3D2.ReadCol(f) //无需缓冲，2740 个样本中 90% 文件小于: 1.65 KB，平均 915.16 B，中位数 904.00 B，最大值 3.41 KB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .col file failed: %w", err)
 	}

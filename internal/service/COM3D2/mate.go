@@ -30,7 +30,8 @@ func (m *MateService) ReadMateFile(path string) (*COM3D2.Mate, error) {
 		return mateData, nil
 	}
 
-	mateData, err := COM3D2.ReadMate(f) // .mate needs io.ReadSeeker
+	br := bufio.NewReader(f)             // 需要 Peek
+	mateData, err := COM3D2.ReadMate(br) // 4KB 缓冲，74497 个样本中 90% 文件小于 1.81 KB，平均 1.62 KB，中位数 1.11 KB，最大值 16.01 KB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .mate file failed: %w", err)
 	}

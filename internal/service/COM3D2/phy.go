@@ -30,7 +30,7 @@ func (m *PhyService) ReadPhyFile(path string) (*COM3D2.Phy, error) {
 		return phyData, nil
 	}
 
-	phyData, err := COM3D2.ReadPhy(f) // 无需缓冲，3579 个样本中 90% 文件小于: 754 B
+	phyData, err := COM3D2.ReadPhy(f) // 无需缓冲区，3656 个样本中 90% 文件小于: 739.00 B，平均 449.80 B，中位数 184.00 B，最大值 16.52 KB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .phy file failed: %w", err)
 	}

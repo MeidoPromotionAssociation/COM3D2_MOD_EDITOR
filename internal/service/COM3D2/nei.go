@@ -20,8 +20,8 @@ func (s *NeiService) ReadNeiFile(path string) (*COM3D2.Nei, error) {
 	}
 	defer f.Close()
 
-	br := bufio.NewReaderSize(f, 1024*4) //4KB 缓冲区， 175 个样本中 90% 文件小于 2.94 KB，中位数 1.72 KB，平均 1.89 KB
-	neiData, err := COM3D2.ReadNei(br, nil)
+	br := bufio.NewReader(f)
+	neiData, err := COM3D2.ReadNei(br, nil) // 4KB 缓冲区， 172 个样本中 90% 文件小于 2.94 KB，平均 1.91 KB，中位数 1.74 KB，最大值 10.63 KB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .nei file failed: %w", err)
 	}

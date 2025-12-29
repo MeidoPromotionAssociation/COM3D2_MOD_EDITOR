@@ -30,7 +30,8 @@ func (s *MenuService) ReadMenuFile(path string) (*COM3D2.Menu, error) {
 		return menuData, nil
 	}
 
-	menuData, err := COM3D2.ReadMenu(f) // 无需缓冲，132831 个样本中 90% 文件小于: 1.14 KB，平均 898 B，中位数 687 B
+	br := bufio.NewReader(f)             // 需要 Peek
+	menuData, err := COM3D2.ReadMenu(br) // 4KB 缓冲，134279 个样本中 90% 文件小于: 1.14 KB，平均 898.32 B，中位数 687.00 B，最大值 19.39 KB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .menu file failed: %w", err)
 	}

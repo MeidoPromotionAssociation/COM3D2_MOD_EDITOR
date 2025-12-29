@@ -30,7 +30,8 @@ func (m *ModelService) ReadModelFile(path string) (*COM3D2.Model, error) {
 		return modelData, nil
 	}
 
-	modelData, err := COM3D2.ReadModel(f) // .model need seek
+	br := bufio.NewReaderSize(f, 2*1024*1024) // 需要 Peek 和缓冲
+	modelData, err := COM3D2.ReadModel(br)    // 2MB 缓冲区，30091 个样本中 90% 文件小于: 1.94 MB，平均 929.99 KB，中位数 269.53 KB，最大值 117.46 MB
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .model file failed: %w", err)
 	}
@@ -76,29 +77,29 @@ func (m *ModelService) ReadModelMetadata(path string) (*COM3D2.ModelMetadata, er
 	}
 	defer f.Close()
 
-	var modelData *COM3D2.Model
-
 	if strings.HasSuffix(path, ".json") {
 		decoder := json.NewDecoder(f)
-		modelData = &COM3D2.Model{}
+		modelData := &COM3D2.Model{}
 		if err = decoder.Decode(modelData); err != nil {
 			return nil, fmt.Errorf("failed to read .model.json file: %w", err)
 		}
-	} else {
-		modelData, err = COM3D2.ReadModel(f)
-		if err != nil {
-			return nil, fmt.Errorf("parsing the .model file failed: %w", err)
-		}
+		return &COM3D2.ModelMetadata{
+			Signature:         modelData.Signature,
+			Version:           modelData.Version,
+			Name:              modelData.Name,
+			RootBoneName:      modelData.RootBoneName,
+			ShadowCastingMode: modelData.ShadowCastingMode,
+			Materials:         modelData.Materials,
+		}, nil
 	}
 
-	return &COM3D2.ModelMetadata{
-		Signature:         modelData.Signature,
-		Version:           modelData.Version,
-		Name:              modelData.Name,
-		RootBoneName:      modelData.RootBoneName,
-		ShadowCastingMode: modelData.ShadowCastingMode,
-		Materials:         modelData.Materials,
-	}, nil
+	br := bufio.NewReaderSize(f, 1*1024*1024) // 1MB 缓冲区，因为只读取部分数据
+	metadata, err := COM3D2.ReadModelMetadata(br)
+	if err != nil {
+		return nil, fmt.Errorf("parsing the .model metadata failed: %w", err)
+	}
+
+	return metadata, nil
 }
 
 // WriteModelMetadata 将元数据写入现有的 .model 文件
@@ -136,27 +137,11 @@ func (m *ModelService) WriteModelMetadata(inputPath string, outputPath string, m
 
 // ReadModelMaterial 读取 .model 文件，但只返回其中的材质数据
 func (m *ModelService) ReadModelMaterial(path string) ([]*COM3D2.Material, error) {
-	f, err := os.Open(path)
+	metadata, err := m.ReadModelMetadata(path)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open .model file: %w", err)
+		return nil, err
 	}
-	defer f.Close()
-
-	if strings.HasSuffix(path, ".json") {
-		decoder := json.NewDecoder(f)
-		modelData := &COM3D2.Model{}
-		if err := decoder.Decode(modelData); err != nil {
-			return nil, fmt.Errorf("failed to read.model.json file: %w", err)
-		}
-		return modelData.Materials, nil
-	}
-
-	modelData, err := COM3D2.ReadModel(f)
-	if err != nil {
-		return nil, fmt.Errorf("parsing the .model file failed: %w", err)
-	}
-
-	return modelData.Materials, nil
+	return metadata.Materials, nil
 }
 
 // WriteModelMaterial 接收 Material 数据并写入.model 文件

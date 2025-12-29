@@ -30,7 +30,7 @@ func (m *PskService) ReadPskFile(path string) (*COM3D2.Psk, error) {
 		return pskData, nil
 	}
 
-	pskData, err := COM3D2.ReadPsk(f) // 无需缓冲，379 个样本中 90% 文件小于 167 B
+	pskData, err := COM3D2.ReadPsk(f) // 无需缓冲区，380 个样本中 90% 文件小于: 167.00 B，平均 171.28 B，中位数 167.00 B，最大值 477.00 B
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .psk file failed: %w", err)
 	}

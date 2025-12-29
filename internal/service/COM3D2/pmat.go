@@ -30,7 +30,7 @@ func (s *PMatService) ReadPMatFile(path string) (*COM3D2.PMat, error) {
 		return pmatData, nil
 	}
 
-	PMatData, err := COM3D2.ReadPMat(f) // 无需缓冲，4147 个样本中 90% 文件小于: 88 B
+	PMatData, err := COM3D2.ReadPMat(f) // 无需缓冲区，4188 个样本中 90% 文件小于: 88.00 B，平均 71.75 B，中位数 67.00 B，最大值 118.00 B
 	if err != nil {
 		return nil, fmt.Errorf("parsing the .pmat file failed: %w", err)
 	}
