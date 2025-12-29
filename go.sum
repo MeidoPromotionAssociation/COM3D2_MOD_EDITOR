@@ -1,7 +1,5 @@
 github.com/Masterminds/semver v1.5.0 h1:H65muMkzWKEuNDnfl9d70GUjFniHKHRbFPGBuZ3QEww=
 github.com/Masterminds/semver v1.5.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
-github.com/MeidoPromotionAssociation/MeidoSerialization v1.3.1 h1:VwGqEh4EaFVx90wZhhw1+pSGSgqFY1JsBuaebuo6Wx8=
-github.com/MeidoPromotionAssociation/MeidoSerialization v1.3.1/go.mod h1:Gtl5ZAvRU7M1hEZX0UbqJ5RVMxJ+nA4RnbxkvDoK89k=
 github.com/MeidoPromotionAssociation/MeidoSerialization v1.4.0 h1:5zpyDfaIt4B0fsq8XQYpgupUWuLG/i1O6RptUKPyYNY=
 github.com/MeidoPromotionAssociation/MeidoSerialization v1.4.0/go.mod h1:ODQ+uxU7FClUN3r340SM4JHdK89QyyB0VAsg6WhCF5I=
 github.com/bep/debounce v1.2.1 h1:v67fRdBA9UQu2NhLFXrSg0Brw7CexQekrBwDMM8bzeY=
@@ -12,8 +10,6 @@ github.com/emmansun/base64 v0.8.0 h1:HSF5Yj8x7xAWeXG9nWesAflFTi5d9o1wlqhIGjvF1n8
 github.com/emmansun/base64 v0.8.0/go.mod h1:IYGtqjG0NQwY+3EgUiDjDEXbFq9nFJ/W9fqDzkFcxPk=
 github.com/go-ole/go-ole v1.3.0 h1:Dt6ye7+vXGIKZ7Xtk4s6/xVdGDQynvom7xCFEdWr6uE=
 github.com/go-ole/go-ole v1.3.0/go.mod h1:5LS6F96DhAwUc7C+1HLexzMXY1xGRSryjyPPKW6zv78=
-github.com/godbus/dbus/v5 v5.2.0 h1:3WexO+U+yg9T70v9FdHr9kCxYlazaAXUhx2VMkbfax8=
-github.com/godbus/dbus/v5 v5.2.0/go.mod h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c=
 github.com/godbus/dbus/v5 v5.2.1 h1:I4wwMdWSkmI57ewd+elNGwLRf2/dtSaFz1DujfWYvOk=
 github.com/godbus/dbus/v5 v5.2.1/go.mod h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
