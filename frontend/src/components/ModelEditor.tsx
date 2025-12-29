@@ -332,6 +332,10 @@ const ModelEditor = forwardRef<ModelEditorRef, ModelEditorProps>((props, ref) =>
                     block
                     value={viewMode}
                     onChange={(e) => {
+                        setFileInfo(null);
+                        setFilePath(null);
+                        setModelData(null);
+                        setModelMetadata(null);
                         setViewMode(e.target.value);
                         localStorage.setItem(ModelEditorViewModeKey, e.target.value.toString());
                     }}
