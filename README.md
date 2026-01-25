@@ -17,7 +17,7 @@ COM3D2)
 
 But it can also be used for [カスタムメイド3D 2](https://www.kisskiss.tv/cm3d2/) (CUSTOM MAID 3D2 / CM3D2)
 
-[KISS](https://www.kisskiss.tv/) is the company/brand that makes these games
+[KISS](https://www.kisskiss.tv/) is the company/brand that makes these games.
 
 <br>
 
@@ -664,6 +664,8 @@ Releasesからダウンロードしてください：[https://github.com/MeidoPr
 <br>
 
 # KISS Rule
+
+[KISS](https://www.kisskiss.tv/) is the company/brand that makes these games.
 
 *This Project is not owned or endorsed by KISS.
 
