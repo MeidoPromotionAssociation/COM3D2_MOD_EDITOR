@@ -1,0 +1,19 @@
+name: Mirror to Codeberg
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  codeberg-mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror to Codeberg
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://github.com/${{ github.repository }}.git"
+          source_branch: "refs/heads/*"
+          destination_repo: "ssh://git@codeberg.org/MeidoPromotionAssociation/COM3D2_MOD_EDITOR.git"
+          destination_branch: "refs/heads/*"
+          ssh_private_key: ${{ secrets.CODEBERG_SSH_KEY }}
