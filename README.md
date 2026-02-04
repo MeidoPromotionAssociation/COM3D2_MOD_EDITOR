@@ -42,7 +42,7 @@ For now, it allows you to edit files in these formats
 - `.model` (JSON only full mode and metadata editing mode)
 - `.nei`
 
-Current Game Version COM3D2 v2.46.3 & COM3D2.5 v3.46.3
+Current Game Version COM3D2 v2.47.0 & COM3D2.5 v3.47.0
 
 | Extension | Description           | Version Support    | Note                                                                                                                                                                           |
 |-----------|-----------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -198,16 +198,15 @@ Releases: [https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR/releas
 
 <br>
 
-### Other Repositories
+### Also check out other repositories
 
-Also check out my other repositories
-
-- [COM3D2 Simple MOD Guide in Chinese](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
 - [COM3D2 MOD Editor](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
-- [COM3D2 Plugin Chinese Translation](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
-- [COM3D2 Chinese Guide by 90135](https://github.com/90135/COM3D2_GUIDE_CHINESE)
-- [COM3D2 Script Collection by 90135](https://github.com/90135/COM3D2_Scripts_901)
-- [COM3D2 Tools](https://github.com/90135/COM3D2_Tools_901)
+- [COM3D2 Batch File Converter tool and Serialization Library](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+- [COM3D2 Simple Chinese MOD Tutorial](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
+- [Another COM3D2 Translation Plugin JAT](https://github.com/MeidoPromotionAssociation/COM3D2.JustAnotherTranslator.Plugin)
+- [90135's COM3D2 Chinese Guide](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [90135's COM3D2 Script Collection](https://github.com/90135/COM3D2_Scripts_901)
+- [90135's COM3D2 Tools](https://github.com/90135/COM3D2_Tools_901)
 
 <br>
 
@@ -265,7 +264,7 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 - `.model` (仅 JSON的完整模式和元数据编辑模式)
 - `.nei`
 
-当前游戏版本 COM3D2 v2.46.3 和 COM3D2.5 v3.46.3
+当前游戏版本 COM3D2 v2.47.0 和 COM3D2.5 v3.47.0
 
 | 扩展名    | 描述        | 版本支持         | 备注                                                                             |
 |--------|-----------|--------------|--------------------------------------------------------------------------------|
@@ -403,11 +402,12 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 
 <br>
 
-### 也可以看看我的其他仓库
+### 也可以看看其他仓库
 
-- [COM3D2 简明 MOD 教程中文](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
 - [COM3D2 MOD 编辑器](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
-- [COM3D2 插件中文翻译](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
+- [COM3D2 文件批量转换器及序列化库](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+- [COM3D2 简明中文 MOD 教程](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
+- [另一个 COM3D2 翻译插件 JAT](https://github.com/MeidoPromotionAssociation/COM3D2.JustAnotherTranslator.Plugin)
 - [90135 的 COM3D2 中文指北](https://github.com/90135/COM3D2_GUIDE_CHINESE)
 - [90135 的 COM3D2 脚本收藏集](https://github.com/90135/COM3D2_Scripts_901)
 - [90135 的 COM3D2 工具](https://github.com/90135/COM3D2_Tools_901)
@@ -468,7 +468,7 @@ KISSはこれらのゲームを制作する会社/ブランドです
 - `.model` (JSONの完全スキーマとメタデータ編集モード)
 - `.nei`
 
-対応ゲームバージョン COM3D2 v2.46.3 および COM3D2.5 v3.46.3
+対応ゲームバージョン COM3D2 v2.47.0 および COM3D2.5 v3.47.0
 
 | 拡張子    | 説明          | 対応バージョン        | 備考                                                                                                                  |
 |--------|-------------|----------------|---------------------------------------------------------------------------------------------------------------------|
@@ -610,14 +610,15 @@ Releasesからダウンロードしてください：[https://github.com/MeidoPr
 
 <br>
 
-### 他の倉庫もぜひご覧ください
+### 他のリポジトリもチェック
 
-- [COM3D2 シンプルMODガイド（中国語）](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
-- [COM3D2 MODエディター](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
-- [COM3D2プラグイン 中国語翻訳](https://github.com/MeidoPromotionAssociation/COM3D2_Plugin_Translate_Chinese)
-- [90135によるCOM3D2中国語ガイド](https://github.com/90135/COM3D2_GUIDE_CHINESE)
-- [90135によるCOM3D2スクリプト集](https://github.com/90135/COM3D2_Scripts_901)
-- [COM3D2ツール](https://github.com/90135/COM3D2_Tools_901)
+- [COM3D2 MODエディタ](https://github.com/MeidoPromotionAssociation/COM3D2_MOD_EDITOR)
+- [COM3D2 バッチファイルコンバータツールおよびシリアル化ライブラリ](https://github.com/MeidoPromotionAssociation/MeidoSerialization)
+- [COM3D2 中国語 MOD チュートリアル](https://github.com/MeidoPromotionAssociation/COM3D2_Simple_MOD_Guide_Chinese)
+- [COM3D2 翻訳プラグイン JAT](https://github.com/MeidoPromotionAssociation/COM3D2.JustAnotherTranslator.Plugin)
+- [90135 の COM3D2 中国語ガイド](https://github.com/90135/COM3D2_GUIDE_CHINESE)
+- [90135 の COM3D2 スクリプトコレクション](https://github.com/90135/COM3D2_Scripts_901)
+- [90135 の COM3D2 ツール](https://github.com/90135/COM3D2_Tools_901)
 
 <br>
 
