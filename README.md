@@ -37,9 +37,9 @@ For now, it allows you to edit files in these formats
 - `.col`
 - `.phy`
 - `.psk`
-- `.tex` (preview & convert only & requires external dependencies)
-- `.anm` (JSON only)
-- `.model` (JSON only full mode and metadata editing mode)
+- `.tex` (Supports preview, conversion, DDS compression; requires external dependencies)
+- `.anm` (JSON editor only)
+- `.model` (full data JSON editor and metadata form editor)
 - `.nei`
 
 Current Game Version COM3D2 v2.47.0 & COM3D2.5 v3.47.0
@@ -259,9 +259,9 @@ COM3D2 MOD 编辑器，使用 Golang + Wails + React + TypeScript 打造，现�
 - `.col`
 - `.phy`
 - `.psk`
-- `.tex` (仅支持预览和转换、需要外部依赖)
-- `.anm` (仅 JSON 格式)
-- `.model` (仅 JSON的完整模式和元数据编辑模式)
+- `.tex` (支持预览、转换、DDS 压缩、需要外部依赖)
+- `.anm` (仅 JSON 编辑器)
+- `.model`(完整数据 JSON 编辑器和元数据表单编辑器)
 - `.nei`
 
 当前游戏版本 COM3D2 v2.47.0 和 COM3D2.5 v3.47.0
@@ -463,9 +463,9 @@ KISSはこれらのゲームを制作する会社/ブランドです
 - `.col`
 - `.phy`
 - `.psk`
-- `.tex` (プレビューと変換のみ対応、外部依存関係が必要)
-- `.anm` (JSON形式のみ)
-- `.model` (JSONの完全スキーマとメタデータ編集モード)
+- `.tex` (プレビュー、変換、DDS圧縮をサポート。外部依存関係が必要)
+- `.anm` (JSONエディターのみ)
+- `.model` (フルデータJSONエディターとメタデータフォームエディター)
 - `.nei`
 
 対応ゲームバージョン COM3D2 v2.47.0 および COM3D2.5 v3.47.0
