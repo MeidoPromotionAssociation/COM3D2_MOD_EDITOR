@@ -63,3 +63,14 @@ type NeiModel struct{}
 
 // Dummy 用于让 wails 识别 nei 对应结构体，需要在签名中使用所有结构体
 func (s *NeiModel) Dummy(COM3D2.Nei) {}
+
+type PresetModel struct{}
+
+// Dummy 用于让 wails 识别 preset 对应结构体，需要在签名中使用所有结构体
+func (s *PresetModel) Dummy(COM3D2.Preset, COM3D2.PresetMetadata, COM3D2.PresetProperty, COM3D2.PresetPropertyList, COM3D2.BoneAttachPosEntry, COM3D2.VtxAttachPosEntry, COM3D2.MatPropSaveEntry, COM3D2.BoneLengthEntry, COM3D2.SubProp, COM3D2.BoneAttachPos, COM3D2.VtxAttachPos, COM3D2.MatPropSave, COM3D2.MultiColor, COM3D2.PartsColor, COM3D2.BodyProperty) {
+}
+
+type ArcModel struct{}
+
+// Dummy 用于让 wails 识别 preset 对应结构体，需要在签名中使用所有结构体
+func (s *ArcModel) Dummy() {}

@@ -140,18 +140,17 @@ func (t *TexService) ConvertAnyToPng(inputPath string) (Base64EncodedPngData str
 			return "", err
 		}
 		return covertTexToImageResult.Base64EncodedImageData, nil
-	} else {
-		err = tools.IsSupportedImageType(inputPath)
-		if err != nil {
-			return "", err
-		}
-
-		imageData, err := tools.ConvertImageToPng(inputPath)
-		if err != nil {
-			return "", err
-		}
-		return base64.StdEncoding.EncodeToString(imageData), nil
 	}
+	err = tools.IsSupportedImageType(inputPath)
+	if err != nil {
+		return "", err
+	}
+
+	imageData, err := tools.ConvertImageToPng(inputPath)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(imageData), nil
 }
 
 // ConvertAnyToAnyAndWrite 任意 ImageMagick 支持的格式和 .tex 转换为任意 ImageMagick 支持的格式，并写出
@@ -167,31 +166,31 @@ func (t *TexService) ConvertAnyToPng(inputPath string) (Base64EncodedPngData str
 func (t *TexService) ConvertAnyToAnyAndWrite(inputPath string, texName string, compress bool, forcePNG bool, outputPath string) error {
 	if strings.HasSuffix(strings.ToLower(inputPath), ".tex") {
 		return t.ConvertTexToImageAndWrite(inputPath, outputPath, forcePNG)
-	} else {
-		if strings.HasSuffix(strings.ToLower(outputPath), ".tex") {
-			err := t.ConvertImageToTexAndWrite(inputPath, texName, compress, forcePNG, outputPath)
-			if err != nil {
-				return err
-			}
-			return nil
-		}
+	}
 
-		err := tools.IsSupportedImageType(inputPath)
+	if strings.HasSuffix(strings.ToLower(outputPath), ".tex") {
+		err := t.ConvertImageToTexAndWrite(inputPath, texName, compress, forcePNG, outputPath)
 		if err != nil {
 			return err
 		}
-
-		if forcePNG || filepath.Ext(outputPath) == "" {
-			outputPath = strings.TrimSuffix(outputPath, filepath.Ext(outputPath)) + ".png"
-		}
-
-		err = tools.ConvertImageToImageAndWrite(inputPath, outputPath)
-		if err != nil {
-			return err
-		}
-
 		return nil
 	}
+
+	err := tools.IsSupportedImageType(inputPath)
+	if err != nil {
+		return err
+	}
+
+	if forcePNG || filepath.Ext(outputPath) == "" {
+		outputPath = strings.TrimSuffix(outputPath, filepath.Ext(outputPath)) + ".png"
+	}
+
+	err = tools.ConvertImageToImageAndWrite(inputPath, outputPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // CheckImageMagick 检查是否安装了 ImageMagick

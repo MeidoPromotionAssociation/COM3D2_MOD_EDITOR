@@ -2,6 +2,8 @@ package COM3D2
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/MeidoPromotionAssociation/MeidoSerialization/serialization/COM3D2/arc"
@@ -11,17 +13,49 @@ type ArcService struct{}
 
 // NewArc 创建一个空的 Arc 结构体
 func (a *ArcService) NewArc(name string) *arc.Arc {
-	return arc.New(name)
+	if name == "" {
+		name = "root"
+	}
+	return arc.NewArc(name)
 }
 
 // ReadArc 读取 .arc 文件并返回对应结构体
+// arc 数据将被完整读入内存，请注意占用
 func (a *ArcService) ReadArc(path string) (*arc.Arc, error) {
-	return arc.ReadArc(path)
+	arcFs, err := arc.ReadArcFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("parsing the .arc file failed: %w", err)
+	}
+
+	return arcFs, nil
+}
+
+// ReadArcLazy 读取 .arc 文件并返回对应结构体
+// 不会将所有数据都读入内存，而是在需要时从文件读取
+// 因此读取完成后，调用者必须关闭返回的 io.Closer
+func (a *ArcService) ReadArcLazy(path string) (*arc.Arc, io.Closer, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, nil, fmt.Errorf("cannot open .arc file: %w", err)
+	}
+
+	arcFs, err := arc.ReadArc(f)
+	if err != nil {
+		_ = f.Close()
+		return nil, nil, fmt.Errorf("parsing the .arc file failed: %w", err)
+	}
+
+	return arcFs, f, nil
 }
 
 // UnpackArc 将 .arc 文件解压到指定文件夹
 func (a *ArcService) UnpackArc(path string, outDir string) error {
-	return arc.UnpackArc(path, outDir)
+	fs, closer, err := a.ReadArcLazy(path)
+	if err != nil {
+		return err
+	}
+	defer closer.Close()
+	return fs.Unpack(outDir)
 }
 
 // PackArc 将文件夹打包为 .arc 文件
@@ -41,12 +75,12 @@ func (a *ArcService) GetFileList(fs *arc.Arc) []string {
 }
 
 // CopyFile 在 Arc 内部复制文件
-func (a *ArcService) CopyFile(fs *arc.Arc, srcPath, dstPath string) error {
+func (a *ArcService) CopyFile(fs *arc.Arc, srcPath string, dstPath string) error {
 	return fs.CopyFile(srcPath, dstPath)
 }
 
 // ExtractFile 从 Arc 中提取单个文件
-func (a *ArcService) ExtractFile(fs *arc.Arc, path, outPath string) error {
+func (a *ArcService) ExtractFile(fs *arc.Arc, path string, outPath string) error {
 	f := fs.GetFile(path)
 	if f == nil {
 		return fmt.Errorf("file not found: %s", path)
@@ -70,6 +104,7 @@ func (a *ArcService) ExtractFiles(fs *arc.Arc, paths []string, outDir string) er
 }
 
 // CreateFile 在 Arc 中创建或更新文件
+// 在目录树中，相对于给定的父目录，在指定路径处创建一个文件节点。
 func (a *ArcService) CreateFile(fs *arc.Arc, path string, data []byte) error {
 	f := fs.CreateFile(path, data)
 	if f == nil {
