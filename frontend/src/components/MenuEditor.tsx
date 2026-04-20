@@ -587,80 +587,115 @@ const MenuEditor = forwardRef<MenuEditorRef, MenuEditorProps>((props, ref) => {
                                     key: '1',
                                     label: t('MenuEditor.file_header.file_head_usually_no_modify_required'),
                                     children: <>
-                                        <Space direction="vertical" style={{width: '100%'}}>
+                                        <Space orientation={"vertical"} style={{width: '100%'}}>
                                             <Space style={{width: '100%'}}>
-                                                <Input addonBefore={t('MenuEditor.file_header.Signature')}
-                                                       value={signature}
-                                                       disabled={isInputDisabled || displayFormat === "JSON"}
-                                                       onChange={(e) => setSignature(e.target.value)}/>
-                                                <Input addonBefore={t('MenuEditor.file_header.BodySize')}
-                                                       value={bodySize}
-                                                       disabled={isInputDisabled || displayFormat === "JSON"}
-                                                       onChange={(e) => setBodySize(parseInt(e.target.value, 10))}/>
-                                                <Input addonBefore={t('MenuEditor.file_header.Version')}
-                                                       value={version}
-                                                       disabled={isInputDisabled || displayFormat === "JSON"}
-                                                       type="number"
-                                                       onChange={(e) => setVersion(parseInt(e.target.value, 10))}/>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={(isInputDisabled || displayFormat === "JSON") ? 'space-addon-disabled' : ''}>
+                                                        {t('MenuEditor.file_header.Signature')}
+                                                    </Space.Addon>
+                                                    <Input value={signature}
+                                                           disabled={isInputDisabled || displayFormat === "JSON"}
+                                                           onChange={(e) => setSignature(e.target.value)}/>
+                                                </Space.Compact>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={(isInputDisabled || displayFormat === "JSON") ? 'space-addon-disabled' : ''}>
+                                                        {t('MenuEditor.file_header.BodySize')}
+                                                    </Space.Addon>
+                                                    <Input value={bodySize}
+                                                           disabled={isInputDisabled || displayFormat === "JSON"}
+                                                           onChange={(e) => setBodySize(parseInt(e.target.value, 10))}/>
+                                                </Space.Compact>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={(isInputDisabled || displayFormat === "JSON") ? 'space-addon-disabled' : ''}>
+                                                        {t('MenuEditor.file_header.Version')}
+                                                    </Space.Addon>
+                                                    <Input value={version}
+                                                           disabled={isInputDisabled || displayFormat === "JSON"}
+                                                           type="number"
+                                                           onChange={(e) => setVersion(parseInt(e.target.value, 10))}/>
+                                                </Space.Compact>
                                                 <Checkbox checked={!isInputDisabled}
                                                           disabled={displayFormat === "JSON"}
                                                           onChange={handleCheckboxChange}>{t('MenuEditor.file_header.enable_edit_do_not_edit')}</Checkbox>
                                             </Space>
 
 
-                                            <Space direction="vertical" style={{width: '100%'}}>
-                                                <Input addonBefore={<span style={{
-                                                    width: '15vw',
-                                                    display: 'inline-block',
-                                                    textAlign: 'left'
-                                                }}>{t('MenuEditor.file_header.SrcFileName')}</span>}
-                                                       value={srcFileName}
-                                                       disabled={displayFormat === "JSON"}
-                                                       onChange={(e) => setSrcFileName(e.target.value)}
-                                                       suffix={
-                                                           <Tooltip title={t('MenuEditor.file_header.SrcFileName_tip')}>
-                                                               <QuestionCircleOutlined/>
-                                                           </Tooltip>
-                                                       }/>
-                                                <Input addonBefore={<span style={{
-                                                    width: '15vw',
-                                                    display: 'inline-block',
-                                                    textAlign: 'left'
-                                                }}>{t('MenuEditor.file_header.ItemName')}</span>}
-                                                       value={itemName}
-                                                       disabled={displayFormat === "JSON"}
-                                                       onChange={(e) => setItemName(e.target.value)}
-                                                       suffix={
-                                                           <Tooltip title={t('MenuEditor.file_header.ItemName_tip')}>
-                                                               <QuestionCircleOutlined/>
-                                                           </Tooltip>
-                                                       }/>
-                                                <Input addonBefore={<span style={{
-                                                    width: '15vw',
-                                                    display: 'inline-block',
-                                                    textAlign: 'left'
-                                                }}>{t('MenuEditor.file_header.Category')}</span>}
-                                                       value={category}
-                                                       disabled={displayFormat === "JSON"}
-                                                       onChange={(e) => setCategory(e.target.value)}
-                                                       suffix={
-                                                           <Tooltip title={t('MenuEditor.file_header.Category_tip')}>
-                                                               <QuestionCircleOutlined/>
-                                                           </Tooltip>
-                                                       }/>
-                                                <Input addonBefore={<span style={{
-                                                    width: '15vw',
-                                                    display: 'inline-block',
-                                                    textAlign: 'left'
-                                                }}>{t('MenuEditor.file_header.SetInfoText')}</span>}
-                                                       value={infoText}
-                                                       disabled={displayFormat === "JSON"}
-                                                       onChange={(e) => setInfoText(e.target.value)}
-                                                       suffix={
-                                                           <Tooltip title={t('MenuEditor.file_header.SetInfoText_tip')}>
-                                                               <QuestionCircleOutlined/>
-                                                           </Tooltip>
-                                                       }/>
+                                            <Space orientation={"vertical"} style={{width: '100%'}}>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={displayFormat === "JSON" ? 'space-addon-disabled' : ''}>
+                                                        <span style={{
+                                                            width: '15vw',
+                                                            display: 'inline-block',
+                                                            textAlign: 'left'
+                                                        }}>{t('MenuEditor.file_header.SrcFileName')}</span>
+                                                    </Space.Addon>
+                                                    <Input value={srcFileName}
+                                                           disabled={displayFormat === "JSON"}
+                                                           onChange={(e) => setSrcFileName(e.target.value)}
+                                                           suffix={
+                                                               <Tooltip title={t('MenuEditor.file_header.SrcFileName_tip')}>
+                                                                   <QuestionCircleOutlined/>
+                                                               </Tooltip>
+                                                           }/>
+                                                </Space.Compact>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={displayFormat === "JSON" ? 'space-addon-disabled' : ''}>
+                                                        <span style={{
+                                                            width: '15vw',
+                                                            display: 'inline-block',
+                                                            textAlign: 'left'
+                                                        }}>{t('MenuEditor.file_header.ItemName')}</span>
+                                                    </Space.Addon>
+                                                    <Input value={itemName}
+                                                           disabled={displayFormat === "JSON"}
+                                                           onChange={(e) => setItemName(e.target.value)}
+                                                           suffix={
+                                                               <Tooltip title={t('MenuEditor.file_header.ItemName_tip')}>
+                                                                   <QuestionCircleOutlined/>
+                                                               </Tooltip>
+                                                           }/>
+                                                </Space.Compact>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={displayFormat === "JSON" ? 'space-addon-disabled' : ''}>
+                                                        <span style={{
+                                                            width: '15vw',
+                                                            display: 'inline-block',
+                                                            textAlign: 'left'
+                                                        }}>{t('MenuEditor.file_header.Category')}</span>
+                                                    </Space.Addon>
+                                                    <Input value={category}
+                                                           disabled={displayFormat === "JSON"}
+                                                           onChange={(e) => setCategory(e.target.value)}
+                                                           suffix={
+                                                               <Tooltip title={t('MenuEditor.file_header.Category_tip')}>
+                                                                   <QuestionCircleOutlined/>
+                                                               </Tooltip>
+                                                           }/>
+                                                </Space.Compact>
+                                                <Space.Compact block>
+                                                    <Space.Addon
+                                                        className={displayFormat === "JSON" ? 'space-addon-disabled' : ''}>
+                                                        <span style={{
+                                                            width: '15vw',
+                                                            display: 'inline-block',
+                                                            textAlign: 'left'
+                                                        }}>{t('MenuEditor.file_header.SetInfoText')}</span>
+                                                    </Space.Addon>
+                                                    <Input value={infoText}
+                                                           disabled={displayFormat === "JSON"}
+                                                           onChange={(e) => setInfoText(e.target.value)}
+                                                           suffix={
+                                                               <Tooltip title={t('MenuEditor.file_header.SetInfoText_tip')}>
+                                                                   <QuestionCircleOutlined/>
+                                                               </Tooltip>
+                                                           }/>
+                                                </Space.Compact>
                                             </Space>
                                         </Space>
                                     </>

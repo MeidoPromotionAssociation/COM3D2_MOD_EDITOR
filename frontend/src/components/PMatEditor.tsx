@@ -266,37 +266,49 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
                                 key: "1",
                                 label: t("PMatEditor.file_header.file_head"),
                                 children: (
-                                    <Space direction="vertical" style={{width: "100%"}}>
+                                    <Space>
                                         <Space style={{width: "100%"}}>
-                                            <Input
-                                                addonBefore={t("PMatEditor.file_header.Signature")}
-                                                value={signature}
-                                                disabled={isInputDisabled}
-                                                onChange={(e) => setSignature(e.target.value)}
-                                                style={{width: 220}}
-                                            />
-                                            <Input
-                                                addonBefore={t("PMatEditor.file_header.Version")}
-                                                value={version}
-                                                disabled={isInputDisabled}
-                                                type="number"
-                                                onChange={(e) => setVersion(parseInt(e.target.value, 10))}
-                                                style={{width: 220}}
-                                            />
-                                            <Input
-                                                addonBefore={t("PMatEditor.file_header.Hash")}
-                                                value={hash}
-                                                disabled={isInputDisabled}
-                                                type="number"
-                                                onChange={(e) => setHash(parseInt(e.target.value, 10))}
-                                                style={{width: 220}}
-                                                suffix={
-                                                    <Tooltip title={t("PMatEditor.file_header.Hash_tip")}>
-                                                        <QuestionCircleOutlined/>
-                                                    </Tooltip>
-                                                }
-                                            />
+                                            <Space.Compact block>
+                                                <Space.Addon className={isInputDisabled ? 'space-addon-disabled' : ''}>
+                                                    {t("PMatEditor.file_header.Signature")}
+                                                </Space.Addon>
+                                                <Input
+                                                    value={signature}
+                                                    disabled={isInputDisabled}
+                                                    onChange={(e) => setSignature(e.target.value)}
+                                                    style={{width: 220}}
+                                                />
+                                            </Space.Compact>
+                                            <Space.Compact block>
+                                                <Space.Addon className={isInputDisabled ? 'space-addon-disabled' : ''}>
+                                                    {t("PMatEditor.file_header.Version")}
+                                                </Space.Addon>
+                                                <Input
+                                                    value={version}
+                                                    disabled={isInputDisabled}
+                                                    type="number"
+                                                    onChange={(e) => setVersion(parseInt(e.target.value, 10))}
+                                                    style={{width: 220}}
+                                                />
+                                            </Space.Compact>
 
+                                            <Space.Compact block>
+                                                <Space.Addon className={isInputDisabled ? 'space-addon-disabled' : ''}>
+                                                    {t("PMatEditor.file_header.Hash")}
+                                                </Space.Addon>
+                                                <Input
+                                                    value={hash}
+                                                    disabled={isInputDisabled}
+                                                    type="number"
+                                                    onChange={(e) => setHash(parseInt(e.target.value, 10))}
+                                                    style={{width: 220}}
+                                                    suffix={
+                                                        <Tooltip title={t("PMatEditor.file_header.Hash_tip")}>
+                                                            <QuestionCircleOutlined/>
+                                                        </Tooltip>
+                                                    }
+                                                />
+                                            </Space.Compact>
                                             <Checkbox
                                                 checked={!isInputDisabled}
                                                 onChange={onEnableReadonlyFieldsChange}
@@ -316,9 +328,9 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
                         <Collapse.Panel key='editor' header={t('PMatEditor.file_body')}>
                             {/* 其他可编辑字段 */}
                             <div style={{marginTop: 10}}>
-                                <Space direction="vertical" style={{width: "100%"}}>
-                                    <Input
-                                        addonBefore={
+                                <Space orientation={"vertical"} style={{width: "100%"}}>
+                                    <Space.Compact block>
+                                        <Space.Addon>
                                             <span
                                                 style={{
                                                     width: "15vw",
@@ -326,19 +338,20 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
                                                     textAlign: "left",
                                                 }}
                                             >
-                                        {t("PMatEditor.materialName")}
-                                    </span>
-                                        }
-                                        value={materialName}
-                                        onChange={(e) => setMaterialName(e.target.value)}
-                                        suffix={
-                                            <Tooltip title={t("PMatEditor.materialName_tip")}>
-                                                <QuestionCircleOutlined/>
-                                            </Tooltip>
-                                        }
-                                    />
-                                    <Input
-                                        addonBefore={
+                                                {t("PMatEditor.materialName")}
+                                            </span>
+                                        </Space.Addon>
+                                        <Input
+                                            value={materialName}
+                                            onChange={(e) => setMaterialName(e.target.value)}
+                                            suffix={
+                                                <Tooltip title={t("PMatEditor.materialName_tip")}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Space.Compact>
+                                    <Space.Compact block>
+                                        <Space.Addon>
                                             <span
                                                 style={{
                                                     width: "15vw",
@@ -346,21 +359,22 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
                                                     textAlign: "left",
                                                 }}
                                             >
-                                        {t("PMatEditor.renderQueue")}
-                                    </span>
-                                        }
-                                        type="number"
-                                        min={0}
-                                        value={renderQueue}
-                                        onChange={(e) => setRenderQueue(parseFloat(e.target.value))}
-                                        suffix={
-                                            <Tooltip title={t("PMatEditor.renderQueue_tip")}>
-                                                <QuestionCircleOutlined/>
-                                            </Tooltip>
-                                        }
-                                    />
-                                    <Input
-                                        addonBefore={
+                                                {t("PMatEditor.renderQueue")}
+                                            </span>
+                                        </Space.Addon>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            value={renderQueue}
+                                            onChange={(e) => setRenderQueue(parseFloat(e.target.value))}
+                                            suffix={
+                                                <Tooltip title={t("PMatEditor.renderQueue_tip")}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Space.Compact>
+                                    <Space.Compact block>
+                                        <Space.Addon>
                                             <span
                                                 style={{
                                                     width: "15vw",
@@ -368,17 +382,18 @@ const PMatEditor = forwardRef<PMatEditorRef, PMatEditorProps>((props, ref) => {
                                                     textAlign: "left",
                                                 }}
                                             >
-                                        {t("PMatEditor.shaderName")}
-                                    </span>
-                                        }
-                                        value={shader}
-                                        onChange={(e) => setShader(e.target.value)}
-                                        suffix={
-                                            <Tooltip title={t("PMatEditor.shaderName_tip")}>
-                                                <QuestionCircleOutlined/>
-                                            </Tooltip>
-                                        }
-                                    />
+                                                {t("PMatEditor.shaderName")}
+                                            </span>
+                                        </Space.Addon>
+                                        <Input
+                                            value={shader}
+                                            onChange={(e) => setShader(e.target.value)}
+                                            suffix={
+                                                <Tooltip title={t("PMatEditor.shaderName_tip")}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Space.Compact>
                                 </Space>
                             </div>
                         </Collapse.Panel>

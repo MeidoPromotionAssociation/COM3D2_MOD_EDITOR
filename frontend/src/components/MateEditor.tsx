@@ -1,18 +1,5 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
-import {
-    Button,
-    Checkbox,
-    Collapse,
-    ConfigProvider,
-    Form,
-    Input,
-    InputNumber,
-    message,
-    Modal,
-    Radio,
-    Space,
-    Tooltip
-} from 'antd';
+import {Button, Checkbox, Collapse, ConfigProvider, Form, Input, message, Modal, Radio, Space, Tooltip} from 'antd';
 import {WindowSetTitle} from '../../wailsjs/runtime';
 import {COM3D2} from '../../wailsjs/go/models';
 import {SelectPathToSave} from '../../wailsjs/go/main/App';
@@ -563,17 +550,29 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                     <Collapse defaultActiveKey={['basic']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.file_head')}>
                             <Space>
-                                <Form.Item name="signature" initialValue={COM3D2HeaderConstants.MateSignature}>
-                                    <Input
-                                        disabled={!isSignatureEditable}
-                                        addonBefore={t('MateEditor.file_header.Signature')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!isSignatureEditable ? 'space-addon-disabled' : ''}>
+                                            {t('MateEditor.file_header.Signature')}
+                                        </Space.Addon>
+                                        <Form.Item name="signature"
+                                                   initialValue={COM3D2HeaderConstants.MateSignature}
+                                                   noStyle>
+                                            <Input disabled={!isSignatureEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
-                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.MateVersion.toString()}>
-                                    <InputNumber
-                                        disabled={!isSignatureEditable}
-                                        addonBefore={t('MateEditor.file_header.Version')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!isSignatureEditable ? 'space-addon-disabled' : ''}>
+                                            {t('MateEditor.file_header.Version')}
+                                        </Space.Addon>
+                                        <Form.Item name="version"
+                                                   initialValue={COM3D2HeaderConstants.MateVersion.toString()}
+                                                   noStyle>
+                                            <Input disabled={!isSignatureEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox
@@ -586,65 +585,82 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                                 </Form.Item>
                             </Space>
 
-                            <Form.Item name="name">
-                                <Input
-                                    disabled={viewMode === 3}
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon className={viewMode === 3 ? 'space-addon-disabled' : ''}>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('MateEditor.file_header.Name')}
                                         </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Name_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                    </Space.Addon>
+                                    <Form.Item name="name" noStyle>
+                                        <Input
+                                            disabled={viewMode === 3}
+                                            suffix={
+                                                <Tooltip title={t('MateEditor.file_header.Name_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name="materialName">
-                                <Input
-                                    disabled={viewMode === 3}
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon className={viewMode === 3 ? 'space-addon-disabled' : ''}>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('MateEditor.file_header.Material_Name')}
                                         </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                    </Space.Addon>
+                                    <Form.Item name="materialName" noStyle>
+                                        <Input
+                                            disabled={viewMode === 3}
+                                            suffix={
+                                                <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name="shaderName">
-                                <Input
-                                    disabled={viewMode === 3}
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon className={viewMode === 3 ? 'space-addon-disabled' : ''}>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                      {t('MateEditor.file_header.Material_ShaderName')}
-                    </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Material_ShaderName_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                            {t('MateEditor.file_header.Material_ShaderName')}
+                                        </span>
+                                    </Space.Addon>
+                                    <Form.Item name="shaderName" noStyle>
+                                        <Input
+                                            disabled={viewMode === 3}
+                                            suffix={
+                                                <Tooltip title={t('MateEditor.file_header.Material_ShaderName_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name="shaderFilename">
-                                <Input
-                                    disabled={viewMode === 3}
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon className={viewMode === 3 ? 'space-addon-disabled' : ''}>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                      {t('MateEditor.file_header.Material_ShaderFilename')}
-                    </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Material_ShaderFilename_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                            {t('MateEditor.file_header.Material_ShaderFilename')}
+                                        </span>
+                                    </Space.Addon>
+                                    <Form.Item name="shaderFilename" noStyle>
+                                        <Input
+                                            disabled={viewMode === 3}
+                                            suffix={
+                                                <Tooltip
+                                                    title={t('MateEditor.file_header.Material_ShaderFilename_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                         </Collapse.Panel>
                     </Collapse>

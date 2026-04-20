@@ -431,18 +431,29 @@ const PskEditor = forwardRef<PskEditorRef, PskEditorProps>((props, ref) => {
                     <Collapse>
                         <Collapse.Panel header={t('PskEditor.file_header.file_head')} key="basic">
                             <Space>
-                                <Form.Item name="signature"
-                                           initialValue={COM3D2HeaderConstants.PskSignature}>
-                                    <Input
-                                        disabled={!headerEditable}
-                                        addonBefore={t('PskEditor.file_header.Signature')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!headerEditable ? 'space-addon-disabled' : ''}>
+                                            {t('PskEditor.file_header.Signature')}
+                                        </Space.Addon>
+                                        <Form.Item name="signature"
+                                                   initialValue={COM3D2HeaderConstants.PskSignature}
+                                                   noStyle>
+                                            <Input disabled={!headerEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
-                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.PskVersion}>
-                                    <Input
-                                        disabled={!headerEditable}
-                                        addonBefore={t('PskEditor.file_header.Version')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!headerEditable ? 'space-addon-disabled' : ''}>
+                                            {t('PskEditor.file_header.Version')}
+                                        </Space.Addon>
+                                        <Form.Item name="version"
+                                                   initialValue={COM3D2HeaderConstants.PskVersion}
+                                                   noStyle>
+                                            <Input disabled={!headerEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox

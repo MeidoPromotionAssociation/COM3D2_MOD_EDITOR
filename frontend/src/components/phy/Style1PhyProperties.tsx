@@ -1,6 +1,19 @@
 // 新建文件
 import React from "react";
-import {Button, Collapse, Flex, Form, FormInstance, Input, InputNumber, Radio, Select, Table, Tooltip} from "antd";
+import {
+    Button,
+    Collapse,
+    Flex,
+    Form,
+    FormInstance,
+    Input,
+    InputNumber,
+    Radio,
+    Select,
+    Space,
+    Table,
+    Tooltip
+} from "antd";
 import {DeleteOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import KeyframeEditorWithTable from "../common/KeyframeEditorWithTable";
 import {COM3D2} from "../../../wailsjs/go/models";
@@ -56,7 +69,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                     <Flex gap="small">
                         <Form.Item label={t('PhyEditor.PartialMode')} name={enablePartialName}>
                             <Select
-                                dropdownStyle={{textAlign: 'left'}}
+                                styles={{popup: {root: {textAlign: 'left'}}}}
                                 options={[
                                     {label: t('PhyEditor.PartialMode_StaticOrCurve'), value: PartialMode_StaticOrCurve},
                                     {label: t('PhyEditor.PartialMode_Partial'), value: PartialMode_Partial},
@@ -271,7 +284,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
 
                 <Flex gap="small">
                     <Form.Item label={t('PhyEditor.EndLength')} name="endLength" initialValue={0}>
-                        <InputNumber style={{width: 205}}/>
+                        <InputNumber style={{width: 195}}/>
                     </Form.Item>
                     <Form.Item>
                         <Tooltip title={t('PhyEditor.EndLength_tip')}>
@@ -282,20 +295,38 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
 
                 <Form.Item label={t('PhyEditor.EndOffset')}>
                     <Flex gap="middle">
-                        <Form.Item name="endOffsetX" initialValue={0}>
-                            <InputNumber
-                                addonBefore="X"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    X
+                                </Space.Addon>
+                                <Form.Item name="endOffsetX" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
-                        <Form.Item name="endOffsetY" initialValue={0}>
-                            <InputNumber
-                                addonBefore="Y"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    Y
+                                </Space.Addon>
+                                <Form.Item name="endOffsetY" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
-                        <Form.Item name="endOffsetZ" initialValue={0}>
-                            <InputNumber
-                                addonBefore="Z"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    Z
+                                </Space.Addon>
+                                <Form.Item name="endOffsetZ" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
                         <Form.Item>
                             <Tooltip title={t('PhyEditor.EndOffset_tip')}>
@@ -308,20 +339,38 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
 
                 <Form.Item label={t('PhyEditor.Gravity')}>
                     <Flex gap="middle">
-                        <Form.Item name="gravityX" initialValue={0}>
-                            <InputNumber
-                                addonBefore="X"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    X
+                                </Space.Addon>
+                                <Form.Item name="gravityX" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
-                        <Form.Item name="gravityY" initialValue={0}>
-                            <InputNumber
-                                addonBefore="Y"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    Y
+                                </Space.Addon>
+                                <Form.Item name="gravityY" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
-                        <Form.Item name="gravityZ" initialValue={0}>
-                            <InputNumber
-                                addonBefore="Z"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    Z
+                                </Space.Addon>
+                                <Form.Item name="gravityZ" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
                         <Form.Item>
                             <Tooltip title={t('PhyEditor.Gravity_tip')}>
@@ -334,20 +383,38 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
 
                 <Form.Item label={t('PhyEditor.Force')}>
                     <Flex gap="middle">
-                        <Form.Item name="forceX" initialValue={0}>
-                            <InputNumber
-                                addonBefore="X"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    X
+                                </Space.Addon>
+                                <Form.Item name="forceX" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
-                        <Form.Item name="forceY" initialValue={-0.01}>
-                            <InputNumber
-                                addonBefore="Y"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    Y
+                                </Space.Addon>
+                                <Form.Item name="forceY" initialValue={-0.01} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
-                        <Form.Item name="forceZ" initialValue={0}>
-                            <InputNumber
-                                addonBefore="Z"
-                                style={{width: "100%"}} step={0.01}/>
+                        <Form.Item>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    Z
+                                </Space.Addon>
+                                <Form.Item name="forceZ" initialValue={0} noStyle>
+                                    <InputNumber
+                                        style={{width: "100%"}} step={0.01}/>
+                                </Form.Item>
+                            </Space.Compact>
                         </Form.Item>
                         <Form.Item>
                             <Tooltip title={t('PhyEditor.Force_tip')}>
@@ -360,7 +427,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
 
                 <Flex gap="small">
                     <Form.Item label={t('PhyEditor.ColliderFileName')} name="colliderFileName">
-                        <Input style={{width: 205}}/>
+                        <Input style={{width: 195}}/>
                     </Form.Item>
                     <Form.Item>
                         <Tooltip title={t('PhyEditor.ColliderFileName_tip')}>
@@ -371,7 +438,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
 
                 <Flex gap="small">
                     <Form.Item label={t('PhyEditor.ColliderCount')} name="collidersCount">
-                        <InputNumber style={{width: 205}}/>
+                        <InputNumber style={{width: 195}}/>
                     </Form.Item>
                     <Button
                         onClick={handleAutoCalculateColliders}
@@ -389,7 +456,7 @@ const Style1PhyProperties: React.FC<Style1PhyPropertiesProps> = ({
                 <Flex gap="small">
                     <Form.Item label={t('PhyEditor.ExclusionsCount')} name="exclusionsCount"
                                initialValue={0}>
-                        <InputNumber style={{width: 205}}/>
+                        <InputNumber style={{width: 195}}/>
                     </Form.Item>
                     <Form.Item>
                         <Tooltip title={t('PhyEditor.ExclusionsCount_tip')}>

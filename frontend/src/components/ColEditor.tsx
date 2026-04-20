@@ -416,18 +416,29 @@ const ColEditor = forwardRef<ColEditorRef, ColEditorProps>((props, ref) => {
                     <Collapse>
                         <Collapse.Panel header={t('ColEditor.file_header.file_head')} key="basic">
                             <Space>
-                                <Form.Item name="signature"
-                                           initialValue={COM3D2HeaderConstants.ColSignature.toString()}>
-                                    <Input
-                                        disabled={!headerEditable}
-                                        addonBefore={t('ColEditor.file_header.Signature')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!headerEditable ? 'space-addon-disabled' : ''}>
+                                            {t('ColEditor.file_header.Signature')}
+                                        </Space.Addon>
+                                        <Form.Item name="signature"
+                                                   initialValue={COM3D2HeaderConstants.ColSignature.toString()}
+                                                   noStyle>
+                                            <Input disabled={!headerEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
-                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.ColVersion.toString()}>
-                                    <Input
-                                        disabled={!headerEditable}
-                                        addonBefore={t('ColEditor.file_header.Version')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!headerEditable ? 'space-addon-disabled' : ''}>
+                                            {t('ColEditor.file_header.Version')}
+                                        </Space.Addon>
+                                        <Form.Item name="version"
+                                                   initialValue={COM3D2HeaderConstants.ColVersion.toString()}
+                                                   noStyle>
+                                            <Input disabled={!headerEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox

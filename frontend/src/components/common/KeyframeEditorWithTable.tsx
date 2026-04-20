@@ -560,34 +560,42 @@ const KeyframeEditorWithTable = ({
                             gap: 8,
                             marginLeft: 'auto' // 输入框容器右对齐
                         }}>
-                            <InputNumber
-                                size='small'
-                                style={{width: '100px'}}
-                                value={dimensions.width}
-                                onChange={(value) => {
-                                    const newWidth = Number(value) || 600;
-                                    setDimensions((prev: any) => ({...prev, width: newWidth}));
-                                    localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
-                                        ...dimensions,
-                                        width: newWidth
-                                    }));
-                                }}
-                                addonBefore={t('Common.width')}
-                            />
-                            <InputNumber
-                                size='small'
-                                style={{width: '100px'}}
-                                value={dimensions.height}
-                                onChange={(value) => {
-                                    const newHeight = Number(value) || 300;
-                                    setDimensions((prev: any) => ({...prev, height: newHeight}));
-                                    localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
-                                        ...dimensions,
-                                        height: newHeight
-                                    }));
-                                }}
-                                addonBefore={t('Common.height')}
-                            />
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    {t('Common.width')}
+                                </Space.Addon>
+                                <InputNumber
+                                    size='small'
+                                    style={{width: '100px'}}
+                                    value={dimensions.width}
+                                    onChange={(value) => {
+                                        const newWidth = Number(value) || 600;
+                                        setDimensions((prev: any) => ({...prev, width: newWidth}));
+                                        localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
+                                            ...dimensions,
+                                            width: newWidth
+                                        }));
+                                    }}
+                                />
+                            </Space.Compact>
+                            <Space.Compact block>
+                                <Space.Addon>
+                                    {t('Common.height')}
+                                </Space.Addon>
+                                <InputNumber
+                                    size='small'
+                                    style={{width: '100px'}}
+                                    value={dimensions.height}
+                                    onChange={(value) => {
+                                        const newHeight = Number(value) || 300;
+                                        setDimensions((prev: any) => ({...prev, height: newHeight}));
+                                        localStorage.setItem(KeyframeEditorCanvasSizeKey, JSON.stringify({
+                                            ...dimensions,
+                                            height: newHeight
+                                        }));
+                                    }}
+                                />
+                            </Space.Compact>
                         </div>
                     </div>
 

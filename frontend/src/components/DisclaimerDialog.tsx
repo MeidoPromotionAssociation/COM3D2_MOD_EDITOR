@@ -59,7 +59,7 @@ const DisclaimerDialog: React.FC<DisclaimerDialogProps> = ({onAgree, visible}) =
             title={t('Disclaimer.title')}
             open={visible}
             closable={false}
-            maskClosable={false}
+            mask={{closable: false}}
             width="80vw"
             footer={[
                 <Button key="cancel" onClick={() => {

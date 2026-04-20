@@ -206,17 +206,21 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
                 textAlign: "right",
             }
             }>
-                <Space direction="horizontal" style={{marginBottom: 16}}>
+                <Space orientation={"horizontal"} style={{marginBottom: 16}}>
+
 
                     <Tooltip title={t('TexEditor.default_format_tip')}>
-                        <Input
-
-                            addonBefore={t('TexEditor.default_format')}
-                            defaultValue=".png"
-                            value={defaultFormat}
-                            onChange={e => setDefaultFormat(e.target.value.replace(/[^a-zA-Z.0-9]/g, '').toLowerCase())}
-                            style={{width: '180px'}}
-                        />
+                        <Space.Compact block>
+                            <Space.Addon>
+                                {t('TexEditor.default_format')}
+                            </Space.Addon>
+                            <Input
+                                defaultValue=".png"
+                                value={defaultFormat}
+                                onChange={e => setDefaultFormat(e.target.value.replace(/[^a-zA-Z.0-9]/g, '').toLowerCase())}
+                                style={{width: '180px'}}
+                            />
+                        </Space.Compact>
                     </Tooltip>
 
                     <Tooltip title={t("TexEditor.force_png_tip")}>
@@ -317,7 +321,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
 
                                 {!isImageMagickInstalled ? (
                                     <>
-                                        <Space direction="vertical" size="middle" style={{width: '100%'}}>
+                                        <Space orientation={"vertical"} size="middle" style={{width: '100%'}}>
                                             <h1>{t("TexEditor.no_ImageMagick")}</h1>
                                             <div>{t("TexEditor.ImageMagick_tip")}</div>
                                             <div>{t("TexEditor.ImageMagick_download_tip")}</div>
@@ -334,7 +338,7 @@ const TexEditor = forwardRef<TexEditorRef, TexEditorProps>((props, ref) => {
                                     </>
                                 ) : (
                                     <>
-                                        <Space direction="vertical" size="middle" style={{width: '100%'}}>
+                                        <Space orientation={"vertical"} size="middle" style={{width: '100%'}}>
                                             <Button
                                                 type="primary"
                                                 onClick={() => handleSelectFile("*.tex;*.*", t('Infos.com3d2_tex_file'))}

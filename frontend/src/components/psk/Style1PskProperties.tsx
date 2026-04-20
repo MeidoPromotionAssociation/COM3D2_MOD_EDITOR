@@ -1,6 +1,6 @@
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {Button, Collapse, Divider, Flex, Form, FormInstance, Input, InputNumber, Tooltip} from "antd";
+import {Button, Collapse, Divider, Flex, Form, FormInstance, Input, InputNumber, Space, Tooltip} from "antd";
 import {DeleteOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import KeyframeEditorWithTable from "../common/KeyframeEditorWithTable";
 
@@ -266,29 +266,53 @@ const Style1PskProperties: React.FC<{
                     {/* 硬度值数组 */}
                     <Form.Item label={t('PskEditor.hardValues')}>
                         <Flex gap="middle">
-                            <Form.Item name={['hardValues', 0]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore={t('PskEditor.horizontal_contraction')}
-                                    step={0.01}
-                                    style={{width: "22%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        {t('PskEditor.horizontal_contraction')}
+                                    </Space.Addon>
+                                    <Form.Item name={['hardValues', 0]} noStyle initialValue={0}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={['hardValues', 1]} noStyle initialValue={0.01}>
-                                <InputNumber
-                                    addonBefore={t('PskEditor.horizontal_extension')}
-                                    step={0.01}
-                                    style={{width: "22%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        {t('PskEditor.horizontal_extension')}
+                                    </Space.Addon>
+                                    <Form.Item name={['hardValues', 1]} noStyle initialValue={0.01}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={['hardValues', 2]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore={t('PskEditor.vertical_contraction')}
-                                    step={0.01}
-                                    style={{width: "22%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        {t('PskEditor.vertical_contraction')}
+                                    </Space.Addon>
+                                    <Form.Item name={['hardValues', 2]} noStyle initialValue={0}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={['hardValues', 3]} noStyle initialValue={0.7}>
-                                <InputNumber
-                                    addonBefore={t('PskEditor.vertical_extension')}
-                                    step={0.01}
-                                    style={{width: "22%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        {t('PskEditor.vertical_extension')}
+                                    </Space.Addon>
+                                    <Form.Item name={['hardValues', 3]} noStyle initialValue={0.7}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('PskEditor.hardValues_tip')}>
@@ -334,24 +358,42 @@ const Style1PskProperties: React.FC<{
 
 
                     <Form.Item label={t('PskEditor.gravity')}>
-                        <Flex gap="middle">
-                            <Form.Item name={['gravity', 0]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="X"
-                                    step={0.1}
-                                    style={{width: "22%"}}/>
+                        <Flex gap="middle" style={{width: "75%"}}>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        X
+                                    </Space.Addon>
+                                    <Form.Item name={['gravity', 0]} noStyle initialValue={0}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={['gravity', 1]} noStyle initialValue={-0.05}>
-                                <InputNumber
-                                    addonBefore="Y"
-                                    step={0.1}
-                                    style={{width: "22%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        Y
+                                    </Space.Addon>
+                                    <Form.Item name={['gravity', 1]} noStyle initialValue={-0.05}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={['gravity', 2]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="Z"
-                                    step={0.1}
-                                    style={{width: "22%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        Z
+                                    </Space.Addon>
+                                    <Form.Item name={['gravity', 2]} noStyle initialValue={0}>
+                                        <InputNumber
+                                            step={0.01}
+                                            style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('PskEditor.gravity_tip')}>

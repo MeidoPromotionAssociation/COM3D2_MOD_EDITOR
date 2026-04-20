@@ -1,6 +1,6 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useState} from 'react';
 import debounce from 'lodash/debounce';
-import {Collapse, ConfigProvider, Form, Input, Radio, Tooltip,} from 'antd';
+import {Collapse, ConfigProvider, Form, Input, Radio, Space, Tooltip,} from 'antd';
 import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
 import Style3MateProperties from "../mate/Style3MateProperties";
@@ -420,47 +420,59 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
                 >
                     <Collapse defaultActiveKey={['basic']}>
                         <Collapse.Panel key="basic" header={t('MateEditor.file_header.basic_info')}>
-                            <Form.Item name="materialName">
-                                <Input
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('MateEditor.file_header.Material_Name')}
                                         </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                    </Space.Addon>
+                                    <Form.Item name="materialName" noStyle>
+                                        <Input
+                                            suffix={
+                                                <Tooltip title={t('MateEditor.file_header.Material_Name_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name="shaderName">
-                                <Input
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                      {t('MateEditor.file_header.Material_ShaderName')}
-                    </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Material_ShaderName_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                          {t('MateEditor.file_header.Material_ShaderName')}
+                                        </span>
+                                    </Space.Addon>
+                                    <Form.Item name="shaderName" noStyle>
+                                        <Input
+                                            suffix={
+                                                <Tooltip title={t('MateEditor.file_header.Material_ShaderName_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name="shaderFilename">
-                                <Input
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
-                      {t('MateEditor.file_header.Material_ShaderFilename')}
-                    </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('MateEditor.file_header.Material_ShaderFilename_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                          {t('MateEditor.file_header.Material_ShaderFilename')}
+                                        </span>
+                                    </Space.Addon>
+                                    <Form.Item name="shaderFilename" noStyle>
+                                        <Input
+                                            suffix={
+                                                <Tooltip
+                                                    title={t('MateEditor.file_header.Material_ShaderFilename_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                         </Collapse.Panel>
                     </Collapse>

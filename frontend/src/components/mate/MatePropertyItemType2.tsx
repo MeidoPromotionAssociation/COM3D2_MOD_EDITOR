@@ -65,7 +65,7 @@ const MatePropertyItemType2 = ({
                 labelCol={{style: {width: '100px'}}}
             >
                 <Select
-                    dropdownStyle={{textAlign: 'left'}}
+                    styles={{popup: {root: {textAlign: 'left'}}}}
                     options={[
                         {label: t('MateEditor.tex'), value: 'tex'},
                         {label: t('MateEditor.col'), value: 'col'},
@@ -102,7 +102,7 @@ const MatePropertyItemType2 = ({
                         labelCol={{style: {width: '100px'}}}
                     >
                         <Select
-                            dropdownStyle={{textAlign: 'left'}}
+                            styles={{popup: {root: {textAlign: 'left'}}}}
                             options={[
                                 {label: t('MateEditor.tex2d'), value: 'tex2d'},
                                 {label: t('MateEditor.tex_cube'), value: 'cube'},

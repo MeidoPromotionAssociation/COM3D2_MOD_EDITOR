@@ -573,18 +573,29 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                         {/* 基础信息 */}
                         <Collapse.Panel key="base" header={t('PhyEditor.file_header.file_head')}>
                             <Space>
-                                <Form.Item name="signature"
-                                           initialValue={COM3D2HeaderConstants.PhySignature.toString()}>
-                                    <Input
-                                        disabled={!isHeaderEditable}
-                                        addonBefore={t('PhyEditor.file_header.Signature')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!isHeaderEditable ? 'space-addon-disabled' : ''}>
+                                            {t('PhyEditor.file_header.Signature')}
+                                        </Space.Addon>
+                                        <Form.Item name="signature"
+                                                   initialValue={COM3D2HeaderConstants.PhySignature.toString()}
+                                                   noStyle>
+                                            <Input disabled={!isHeaderEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
-                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.PhyVersion.toString()}>
-                                    <Input
-                                        disabled={!isHeaderEditable}
-                                        addonBefore={t('PhyEditor.file_header.Version')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!isHeaderEditable ? 'space-addon-disabled' : ''}>
+                                            {t('PhyEditor.file_header.Version')}
+                                        </Space.Addon>
+                                        <Form.Item name="version"
+                                                   initialValue={COM3D2HeaderConstants.PhyVersion.toString()}
+                                                   noStyle>
+                                            <Input disabled={!isHeaderEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox
@@ -596,16 +607,22 @@ const PhyEditor = forwardRef<PhyEditorRef, PhyEditorProps>((props, ref) => {
                                     </Checkbox>
                                 </Form.Item>
                             </Space>
-                            <Form.Item name="rootName">
-                                <Input
-                                    disabled={viewMode === 2}
-                                    addonBefore={t('PhyEditor.file_header.RootName')}
-                                    suffix={
-                                        <Tooltip title={t('PhyEditor.file_header.RootName_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon className={viewMode === 2 ? 'space-addon-disabled' : ''}>
+                                        {t('PhyEditor.file_header.RootName')}
+                                    </Space.Addon>
+                                    <Form.Item name="rootName" noStyle>
+                                        <Input
+                                            disabled={viewMode === 2}
+                                            suffix={
+                                                <Tooltip title={t('PhyEditor.file_header.RootName_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                         </Collapse.Panel>
                     </Collapse>

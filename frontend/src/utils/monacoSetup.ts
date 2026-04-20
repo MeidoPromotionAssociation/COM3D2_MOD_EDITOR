@@ -16,14 +16,14 @@ import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 // Provide MonacoEnvironment to use locally bundled workers
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (self as any).MonacoEnvironment = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getWorker(_moduleId: string, label: string) {
-    if (label === 'json') {
-      return new (JsonWorker as unknown as { new (): Worker })()
-    }
-    return new (EditorWorker as unknown as { new (): Worker })()
-  },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getWorker(_moduleId: string, label: string) {
+        if (label === 'json') {
+            return new (JsonWorker as unknown as { new(): Worker })()
+        }
+        return new (EditorWorker as unknown as { new(): Worker })()
+    },
 }
 
 // Configure the loader to use the already imported local monaco instance
-loader.config({ monaco })
+loader.config({monaco})

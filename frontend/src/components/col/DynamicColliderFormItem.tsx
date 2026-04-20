@@ -1,5 +1,5 @@
 import React from "react";
-import {Flex, Form, FormInstance, Input, InputNumber, Radio, Select, Tooltip} from "antd";
+import {Flex, Form, FormInstance, Input, InputNumber, Radio, Select, Space, Tooltip} from "antd";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {useTranslation} from "react-i18next";
 
@@ -28,7 +28,7 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                        name={[name, 'TypeName']}
             >
                 <Select
-                    dropdownStyle={{textAlign: 'left'}}
+                    styles={{popup: {root: {textAlign: 'left'}}}}
                     options={[
                         {label: t('ColEditor.dbc'), value: 'dbc'},
                         {label: t('ColEditor.dpc'), value: 'dpc'},
@@ -63,22 +63,37 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     </Form.Item>
 
                     {/* LocalPosition (3个数) */}
-                    <Form.Item label={t('ColEditor.LocalPosition')}>
+                    <Form.Item label={t('ColEditor.LocalPosition')} style={{width: "60%"}}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "localPosition", 0]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="X"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        X
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localPosition", 0]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localPosition", 1]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="Y"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        Y
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localPosition", 1]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localPosition", 2]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="Z"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        Z
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localPosition", 2]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('ColEditor.LocalPosition_tip')}>
@@ -89,27 +104,47 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     </Form.Item>
 
                     {/* LocalRotation (4个数) */}
-                    <Form.Item label={t('ColEditor.LocalRotation')}>
+                    <Form.Item label={t('ColEditor.LocalRotation')} style={{width: "76%"}}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "localRotation", 0]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="X"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        X
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localRotation", 0]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localRotation", 1]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="Y"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        Y
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localRotation", 1]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localRotation", 2]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="Z"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        Z
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localRotation", 2]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localRotation", 3]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="W"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        W
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localRotation", 3]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('ColEditor.LocalRotation_tip')}>
@@ -120,22 +155,37 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                     </Form.Item>
 
                     {/* LocalScale (3个数) */}
-                    <Form.Item label={t('ColEditor.LocalScale')}>
+                    <Form.Item label={t('ColEditor.LocalScale')} style={{width: "60%"}}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "localScale", 0]} noStyle initialValue={1}>
-                                <InputNumber
-                                    addonBefore="SX"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        SX
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localScale", 0]} noStyle initialValue={1}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localScale", 1]} noStyle initialValue={1}>
-                                <InputNumber
-                                    addonBefore="SY"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        SY
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localScale", 1]} noStyle initialValue={1}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "localScale", 2]} noStyle initialValue={1}>
-                                <InputNumber
-                                    addonBefore="SZ"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        SZ
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "localScale", 2]} noStyle initialValue={1}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('ColEditor.LocalScale_tip')}>
@@ -163,22 +213,37 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                         </Form.Item>
                     </Flex>
 
-                    <Form.Item label={t('ColEditor.Center')}>
+                    <Form.Item label={t('ColEditor.Center')} style={{width: "60%"}}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "center", 0]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="CX"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        CX
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "center", 0]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "center", 1]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="CY"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        CY
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "center", 1]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "center", 2]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="CZ"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        CZ
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "center", 2]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('ColEditor.Center_tip')}>
@@ -249,22 +314,37 @@ const DynamicColliderFormItem: React.FC<{ name: number; restField: any; form: Fo
                         </Form.Item>
                     </Flex>
 
-                    <Form.Item label={t('ColEditor.CenterRateMax')}>
+                    <Form.Item label={t('ColEditor.CenterRateMax')} style={{width: "69%"}}>
                         <Flex gap="middle">
-                            <Form.Item name={[name, "centerRateMax", 0]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="CRX"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        CRX
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "centerRateMax", 0]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "centerRateMax", 1]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="CRY"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        CRY
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "centerRateMax", 1]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
-                            <Form.Item name={[name, "centerRateMax", 2]} noStyle initialValue={0}>
-                                <InputNumber
-                                    addonBefore="CRZ"
-                                    style={{width: "20%"}}/>
+                            <Form.Item noStyle>
+                                <Space.Compact block>
+                                    <Space.Addon>
+                                        CRZ
+                                    </Space.Addon>
+                                    <Form.Item name={[name, "centerRateMax", 2]} noStyle initialValue={0}>
+                                        <InputNumber style={{width: "100%"}}/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                             <Form.Item noStyle>
                                 <Tooltip title={t('ColEditor.CenterRateMax_tip')}>

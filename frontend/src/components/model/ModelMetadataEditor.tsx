@@ -128,17 +128,29 @@ const ModelMetadataEditor: React.FC<ModelMetadataEditorProps> = ({
                     <Collapse defaultActiveKey={['header']}>
                         <Collapse.Panel key="header" header={t('ModelEditor.file_header.basic_info')}>
                             <Space>
-                                <Form.Item name="signature" initialValue={COM3D2HeaderConstants.ModelSignature}>
-                                    <Input
-                                        disabled={!headerEditable}
-                                        addonBefore={t('ModelEditor.file_header.Signature')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!headerEditable ? 'space-addon-disabled' : ''}>
+                                            {t('ModelEditor.file_header.Signature')}
+                                        </Space.Addon>
+                                        <Form.Item name="signature"
+                                                   initialValue={COM3D2HeaderConstants.ModelSignature}
+                                                   noStyle>
+                                            <Input disabled={!headerEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
-                                <Form.Item name="version" initialValue={COM3D2HeaderConstants.ModelVersion.toString()}>
-                                    <InputNumber
-                                        disabled={!headerEditable}
-                                        addonBefore={t('ModelEditor.file_header.Version')}
-                                    />
+                                <Form.Item>
+                                    <Space.Compact block>
+                                        <Space.Addon className={!headerEditable ? 'space-addon-disabled' : ''}>
+                                            {t('ModelEditor.file_header.Version')}
+                                        </Space.Addon>
+                                        <Form.Item name="version"
+                                                   initialValue={COM3D2HeaderConstants.ModelVersion.toString()}
+                                                   noStyle>
+                                            <InputNumber disabled={!headerEditable}/>
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </Form.Item>
                                 <Form.Item>
                                     <Checkbox
@@ -150,49 +162,58 @@ const ModelMetadataEditor: React.FC<ModelMetadataEditorProps> = ({
                                 </Form.Item>
                             </Space>
 
-                            <Form.Item name="modelName">
-                                <Input
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('ModelEditor.model_name')}
                                         </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('ModelEditor.model_name_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                    </Space.Addon>
+                                    <Form.Item name="modelName" noStyle>
+                                        <Input
+                                            suffix={
+                                                <Tooltip title={t('ModelEditor.model_name_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
 
-                            <Form.Item name="rootBoneName">
-                                <Input
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('ModelEditor.root_bone_name')}
                                         </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('ModelEditor.root_bone_name_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                    </Space.Addon>
+                                    <Form.Item name="rootBoneName" noStyle>
+                                        <Input
+                                            suffix={
+                                                <Tooltip title={t('ModelEditor.root_bone_name_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
 
-                            <Form.Item name="shadowCastingMode">
-                                <Input
-                                    addonBefore={
+                            <Form.Item>
+                                <Space.Compact block>
+                                    <Space.Addon>
                                         <span style={{width: '15vw', display: 'inline-block', textAlign: 'left'}}>
                                           {t('ModelEditor.shadow_casting_mode')}
                                         </span>
-                                    }
-                                    suffix={
-                                        <Tooltip title={t('ModelEditor.shadow_casting_mode_tip')}>
-                                            <QuestionCircleOutlined/>
-                                        </Tooltip>
-                                    }
-                                />
+                                    </Space.Addon>
+                                    <Form.Item name="shadowCastingMode" noStyle>
+                                        <Input
+                                            suffix={
+                                                <Tooltip title={t('ModelEditor.shadow_casting_mode_tip')}>
+                                                    <QuestionCircleOutlined/>
+                                                </Tooltip>
+                                            }/>
+                                    </Form.Item>
+                                </Space.Compact>
                             </Form.Item>
                         </Collapse.Panel>
                     </Collapse>
