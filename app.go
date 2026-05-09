@@ -93,6 +93,20 @@ func (a *App) SelectPathToSave(filetype string, fileDisplayName string) (path st
 	return selection
 }
 
+// SelectDirectory 选择一个文件夹，返回用户选择的路径
+func (a *App) SelectDirectory(title string) (path string) {
+	if title == "" {
+		title = "Choose a directory"
+	}
+	selection, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: title,
+	})
+	if err != nil {
+		panic(err)
+	}
+	return selection
+}
+
 // GetAppVersion 获取应用版本
 func (a *App) GetAppVersion() string {
 	return CurrentVersion

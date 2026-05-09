@@ -27,6 +27,7 @@ func main() {
 	AnmService := &COM3D2.AnmService{}
 	ModelService := &COM3D2.ModelService{}
 	NeiService := &COM3D2.NeiService{}
+	DiffGeneratorService := &COM3D2.DiffGeneratorService{}
 
 	MenuModel := &COM3D2.MenuModel{}
 	MateModel := &COM3D2.MateModel{}
@@ -68,6 +69,7 @@ func main() {
 			AnmService,
 			ModelService,
 			NeiService,
+			DiffGeneratorService,
 			MenuModel,
 			MateModel,
 			PMatModel,

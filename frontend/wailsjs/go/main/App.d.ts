@@ -15,6 +15,8 @@ export function GetFileSize(arg1:string):Promise<number>;
 
 export function IsSupportedImageType(arg1:string):Promise<boolean>;
 
+export function SelectDirectory(arg1:string):Promise<string>;
+
 export function SelectFile(arg1:string,arg2:string):Promise<string>;
 
 export function SelectPathToSave(arg1:string,arg2:string):Promise<string>;

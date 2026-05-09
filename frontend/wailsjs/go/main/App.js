@@ -26,6 +26,10 @@ export function IsSupportedImageType(arg1) {
   return window['go']['main']['App']['IsSupportedImageType'](arg1);
 }
 
+export function SelectDirectory(arg1) {
+  return window['go']['main']['App']['SelectDirectory'](arg1);
+}
+
 export function SelectFile(arg1, arg2) {
   return window['go']['main']['App']['SelectFile'](arg1, arg2);
 }

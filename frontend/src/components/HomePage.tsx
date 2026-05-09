@@ -1,10 +1,10 @@
 // frontend/src/components/HomePage.tsx
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, FloatButton, Layout} from "antd";
+import {Button, FloatButton, Layout, Space} from "antd";
 import NavBar from "./NavBar";
 import {useTranslation} from "react-i18next";
-import {GithubOutlined, SettingOutlined} from "@ant-design/icons";
+import {BranchesOutlined, GithubOutlined, SettingOutlined} from "@ant-design/icons";
 import {BrowserOpenURL, WindowSetTitle} from "../../wailsjs/runtime";
 import {
     AllSupportedFileTypes,
@@ -86,8 +86,10 @@ const HomePage: React.FC = () => {
                     justifyContent: "center",
                     alignItems: "center"
                 }}>
-                    <Button type="primary"
-                            onClick={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}>{t('Infos.choose_file')}</Button>
+                    <Space orientation="vertical">
+                        <Button type="primary"
+                                onClick={() => handleSelectFile(AllSupportedFileTypes, t('Infos.com3d2_mod_files'))}>{t('Infos.choose_file')}</Button>
+                    </Space>
                     <p style={{marginTop: 20, color: "#666"}}>
                         {t('Infos.pls_select_a_file_to_edit')}
                     </p>
@@ -95,6 +97,9 @@ const HomePage: React.FC = () => {
                     <p>
                         {AppVersion}
                     </p>
+
+                    <Button icon={<BranchesOutlined/>}
+                            onClick={() => navigate("/diff-generator")}>{t('HomePage.diff_generator')}</Button>
                 </div>
 
 

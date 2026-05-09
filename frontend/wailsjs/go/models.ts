@@ -363,6 +363,220 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	export class DiffFileReference {
+	    MenuPath: string;
+	    Command: string;
+	    ArgIndex: number;
+	    FileType: string;
+	    Value: string;
+	    HasWildcard: boolean;
+	    VariantCandidate: string;
+	    VariantCandidateZ: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffFileReference(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.MenuPath = source["MenuPath"];
+	        this.Command = source["Command"];
+	        this.ArgIndex = source["ArgIndex"];
+	        this.FileType = source["FileType"];
+	        this.Value = source["Value"];
+	        this.HasWildcard = source["HasWildcard"];
+	        this.VariantCandidate = source["VariantCandidate"];
+	        this.VariantCandidateZ = source["VariantCandidateZ"];
+	    }
+	}
+	export class DiffGeneratedFile {
+	    Path: string;
+	    SourcePath: string;
+	    Kind: string;
+	    Status: string;
+	    Message: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffGeneratedFile(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Path = source["Path"];
+	        this.SourcePath = source["SourcePath"];
+	        this.Kind = source["Kind"];
+	        this.Status = source["Status"];
+	        this.Message = source["Message"];
+	    }
+	}
+	export class DiffResourceGroup {
+	    FileType: string;
+	    BaseName: string;
+	    BasePath: string;
+	    ExistingIndexes: number[];
+	    Files: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffResourceGroup(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.FileType = source["FileType"];
+	        this.BaseName = source["BaseName"];
+	        this.BasePath = source["BasePath"];
+	        this.ExistingIndexes = source["ExistingIndexes"];
+	        this.Files = source["Files"];
+	    }
+	}
+	export class DiffMenuGroup {
+	    BaseName: string;
+	    BasePath: string;
+	    ExistingIndexes: number[];
+	    Files: string[];
+	    References: DiffFileReference[];
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffMenuGroup(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BaseName = source["BaseName"];
+	        this.BasePath = source["BasePath"];
+	        this.ExistingIndexes = source["ExistingIndexes"];
+	        this.Files = source["Files"];
+	        this.References = this.convertValues(source["References"], DiffFileReference);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class DiffGenerationAnalysis {
+	    InputDir: string;
+	    MenuGroups: DiffMenuGroup[];
+	    ResourceGroups: DiffResourceGroup[];
+	    AvailableIndexes: number[];
+	    Warnings: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffGenerationAnalysis(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.InputDir = source["InputDir"];
+	        this.MenuGroups = this.convertValues(source["MenuGroups"], DiffMenuGroup);
+	        this.ResourceGroups = this.convertValues(source["ResourceGroups"], DiffResourceGroup);
+	        this.AvailableIndexes = source["AvailableIndexes"];
+	        this.Warnings = source["Warnings"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class DiffGenerationRequest {
+	    InputDir: string;
+	    OutputDir: string;
+	    StartIndex: number;
+	    EndIndex: number;
+	    Indexes: number[];
+	    Overwrite: boolean;
+	    UseExistingMenuVariants: boolean;
+	    GenerateMenus: boolean;
+	    GenerateReferencedMates: boolean;
+	    CopyReferencedBinaryAssets: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffGenerationRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.InputDir = source["InputDir"];
+	        this.OutputDir = source["OutputDir"];
+	        this.StartIndex = source["StartIndex"];
+	        this.EndIndex = source["EndIndex"];
+	        this.Indexes = source["Indexes"];
+	        this.Overwrite = source["Overwrite"];
+	        this.UseExistingMenuVariants = source["UseExistingMenuVariants"];
+	        this.GenerateMenus = source["GenerateMenus"];
+	        this.GenerateReferencedMates = source["GenerateReferencedMates"];
+	        this.CopyReferencedBinaryAssets = source["CopyReferencedBinaryAssets"];
+	    }
+	}
+	export class DiffGenerationResult {
+	    MenusProcessed: number;
+	    MenusGenerated: number;
+	    MatesGenerated: number;
+	    AssetsCopied: number;
+	    Files: DiffGeneratedFile[];
+	    Warnings: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new DiffGenerationResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.MenusProcessed = source["MenusProcessed"];
+	        this.MenusGenerated = source["MenusGenerated"];
+	        this.MatesGenerated = source["MatesGenerated"];
+	        this.AssetsCopied = source["AssetsCopied"];
+	        this.Files = this.convertValues(source["Files"], DiffGeneratedFile);
+	        this.Warnings = source["Warnings"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	
 	export class DynamicBoneColliderBase {
 	    TypeName: string;
 	    ParentName: string;
@@ -645,6 +859,243 @@ export namespace COM3D2 {
 		    return a;
 		}
 	}
+	export class MateKeywordValue {
+	    Key: string;
+	    Value: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new MateKeywordValue(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Key = source["Key"];
+	        this.Value = source["Value"];
+	    }
+	}
+	export class MatePropertyOverride {
+	    Type: string;
+	    PropName: string;
+	    TexName: string;
+	    TexPath: string;
+	    Values: number[];
+	    Number: number;
+	    Keywords: MateKeywordValue[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MatePropertyOverride(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Type = source["Type"];
+	        this.PropName = source["PropName"];
+	        this.TexName = source["TexName"];
+	        this.TexPath = source["TexPath"];
+	        this.Values = source["Values"];
+	        this.Number = source["Number"];
+	        this.Keywords = this.convertValues(source["Keywords"], MateKeywordValue);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MateShaderValue {
+	    ShaderName: string;
+	    ShaderFilename: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new MateShaderValue(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ShaderName = source["ShaderName"];
+	        this.ShaderFilename = source["ShaderFilename"];
+	    }
+	}
+	export class MateVariantPropertyInfo {
+	    Type: string;
+	    PropName: string;
+	    TexName: string;
+	    TexPath: string;
+	    Offset: number[];
+	    Scale: number[];
+	    Values: number[];
+	    Number: number;
+	    Keywords: MateKeywordValue[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MateVariantPropertyInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Type = source["Type"];
+	        this.PropName = source["PropName"];
+	        this.TexName = source["TexName"];
+	        this.TexPath = source["TexPath"];
+	        this.Offset = source["Offset"];
+	        this.Scale = source["Scale"];
+	        this.Values = source["Values"];
+	        this.Number = source["Number"];
+	        this.Keywords = this.convertValues(source["Keywords"], MateKeywordValue);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MateVariantAnalysis {
+	    BaseMatePath: string;
+	    MateName: string;
+	    MaterialName: string;
+	    Shader: MateShaderValue;
+	    Properties: MateVariantPropertyInfo[];
+	    Warnings: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MateVariantAnalysis(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BaseMatePath = source["BaseMatePath"];
+	        this.MateName = source["MateName"];
+	        this.MaterialName = source["MaterialName"];
+	        this.Shader = this.convertValues(source["Shader"], MateShaderValue);
+	        this.Properties = this.convertValues(source["Properties"], MateVariantPropertyInfo);
+	        this.Warnings = source["Warnings"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MateVariantDefinition {
+	    Index: number;
+	    Name: string;
+	    OutputName: string;
+	    MateName: string;
+	    MaterialName: string;
+	    Shader: MateShaderValue;
+	    Overrides: MatePropertyOverride[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MateVariantDefinition(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Index = source["Index"];
+	        this.Name = source["Name"];
+	        this.OutputName = source["OutputName"];
+	        this.MateName = source["MateName"];
+	        this.MaterialName = source["MaterialName"];
+	        this.Shader = this.convertValues(source["Shader"], MateShaderValue);
+	        this.Overrides = this.convertValues(source["Overrides"], MatePropertyOverride);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MateVariantGenerationRequest {
+	    BaseMatePath: string;
+	    OutputDir: string;
+	    OutputNamePattern: string;
+	    Overwrite: boolean;
+	    Variants: MateVariantDefinition[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MateVariantGenerationRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BaseMatePath = source["BaseMatePath"];
+	        this.OutputDir = source["OutputDir"];
+	        this.OutputNamePattern = source["OutputNamePattern"];
+	        this.Overwrite = source["Overwrite"];
+	        this.Variants = this.convertValues(source["Variants"], MateVariantDefinition);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
 	
 	export class Menu {
 	    Signature: string;
@@ -670,6 +1121,136 @@ export namespace COM3D2 {
 	        this.InfoText = source["InfoText"];
 	        this.BodySize = source["BodySize"];
 	        this.Commands = this.convertValues(source["Commands"], Command);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MenuReferenceReplacement {
+	    Command: string;
+	    ArgIndex: number;
+	    From: string;
+	    To: string;
+	    FileType: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new MenuReferenceReplacement(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Command = source["Command"];
+	        this.ArgIndex = source["ArgIndex"];
+	        this.From = source["From"];
+	        this.To = source["To"];
+	        this.FileType = source["FileType"];
+	    }
+	}
+	export class MenuVariantAnalysis {
+	    MenuGroups: DiffMenuGroup[];
+	    Warnings: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MenuVariantAnalysis(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.MenuGroups = this.convertValues(source["MenuGroups"], DiffMenuGroup);
+	        this.Warnings = source["Warnings"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MenuVariantDefinition {
+	    Index: number;
+	    Name: string;
+	    OutputName: string;
+	    ItemName: string;
+	    InfoText: string;
+	    Replacements: MenuReferenceReplacement[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MenuVariantDefinition(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Index = source["Index"];
+	        this.Name = source["Name"];
+	        this.OutputName = source["OutputName"];
+	        this.ItemName = source["ItemName"];
+	        this.InfoText = source["InfoText"];
+	        this.Replacements = this.convertValues(source["Replacements"], MenuReferenceReplacement);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class MenuVariantGenerationRequest {
+	    BaseMenuPaths: string[];
+	    OutputDir: string;
+	    OutputNamePattern: string;
+	    Overwrite: boolean;
+	    Variants: MenuVariantDefinition[];
+	
+	    static createFrom(source: any = {}) {
+	        return new MenuVariantGenerationRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.BaseMenuPaths = source["BaseMenuPaths"];
+	        this.OutputDir = source["OutputDir"];
+	        this.OutputNamePattern = source["OutputNamePattern"];
+	        this.Overwrite = source["Overwrite"];
+	        this.Variants = this.convertValues(source["Variants"], MenuVariantDefinition);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

@@ -19,6 +19,7 @@ import ModelEditorPage from "./components/ModelEditorPage";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import {DisclaimerAgreedKey} from "./utils/LocalStorageKeys";
 import NeiEditorPage from "./components/NeiEditorPage";
+import DiffGeneratorPage from "./components/DiffGeneratorPage";
 
 const App: React.FC = () => {
     const isDarkMode = useDarkMode();
@@ -79,6 +80,7 @@ const App: React.FC = () => {
                     <Route path="/anm-editor" element={<AnmEditorPage/>}/>
                     <Route path="/model-editor" element={<ModelEditorPage/>}/>
                     <Route path="/nei-editor" element={<NeiEditorPage/>}/>
+                    <Route path="/diff-generator" element={<DiffGeneratorPage/>}/>
                     <Route path="/settings" element={<SettingsPage/>}/>
                 </Routes>
             )}

@@ -4,3 +4,4 @@ frontend/dist
 /.idea
 /build/bin
 /build/windows
+/example
