@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Linux dependencies
         run: |
@@ -25,15 +25,15 @@ jobs:
           sudo apt install -y libgtk-3-dev libglib2.0-dev libwebkit2gtk-4.1-dev
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version-file: 'go.mod'
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
       - name: Cache Go Modules
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -41,9 +41,9 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -52,7 +52,7 @@ jobs:
         run: pnpm --version
 
       - name: Cache pnpm store
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -68,7 +68,7 @@ jobs:
         run: wails build -platform windows/amd64 -skipbindings -devtools -clean -o COM3D2_MOD_EDITOR_V2.exe
 
       - name: Upload Windows Build Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: COM3D2_MOD_EDITOR_V2
           path: /home/runner/work/COM3D2_MOD_EDITOR/COM3D2_MOD_EDITOR/build/bin/COM3D2_MOD_EDITOR_V2.exe
@@ -77,7 +77,7 @@ jobs:
         run: CGO_ENABLED=0 GOTOOLCHAIN=auto wails build -platform linux/amd64 -skipbindings -devtools -clean -tags webkit2_41 -o COM3D2_MOD_EDITOR_V2-amd64-Linux 
 
       - name: Upload Linux Build Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: COM3D2_MOD_EDITOR_V2-amd64-Linux 
           path: /home/runner/work/COM3D2_MOD_EDITOR/COM3D2_MOD_EDITOR/build/bin/COM3D2_MOD_EDITOR_V2-amd64-Linux
