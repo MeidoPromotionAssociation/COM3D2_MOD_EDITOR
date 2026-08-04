@@ -119,7 +119,8 @@ func (m *ModelService) WriteModelMetadata(inputPath string, outputPath string, m
 			return fmt.Errorf("failed to read .model.json file: %w", err)
 		}
 	} else {
-		modelData, err = COM3D2.ReadModel(f)
+		br := bufio.NewReaderSize(f, 1*1024*1024) // 1MB 缓冲区，因为只读取部分数据
+		modelData, err = COM3D2.ReadModel(br)
 		if err != nil {
 			return fmt.Errorf("parsing the .model file failed: %w", err)
 		}
@@ -163,7 +164,8 @@ func (m *ModelService) WriteModelMaterial(inputPath string, outputPath string, m
 			return fmt.Errorf("failed to read.model.json file: %w", err)
 		}
 	} else {
-		modelData, err = COM3D2.ReadModel(f)
+		br := bufio.NewReaderSize(f, 1*1024*1024) // 1MB 缓冲区，因为只读取部分数据
+		modelData, err = COM3D2.ReadModel(br)
 		if err != nil {
 			return fmt.Errorf("parsing the .model file failed: %w", err)
 		}
