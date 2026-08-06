@@ -383,7 +383,16 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
         // Properties
         const newProps: any[] = [];
         if (Array.isArray(values.properties)) {
-            values.properties.forEach((item: any) => {
+            values.properties.forEach((item: any, index: number) => {
+                // Form.List 的 remove() 在某些时序下会在 store 数组里留下空洞，
+                // 此处若直接读 item.TypeName 会抛异常导致保存失败。
+                // 回退到原始 Material 的同索引属性，避免丢失。
+                if (!item) {
+                    const original = oldMate?.Material?.Properties?.[index];
+                    if (original) newProps.push(original);
+                    return;
+                }
+
                 switch (item.TypeName) {
                     case 'tex':
                         // 根据 subTag 判断
@@ -487,7 +496,9 @@ const MateEditor = forwardRef<MateEditorRef, MateEditorProps>((props, ref) => {
                         });
                         break;
                     default:
-                        // unknown, do nothing
+                        // 未知类型：保留原始属性，避免静默丢失
+                        const originalUnknown = oldMate?.Material?.Properties?.[index];
+                        if (originalUnknown) newProps.push(originalUnknown);
                         break;
                 }
             });

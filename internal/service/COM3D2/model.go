@@ -108,7 +108,6 @@ func (m *ModelService) WriteModelMetadata(inputPath string, outputPath string, m
 	if err != nil {
 		return fmt.Errorf("cannot open .model file: %w", err)
 	}
-	defer f.Close()
 
 	var modelData *COM3D2.Model
 
@@ -116,16 +115,21 @@ func (m *ModelService) WriteModelMetadata(inputPath string, outputPath string, m
 		decoder := json.NewDecoder(f)
 		modelData = &COM3D2.Model{}
 		if err = decoder.Decode(modelData); err != nil {
+			f.Close()
 			return fmt.Errorf("failed to read .model.json file: %w", err)
 		}
 	} else {
 		br := bufio.NewReaderSize(f, 1*1024*1024) // 1MB 缓冲区，因为只读取部分数据
 		modelData, err = COM3D2.ReadModel(br)
 		if err != nil {
+			f.Close()
 			return fmt.Errorf("parsing the .model file failed: %w", err)
 		}
 	}
 
+	f.Close()
+
+	// Apply metadata updates to the model
 	modelData.Signature = metadata.Signature
 	modelData.Version = metadata.Version
 	modelData.Name = metadata.Name
@@ -153,7 +157,6 @@ func (m *ModelService) WriteModelMaterial(inputPath string, outputPath string, m
 	if err != nil {
 		return fmt.Errorf("cannot open .model file: %w", err)
 	}
-	defer f.Close()
 
 	var modelData *COM3D2.Model
 
@@ -161,15 +164,19 @@ func (m *ModelService) WriteModelMaterial(inputPath string, outputPath string, m
 		decoder := json.NewDecoder(f)
 		modelData = &COM3D2.Model{}
 		if err = decoder.Decode(modelData); err != nil {
+			f.Close()
 			return fmt.Errorf("failed to read.model.json file: %w", err)
 		}
 	} else {
 		br := bufio.NewReaderSize(f, 1*1024*1024) // 1MB 缓冲区，因为只读取部分数据
 		modelData, err = COM3D2.ReadModel(br)
 		if err != nil {
+			f.Close()
 			return fmt.Errorf("parsing the .model file failed: %w", err)
 		}
 	}
+
+	f.Close()
 
 	modelData.Materials = materials
 

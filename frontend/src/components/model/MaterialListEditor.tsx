@@ -65,39 +65,29 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
                                                                }) => {
     const {t} = useTranslation();
     const [activeKey, setActiveKey] = useState<string | null>(null);
-    const [isTabSwitching, setIsTabSwitching] = useState(false);
 
     // 使用鼠标传感器
+    // 注意：activationConstraint 不能同时包含 distance 和 delay，
+    // 否则 dnd-kit 会进入 delay 分支并读取未定义的 tolerance，抛出
+    // "Cannot use 'in' operator to search for 'x' in undefined"，
+    // 导致指针事件被吞掉、标签需要点击多次才能切换。
     const mouseSensor = useSensor(MouseSensor, {
         activationConstraint: {
             distance: 10,
-            delay: 100,
         }
     });
 
     const touchSensor = useSensor(TouchSensor, {
         activationConstraint: {
-            distance: 10,
-            delay: 100,
+            delay: 200,
+            tolerance: 5,
         }
     });
 
     // 添加点击事件处理函数
     const handleTabClick = useCallback((key: string) => {
-        // 如果点击的是当前标签，不做任何处理
-        if (key === activeKey) return;
-
-        // 设置正在切换标签状态
-        setIsTabSwitching(true);
-
-        // 立即更新标签选中状态，使 UI 响应更快
         setActiveKey(key);
-
-        // 在微小延迟后重置切换状态，允许内容渲染
-        requestAnimationFrame(() => {
-            setIsTabSwitching(false);
-        });
-    }, [activeKey]);
+    }, []);
 
     // 组合传感器
     const sensors = useSensors(mouseSensor, touchSensor);
@@ -177,16 +167,13 @@ const MaterialListEditor: React.FC<MaterialListEditorProps> = ({
         ),
         children: (
             <Suspense fallback={<div style={{padding: '20px', textAlign: 'center'}}>Loading editor...</div>}>
-                {/* 仅当标签切换完成后渲染内容，或者当前标签就是活动标签 */}
-                {(!isTabSwitching || `material-${index}` === activeKey) && (
-                    <MaterialEditor
-                        material={material}
-                        onMaterialChange={(updatedMaterial) => handleMaterialChange(index, updatedMaterial)}
-                    />
-                )}
+                <MaterialEditor
+                    material={material}
+                    onMaterialChange={(updatedMaterial) => handleMaterialChange(index, updatedMaterial)}
+                />
             </Suspense>
         )
-    })), [materials, t, handleDeleteMaterial, handleMaterialChange, isTabSwitching, activeKey]);
+    })), [materials, t, handleDeleteMaterial, handleMaterialChange]);
 
     return (
         <div>

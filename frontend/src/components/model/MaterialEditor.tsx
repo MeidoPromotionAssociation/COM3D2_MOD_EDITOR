@@ -1,5 +1,6 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 import {Collapse, ConfigProvider, Form, Input, Radio, Space, Tooltip,} from 'antd';
 import {COM3D2} from '../../../wailsjs/go/models';
 import {useTranslation} from "react-i18next";
@@ -53,19 +54,35 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
         return saved ? Number(saved) as 1 | 2 | 3 : 1;
     });
 
+    // 记录本组件自己向上发出的 Material，用于识别「回流」更新。
+    // 父组件 handleMaterialsChange 会用 new COM3D2.ModelMetadata({...}) 重建所有
+    // Material，导致 props.material 引用变化并触发下面的 useEffect 重置表单，
+    // 从而把用户正在编辑的值覆盖回旧值（配合 500ms 防抖时尤其明显）。
+    const selfEmittedMaterialRef = useRef<Material | null>(null);
+
     // 当外部 material 变化时，更新表单
     useEffect(() => {
-        if (props.material) {
-            setMaterial(props.material);
+        if (!props.material) return;
 
-            // 创建一个临时的 Mate 对象，用于复用 MateEditor 的组件
-            const tempMate = new Mate();
-            tempMate.Material = props.material;
-            setTempMateData(tempMate);
+        // 如果这次变化是本组件发出的更新回流，只同步内部 state，不要重置表单，
+        // 否则会覆盖用户尚未提交的输入。
+        // 注意：父组件会重建 Material 对象，引用必然不同，所以只能按内容比对。
+        const echo = selfEmittedMaterialRef.current;
+        const isEcho = echo !== null && isEqual(props.material, echo);
 
-            // 设置表单值
-            form.setFieldsValue(transformMaterialToForm(props.material));
-        }
+        setMaterial(props.material);
+
+        // 创建一个临时的 Mate 对象，用于复用 MateEditor 的组件
+        const tempMate = new Mate();
+        tempMate.Material = props.material;
+        setTempMateData(tempMate);
+
+        selfEmittedMaterialRef.current = null;
+
+        if (isEcho) return;
+
+        // 真正切换到了不同的材质，设置表单值
+        form.setFieldsValue(transformMaterialToForm(props.material));
     }, [props.material]);
 
     // 暴露方法给父组件
@@ -185,7 +202,19 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
         // 处理 properties
         const newProps: any[] = [];
         if (Array.isArray(formValues.properties)) {
-            formValues.properties.forEach((item: any) => {
+            formValues.properties.forEach((item: any, index: number) => {
+                // antd 的 getFieldsValue 只会克隆「已注册」的字段路径，
+                // 未挂载的表单项（折叠、虚拟化等）在数组中是 undefined。
+                // 这里必须跳过，否则读取 item.TypeName 会抛异常，
+                // 导致整个防抖回调中断、onMaterialChange 永远不被调用，
+                // 表现为「保存成功但值没变」。
+                // 同时回退到原始 Material 的同索引属性，避免丢失这些属性。
+                if (!item) {
+                    const original = originalMaterial?.Properties?.[index];
+                    if (original) newProps.push(original);
+                    return;
+                }
+
                 switch (item.TypeName) {
                     case 'tex':
                         // 根据 subTag 判断
@@ -289,7 +318,9 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
                         });
                         break;
                     default:
-                        // unknown, do nothing
+                        // 未知类型：保留原始属性，避免静默丢失
+                        const originalUnknown = originalMaterial?.Properties?.[index];
+                        if (originalUnknown) newProps.push(originalUnknown);
                         break;
                 }
             });
@@ -318,17 +349,36 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
 
     // 使用防抖函数延迟更新 Material 对象
     const debouncedUpdateMaterial = useMemo(
-        () => debounce((allValues: any) => {
+        () => debounce(() => {
             if (!material) return;
 
-            const updatedMaterial = transformFormToMaterial(allValues, material);
+            // 必须用 getFieldsValue(true) 取完整 store，而不是 onValuesChange 提供的 allValues。
+            // allValues 来自 getFieldsValue()，只包含「已注册（已挂载）」的字段：
+            // 虚拟化或折叠面板未挂载的属性在其中是 undefined，且数组长度会被截断，
+            // 直接用它重建 Properties 会丢失大量属性。
+            const fullValues = form.getFieldsValue(true);
+
+            // 这里的异常会中断整条更新链路（onMaterialChange 不被调用），
+            // 且因为处在防抖计时器里，表现为「保存成功但值没变」而非报错。
+            // 所以必须显式捕获并暴露出来，不能静默失败。
+            let updatedMaterial: Material;
+            try {
+                updatedMaterial = transformFormToMaterial(fullValues, material);
+            } catch (e) {
+                console.error('transformFormToMaterial failed, material change dropped:', e);
+                return;
+            }
+
             setMaterial(updatedMaterial);
+
+            // 记录本次发出的 Material，下次回流时跳过表单重置
+            selfEmittedMaterialRef.current = updatedMaterial;
 
             if (props.onMaterialChange) {
                 props.onMaterialChange(updatedMaterial);
             }
         }, 500), // 500ms 的防抖时间
-        [material, props.onMaterialChange]
+        [material, props.onMaterialChange, form]
     );
 
     // 表单值变化时，使用防抖函数延迟更新 Material 对象
@@ -380,8 +430,9 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
         }
 
         // 如果不需要跳过更新，则执行防抖更新
+        // 注意：不传 allValues，防抖回调内部会用 getFieldsValue(true) 取完整 store
         if (!shouldSkipUpdate) {
-            debouncedUpdateMaterial(allValues);
+            debouncedUpdateMaterial();
         }
     };
 
@@ -391,6 +442,9 @@ const MaterialEditor = forwardRef<MaterialEditorRef, MaterialEditorProps>((props
 
         setTempMateData(newMateData);
         setMaterial(newMateData.Material);
+
+        // 记录本次发出的 Material，下次回流时跳过表单重置
+        selfEmittedMaterialRef.current = newMateData.Material;
 
         if (props.onMaterialChange) {
             props.onMaterialChange(newMateData.Material);
