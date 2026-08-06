@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Linux dependencies
         run: |
@@ -25,20 +25,13 @@ jobs:
           sudo apt install -y libgtk-3-dev libglib2.0-dev libwebkit2gtk-4.1-dev
 
       - name: Set up Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@7
         with:
           go-version-file: 'go.mod'
+          cache: true
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
-
-      - name: Cache Go Modules
-        uses: actions/cache@v5
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
       - name: Install Node.js
         uses: actions/setup-node@v6
@@ -51,21 +44,13 @@ jobs:
       - name: Check pnpm version
         run: pnpm --version
 
-      - name: Cache pnpm store
-        uses: actions/cache@v5
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
       - name: Install Frontend Dependencies
         run: |
           cd frontend
           pnpm install --frozen-lockfile
 
       - name: Build Windows Wails App
-        run: wails build -platform windows/amd64 -skipbindings -devtools -clean -o COM3D2_MOD_EDITOR_V2.exe
+        run: wails build -platform windows/amd64 -skipbindings -devtools -ldflags "-w -s" -clean -o COM3D2_MOD_EDITOR_V2.exe
 
       - name: Upload Windows Build Artifact
         uses: actions/upload-artifact@v7
@@ -74,7 +59,8 @@ jobs:
           path: /home/runner/work/COM3D2_MOD_EDITOR/COM3D2_MOD_EDITOR/build/bin/COM3D2_MOD_EDITOR_V2.exe
 
       - name: Build Linux Wails App
-        run: CGO_ENABLED=0 GOTOOLCHAIN=auto wails build -platform linux/amd64 -skipbindings -devtools -clean -tags webkit2_41 -o COM3D2_MOD_EDITOR_V2-amd64-Linux 
+        run: CGO_ENABLED=0 GOTOOLCHAIN=auto wails build -platform linux/amd64 -skipbindings -devtools -ldflags "-w -s" -clean -tags webkit2_41 -o COM3D2_MOD_EDITOR_V2-amd64-Linux
+
 
       - name: Upload Linux Build Artifact
         uses: actions/upload-artifact@v7
